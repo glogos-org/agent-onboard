@@ -41,8 +41,8 @@ function cliTargetConfigForTest(dir) {
   const result = run(['status']);
   const output = readJsonOutput(result);
   assert.strictEqual(output.status, 'ok');
-  assert.strictEqual(output.version, '0.0.9');
-  assert.strictEqual(output.release_line, 'public_work_item_append_dry_run_gate');
+  assert.strictEqual(output.version, '0.0.10');
+  assert.strictEqual(output.release_line, 'public_work_item_append_write_gate');
 }
 
 {
@@ -195,10 +195,56 @@ function cliTargetConfigForTest(dir) {
   const dir = tempRepo();
   readJsonOutput(run(['work-items', '--init', '--write'], { cwd: dir }));
   const id = ['P', 1, 'S', 1, 'M', 1, 'W', 1].join('');
-  const result = run(['work-items', '--append', '--write', '--id', id, '--title', 'Not exposed'], { cwd: dir });
+  const result = run([
+    'work-items', '--append', '--write',
+    '--id', id,
+    '--title', 'Public append write seed',
+    '--program-title', 'Public program write seed',
+    '--stage-title', 'Public stage write seed',
+    '--milestone-title', 'Public milestone write seed'
+  ], { cwd: dir });
+  const output = readJsonOutput(result);
+  assert.strictEqual(output.status, 'ok');
+  assert.strictEqual(output.mode, 'write');
+  assert.strictEqual(output.writes_performed, true);
+  assert.strictEqual(output.boundary.modifies_work_items_file, true);
+  assert.strictEqual(output.boundary.modifies_only_canonical_work_items_file, true);
+  assert.strictEqual(output.counts_before.work_items, 0);
+  assert.strictEqual(output.counts_after.work_items, 1);
+  assert.strictEqual(output.added.work_items[0].id, id);
+  const persisted = JSON.parse(fs.readFileSync(path.join(dir, '.agent-onboard', 'work-items.json'), 'utf8'));
+  assert.strictEqual(persisted.programs[0].title, 'Public program write seed');
+  assert.strictEqual(persisted.stages[0].title, 'Public stage write seed');
+  assert.strictEqual(persisted.milestones[0].title, 'Public milestone write seed');
+  assert.strictEqual(persisted.work_items[0].title, 'Public append write seed');
+  const validate = readJsonOutput(run(['work-items', '--validate'], { cwd: dir }));
+  assert.strictEqual(validate.status, 'ok');
+  assert.strictEqual(validate.counts.work_items, 1);
+}
+
+{
+  const dir = tempRepo();
+  readJsonOutput(run(['work-items', '--init', '--write'], { cwd: dir }));
+  const id = ['P', 1, 'S', 1, 'M', 1, 'W', 1].join('');
+  readJsonOutput(run(['work-items', '--append', '--write', '--id', id, '--title', 'First'], { cwd: dir }));
+  const duplicate = run(['work-items', '--append', '--write', '--id', id, '--title', 'Duplicate'], { cwd: dir });
+  const output = readJsonFailure(duplicate);
+  assert.strictEqual(output.status, 'error');
+  assert.strictEqual(output.writes_performed, false);
+  assert.ok(output.reason.includes('duplicate'));
+  const persisted = JSON.parse(fs.readFileSync(path.join(dir, '.agent-onboard', 'work-items.json'), 'utf8'));
+  assert.strictEqual(persisted.work_items.length, 1);
+  assert.strictEqual(persisted.work_items[0].title, 'First');
+}
+
+{
+  const dir = tempRepo();
+  readJsonOutput(run(['work-items', '--init', '--write'], { cwd: dir }));
+  const id = ['P', 1, 'S', 1, 'M', 1, 'W', 1].join('');
+  const result = run(['work-items', '--append', '--dry-run', '--write', '--id', id, '--title', 'Invalid mode'], { cwd: dir });
   const output = readJsonFailure(result);
   assert.strictEqual(output.status, 'error');
-  assert.ok(output.message.includes('dry-run'));
+  assert.ok(output.message.includes('only one'));
 }
 
 {

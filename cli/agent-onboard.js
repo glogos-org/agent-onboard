@@ -880,18 +880,21 @@ function runWorkItems(args) {
   if (args.includes('--append')) {
     const dry = args.includes('--dry-run');
     const write = args.includes('--write');
-    if (!dry) throw new Error('work-items --append is exposed only with --dry-run in this release');
-    if (write) throw new Error('work-items --append --write is not exposed in this release');
+    if (!write && !dry) throw new Error('work-items --append requires --dry-run or --write');
+    if (write && dry) throw new Error('work-items --append accepts only one of --dry-run or --write');
 
+    const mode = write ? 'write' : 'dry-run';
+    const command = `agent-onboard work-items --append --${mode}`;
     const file = parseOption(args, '--file') || '.agent-onboard/work-items.json';
     const absolutePath = path.resolve(process.cwd(), file);
     if (!fs.existsSync(absolutePath)) {
       json({
-        schema: 'agent-onboard-work-items-append-dry-run-result-001',
+        schema: 'agent-onboard-work-items-append-result-001',
         status: 'error',
         command_family: 'work-items',
-        command: 'agent-onboard work-items --append --dry-run',
+        command,
         file,
+        mode,
         reason: 'missing .agent-onboard/work-items.json in current target repo root',
         writes_performed: false
       });
@@ -902,11 +905,12 @@ function runWorkItems(args) {
     const currentErrors = validateWorkItems(current);
     if (currentErrors.length > 0) {
       json({
-        schema: 'agent-onboard-work-items-append-dry-run-result-001',
+        schema: 'agent-onboard-work-items-append-result-001',
         status: 'error',
         command_family: 'work-items',
-        command: 'agent-onboard work-items --append --dry-run',
+        command,
         file,
+        mode,
         reason: 'current work-item ledger is invalid',
         writes_performed: false,
         errors: currentErrors
@@ -925,11 +929,12 @@ function runWorkItems(args) {
       });
     } catch (error) {
       json({
-        schema: 'agent-onboard-work-items-append-dry-run-result-001',
+        schema: 'agent-onboard-work-items-append-result-001',
         status: 'error',
         command_family: 'work-items',
-        command: 'agent-onboard work-items --append --dry-run',
+        command,
         file,
+        mode,
         reason: error.message || String(error),
         writes_performed: false
       });
@@ -938,14 +943,15 @@ function runWorkItems(args) {
 
     const proposalErrors = validateWorkItems(proposal.proposed_ledger);
     const ok = proposalErrors.length === 0;
+    if (write && ok) writeJson(absolutePath, proposal.proposed_ledger);
     json({
-      schema: 'agent-onboard-work-items-append-dry-run-result-001',
+      schema: 'agent-onboard-work-items-append-result-001',
       status: ok ? 'ok' : 'error',
       command_family: 'work-items',
-      command: 'agent-onboard work-items --append --dry-run',
+      command,
       file,
-      mode: 'dry-run',
-      writes_performed: false,
+      mode,
+      writes_performed: write && ok,
       counts_before: workItemCounts(current),
       counts_after: workItemCounts(proposal.proposed_ledger),
       added: proposal.added,
@@ -956,7 +962,8 @@ function runWorkItems(args) {
         runs_build_test_deploy: false,
         publishes_or_pushes: false,
         modifies_source_files: false,
-        modifies_work_items_file: false
+        modifies_work_items_file: write,
+        modifies_only_canonical_work_items_file: write
       }
     });
     return ok ? 0 : 1;
@@ -1077,7 +1084,7 @@ function runWorkItems(args) {
     });
     return ok ? 0 : 1;
   }
-  throw new Error('work-items requires --schema, --template, --validate-template, --init --dry-run|--write [--force], --validate [file], or --list [file]');
+  throw new Error('work-items requires --schema, --template, --validate-template, --init --dry-run|--write [--force], --validate [file], or --list [file], or --append --dry-run|--write --id <public-work-item-id> --title <title>');
 }
 
 function runAgents(args) {
@@ -1215,7 +1222,7 @@ function main(argv = process.argv) {
     return 0;
   }
   if (cmd === 'status') {
-    json({ schema: 'agent-onboard-status-001', status: 'ok', version: VERSION, release_line: 'public_work_item_append_dry_run_gate' });
+    json({ schema: 'agent-onboard-status-001', status: 'ok', version: VERSION, release_line: 'public_work_item_append_write_gate' });
     return 0;
   }
   if (cmd === 'init') return runInit(args);

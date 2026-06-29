@@ -1,6 +1,6 @@
 {
   "name": "agent-onboard",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "CLI for onboarding and managing target repositories.",
   "license": "Apache-2.0",
   "author": "Thanh Le <vnlemanhthanh@gmail.com>",
@@ -46,7 +46,9 @@
     "target-state-init",
     "work-item-append",
     "work-item-dry-run",
-    "public-work-item-append"
+    "work-item-write",
+    "public-work-item-append",
+    "public-work-item-write"
   ],
   "type": "commonjs",
   "engines": {
