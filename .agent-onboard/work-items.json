@@ -51,6 +51,12 @@
       "id": "P1S1M1W1",
       "milestone_id": "P1S1M1",
       "title": "Public self-dogfood participation gate",
+      "status": "closed"
+    },
+    {
+      "id": "P1S1M1W2",
+      "milestone_id": "P1S1M1",
+      "title": "Public source participation lifecycle gate",
       "status": "open"
     }
   ]

@@ -22,18 +22,31 @@ Forbidden by default unless the repository owner explicitly authorizes the actio
 - source edits outside the assigned work item;
 - mutation of `.agent-onboard/` files except through an explicit `agent-onboard` command or owner request.
 
-## Work-item participation
+## Work-item participation lifecycle
 
-Agents may inspect the public ledger:
+Use this source-repository lifecycle for public human/agent participation:
+
+1. Discover: read this file and inspect the public ledger.
+2. Inspect: read the assigned work-item scope and relevant files before editing.
+3. Claim: claim only an assigned open work item with an explicit write command.
+4. Work: modify only files needed for that work item.
+5. Validate: run only checks authorized by the owner or clearly permitted by the current task.
+6. Handoff: report changed files, checks run, checks not run, and known non-pass states.
+
+Inspect the public ledger:
 
 ```sh
-npx agent-onboard@0.0.13 work-items --list
+npx agent-onboard@0.0.14 work-items --list
 ```
 
-Agents may claim an assigned work item only with an explicit write command:
+Claim an assigned work item only with an explicit write command:
 
 ```sh
-npx agent-onboard@0.0.13 work-items --claim --write --id <public-work-item-id> --actor <agent-or-human-name>
+npx agent-onboard@0.0.14 work-items --claim --write --id <public-work-item-id> --actor <agent-or-human-name>
 ```
+
+After claiming, follow the `next_steps` returned by the CLI. Claiming is not admission to publish, push, install dependencies, or edit unrelated files.
+
+If a target repo already has a non-identical `AGENTS.md`, treat the conflict as expected overwrite protection. Do not force overwrite unless the repository owner explicitly requests it.
 
 Report changed files, checks run, checks not run, and known non-pass states separately.

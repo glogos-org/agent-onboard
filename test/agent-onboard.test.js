@@ -41,8 +41,8 @@ function cliTargetConfigForTest(dir) {
   const result = run(['status']);
   const output = readJsonOutput(result);
   assert.strictEqual(output.status, 'ok');
-  assert.strictEqual(output.version, '0.0.13');
-  assert.strictEqual(output.release_line, 'public_self_dogfood_participation_gate');
+  assert.strictEqual(output.version, '0.0.14');
+  assert.strictEqual(output.release_line, 'public_source_participation_lifecycle_gate');
 }
 
 {
@@ -256,6 +256,8 @@ function cliTargetConfigForTest(dir) {
   assert.strictEqual(output.boundary.modifies_work_items_file, false);
   assert.strictEqual(output.claimed.work_item_id, id);
   assert.strictEqual(output.claimed.actor, 'public-actor');
+  assert.ok(Array.isArray(output.next_steps));
+  assert.ok(output.next_steps.some((step) => step.startsWith('handoff:')));
   assert.strictEqual(output.proposed_ledger.work_items[0].status, 'claimed');
   assert.strictEqual(output.proposed_ledger.work_items[0].claim.actor, 'public-actor');
   const persisted = JSON.parse(fs.readFileSync(path.join(dir, '.agent-onboard', 'work-items.json'), 'utf8'));
@@ -497,6 +499,7 @@ function cliTargetConfigForTest(dir) {
   assert.strictEqual(output.mode, 'write');
   assert.strictEqual(output.writes_performed, true);
   assert.strictEqual(output.boundary.modifies_work_items_file, true);
+  assert.ok(output.next_steps.some((step) => step.startsWith('validate:')));
   const persisted = JSON.parse(fs.readFileSync(path.join(dir, '.agent-onboard', 'work-items.json'), 'utf8'));
   assert.strictEqual(persisted.work_items[0].status, 'claimed');
   assert.strictEqual(persisted.work_items[0].claim.actor, 'test-agent');
@@ -506,12 +509,14 @@ function cliTargetConfigForTest(dir) {
   const rootLedger = JSON.parse(fs.readFileSync(path.join(ROOT, '.agent-onboard', 'work-items.json'), 'utf8'));
   const errors = require('../cli/agent-onboard.js').validateWorkItems(rootLedger);
   assert.deepStrictEqual(errors, []);
-  assert.strictEqual(rootLedger.work_items.length, 1);
+  assert.strictEqual(rootLedger.work_items.length, 2);
   assert.strictEqual(rootLedger.programs[0].id, ['P', 1].join(''));
   assert.strictEqual(rootLedger.stages[0].id, ['P', 1, 'S', 1].join(''));
   assert.strictEqual(rootLedger.milestones[0].id, ['P', 1, 'S', 1, 'M', 1].join(''));
   assert.strictEqual(rootLedger.work_items[0].id, ['P', 1, 'S', 1, 'M', 1, 'W', 1].join(''));
-  assert.strictEqual(rootLedger.work_items[0].status, 'open');
+  assert.strictEqual(rootLedger.work_items[0].status, 'closed');
+  assert.strictEqual(rootLedger.work_items[1].id, ['P', 1, 'S', 1, 'M', 1, 'W', 2].join(''));
+  assert.strictEqual(rootLedger.work_items[1].status, 'open');
   assert.ok(fs.existsSync(path.join(ROOT, 'AGENTS.md')));
   assert.ok(fs.existsSync(path.join(ROOT, 'agent-onboard.target.json')));
   assert.ok(fs.existsSync(path.join(ROOT, '.agent-onboard', 'project.json')));
@@ -525,7 +530,8 @@ function cliTargetConfigForTest(dir) {
 }
 
 {
-  const pack = spawnSync('npm', ['pack', '--dry-run', '--json'], { cwd: ROOT, encoding: 'utf8', shell: process.platform === 'win32' });
+  const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+  const pack = spawnSync(npmCommand, ['pack', '--dry-run', '--json'], { cwd: ROOT, encoding: 'utf8' });
   assert.strictEqual(pack.status, 0, pack.stderr || pack.stdout);
   const parsed = JSON.parse(pack.stdout);
   assert.strictEqual(parsed.length, 1);
@@ -602,7 +608,10 @@ function cliTargetConfigForTest(dir) {
   delete invalid.boundaries.writes_allowed;
   const errors = cli.validateTargetConfig(invalid);
   assert.ok(errors.some((error) => error.includes('writes_allowed')));
-  assert.ok(cli.agentsMdTemplate(tempRepo()).includes('AGENTS.md'));
+  const generatedAgents = cli.agentsMdTemplate(tempRepo());
+  assert.ok(generatedAgents.includes('AGENTS.md'));
+  assert.ok(generatedAgents.includes('Follow the public participation lifecycle'));
+  assert.ok(cli.participationLifecycleNextSteps().some((step) => step.startsWith('discover:')));
 }
 
 
@@ -668,6 +677,8 @@ function cliTargetConfigForTest(dir) {
   assert.ok(!readme.includes('This release does not add claim write'));
   assert.ok(readme.includes('`0.0.11` adds public `work-items --claim --dry-run`'));
   assert.ok(readme.includes('`0.0.13` adds source self-dogfood and agent participation support'));
+  assert.ok(readme.includes('`0.0.14` adds the public source participation lifecycle gate'));
+  assert.ok(readme.includes('The claim response also returns `next_steps`'));
 }
 
 console.log('agent-onboard tests passed');

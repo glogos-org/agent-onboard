@@ -8,10 +8,10 @@ The generated files are intended to be read by agents, wrappers, CI hooks, or fu
 
 ## Install
 
-For the `0.0.x` line, install with `~0.0.13` so target repos can receive later `0.0.x` updates without crossing the `0.1.0` boundary:
+For the `0.0.x` line, install with `~0.0.14` so target repos can receive later `0.0.x` updates without crossing the `0.1.0` boundary:
 
 ```sh
-npm install --save-dev agent-onboard@~0.0.13
+npm install --save-dev agent-onboard@~0.0.14
 ```
 
 Run without installing:
@@ -252,6 +252,29 @@ The claim command reads the existing ledger, validates it, verifies that the req
 
 Optional metadata can be supplied with `--claimed-at <timestamp>` and `--note <note>`. The claim command refuses missing ledgers, invalid ledgers, missing work-item IDs, closed work items, and already claimed work items.
 
+The claim response also returns `next_steps`, a documented lifecycle hint for public participation. It tells the actor to inspect scope, modify only relevant files, validate with authorized checks, and hand off changed files plus pass/non-pass evidence.
+
+## Public source participation lifecycle
+
+For public human/agent participation, use this lifecycle:
+
+```text
+discover -> inspect -> claim -> work -> validate -> handoff
+```
+
+The lifecycle is intentionally conservative:
+
+- `discover`: read `AGENTS.md`, `agent-onboard.target.json`, `.agent-onboard/project.json`, and `.agent-onboard/work-items.json` when present.
+- `inspect`: understand the assigned public work item before editing.
+- `claim`: use `work-items --claim --dry-run` first, then `--write` only when explicitly authorized.
+- `work`: edit only files needed for the claimed work item.
+- `validate`: run only checks authorized by the owner or clearly permitted by the current task.
+- `handoff`: report files changed, checks run, checks not run, and known non-pass states.
+
+Claiming a work item is not permission to publish, push, install dependencies, overwrite existing instructions, or edit unrelated files.
+
+If `agents --write` finds an existing non-identical `AGENTS.md`, it returns a conflict and writes nothing. That conflict is expected overwrite protection for target repos with their own agent instructions; merge manually or use `--force` only when the repository owner explicitly asks for replacement.
+
 This release does not add work-item closing, admission, conflict detection, or milestone governance. Those remain outside the command surface until documented and exposed by explicit commands.
 
 ## Boundary guard seed
@@ -354,6 +377,8 @@ This version does not:
 
 `0.0.13` adds source self-dogfood and agent participation support: the source repository can carry `AGENTS.md`, `agent-onboard.target.json`, `.agent-onboard/project.json`, `.agent-onboard/work-items.json`, and public `work-items --claim --write` for explicit participation claims.
 
+`0.0.14` adds the public source participation lifecycle gate: claim responses include `next_steps`, generated `AGENTS.md` documents the discover/inspect/claim/work/validate/handoff loop, and README documents expected `AGENTS.md` conflict handling for target repos.
+
 <!-- ## Star History
 
 [![Star History Chart](https://api.star-history.com/chart?repos=glogos-org/agent-onboard&type=date&legend=top-left)](https://www.star-history.com/?repos=glogos-org%2Fagent-onboard&type=date&legend=top-left) -->
@@ -370,9 +395,9 @@ The source repository can carry its own public Agent-Onboard operating surface:
 Agent participation is explicit. An agent should first list the ledger, then claim only an assigned work item:
 
 ```sh
-npx agent-onboard@0.0.13 work-items --list
-npx agent-onboard@0.0.13 work-items --claim --dry-run --id <public-work-item-id> --actor <agent-or-human-name>
-npx agent-onboard@0.0.13 work-items --claim --write --id <public-work-item-id> --actor <agent-or-human-name>
+npx agent-onboard@0.0.14 work-items --list
+npx agent-onboard@0.0.14 work-items --claim --dry-run --id <public-work-item-id> --actor <agent-or-human-name>
+npx agent-onboard@0.0.14 work-items --claim --write --id <public-work-item-id> --actor <agent-or-human-name>
 ```
 
 The npm package surface remains intentionally compact. The self-dogfood files are source-repository operating files and are not included in the public npm tarball.

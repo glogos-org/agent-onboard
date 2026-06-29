@@ -276,6 +276,17 @@ Inspect the public work-item ledger when present:
 npx agent-onboard@${VERSION} work-items --list
 \`\`\`
 
+Follow the public participation lifecycle:
+
+1. Discover: read the operating surface listed above.
+2. Inspect: understand the assigned public work item and relevant files before editing.
+3. Claim: use \`work-items --claim --dry-run\` first, then \`--write\` only when explicitly authorized.
+4. Work: edit only files needed for the claimed work item.
+5. Validate: run only checks authorized by the owner or clearly permitted by the task.
+6. Handoff: report files changed, checks run, checks not run, and known non-pass states.
+
+If \`agents --write\` reports an existing non-identical \`AGENTS.md\`, treat that as expected overwrite protection. Do not force overwrite unless the repository owner explicitly asks for replacement.
+
 When reporting work, distinguish clearly between:
 
 - files inspected;
@@ -552,6 +563,17 @@ function appendWorkItemDryRun(currentLedger, options) {
   return { proposed_ledger: ledger, added };
 }
 
+function participationLifecycleNextSteps() {
+  return [
+    'discover: read AGENTS.md, agent-onboard.target.json, .agent-onboard/project.json, and .agent-onboard/work-items.json when present',
+    'inspect: read the assigned work-item scope and relevant files before editing',
+    'claim: use --dry-run first and --write only with explicit authorization',
+    'work: modify only files needed for the claimed work item',
+    'validate: run only checks authorized by the owner or clearly permitted by the current task',
+    'handoff: report changed files, checks run, checks not run, and known non-pass states'
+  ];
+}
+
 function claimWorkItemDryRun(currentLedger, options) {
   const id = options.id;
   const actor = options.actor;
@@ -584,7 +606,8 @@ function claimWorkItemDryRun(currentLedger, options) {
       actor: claim.actor,
       claimed_at: claim.claimed_at,
       note: claim.note
-    }
+    },
+    next_steps: participationLifecycleNextSteps()
   };
 }
 
@@ -1006,6 +1029,7 @@ function runWorkItems(args) {
       counts_before: workItemCounts(current),
       counts_after: workItemCounts(proposal.proposed_ledger),
       claimed: proposal.claimed,
+      next_steps: proposal.next_steps,
       proposed_ledger: proposal.proposed_ledger,
       errors: proposalErrors,
       boundary: {
@@ -1364,7 +1388,7 @@ function main(argv = process.argv) {
     return 0;
   }
   if (cmd === 'status') {
-    json({ schema: 'agent-onboard-status-001', status: 'ok', version: VERSION, release_line: 'public_self_dogfood_participation_gate' });
+    json({ schema: 'agent-onboard-status-001', status: 'ok', version: VERSION, release_line: 'public_source_participation_lifecycle_gate' });
     return 0;
   }
   if (cmd === 'init') return runInit(args);
@@ -1397,6 +1421,7 @@ module.exports = {
   validateWorkItemsGraph,
   appendWorkItemDryRun,
   claimWorkItemDryRun,
+  participationLifecycleNextSteps,
   workItemsTemplate,
   initWriteSet,
   planWrites,
