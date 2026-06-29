@@ -41,8 +41,8 @@ function cliTargetConfigForTest(dir) {
   const result = run(['status']);
   const output = readJsonOutput(result);
   assert.strictEqual(output.status, 'ok');
-  assert.strictEqual(output.version, '0.0.7');
-  assert.strictEqual(output.release_line, 'public_psmw_work_item_ledger_seed');
+  assert.strictEqual(output.version, '0.0.8');
+  assert.strictEqual(output.release_line, 'public_work_item_ledger_init_gate');
 }
 
 {
@@ -78,6 +78,66 @@ function cliTargetConfigForTest(dir) {
   assert.strictEqual(output.status, 'ok');
   assert.strictEqual(output.validated, true);
   assert.deepStrictEqual(output.errors, []);
+}
+
+
+{
+  const dir = tempRepo();
+  const result = run(['work-items', '--init', '--dry-run'], { cwd: dir });
+  const output = readJsonOutput(result);
+  assert.strictEqual(output.status, 'ok');
+  assert.strictEqual(output.mode, 'dry-run');
+  assert.strictEqual(output.writes_performed, false);
+  assert.strictEqual(output.canonical_file, '.agent-onboard/work-items.json');
+  assert.strictEqual(output.planned_writes.length, 1);
+  assert.strictEqual(output.planned_writes[0].path, '.agent-onboard/work-items.json');
+  assert.strictEqual(output.validated_template, true);
+  assert.strictEqual(output.counts.work_items, 0);
+  assert.ok(!fs.existsSync(path.join(dir, '.agent-onboard', 'work-items.json')));
+}
+
+{
+  const dir = tempRepo();
+  const result = run(['work-items', '--init', '--write'], { cwd: dir });
+  const output = readJsonOutput(result);
+  assert.strictEqual(output.status, 'ok');
+  assert.strictEqual(output.mode, 'write');
+  assert.strictEqual(output.writes_performed, true);
+  assert.deepStrictEqual(output.conflicts, []);
+  const file = path.join(dir, '.agent-onboard', 'work-items.json');
+  assert.ok(fs.existsSync(file));
+  const value = JSON.parse(fs.readFileSync(file, 'utf8'));
+  assert.strictEqual(value.schema, 'agent-onboard-target-work-items-001');
+  assert.strictEqual(value.package_name, 'agent-onboard');
+  assert.deepStrictEqual(value.work_items, []);
+  const validate = run(['work-items', '--validate'], { cwd: dir });
+  const validation = readJsonOutput(validate);
+  assert.strictEqual(validation.status, 'ok');
+}
+
+{
+  const dir = tempRepo();
+  fs.mkdirSync(path.join(dir, '.agent-onboard'), { recursive: true });
+  fs.writeFileSync(path.join(dir, '.agent-onboard', 'work-items.json'), '{"foreign":true}\n');
+  const result = run(['work-items', '--init', '--write'], { cwd: dir });
+  const output = readJsonFailure(result);
+  assert.strictEqual(output.status, 'error');
+  assert.strictEqual(output.writes_performed, false);
+  assert.deepStrictEqual(output.conflicts, ['.agent-onboard/work-items.json']);
+  assert.strictEqual(JSON.parse(fs.readFileSync(path.join(dir, '.agent-onboard', 'work-items.json'), 'utf8')).foreign, true);
+}
+
+{
+  const dir = tempRepo();
+  fs.mkdirSync(path.join(dir, '.agent-onboard'), { recursive: true });
+  fs.writeFileSync(path.join(dir, '.agent-onboard', 'work-items.json'), '{"foreign":true}\n');
+  const result = run(['work-items', '--init', '--write', '--force'], { cwd: dir });
+  const output = readJsonOutput(result);
+  assert.strictEqual(output.status, 'ok');
+  assert.strictEqual(output.writes_performed, true);
+  assert.deepStrictEqual(output.conflicts, []);
+  const value = JSON.parse(fs.readFileSync(path.join(dir, '.agent-onboard', 'work-items.json'), 'utf8'));
+  assert.strictEqual(value.schema, 'agent-onboard-target-work-items-001');
 }
 
 {

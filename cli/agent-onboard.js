@@ -753,6 +753,44 @@ function runTargetConfig(args) {
 }
 
 function runWorkItems(args) {
+  if (args.includes('--init')) {
+    const write = args.includes('--write');
+    const dry = args.includes('--dry-run');
+    const force = args.includes('--force');
+    if (!write && !dry) throw new Error('work-items --init requires --dry-run or --write');
+    if (write && dry) throw new Error('work-items --init accepts only one of --dry-run or --write');
+
+    const plannedWrites = planWrites([['.agent-onboard/work-items.json', workItemsTemplate()]], { force });
+    const conflicts = plannedWrites.filter((item) => item.action === 'conflict');
+    const errors = validateWorkItems(workItemsTemplate());
+    const ok = conflicts.length === 0 && errors.length === 0;
+
+    if (write && ok) performPlannedWrites(plannedWrites);
+
+    json({
+      schema: 'agent-onboard-work-items-init-result-001',
+      status: ok ? 'ok' : 'error',
+      command_family: 'work-items',
+      command: `agent-onboard work-items --init --${write ? 'write' : 'dry-run'}`,
+      canonical_file: '.agent-onboard/work-items.json',
+      mode: write ? 'write' : 'dry-run',
+      force,
+      writes_performed: write && ok,
+      planned_writes: summarizePlan(plannedWrites),
+      conflicts: conflicts.map((item) => item.path),
+      validated_template: errors.length === 0,
+      counts: workItemCounts(workItemsTemplate()),
+      errors,
+      boundary: {
+        installs_dependencies: false,
+        runs_build_test_deploy: false,
+        publishes_or_pushes: false,
+        modifies_source_files: false,
+        modifies_only_canonical_work_items_file: write
+      }
+    });
+    return ok ? 0 : 1;
+  }
   if (args.includes('--schema')) {
     json({
       schema: 'agent-onboard-work-items-schema-response-001',
@@ -831,7 +869,7 @@ function runWorkItems(args) {
     });
     return ok ? 0 : 1;
   }
-  throw new Error('work-items requires --schema, --template, --validate-template, --validate [file], or --list [file]');
+  throw new Error('work-items requires --schema, --template, --validate-template, --init --dry-run|--write [--force], --validate [file], or --list [file]');
 }
 
 function runAgents(args) {
@@ -969,7 +1007,7 @@ function main(argv = process.argv) {
     return 0;
   }
   if (cmd === 'status') {
-    json({ schema: 'agent-onboard-status-001', status: 'ok', version: VERSION, release_line: 'public_psmw_work_item_ledger_seed' });
+    json({ schema: 'agent-onboard-status-001', status: 'ok', version: VERSION, release_line: 'public_work_item_ledger_init_gate' });
     return 0;
   }
   if (cmd === 'init') return runInit(args);

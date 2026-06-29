@@ -8,10 +8,10 @@ The generated files are intended to be read by agents, wrappers, CI hooks, or fu
 
 ## Install
 
-For the `0.0.x` line, install with `~0.0.7` so target repos can receive later `0.0.x` updates without crossing the `0.1.0` boundary:
+For the `0.0.x` line, install with `~0.0.8` so target repos can receive later `0.0.x` updates without crossing the `0.1.0` boundary:
 
 ```sh
-npm install --save-dev agent-onboard@~0.0.7
+npm install --save-dev agent-onboard@~0.0.8
 ```
 
 Run without installing:
@@ -83,6 +83,8 @@ npx agent-onboard target-config --validate [agent-onboard.target.json]
 npx agent-onboard work-items --schema
 npx agent-onboard work-items --template
 npx agent-onboard work-items --validate-template
+npx agent-onboard work-items --init --dry-run
+npx agent-onboard work-items --init --write
 npx agent-onboard work-items --validate [.agent-onboard/work-items.json]
 npx agent-onboard work-items --list [.agent-onboard/work-items.json]
 npx agent-onboard target bootstrap --dry-run
@@ -117,6 +119,12 @@ agent-onboard.target.json
 AGENTS.md
 ```
 
+`work-items --init --write` writes only the public work-item ledger:
+
+```text
+.agent-onboard/work-items.json
+```
+
 The older explicit subcommands remain available:
 
 `target bootstrap --write` writes:
@@ -132,7 +140,7 @@ agent-onboard.target.json
 .agent-onboard/work-items.json
 ```
 
-## Public P/S/M/W work item ledger seed
+## Public P/S/M/W work item ledger init
 
 `agent-onboard` now exposes the public vocabulary used by `.agent-onboard/work-items.json`:
 
@@ -144,6 +152,25 @@ W = Work Item
 ```
 
 The generated work-item ledger is intentionally empty at initialization. It establishes the public JSON shape without importing pre-existing target state, milestone history, or generated provenance.
+
+Initialize only the canonical work-item ledger without writing the rest of the target state:
+
+```sh
+npx agent-onboard work-items --init --dry-run
+npx agent-onboard work-items --init --write
+```
+
+`work-items --init --write` writes only:
+
+```text
+.agent-onboard/work-items.json
+```
+
+It refuses to overwrite an existing non-identical ledger unless `--force` is passed:
+
+```sh
+npx agent-onboard work-items --init --write --force
+```
 
 Inspect the embedded schema:
 
@@ -163,7 +190,7 @@ Validate the embedded template:
 npx agent-onboard work-items --validate-template
 ```
 
-Validate or list the target repo ledger after `init --write`:
+Validate or list the target repo ledger after `init --write`, `target-instance takeover --write`, or `work-items --init --write`:
 
 ```sh
 npx agent-onboard work-items --validate
@@ -259,6 +286,8 @@ This version does not:
 `0.0.6` is the boundary guard hotfix: it keeps the `guard --plan` and `guard --check-boundary` surface while keeping JSON output limited to documented fields.
 
 `0.0.7` adds the P/S/M/W vocabulary and work-item ledger schema/template/list/validation surface with documented JSON output.
+
+`0.0.8` adds the public `work-items --init --dry-run|--write` surface for initializing only `.agent-onboard/work-items.json` with overwrite protection.
 
 <!-- ## Star History
 
