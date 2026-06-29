@@ -8,10 +8,10 @@ The generated files are intended to be read by agents, wrappers, CI hooks, or fu
 
 ## Install
 
-For the `0.0.x` line, install with `~0.0.14` so target repos can receive later `0.0.x` updates without crossing the `0.1.0` boundary:
+For the `0.0.x` line, install with `~0.0.15` so target repos can receive later `0.0.x` updates without crossing the `0.1.0` boundary:
 
 ```sh
-npm install --save-dev agent-onboard@~0.0.14
+npm install --save-dev agent-onboard@~0.0.15
 ```
 
 Run without installing:
@@ -91,6 +91,8 @@ npx agent-onboard work-items --append --dry-run --id <public-work-item-id> --tit
 npx agent-onboard work-items --append --write --id <public-work-item-id> --title <title>
 npx agent-onboard work-items --claim --dry-run --id <public-work-item-id> --actor <actor>
 npx agent-onboard work-items --claim --write --id <public-work-item-id> --actor <actor>
+npx agent-onboard work-items --close --dry-run --id <public-work-item-id> --actor <actor> --summary <summary>
+npx agent-onboard work-items --close --write --id <public-work-item-id> --actor <actor> --summary <summary>
 npx agent-onboard target bootstrap --dry-run
 npx agent-onboard target bootstrap --write
 npx agent-onboard target-instance takeover --dry-run
@@ -254,12 +256,41 @@ Optional metadata can be supplied with `--claimed-at <timestamp>` and `--note <n
 
 The claim response also returns `next_steps`, a documented lifecycle hint for public participation. It tells the actor to inspect scope, modify only relevant files, validate with authorized checks, and hand off changed files plus pass/non-pass evidence.
 
+Preview a public close without writing the ledger:
+
+```sh
+npx agent-onboard work-items --close --dry-run --id <public-work-item-id> --actor <actor> --summary <summary>
+```
+
+Write a public close into the canonical work-item ledger:
+
+```sh
+npx agent-onboard work-items --close --write --id <public-work-item-id> --actor <actor> --summary <summary>
+```
+
+The close command reads the existing ledger, validates it, verifies that the requested work item exists and is not already closed, and returns `counts_before`, `counts_after`, `closed`, `handoff_evidence`, and `proposed_ledger`. In dry-run mode it writes nothing. In write mode it writes only:
+
+```text
+.agent-onboard/work-items.json
+```
+
+Closure evidence accepts repeated metadata flags:
+
+```sh
+--changed-file <path>
+--check <check-run>
+--check-not-run <check-not-run>
+--known-non-pass <known-non-pass-state>
+```
+
+Optional timestamp metadata can be supplied with `--closed-at <timestamp>`. The close command refuses missing ledgers, invalid ledgers, missing work-item IDs, and already closed work items.
+
 ## Public source participation lifecycle
 
 For public human/agent participation, use this lifecycle:
 
 ```text
-discover -> inspect -> claim -> work -> validate -> handoff
+discover -> inspect -> claim -> work -> validate -> handoff -> close
 ```
 
 The lifecycle is intentionally conservative:
@@ -270,12 +301,13 @@ The lifecycle is intentionally conservative:
 - `work`: edit only files needed for the claimed work item.
 - `validate`: run only checks authorized by the owner or clearly permitted by the current task.
 - `handoff`: report files changed, checks run, checks not run, and known non-pass states.
+- `close`: record the handoff evidence envelope in the canonical work-item ledger only after the work item is ready to close.
 
-Claiming a work item is not permission to publish, push, install dependencies, overwrite existing instructions, or edit unrelated files.
+Claiming or closing a work item is not permission to publish, push, install dependencies, overwrite existing instructions, or edit unrelated files.
 
 If `agents --write` finds an existing non-identical `AGENTS.md`, it returns a conflict and writes nothing. That conflict is expected overwrite protection for target repos with their own agent instructions; merge manually or use `--force` only when the repository owner explicitly asks for replacement.
 
-This release does not add work-item closing, admission, conflict detection, or milestone governance. Those remain outside the command surface until documented and exposed by explicit commands.
+This release adds narrow work-item closing with a public handoff evidence envelope. Admission, conflict detection, and milestone governance remain outside the command surface until documented and exposed by explicit commands.
 
 ## Boundary guard seed
 
@@ -379,6 +411,8 @@ This version does not:
 
 `0.0.14` adds the public source participation lifecycle gate: claim responses include `next_steps`, generated `AGENTS.md` documents the discover/inspect/claim/work/validate/handoff loop, and README documents expected `AGENTS.md` conflict handling for target repos.
 
+`0.0.15` adds the public handoff and closure evidence gate: `work-items --close --dry-run|--write` records a closure envelope with summary, changed files, checks run, checks not run, and known non-pass states.
+
 <!-- ## Star History
 
 [![Star History Chart](https://api.star-history.com/chart?repos=glogos-org/agent-onboard&type=date&legend=top-left)](https://www.star-history.com/?repos=glogos-org%2Fagent-onboard&type=date&legend=top-left) -->
@@ -395,9 +429,9 @@ The source repository can carry its own public Agent-Onboard operating surface:
 Agent participation is explicit. An agent should first list the ledger, then claim only an assigned work item:
 
 ```sh
-npx agent-onboard@0.0.14 work-items --list
-npx agent-onboard@0.0.14 work-items --claim --dry-run --id <public-work-item-id> --actor <agent-or-human-name>
-npx agent-onboard@0.0.14 work-items --claim --write --id <public-work-item-id> --actor <agent-or-human-name>
+npx agent-onboard@0.0.15 work-items --list
+npx agent-onboard@0.0.15 work-items --claim --dry-run --id <public-work-item-id> --actor <agent-or-human-name>
+npx agent-onboard@0.0.15 work-items --claim --write --id <public-work-item-id> --actor <agent-or-human-name>
 ```
 
 The npm package surface remains intentionally compact. The self-dogfood files are source-repository operating files and are not included in the public npm tarball.

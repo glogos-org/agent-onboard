@@ -32,20 +32,29 @@ Use this source-repository lifecycle for public human/agent participation:
 4. Work: modify only files needed for that work item.
 5. Validate: run only checks authorized by the owner or clearly permitted by the current task.
 6. Handoff: report changed files, checks run, checks not run, and known non-pass states.
+7. Close: record a closure envelope only after handoff evidence is ready.
 
 Inspect the public ledger:
 
 ```sh
-npx agent-onboard@0.0.14 work-items --list
+npx agent-onboard@0.0.15 work-items --list
 ```
 
 Claim an assigned work item only with an explicit write command:
 
 ```sh
-npx agent-onboard@0.0.14 work-items --claim --write --id <public-work-item-id> --actor <agent-or-human-name>
+npx agent-onboard@0.0.15 work-items --claim --write --id <public-work-item-id> --actor <agent-or-human-name>
 ```
 
 After claiming, follow the `next_steps` returned by the CLI. Claiming is not admission to publish, push, install dependencies, or edit unrelated files.
+
+Preview closure evidence before writing it:
+
+```sh
+npx agent-onboard@0.0.15 work-items --close --dry-run --id <public-work-item-id> --actor <agent-or-human-name> --summary <summary>
+```
+
+A closure must separate changed files, checks run, checks not run, and known non-pass states.
 
 If a target repo already has a non-identical `AGENTS.md`, treat the conflict as expected overwrite protection. Do not force overwrite unless the repository owner explicitly requests it.
 

@@ -187,6 +187,20 @@ const WORK_ITEMS_SCHEMA = {
               claimed_at: { type: 'string', minLength: 1 },
               note: { type: 'string', minLength: 1 }
             }
+          },
+          closure: {
+            type: 'object',
+            required: ['actor', 'closed_at', 'summary', 'changed_files', 'checks_run', 'checks_not_run', 'known_non_pass'],
+            additionalProperties: false,
+            properties: {
+              actor: { type: 'string', minLength: 1 },
+              closed_at: { type: 'string', minLength: 1 },
+              summary: { type: 'string', minLength: 1 },
+              changed_files: { type: 'array', items: { type: 'string', minLength: 1 } },
+              checks_run: { type: 'array', items: { type: 'string', minLength: 1 } },
+              checks_not_run: { type: 'array', items: { type: 'string', minLength: 1 } },
+              known_non_pass: { type: 'array', items: { type: 'string', minLength: 1 } }
+            }
           }
         }
       }
@@ -441,6 +455,17 @@ function parseOption(args, name) {
   return value;
 }
 
+function parseRepeatedOption(args, name) {
+  const values = [];
+  for (let index = 0; index < args.length; index += 1) {
+    if (args[index] !== name) continue;
+    const value = args[index + 1];
+    if (!value || value.startsWith('-')) throw new Error(`${name} requires a value`);
+    values.push(value);
+  }
+  return values;
+}
+
 function cloneJson(value) {
   return JSON.parse(JSON.stringify(value));
 }
@@ -499,6 +524,9 @@ function validateWorkItemsGraph(value) {
       }
       if (item.status === 'open' && Object.prototype.hasOwnProperty.call(item, 'claim')) {
         errors.push(`$.work_items.${item.id}: open work item must not include claim`);
+      }
+      if (item.status !== 'closed' && Object.prototype.hasOwnProperty.call(item, 'closure')) {
+        errors.push(`$.work_items.${item.id}: only closed work items may include closure`);
       }
     }
   }
@@ -570,7 +598,7 @@ function participationLifecycleNextSteps() {
     'claim: use --dry-run first and --write only with explicit authorization',
     'work: modify only files needed for the claimed work item',
     'validate: run only checks authorized by the owner or clearly permitted by the current task',
-    'handoff: report changed files, checks run, checks not run, and known non-pass states'
+    'handoff: report changed files, checks run, checks not run, and known non-pass states before closure'
   ];
 }
 
@@ -608,6 +636,62 @@ function claimWorkItemDryRun(currentLedger, options) {
       note: claim.note
     },
     next_steps: participationLifecycleNextSteps()
+  };
+}
+
+function handoffEvidenceChecklist() {
+  return [
+    'summary: concise explanation of what was completed',
+    'changed_files: files intentionally modified for the work item',
+    'checks_run: commands or inspections actually executed in this workspace',
+    'checks_not_run: relevant checks intentionally omitted or unavailable',
+    'known_non_pass: expected conflicts, failures, caveats, or residual risks'
+  ];
+}
+
+function closeWorkItemDryRun(currentLedger, options) {
+  const id = options.id;
+  const actor = options.actor;
+  const summary = options.summary;
+  const ids = deriveWorkItemIds(id);
+  if (!ids) throw new Error('work-items --close requires --id matching public P/S/M/W format');
+  if (!actor || typeof actor !== 'string' || actor.trim().length === 0) {
+    throw new Error('work-items --close requires --actor');
+  }
+  if (!summary || typeof summary !== 'string' || summary.trim().length === 0) {
+    throw new Error('work-items --close requires --summary');
+  }
+
+  const ledger = cloneJson(currentLedger);
+  const workItem = ledger.work_items.find((item) => item.id === ids.work_item_id);
+  if (!workItem) throw new Error('work-items --close requires an existing work item id');
+  if (workItem.status === 'closed') throw new Error('work-items --close refuses already closed work item');
+
+  const closure = {
+    actor: actor.trim(),
+    closed_at: options.closed_at || new Date().toISOString(),
+    summary: summary.trim(),
+    changed_files: options.changed_files || [],
+    checks_run: options.checks_run || [],
+    checks_not_run: options.checks_not_run || [],
+    known_non_pass: options.known_non_pass || []
+  };
+
+  workItem.status = 'closed';
+  workItem.closure = closure;
+
+  return {
+    proposed_ledger: ledger,
+    closed: {
+      work_item_id: ids.work_item_id,
+      actor: closure.actor,
+      closed_at: closure.closed_at,
+      summary: closure.summary
+    },
+    handoff_evidence: {
+      checklist: handoffEvidenceChecklist(),
+      closure
+    }
   };
 }
 
@@ -952,6 +1036,101 @@ function runTargetConfig(args) {
 }
 
 function runWorkItems(args) {
+  if (args.includes('--close')) {
+    const dry = args.includes('--dry-run');
+    const write = args.includes('--write');
+    if (!write && !dry) throw new Error('work-items --close requires --dry-run or --write');
+    if (write && dry) throw new Error('work-items --close accepts only one of --dry-run or --write');
+
+    const mode = write ? 'write' : 'dry-run';
+    const command = `agent-onboard work-items --close --${mode}`;
+    const file = parseOption(args, '--file') || '.agent-onboard/work-items.json';
+    const absolutePath = path.resolve(process.cwd(), file);
+    if (!fs.existsSync(absolutePath)) {
+      json({
+        schema: 'agent-onboard-work-items-close-result-001',
+        status: 'error',
+        command_family: 'work-items',
+        command,
+        file,
+        mode,
+        reason: 'missing .agent-onboard/work-items.json in current target repo root',
+        writes_performed: false
+      });
+      return 1;
+    }
+
+    const current = readJson(absolutePath);
+    const currentErrors = validateWorkItems(current);
+    if (currentErrors.length > 0) {
+      json({
+        schema: 'agent-onboard-work-items-close-result-001',
+        status: 'error',
+        command_family: 'work-items',
+        command,
+        file,
+        mode,
+        reason: 'current work-item ledger is invalid',
+        writes_performed: false,
+        errors: currentErrors
+      });
+      return 1;
+    }
+
+    let proposal;
+    try {
+      proposal = closeWorkItemDryRun(current, {
+        id: parseOption(args, '--id'),
+        actor: parseOption(args, '--actor'),
+        closed_at: parseOption(args, '--closed-at'),
+        summary: parseOption(args, '--summary'),
+        changed_files: parseRepeatedOption(args, '--changed-file'),
+        checks_run: parseRepeatedOption(args, '--check'),
+        checks_not_run: parseRepeatedOption(args, '--check-not-run'),
+        known_non_pass: parseRepeatedOption(args, '--known-non-pass')
+      });
+    } catch (error) {
+      json({
+        schema: 'agent-onboard-work-items-close-result-001',
+        status: 'error',
+        command_family: 'work-items',
+        command,
+        file,
+        mode,
+        reason: error.message || String(error),
+        writes_performed: false
+      });
+      return 1;
+    }
+
+    const proposalErrors = validateWorkItems(proposal.proposed_ledger);
+    const ok = proposalErrors.length === 0;
+    if (write && ok) writeJson(absolutePath, proposal.proposed_ledger);
+    json({
+      schema: 'agent-onboard-work-items-close-result-001',
+      status: ok ? 'ok' : 'error',
+      command_family: 'work-items',
+      command,
+      file,
+      mode,
+      writes_performed: write && ok,
+      counts_before: workItemCounts(current),
+      counts_after: workItemCounts(proposal.proposed_ledger),
+      closed: proposal.closed,
+      handoff_evidence: proposal.handoff_evidence,
+      proposed_ledger: proposal.proposed_ledger,
+      errors: proposalErrors,
+      boundary: {
+        installs_dependencies: false,
+        runs_build_test_deploy: false,
+        publishes_or_pushes: false,
+        modifies_source_files: false,
+        modifies_work_items_file: write,
+        modifies_only_canonical_work_items_file: write
+      }
+    });
+    return ok ? 0 : 1;
+  }
   if (args.includes('--claim')) {
     const dry = args.includes('--dry-run');
     const write = args.includes('--write');
@@ -1250,7 +1429,7 @@ function runWorkItems(args) {
     });
     return ok ? 0 : 1;
   }
-  throw new Error('work-items requires --schema, --template, --validate-template, --init --dry-run|--write [--force], --validate [file], or --list [file], or --append --dry-run|--write --id <public-work-item-id> --title <title>, or --claim --dry-run|--write --id <public-work-item-id> --actor <actor>');
+  throw new Error('work-items requires --schema, --template, --validate-template, --init --dry-run|--write [--force], --validate [file], or --list [file], or --append --dry-run|--write --id <public-work-item-id> --title <title>, or --claim --dry-run|--write --id <public-work-item-id> --actor <actor>, or --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>');
 }
 
 function runAgents(args) {
@@ -1388,7 +1567,7 @@ function main(argv = process.argv) {
     return 0;
   }
   if (cmd === 'status') {
-    json({ schema: 'agent-onboard-status-001', status: 'ok', version: VERSION, release_line: 'public_source_participation_lifecycle_gate' });
+    json({ schema: 'agent-onboard-status-001', status: 'ok', version: VERSION, release_line: 'public_handoff_closure_evidence_gate' });
     return 0;
   }
   if (cmd === 'init') return runInit(args);
@@ -1421,6 +1600,8 @@ module.exports = {
   validateWorkItemsGraph,
   appendWorkItemDryRun,
   claimWorkItemDryRun,
+  closeWorkItemDryRun,
+  handoffEvidenceChecklist,
   participationLifecycleNextSteps,
   workItemsTemplate,
   initWriteSet,

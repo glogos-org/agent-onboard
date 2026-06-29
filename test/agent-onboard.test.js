@@ -56,8 +56,8 @@ function cliTargetConfigForTest(dir) {
   const result = run(['status']);
   const output = readJsonOutput(result);
   assert.strictEqual(output.status, 'ok');
-  assert.strictEqual(output.version, '0.0.14');
-  assert.strictEqual(output.release_line, 'public_source_participation_lifecycle_gate');
+  assert.strictEqual(output.version, '0.0.15');
+  assert.strictEqual(output.release_line, 'public_handoff_closure_evidence_gate');
 }
 
 {
@@ -521,17 +521,61 @@ function cliTargetConfigForTest(dir) {
 }
 
 {
+  const dir = tempRepo();
+  readJsonOutput(run(['work-items', '--init', '--write'], { cwd: dir }));
+  const id = ['P', 1, 'S', 1, 'M', 1, 'W', 3].join('');
+  readJsonOutput(run(['work-items', '--append', '--write', '--id', id, '--title', 'Close write target'], { cwd: dir }));
+  const dry = run([
+    'work-items', '--close', '--dry-run',
+    '--id', id,
+    '--actor', 'test-agent',
+    '--closed-at', '2026-06-30T00:00:00.000Z',
+    '--summary', 'Completed the close target',
+    '--changed-file', 'README.md',
+    '--check', 'npm test',
+    '--check-not-run', 'npm publish',
+    '--known-non-pass', 'none'
+  ], { cwd: dir });
+  const dryOutput = readJsonOutput(dry);
+  assert.strictEqual(dryOutput.status, 'ok');
+  assert.strictEqual(dryOutput.writes_performed, false);
+  assert.strictEqual(dryOutput.closed.work_item_id, id);
+  assert.strictEqual(dryOutput.handoff_evidence.closure.changed_files[0], 'README.md');
+  assert.ok(dryOutput.handoff_evidence.checklist.some((step) => step.startsWith('summary:')));
+
+  const write = run([
+    'work-items', '--close', '--write',
+    '--id', id,
+    '--actor', 'test-agent',
+    '--closed-at', '2026-06-30T00:00:00.000Z',
+    '--summary', 'Completed the close target',
+    '--changed-file', 'README.md',
+    '--check', 'npm test'
+  ], { cwd: dir });
+  const writeOutput = readJsonOutput(write);
+  assert.strictEqual(writeOutput.status, 'ok');
+  assert.strictEqual(writeOutput.writes_performed, true);
+  assert.strictEqual(writeOutput.boundary.modifies_work_items_file, true);
+  const persisted = JSON.parse(fs.readFileSync(path.join(dir, '.agent-onboard', 'work-items.json'), 'utf8'));
+  assert.strictEqual(persisted.work_items[0].status, 'closed');
+  assert.strictEqual(persisted.work_items[0].closure.summary, 'Completed the close target');
+}
+
+{
   const rootLedger = JSON.parse(fs.readFileSync(path.join(ROOT, '.agent-onboard', 'work-items.json'), 'utf8'));
   const errors = require('../cli/agent-onboard.js').validateWorkItems(rootLedger);
   assert.deepStrictEqual(errors, []);
-  assert.strictEqual(rootLedger.work_items.length, 2);
+  assert.strictEqual(rootLedger.work_items.length, 3);
   assert.strictEqual(rootLedger.programs[0].id, ['P', 1].join(''));
   assert.strictEqual(rootLedger.stages[0].id, ['P', 1, 'S', 1].join(''));
   assert.strictEqual(rootLedger.milestones[0].id, ['P', 1, 'S', 1, 'M', 1].join(''));
   assert.strictEqual(rootLedger.work_items[0].id, ['P', 1, 'S', 1, 'M', 1, 'W', 1].join(''));
   assert.strictEqual(rootLedger.work_items[0].status, 'closed');
   assert.strictEqual(rootLedger.work_items[1].id, ['P', 1, 'S', 1, 'M', 1, 'W', 2].join(''));
-  assert.strictEqual(rootLedger.work_items[1].status, 'open');
+  assert.strictEqual(rootLedger.work_items[1].status, 'closed');
+  assert.strictEqual(rootLedger.work_items[1].closure.actor, 'release-maintainer');
+  assert.strictEqual(rootLedger.work_items[2].id, ['P', 1, 'S', 1, 'M', 1, 'W', 3].join(''));
+  assert.strictEqual(rootLedger.work_items[2].status, 'open');
   assert.ok(fs.existsSync(path.join(ROOT, 'AGENTS.md')));
   assert.ok(fs.existsSync(path.join(ROOT, 'agent-onboard.target.json')));
   assert.ok(fs.existsSync(path.join(ROOT, '.agent-onboard', 'project.json')));
@@ -626,6 +670,7 @@ function cliTargetConfigForTest(dir) {
   assert.ok(generatedAgents.includes('AGENTS.md'));
   assert.ok(generatedAgents.includes('Follow the public participation lifecycle'));
   assert.ok(cli.participationLifecycleNextSteps().some((step) => step.startsWith('discover:')));
+  assert.ok(cli.handoffEvidenceChecklist().some((step) => step.startsWith('summary:')));
 }
 
 
@@ -688,11 +733,14 @@ function cliTargetConfigForTest(dir) {
 {
   const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
   assert.ok(readme.includes('work-items --claim --write --id <public-work-item-id> --actor <actor>'));
+  assert.ok(readme.includes('work-items --close --write --id <public-work-item-id> --actor <actor> --summary <summary>'));
   assert.ok(!readme.includes('This release does not add claim write'));
   assert.ok(readme.includes('`0.0.11` adds public `work-items --claim --dry-run`'));
   assert.ok(readme.includes('`0.0.13` adds source self-dogfood and agent participation support'));
   assert.ok(readme.includes('`0.0.14` adds the public source participation lifecycle gate'));
+  assert.ok(readme.includes('`0.0.15` adds the public handoff and closure evidence gate'));
   assert.ok(readme.includes('The claim response also returns `next_steps`'));
+  assert.ok(readme.includes('The close command reads the existing ledger'));
 }
 
 console.log('agent-onboard tests passed');
