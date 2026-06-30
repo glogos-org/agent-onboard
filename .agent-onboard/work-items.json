@@ -1038,6 +1038,46 @@
       "id": "P1S3M1W9",
       "milestone_id": "P1S3M1",
       "title": "Public source domain extraction rehearsal gate",
+      "status": "closed",
+      "closure": {
+        "actor": "release-maintainer",
+        "closed_at": "2026-06-30T00:00:00.000Z",
+        "summary": "Closed by agent-onboard@0.0.36 with public source domain extraction rehearsal support, source-only rehearsal artifact, architecture extraction check, release contract wiring, and compact npm package preservation.",
+        "changed_files": [
+          "package.json",
+          "cli/agent-onboard.js",
+          "test/agent-onboard.test.js",
+          "README.md",
+          "AGENTS.md",
+          "llms.txt",
+          ".agent-onboard/source-extraction-rehearsal.json",
+          ".agent-onboard/source-partition-plan.json",
+          ".agent-onboard/work-items.json"
+        ],
+        "checks_run": [
+          "npm test",
+          "node cli/agent-onboard.js architecture --extraction-rehearsal",
+          "node cli/agent-onboard.js architecture --extraction-check",
+          "node cli/agent-onboard.js architecture --check",
+          "node cli/agent-onboard.js release --architecture-parity-smoke",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "npm pack --dry-run --json",
+          "npm publish --dry-run --json --ignore-scripts"
+        ],
+        "checks_not_run": [
+          "npm publish",
+          "registry post-publish verification for agent-onboard@0.0.36"
+        ],
+        "known_non_pass": [
+          "npm publish --dry-run may warn when registry authentication is unavailable, but it does not publish and is not a release blocker when exit code is zero"
+        ]
+      }
+    },
+    {
+      "id": "P1S3M1W10",
+      "milestone_id": "P1S3M1",
+      "title": "Public source extraction golden output freeze gate",
       "status": "open"
     }
   ]

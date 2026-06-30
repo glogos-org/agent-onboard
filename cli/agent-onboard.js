@@ -6,7 +6,7 @@ const os = require('os');
 const path = require('path');
 const VERSION = require('../package.json').version;
 const TARGET_CONFIG_FILE = 'agent-onboard.target.json';
-const RELEASE_LINE = 'public_source_domain_module_partition_planning_gate';
+const RELEASE_LINE = 'public_source_domain_extraction_rehearsal_gate';
 
 process.stdout.on('error', (error) => {
   if (error && error.code === 'EPIPE') process.exit(0);
@@ -247,7 +247,7 @@ const PUBLIC_ARCHITECTURE_MAP = Object.freeze({
   release_line: RELEASE_LINE,
   command: 'agent-onboard architecture --map',
   check_command: 'agent-onboard architecture --check',
-  purpose: 'Declare the stable public architecture kernel, command-router boundary, and domain service facade boundary before source code is physically partitioned into domain modules.',
+  purpose: 'Declare the stable public architecture kernel, command-router boundary, domain service facade boundary, and source extraction rehearsal before physical module extraction.',
   canonical_domains: Object.freeze([
     Object.freeze({
       id: 'core',
@@ -301,8 +301,9 @@ const PUBLIC_ARCHITECTURE_MAP = Object.freeze({
   ]),
   public_source_shape: Object.freeze({
     current_entrypoint: 'cli/agent-onboard.js',
-    physical_domain_split_status: 'source_domain_module_partition_planned_not_applied',
+    physical_domain_split_status: 'source_domain_extraction_rehearsed_not_applied',
     source_partition_plan_file: '.agent-onboard/source-partition-plan.json',
+    source_extraction_rehearsal_file: '.agent-onboard/source-extraction-rehearsal.json',
     source_can_grow_with_tests: true,
     npm_package_remains_compact: true,
     expected_pack_files: Object.freeze(['LICENSE', 'README.md', 'cli/agent-onboard.js', 'package.json'])
@@ -321,6 +322,8 @@ const PUBLIC_ARCHITECTURE_MAP = Object.freeze({
     architecture_parity_smoke_command_writes_files: false,
     architecture_partition_plan_command_writes_files: false,
     architecture_partition_check_command_writes_files: false,
+    architecture_extraction_rehearsal_command_writes_files: false,
+    architecture_extraction_check_command_writes_files: false,
     published_package_surface_file_count: 4,
     command_router_dispatch_must_be_table_driven: true,
     main_function_delegates_to_command_router: true,
@@ -328,11 +331,12 @@ const PUBLIC_ARCHITECTURE_MAP = Object.freeze({
     package_allowlist_must_stay_compact: true,
     source_context_files_stay_out_of_npm_pack: true,
     physical_partition_not_required_for_this_gate: true,
-    source_domain_module_partition_planned_not_applied: true
+    source_domain_module_partition_planned_not_applied: true,
+    source_domain_extraction_rehearsed_not_applied: true
   }),
   next_candidate_gates: Object.freeze([
     Object.freeze({
-      title: 'Public source domain module extraction rehearsal gate',
+      title: 'Public source domain extraction rehearsal gate',
       intent: 'Rehearse extracting source modules behind the admitted facades without changing runtime output or npm package surface.'
     }),
     Object.freeze({
@@ -532,6 +536,7 @@ const PUBLIC_PACKAGE_SURFACE_PRESERVATION = Object.freeze({
     '.agent-onboard/authority-path.json',
     '.agent-onboard/runtime-namespace.json',
     '.agent-onboard/source-partition-plan.json',
+    '.agent-onboard/source-extraction-rehearsal.json',
     'test/agent-onboard.test.js'
   ]),
   installed_context_policy: Object.freeze({
@@ -569,6 +574,7 @@ const PUBLIC_INSTALLED_PARITY_ARCHITECTURE_SMOKE = Object.freeze({
     'release --check',
     'architecture --check',
     'architecture --partition-check',
+    'architecture --extraction-check',
     'authority --check',
     'target runtime --check',
     'release --surface-check'
@@ -647,8 +653,82 @@ const PUBLIC_SOURCE_DOMAIN_MODULE_PARTITION_PLAN = Object.freeze({
   })
 });
 
+
+const PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL = Object.freeze({
+  schema: 'agent-onboard-public-source-domain-extraction-rehearsal-001',
+  title: 'Agent-Onboard Public Source Domain Extraction Rehearsal',
+  package_name: 'agent-onboard',
+  release_line: RELEASE_LINE,
+  command: 'agent-onboard architecture --extraction-rehearsal',
+  check_command: 'agent-onboard architecture --extraction-check',
+  rehearsal_file: '.agent-onboard/source-extraction-rehearsal.json',
+  purpose: 'Rehearse source-domain extraction behind the admitted facades without moving source files, changing command outputs, or expanding the npm package surface.',
+  prerequisite_plan_file: PUBLIC_SOURCE_DOMAIN_MODULE_PARTITION_PLAN.plan_file,
+  rehearsal_status: 'rehearsed_not_applied',
+  entrypoint_preservation: Object.freeze({
+    published_entrypoint: 'cli/agent-onboard.js',
+    entrypoint_remains_only_published_bin_target: true,
+    physical_modules_created_by_this_gate: false,
+    runtime_output_change_allowed: false,
+    package_allowlist_change_allowed: false
+  }),
+  extraction_rehearsal_units: Object.freeze(PUBLIC_SOURCE_DOMAIN_MODULE_PARTITION_PLAN.planned_source_modules.map((module) => Object.freeze({
+    domain: module.domain,
+    facade: module.facade,
+    rehearsal_module: module.planned_module,
+    extraction_mode: 'rehearsal_only_no_file_created',
+    source_of_truth_before_application: 'cli/agent-onboard.js',
+    package_surface: module.package_surface
+  }))),
+  golden_output_scope: Object.freeze([
+    'status',
+    'architecture --map',
+    'architecture --router',
+    'architecture --facades',
+    'architecture --partition-check',
+    'architecture --extraction-check',
+    'authority --check',
+    'target runtime --check',
+    'release --surface-check',
+    'release --check'
+  ]),
+  application_sequence: Object.freeze([
+    Object.freeze({ order: 1, gate: 'rehearsal', action: 'declare extraction units and no-behavior-change checks without creating modules' }),
+    Object.freeze({ order: 2, gate: 'golden-output-freeze', action: 'freeze selected command outputs before any physical extraction' }),
+    Object.freeze({ order: 3, gate: 'source-module-application', action: 'create source modules behind facades with CLI adapter preserved' }),
+    Object.freeze({ order: 4, gate: 'bundle-or-allowlist', action: 'preserve compact npm surface by bundling or explicitly admitting additional files' }),
+    Object.freeze({ order: 5, gate: 'installed-parity', action: 'prove source and installed package checks remain equivalent' })
+  ]),
+  invariants: Object.freeze({
+    partition_plan_must_pass: true,
+    every_rehearsal_unit_maps_to_canonical_domain: true,
+    every_rehearsal_unit_maps_to_facade: true,
+    no_physical_module_created_by_this_gate: true,
+    no_source_file_moved_by_this_gate: true,
+    cli_entrypoint_remains_runtime_source_of_truth: true,
+    npm_package_allowlist_unchanged_for_this_gate: true,
+    rehearsal_file_is_source_only: true
+  }),
+  boundary: Object.freeze({
+    extraction_rehearsal_command_writes_files: false,
+    extraction_check_command_writes_files: false,
+    creates_source_modules: false,
+    moves_source_files: false,
+    changes_runtime_outputs: false,
+    writes_package_root: false,
+    writes_target_repository_state: false,
+    git_mutation: false,
+    installs_dependencies: false,
+    runs_package_manager: false,
+    runs_build_test_deploy: false,
+    publishes_package: false,
+    mutates_registry: false,
+    package_allowlist_unchanged: true
+  })
+});
+
 const PUBLIC_RELEASE_CONTRACT = Object.freeze({
-  schema: 'agent-onboard-public-release-contract-017',
+  schema: 'agent-onboard-public-release-contract-018',
   title: 'Agent-Onboard Public Release Contract',
   package_name: 'agent-onboard',
   release_line: RELEASE_LINE,
@@ -666,6 +746,8 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
   architecture_facades_command: 'agent-onboard architecture --facades',
   architecture_partition_plan_command: 'agent-onboard architecture --partition-plan',
   architecture_partition_check_command: 'agent-onboard architecture --partition-check',
+  architecture_extraction_rehearsal_command: 'agent-onboard architecture --extraction-rehearsal',
+  architecture_extraction_check_command: 'agent-onboard architecture --extraction-check',
   architecture_check_command: 'agent-onboard architecture --check',
   authority_first_read_command: 'agent-onboard authority --first-read',
   authority_check_command: 'agent-onboard authority --check',
@@ -683,6 +765,7 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
     '.agent-onboard/authority-path.json',
     '.agent-onboard/runtime-namespace.json',
     '.agent-onboard/source-partition-plan.json',
+    '.agent-onboard/source-extraction-rehearsal.json',
     'test/agent-onboard.test.js'
   ]),
   required_package_json: Object.freeze({
@@ -719,6 +802,8 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
     'node cli/agent-onboard.js architecture --facades',
     'node cli/agent-onboard.js architecture --partition-plan',
     'node cli/agent-onboard.js architecture --partition-check',
+    'node cli/agent-onboard.js architecture --extraction-rehearsal',
+    'node cli/agent-onboard.js architecture --extraction-check',
     'node cli/agent-onboard.js authority --first-read',
     'node cli/agent-onboard.js authority --check',
     'node cli/agent-onboard.js target runtime --namespace',
@@ -747,6 +832,8 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
     'npx agent-onboard@<version> architecture --facades',
     'npx agent-onboard@<version> architecture --partition-plan',
     'npx agent-onboard@<version> architecture --partition-check',
+    'npx agent-onboard@<version> architecture --extraction-rehearsal',
+    'npx agent-onboard@<version> architecture --extraction-check',
     'npx agent-onboard@<version> authority --first-read',
     'npx agent-onboard@<version> authority --check',
     'npx agent-onboard@<version> target runtime --namespace',
@@ -771,7 +858,7 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
 
 
 const PUBLIC_RELEASE_FIXTURE_MATRIX = Object.freeze({
-  schema: 'agent-onboard-public-release-fixture-matrix-012',
+  schema: 'agent-onboard-public-release-fixture-matrix-013',
   title: 'Agent-Onboard Public Package Contract Fixture Matrix',
   package_name: 'agent-onboard',
   release_line: PUBLIC_RELEASE_CONTRACT.release_line,
@@ -887,6 +974,12 @@ const PUBLIC_RELEASE_FIXTURE_MATRIX = Object.freeze({
       expected_status: 'ok',
       validates: Object.freeze(['planned module map covers all six public domains', 'each planned module maps to the admitted facade', 'physical source movement is explicitly not performed by this gate', 'npm package allowlist remains compact']),
       boundary: 'architecture --partition-plan and --partition-check are read-only; they do not create modules, move files, run npm, mutate Git, publish, or touch target repository state'
+    }),
+    Object.freeze({
+      id: 'public_source_domain_extraction_rehearsal',
+      expected_status: 'ok',
+      validates: Object.freeze(['rehearsal units cover all six public domains', 'each rehearsal unit maps to the admitted facade', 'no physical module is created by this gate', 'golden output scope is declared before source extraction', 'npm package allowlist remains compact']),
+      boundary: 'architecture --extraction-rehearsal and --extraction-check are read-only; they do not create modules, move files, change runtime outputs, run npm, mutate Git, publish, or touch target repository state'
     })
   ]),
   boundary: Object.freeze({
@@ -2810,6 +2903,139 @@ function publicTargetRuntimeNamespaceCheck(root = packageRoot()) {
   };
 }
 
+
+function publicSourceDomainExtractionRehearsal(root = packageRoot()) {
+  const pkg = readJson(path.join(root, 'package.json'));
+  const context = sourceContext(root);
+  const rehearsalFile = PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL.rehearsal_file;
+  const rehearsalFilePath = path.join(root, rehearsalFile);
+  const plannedModulePaths = PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL.extraction_rehearsal_units.map((unit) => unit.rehearsal_module);
+  return {
+    schema: 'agent-onboard-public-source-domain-extraction-rehearsal-result-001',
+    status: 'ok',
+    package_name: PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL.package_name,
+    version: VERSION,
+    release_line: PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL.release_line,
+    command: PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL.command,
+    check_command: PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL.check_command,
+    package_root: root,
+    package_context: context.package_context,
+    package_json_version: pkg.version,
+    rehearsal: PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL,
+    rehearsal_file: rehearsalFile,
+    rehearsal_file_present: fs.existsSync(rehearsalFilePath),
+    prerequisite_partition_plan: PUBLIC_SOURCE_DOMAIN_MODULE_PARTITION_PLAN,
+    planned_module_paths: plannedModulePaths,
+    physical_module_paths_present: plannedModulePaths.filter((rel) => fs.existsSync(path.join(root, rel))),
+    projected_pack_files: packageJsonProjectedPackFiles(pkg),
+    boundary: {
+      writes_files: false,
+      moves_source_files: false,
+      creates_source_modules: false,
+      changes_runtime_outputs: false,
+      writes_source_state: false,
+      writes_target_repository_state: false,
+      git_mutation: false,
+      installs_dependencies: false,
+      runs_package_manager: false,
+      runs_build_test_deploy: false,
+      publishes_package: false,
+      mutates_registry: false
+    }
+  };
+}
+
+function publicSourceDomainExtractionRehearsalCheck(root = packageRoot()) {
+  const result = publicSourceDomainExtractionRehearsal(root);
+  const partition = publicSourceDomainModulePartitionPlanCheck(root);
+  const expectedDomains = PUBLIC_ARCHITECTURE_MAP.canonical_domains.map((domain) => domain.id);
+  const expectedFacades = new Map(PUBLIC_DOMAIN_SERVICE_FACADES.facades.map((facade) => [facade.id, facade.service]));
+  const expectedPackFiles = PUBLIC_RELEASE_CONTRACT.expected_pack_files.slice().sort();
+  const unitDomains = result.rehearsal.extraction_rehearsal_units.map((unit) => unit.domain);
+  const errors = [];
+  if (partition.status !== 'ok') errors.push(...partition.errors.map((error) => `partition plan: ${error}`));
+  if (result.rehearsal.rehearsal_status !== 'rehearsed_not_applied') errors.push('source extraction rehearsal must remain rehearsed_not_applied for this gate');
+  if (!arrayEquals(unitDomains, expectedDomains)) errors.push(`source extraction rehearsal units must follow canonical domain order ${expectedDomains.join(', ')}`);
+  if (new Set(unitDomains).size !== unitDomains.length) errors.push('source extraction rehearsal unit domains must be unique');
+  for (const unit of result.rehearsal.extraction_rehearsal_units) {
+    if (!expectedDomains.includes(unit.domain)) errors.push(`source extraction rehearsal unit is not mapped to a canonical domain: ${unit.domain}`);
+    if (expectedFacades.has(unit.domain) && unit.facade !== expectedFacades.get(unit.domain)) errors.push(`source extraction rehearsal unit ${unit.domain} must map to facade ${expectedFacades.get(unit.domain)}`);
+    if (!String(unit.rehearsal_module || '').startsWith('src/domains/')) errors.push(`source extraction rehearsal module path must stay under src/domains/: ${unit.rehearsal_module}`);
+    if (unit.extraction_mode !== 'rehearsal_only_no_file_created') errors.push(`source extraction rehearsal unit ${unit.domain} must be rehearsal_only_no_file_created`);
+  }
+  if (result.physical_module_paths_present.length > 0) errors.push(`physical source modules must not be created by this rehearsal gate: ${result.physical_module_paths_present.join(', ')}`);
+  if (result.rehearsal.entrypoint_preservation.physical_modules_created_by_this_gate !== false) errors.push('source extraction rehearsal must not create physical modules');
+  if (result.rehearsal.entrypoint_preservation.runtime_output_change_allowed !== false) errors.push('source extraction rehearsal must not allow runtime output changes');
+  if (result.rehearsal.entrypoint_preservation.package_allowlist_change_allowed !== false) errors.push('source extraction rehearsal must not allow package allowlist changes');
+  if (result.rehearsal.boundary.extraction_rehearsal_command_writes_files !== false) errors.push('architecture extraction rehearsal command must remain no-write');
+  if (result.rehearsal.boundary.extraction_check_command_writes_files !== false) errors.push('architecture extraction check command must remain no-write');
+  if (result.rehearsal.boundary.creates_source_modules !== false) errors.push('architecture extraction rehearsal must not create source modules');
+  if (result.rehearsal.boundary.moves_source_files !== false) errors.push('architecture extraction rehearsal must not move source files');
+  if (result.rehearsal.boundary.changes_runtime_outputs !== false) errors.push('architecture extraction rehearsal must not change runtime outputs');
+  if (!arrayEquals(result.projected_pack_files, expectedPackFiles)) errors.push(`projected npm pack files must remain ${expectedPackFiles.join(', ')}`);
+
+  let sourceRehearsalFileStatus = 'not_present_installed_context_allowed';
+  let sourceRehearsalFileSchema = null;
+  if (result.rehearsal_file_present) {
+    try {
+      const sourceRehearsal = readJson(path.join(root, result.rehearsal_file));
+      sourceRehearsalFileSchema = sourceRehearsal.schema || null;
+      if (sourceRehearsal.schema !== PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL.schema) errors.push(`${result.rehearsal_file} schema must be ${PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL.schema}`);
+      if (sourceRehearsal.rehearsal_status !== 'rehearsed_not_applied') errors.push(`${result.rehearsal_file} must declare rehearsed_not_applied rehearsal status`);
+      const fileDomains = Array.isArray(sourceRehearsal.extraction_rehearsal_units) ? sourceRehearsal.extraction_rehearsal_units.map((unit) => unit.domain) : [];
+      if (!arrayEquals(fileDomains, expectedDomains)) errors.push(`${result.rehearsal_file} extraction_rehearsal_units must follow canonical domain order ${expectedDomains.join(', ')}`);
+      sourceRehearsalFileStatus = 'present_validated';
+    } catch (error) {
+      sourceRehearsalFileStatus = 'present_invalid_json';
+      errors.push(`${result.rehearsal_file} is not valid JSON: ${error && error.message ? error.message : String(error)}`);
+    }
+  } else if (result.package_context === 'source_repository') {
+    sourceRehearsalFileStatus = 'missing_source_context';
+    errors.push(`${result.rehearsal_file} must be present in source repository context`);
+  }
+
+  return {
+    schema: 'agent-onboard-public-source-domain-extraction-rehearsal-check-result-001',
+    status: errors.length === 0 ? 'ok' : 'error',
+    package_name: PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL.package_name,
+    version: VERSION,
+    release_line: PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL.release_line,
+    command: PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL.check_command,
+    package_root: root,
+    validated: {
+      partition_plan: partition.status === 'ok',
+      rehearsal_unit_count: result.rehearsal.extraction_rehearsal_units.length === expectedDomains.length,
+      rehearsal_unit_domain_order: arrayEquals(unitDomains, expectedDomains),
+      rehearsal_unit_domains_unique: new Set(unitDomains).size === unitDomains.length,
+      rehearsal_units_map_to_facades: result.rehearsal.extraction_rehearsal_units.every((unit) => expectedFacades.has(unit.domain) && unit.facade === expectedFacades.get(unit.domain)),
+      no_physical_modules_created: result.physical_module_paths_present.length === 0,
+      runtime_output_change_not_allowed: result.rehearsal.entrypoint_preservation.runtime_output_change_allowed === false && result.rehearsal.boundary.changes_runtime_outputs === false,
+      extraction_commands_no_write: result.rehearsal.boundary.extraction_rehearsal_command_writes_files === false && result.rehearsal.boundary.extraction_check_command_writes_files === false && result.rehearsal.boundary.moves_source_files === false && result.rehearsal.boundary.creates_source_modules === false,
+      package_allowlist_unchanged: arrayEquals(result.projected_pack_files, expectedPackFiles),
+      source_rehearsal_file: sourceRehearsalFileStatus === 'present_validated' || sourceRehearsalFileStatus === 'not_present_installed_context_allowed'
+    },
+    expected_domain_ids: expectedDomains,
+    rehearsal_unit_domains: unitDomains,
+    extraction_rehearsal_units: result.rehearsal.extraction_rehearsal_units,
+    physical_module_paths_present: result.physical_module_paths_present,
+    prerequisite_partition_plan: {
+      status: partition.status,
+      errors: partition.errors
+    },
+    source_rehearsal_file: {
+      path: result.rehearsal_file,
+      present: result.rehearsal_file_present,
+      status: sourceRehearsalFileStatus,
+      schema: sourceRehearsalFileSchema,
+      source_context_required: result.package_context === 'source_repository'
+    },
+    projected_pack_files: result.projected_pack_files,
+    expected_pack_files: expectedPackFiles,
+    boundary: result.boundary,
+    errors
+  };
+}
+
 function publicArchitectureMap(root = packageRoot()) {
   const pkg = readJson(path.join(root, 'package.json'));
   return {
@@ -2827,6 +3053,7 @@ function publicArchitectureMap(root = packageRoot()) {
     command_router: PUBLIC_COMMAND_ROUTER,
     domain_service_facades: PUBLIC_DOMAIN_SERVICE_FACADES,
     source_domain_module_partition_plan: PUBLIC_SOURCE_DOMAIN_MODULE_PARTITION_PLAN,
+    source_domain_extraction_rehearsal: PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL,
     authority_first_read_index: PUBLIC_AUTHORITY_FIRST_READ_INDEX,
     target_runtime_namespace: PUBLIC_TARGET_RUNTIME_NAMESPACE,
     current_runtime: {
@@ -2866,6 +3093,8 @@ function publicArchitectureCheck(root = packageRoot()) {
   const targetRuntimeErrors = targetRuntime.errors.map((error) => `target runtime: ${error}`);
   const sourcePartition = publicSourceDomainModulePartitionPlanCheck(root);
   const sourcePartitionErrors = sourcePartition.errors.map((error) => `source partition: ${error}`);
+  const sourceExtraction = publicSourceDomainExtractionRehearsalCheck(root);
+  const sourceExtractionErrors = sourceExtraction.errors.map((error) => `source extraction: ${error}`);
   const errors = [];
   if (!arrayEquals(domainIds, expectedDomains)) errors.push(`architecture domain order must be ${expectedDomains.join(', ')}`);
   if (new Set(domainIds).size !== domainIds.length) errors.push('architecture domain ids must be unique');
@@ -2878,11 +3107,13 @@ function publicArchitectureCheck(root = packageRoot()) {
   if (map.map.package_boundary.architecture_facades_command_writes_files !== false) errors.push('architecture facades command must remain no-write');
   if (map.map.package_boundary.architecture_partition_plan_command_writes_files !== false) errors.push('architecture partition plan command must remain no-write');
   if (map.map.package_boundary.architecture_partition_check_command_writes_files !== false) errors.push('architecture partition check command must remain no-write');
+  if (map.map.package_boundary.architecture_extraction_rehearsal_command_writes_files !== false) errors.push('architecture extraction rehearsal command must remain no-write');
+  if (map.map.package_boundary.architecture_extraction_check_command_writes_files !== false) errors.push('architecture extraction check command must remain no-write');
   if (map.map.package_boundary.authority_first_read_command_writes_files !== false) errors.push('authority first-read command must remain no-write');
   if (map.map.package_boundary.authority_check_command_writes_files !== false) errors.push('authority check command must remain no-write');
   if (map.map.package_boundary.target_runtime_namespace_command_writes_files !== false) errors.push('target runtime namespace command must remain no-write');
   if (map.map.package_boundary.target_runtime_check_command_writes_files !== false) errors.push('target runtime check command must remain no-write');
-  errors.push(...routerErrors, ...facadeErrors, ...authorityErrors, ...targetRuntimeErrors, ...sourcePartitionErrors);
+  errors.push(...routerErrors, ...facadeErrors, ...authorityErrors, ...targetRuntimeErrors, ...sourcePartitionErrors, ...sourceExtractionErrors);
   return {
     schema: 'agent-onboard-public-architecture-check-result-001',
     status: errors.length === 0 ? 'ok' : 'error',
@@ -2897,12 +3128,13 @@ function publicArchitectureCheck(root = packageRoot()) {
       domain_ids_unique: new Set(domainIds).size === domainIds.length,
       runtime_entrypoint_present: map.current_runtime.entrypoint_exists,
       compact_package_boundary: arrayEquals(projectedPackFiles, expectedPackFiles),
-      architecture_commands_no_write: map.map.package_boundary.architecture_map_command_writes_files === false && map.map.package_boundary.architecture_check_command_writes_files === false && map.map.package_boundary.architecture_router_command_writes_files === false && map.map.package_boundary.architecture_facades_command_writes_files === false && map.map.package_boundary.architecture_partition_plan_command_writes_files === false && map.map.package_boundary.architecture_partition_check_command_writes_files === false && map.map.package_boundary.authority_first_read_command_writes_files === false && map.map.package_boundary.authority_check_command_writes_files === false,
+      architecture_commands_no_write: map.map.package_boundary.architecture_map_command_writes_files === false && map.map.package_boundary.architecture_check_command_writes_files === false && map.map.package_boundary.architecture_router_command_writes_files === false && map.map.package_boundary.architecture_facades_command_writes_files === false && map.map.package_boundary.architecture_partition_plan_command_writes_files === false && map.map.package_boundary.architecture_partition_check_command_writes_files === false && map.map.package_boundary.architecture_extraction_rehearsal_command_writes_files === false && map.map.package_boundary.architecture_extraction_check_command_writes_files === false && map.map.package_boundary.authority_first_read_command_writes_files === false && map.map.package_boundary.authority_check_command_writes_files === false,
       command_router_boundary: router.status === 'ok',
       domain_service_facades: facades.status === 'ok',
       authority_first_read_index: authority.status === 'ok',
       target_runtime_namespace: targetRuntime.status === 'ok',
-      source_domain_module_partition_plan: sourcePartition.status === 'ok'
+      source_domain_module_partition_plan: sourcePartition.status === 'ok',
+      source_domain_extraction_rehearsal: sourceExtraction.status === 'ok'
     },
     domain_ids: domainIds,
     expected_pack_files: expectedPackFiles,
@@ -2912,6 +3144,7 @@ function publicArchitectureCheck(root = packageRoot()) {
     authority_first_read_index: authority,
     target_runtime_namespace: targetRuntime,
     source_domain_module_partition_plan: sourcePartition,
+    source_domain_extraction_rehearsal: sourceExtraction,
     boundary: map.boundary,
     errors
   };
@@ -3054,6 +3287,7 @@ function publicReleaseCheck(root = packageRoot()) {
       public_authority_first_read_index: architecture.authority_first_read_index && architecture.authority_first_read_index.status === 'ok',
       public_target_runtime_namespace: architecture.target_runtime_namespace && architecture.target_runtime_namespace.status === 'ok',
       public_source_domain_module_partition_plan: architecture.source_domain_module_partition_plan && architecture.source_domain_module_partition_plan.status === 'ok',
+      public_source_domain_extraction_rehearsal: architecture.source_domain_extraction_rehearsal && architecture.source_domain_extraction_rehearsal.status === 'ok',
       public_package_surface_preservation: packageSurface.status === 'ok',
       public_installed_parity_architecture_smoke: architectureParity.status === 'ok'
     },
@@ -3062,6 +3296,7 @@ function publicReleaseCheck(root = packageRoot()) {
     source_context_files: PUBLIC_RELEASE_CONTRACT.source_context_files.slice(),
     public_architecture: architecture,
     public_source_domain_module_partition_plan: architecture.source_domain_module_partition_plan,
+    public_source_domain_extraction_rehearsal: architecture.source_domain_extraction_rehearsal,
     public_package_surface_preservation: packageSurface,
     public_installed_parity_architecture_smoke: architectureParity,
     local_pre_publish_commands: PUBLIC_RELEASE_CONTRACT.local_pre_publish_commands.slice(),
@@ -3164,12 +3399,14 @@ function publicInstalledParityArchitectureSmoke(root = packageRoot()) {
   const targetRuntime = publicTargetRuntimeNamespaceCheck(root);
   const packageSurface = publicPackageSurfaceCheck(root);
   const sourcePartition = publicSourceDomainModulePartitionPlanCheck(root);
+  const sourceExtraction = publicSourceDomainExtractionRehearsalCheck(root);
   const componentErrors = [];
   if (architecture.status !== 'ok') componentErrors.push(...architecture.errors.map((error) => `architecture: ${error}`));
   if (authority.status !== 'ok') componentErrors.push(...authority.errors.map((error) => `authority: ${error}`));
   if (targetRuntime.status !== 'ok') componentErrors.push(...targetRuntime.errors.map((error) => `target runtime: ${error}`));
   if (packageSurface.status !== 'ok') componentErrors.push(...packageSurface.errors.map((error) => `package surface: ${error}`));
   if (sourcePartition.status !== 'ok') componentErrors.push(...sourcePartition.errors.map((error) => `source partition: ${error}`));
+  if (sourceExtraction.status !== 'ok') componentErrors.push(...sourceExtraction.errors.map((error) => `source extraction: ${error}`));
 
   const parity = {
     package_metadata: metadataErrors.length === 0,
@@ -3185,6 +3422,7 @@ function publicInstalledParityArchitectureSmoke(root = packageRoot()) {
     target_runtime_namespace_check: targetRuntime.status === 'ok',
     package_surface_check: packageSurface.status === 'ok',
     source_domain_module_partition_plan_check: sourcePartition.status === 'ok',
+    source_domain_extraction_rehearsal_check: sourceExtraction.status === 'ok',
     runtime_version_matches_package_json: pkg.version === VERSION
   };
 
@@ -3224,6 +3462,7 @@ function publicInstalledParityArchitectureSmoke(root = packageRoot()) {
       target_runtime_check_status: targetRuntime.status,
       package_surface_check_status: packageSurface.status,
       source_domain_module_partition_plan_status: sourcePartition.status,
+      source_domain_extraction_rehearsal_status: sourceExtraction.status,
       package_context: context.package_context,
       source_context_files_present: context.source_context_files_present,
       source_context_files_missing: context.source_context_files_missing
@@ -3234,6 +3473,7 @@ function publicInstalledParityArchitectureSmoke(root = packageRoot()) {
     target_runtime_namespace: targetRuntime,
     package_surface_preservation: packageSurface,
     source_domain_module_partition_plan: sourcePartition,
+    source_domain_extraction_rehearsal: sourceExtraction,
     boundary: {
       writes_files: false,
       writes_package_root: false,
@@ -3380,6 +3620,8 @@ function publicTargetOnboardingPostPublishHandoff(root = packageRoot(), version 
     `npx agent-onboard@${version} architecture --facades`,
     `npx agent-onboard@${version} architecture --partition-plan`,
     `npx agent-onboard@${version} architecture --partition-check`,
+    `npx agent-onboard@${version} architecture --extraction-rehearsal`,
+    `npx agent-onboard@${version} architecture --extraction-check`,
     `npx agent-onboard@${version} authority --first-read`,
     `npx agent-onboard@${version} authority --check`,
     `npx agent-onboard@${version} target runtime --namespace`,
@@ -3420,6 +3662,7 @@ function publicTargetOnboardingPostPublishHandoff(root = packageRoot(), version 
       'version-pinned parity smoke returns ok',
       'version-pinned architecture parity smoke returns ok',
       'version-pinned architecture source partition check returns ok',
+      'version-pinned architecture source extraction rehearsal check returns ok',
       'version-pinned target onboarding smoke returns ok',
       'version-pinned published acceptance returns ok',
       'version-pinned release check returns ok',
@@ -3593,6 +3836,15 @@ function runArchitecture(args) {
     json(result);
     return result.status === 'ok' ? 0 : 1;
   }
+  if (args.length === 1 && args[0] === '--extraction-rehearsal') {
+    json(publicSourceDomainExtractionRehearsal());
+    return 0;
+  }
+  if (args.length === 1 && args[0] === '--extraction-check') {
+    const result = publicSourceDomainExtractionRehearsalCheck();
+    json(result);
+    return result.status === 'ok' ? 0 : 1;
+  }
   if (args.length === 1 && args[0] === '--check') {
     const result = publicArchitectureCheck();
     json(result);
@@ -3602,7 +3854,7 @@ function runArchitecture(args) {
     schema: 'agent-onboard-architecture-command-error-001',
     status: 'error',
     command_family: 'architecture',
-    message: 'architecture requires --map, --router, --facades, --partition-plan, --partition-check, or --check',
+    message: 'architecture requires --map, --router, --facades, --partition-plan, --partition-check, --extraction-rehearsal, --extraction-check, or --check',
     writes_files: false,
     publishes_package: false
   });
@@ -3653,6 +3905,8 @@ function runRelease(args) {
       architecture_facades_command: PUBLIC_RELEASE_CONTRACT.architecture_facades_command,
       architecture_partition_plan_command: PUBLIC_RELEASE_CONTRACT.architecture_partition_plan_command,
       architecture_partition_check_command: PUBLIC_RELEASE_CONTRACT.architecture_partition_check_command,
+      architecture_extraction_rehearsal_command: PUBLIC_RELEASE_CONTRACT.architecture_extraction_rehearsal_command,
+      architecture_extraction_check_command: PUBLIC_RELEASE_CONTRACT.architecture_extraction_check_command,
       architecture_check_command: PUBLIC_RELEASE_CONTRACT.architecture_check_command,
       authority_first_read_command: PUBLIC_RELEASE_CONTRACT.authority_first_read_command,
       authority_check_command: PUBLIC_RELEASE_CONTRACT.authority_check_command,
@@ -3667,6 +3921,7 @@ function runRelease(args) {
       command_router: PUBLIC_COMMAND_ROUTER,
       domain_service_facades: PUBLIC_DOMAIN_SERVICE_FACADES,
       source_domain_module_partition_plan: PUBLIC_SOURCE_DOMAIN_MODULE_PARTITION_PLAN,
+      source_domain_extraction_rehearsal: PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL,
       authority_first_read_index: PUBLIC_AUTHORITY_FIRST_READ_INDEX,
       target_runtime_namespace: PUBLIC_TARGET_RUNTIME_NAMESPACE,
       package_surface_preservation: PUBLIC_PACKAGE_SURFACE_PRESERVATION,
@@ -3697,6 +3952,7 @@ function runRelease(args) {
       command_router: PUBLIC_COMMAND_ROUTER,
       domain_service_facades: PUBLIC_DOMAIN_SERVICE_FACADES,
       source_domain_module_partition_plan: PUBLIC_SOURCE_DOMAIN_MODULE_PARTITION_PLAN,
+      source_domain_extraction_rehearsal: PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL,
       authority_first_read_index: PUBLIC_AUTHORITY_FIRST_READ_INDEX,
       target_runtime_namespace: PUBLIC_TARGET_RUNTIME_NAMESPACE,
       package_surface_preservation: PUBLIC_PACKAGE_SURFACE_PRESERVATION,
@@ -3721,6 +3977,7 @@ function runRelease(args) {
       command_router: PUBLIC_COMMAND_ROUTER,
       domain_service_facades: PUBLIC_DOMAIN_SERVICE_FACADES,
       source_domain_module_partition_plan: PUBLIC_SOURCE_DOMAIN_MODULE_PARTITION_PLAN,
+      source_domain_extraction_rehearsal: PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL,
       authority_first_read_index: PUBLIC_AUTHORITY_FIRST_READ_INDEX,
       target_runtime_namespace: PUBLIC_TARGET_RUNTIME_NAMESPACE,
       package_surface_preservation: PUBLIC_PACKAGE_SURFACE_PRESERVATION,
@@ -4506,7 +4763,7 @@ function runTargetInstance(args) {
 }
 
 function help() {
-  process.stdout.write(`agent-onboard ${VERSION}\n\nagent-onboard status\nagent-onboard init --dry-run|--write [--force]\nagent-onboard agents --preview|--write [--force]\nagent-onboard guard --plan|--check-boundary\nagent-onboard authority --first-read|--check\nagent-onboard architecture --map|--router|--facades|--partition-plan|--partition-check|--check\nagent-onboard release --plan|--contract|--fixture|--surface|--surface-check|--parity-smoke|--architecture-parity-smoke|--target-onboarding-smoke|--post-publish-handoff|--published-acceptance|--real-target-trial|--check\nagent-onboard target-config --schema\nagent-onboard target-config --template\nagent-onboard target-config --validate-template\nagent-onboard target-config --validate [agent-onboard.target.json]\nagent-onboard work-items --schema\nagent-onboard work-items --template\nagent-onboard work-items --validate-template\nagent-onboard work-items --validate [.agent-onboard/work-items.json]\nagent-onboard work-items --list [.agent-onboard/work-items.json]\nagent-onboard work-items --init --dry-run|--write [--force]\nagent-onboard work-items --append --dry-run|--write --id <public-work-item-id> --title <title>\nagent-onboard work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>\nagent-onboard work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>\nagent-onboard target runtime --namespace|--check\nagent-onboard target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]\nagent-onboard target bootstrap --dry-run|--write [--force]\nagent-onboard target-instance takeover --dry-run|--write [--force]\n`);
+  process.stdout.write(`agent-onboard ${VERSION}\n\nagent-onboard status\nagent-onboard init --dry-run|--write [--force]\nagent-onboard agents --preview|--write [--force]\nagent-onboard guard --plan|--check-boundary\nagent-onboard authority --first-read|--check\nagent-onboard architecture --map|--router|--facades|--partition-plan|--partition-check|--extraction-rehearsal|--extraction-check|--check\nagent-onboard release --plan|--contract|--fixture|--surface|--surface-check|--parity-smoke|--architecture-parity-smoke|--target-onboarding-smoke|--post-publish-handoff|--published-acceptance|--real-target-trial|--check\nagent-onboard target-config --schema\nagent-onboard target-config --template\nagent-onboard target-config --validate-template\nagent-onboard target-config --validate [agent-onboard.target.json]\nagent-onboard work-items --schema\nagent-onboard work-items --template\nagent-onboard work-items --validate-template\nagent-onboard work-items --validate [.agent-onboard/work-items.json]\nagent-onboard work-items --list [.agent-onboard/work-items.json]\nagent-onboard work-items --init --dry-run|--write [--force]\nagent-onboard work-items --append --dry-run|--write --id <public-work-item-id> --title <title>\nagent-onboard work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>\nagent-onboard work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>\nagent-onboard target runtime --namespace|--check\nagent-onboard target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]\nagent-onboard target bootstrap --dry-run|--write [--force]\nagent-onboard target-instance takeover --dry-run|--write [--force]\n`);
   return 0;
 }
 
@@ -4645,6 +4902,8 @@ module.exports = {
   publicCommandRouter,
   publicCommandRouterCheck,
   publicArchitectureCheck,
+  publicSourceDomainExtractionRehearsal,
+  publicSourceDomainExtractionRehearsalCheck,
   publicInstalledPackageParitySmoke,
   publicInstalledParityArchitectureSmoke,
   publicTargetOnboardingInstalledPackageSmoke,
@@ -4662,6 +4921,7 @@ module.exports = {
   PUBLIC_RELEASE_FIXTURE_MATRIX,
   PUBLIC_ARCHITECTURE_MAP,
   PUBLIC_COMMAND_ROUTER,
+  PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL,
   PUBLIC_TARGET_RUNTIME_NAMESPACE,
   PUBLIC_INSTALLED_PARITY_ARCHITECTURE_SMOKE
 };
