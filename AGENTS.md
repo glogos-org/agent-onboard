@@ -12,8 +12,9 @@ Before proposing or making changes, read:
 2. `llms.txt`
 3. `.agent-onboard/authority-path.json`
 4. `agent-onboard.target.json`
-5. `.agent-onboard/project.json`
-6. `.agent-onboard/work-items.json`
+5. `.agent-onboard/runtime-namespace.json`
+6. `.agent-onboard/project.json`
+7. `.agent-onboard/work-items.json`
 
 ## Default boundary
 
@@ -39,87 +40,94 @@ Use this source-repository lifecycle for public human/agent participation:
 Run the target onboarding plan before expanding target-surface behavior:
 
 ```sh
-npx agent-onboard@0.0.31 target onboarding --plan
-npx agent-onboard@0.0.31 target onboarding --fixture
-npx agent-onboard@0.0.31 target onboarding --trial
+npx agent-onboard@0.0.32 target onboarding --plan
+npx agent-onboard@0.0.32 target onboarding --fixture
+npx agent-onboard@0.0.32 target onboarding --trial
 ```
 
 Use the aggregate onboarding write command only when the repository owner explicitly authorizes canonical target file creation or replacement:
 
 ```sh
-npx agent-onboard@0.0.31 target onboarding --write
+npx agent-onboard@0.0.32 target onboarding --write
 ```
 
 
 Inspect the public architecture kernel before expanding command or domain behavior:
 
 ```sh
-npx agent-onboard@0.0.31 architecture --map
-npx agent-onboard@0.0.31 architecture --router
-npx agent-onboard@0.0.31 architecture --facades
-npx agent-onboard@0.0.31 architecture --check
+npx agent-onboard@0.0.32 architecture --map
+npx agent-onboard@0.0.32 architecture --router
+npx agent-onboard@0.0.32 architecture --facades
+npx agent-onboard@0.0.32 architecture --check
 ```
 
 Inspect the public authority first-read index before expanding authority or target onboarding behavior:
 
 ```sh
-npx agent-onboard@0.0.31 authority --first-read
-npx agent-onboard@0.0.31 authority --check
+npx agent-onboard@0.0.32 authority --first-read
+npx agent-onboard@0.0.32 authority --check
+```
+
+Inspect the public target runtime namespace before expanding target runtime files:
+
+```sh
+npx agent-onboard@0.0.32 target runtime --namespace
+npx agent-onboard@0.0.32 target runtime --check
 ```
 
 Validate the public release contract and source/package surface before any package publish handoff:
 
 ```sh
-npx agent-onboard@0.0.31 release --check
+npx agent-onboard@0.0.32 release --check
 ```
 
 Inspect the normalized release contract:
 
 ```sh
-npx agent-onboard@0.0.31 release --contract
+npx agent-onboard@0.0.32 release --contract
 ```
 
 Inspect the release fixture matrix:
 
 ```sh
-npx agent-onboard@0.0.31 release --fixture
+npx agent-onboard@0.0.32 release --fixture
 ```
 
 Run the installed package parity smoke:
 
 ```sh
-npx agent-onboard@0.0.31 release --parity-smoke
+npx agent-onboard@0.0.32 release --parity-smoke
 ```
 
 Run the target onboarding installed-package smoke before publish handoff:
 
 ```sh
-npx agent-onboard@0.0.31 release --target-onboarding-smoke
+npx agent-onboard@0.0.32 release --target-onboarding-smoke
 ```
 
 Inspect the post-publish verification handoff before publishing:
 
 ```sh
-npx agent-onboard@0.0.31 release --post-publish-handoff
+npx agent-onboard@0.0.32 release --post-publish-handoff
 ```
 
 Run the published package acceptance rehearsal before publish, then the version-pinned acceptance check after publish:
 
 ```sh
-npx agent-onboard@0.0.31 release --published-acceptance
-npx agent-onboard@0.0.31 release --real-target-trial
+npx agent-onboard@0.0.32 release --published-acceptance
+npx agent-onboard@0.0.32 release --real-target-trial
 ```
 
 Inspect the public ledger:
 
 ```sh
-npx agent-onboard@0.0.31 work-items --list
+npx agent-onboard@0.0.32 work-items --list
 ```
 
 Claim an assigned work item only with an explicit write command:
 
 ```sh
-npx agent-onboard@0.0.31 work-items --claim --write --id <public-work-item-id> --actor <agent-or-human-name>
+npx agent-onboard@0.0.32 work-items --claim --write --id <public-work-item-id> --actor <agent-or-human-name>
 ```
 
 After claiming, follow the `next_steps` returned by the CLI. Claiming is not admission to publish, push, install dependencies, or edit unrelated files.
@@ -127,7 +135,7 @@ After claiming, follow the `next_steps` returned by the CLI. Claiming is not adm
 Preview closure evidence before writing it:
 
 ```sh
-npx agent-onboard@0.0.31 work-items --close --dry-run --id <public-work-item-id> --actor <agent-or-human-name> --summary <summary>
+npx agent-onboard@0.0.32 work-items --close --dry-run --id <public-work-item-id> --actor <agent-or-human-name> --summary <summary>
 ```
 
 A closure must separate changed files, checks run, checks not run, and known non-pass states.

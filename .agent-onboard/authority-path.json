@@ -1,8 +1,8 @@
 {
   "schema": "agent-onboard-authority-path-001",
   "package_name": "agent-onboard",
-  "package_version": "0.0.31",
-  "release_line": "public_authority_first_read_index_gate",
+  "package_version": "0.0.32",
+  "release_line": "public_target_runtime_namespace_gate",
   "target": {
     "name": "agent-onboard",
     "root": ".",
@@ -37,24 +37,30 @@
     },
     {
       "order": 5,
+      "path": ".agent-onboard/runtime-namespace.json",
+      "role": "target_runtime_namespace_declaration",
+      "required_when_present": true
+    },
+    {
+      "order": 6,
       "path": ".agent-onboard/project.json",
       "role": "target_runtime_project_identity",
       "required_when_present": true
     },
     {
-      "order": 6,
+      "order": 7,
       "path": ".agent-onboard/work-items.json",
       "role": "public_work_item_ledger",
       "required_when_present": true
     },
     {
-      "order": 7,
+      "order": 8,
       "path": "README.md",
       "role": "public_package_documentation",
       "required_when_present": false
     },
     {
-      "order": 8,
+      "order": 9,
       "path": "raw evidence/source files",
       "role": "on_demand_only_after_authority_files",
       "required_when_present": false

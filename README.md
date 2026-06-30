@@ -8,10 +8,10 @@ The generated files are intended to be read by agents, wrappers, CI hooks, or fu
 
 ## Install
 
-For the `0.0.x` line, install with `~0.0.31` so target repos can receive later `0.0.x` updates without crossing the `0.1.0` boundary:
+For the `0.0.x` line, install with `~0.0.32` so target repos can receive later `0.0.x` updates without crossing the `0.1.0` boundary:
 
 ```sh
-npm install --save-dev agent-onboard@~0.0.31
+npm install --save-dev agent-onboard@~0.0.32
 ```
 
 Run without installing:
@@ -75,13 +75,7 @@ Write it to the target repo:
 npx agent-onboard agents --write
 ```
 
-`agents --write` writes only:
-
-```text
-AGENTS.md
-llms.txt
-.agent-onboard/authority-path.json
-```
+`agents --write` writes only `AGENTS.md`. The aggregate `target onboarding --write` command writes the broader canonical target surface, including `llms.txt`, `.agent-onboard/authority-path.json`, and `.agent-onboard/runtime-namespace.json`.
 
 It refuses to overwrite an existing non-identical `AGENTS.md` unless `--force` is passed:
 
@@ -101,6 +95,8 @@ npx agent-onboard guard --plan
 npx agent-onboard guard --check-boundary
 npx agent-onboard authority --first-read
 npx agent-onboard authority --check
+npx agent-onboard target runtime --namespace
+npx agent-onboard target runtime --check
 npx agent-onboard architecture --map
 npx agent-onboard architecture --router
 npx agent-onboard architecture --facades
@@ -131,6 +127,8 @@ npx agent-onboard work-items --claim --dry-run --id <public-work-item-id> --acto
 npx agent-onboard work-items --claim --write --id <public-work-item-id> --actor <actor>
 npx agent-onboard work-items --close --dry-run --id <public-work-item-id> --actor <actor> --summary <summary>
 npx agent-onboard work-items --close --write --id <public-work-item-id> --actor <actor> --summary <summary>
+npx agent-onboard target runtime --namespace
+npx agent-onboard target runtime --check
 npx agent-onboard target onboarding --plan
 npx agent-onboard target onboarding --fixture
 npx agent-onboard target onboarding --trial
@@ -161,7 +159,7 @@ Validate that the public architecture map still declares the six canonical domai
 npx agent-onboard architecture --check
 ```
 
-The public architecture kernel is: `core`, `authority`, `work_items`, `claims`, `target`, and `release_package`. `0.0.29` adds the public command router boundary gate. `0.0.30` adds the public domain service facade gate: top-level routes declare their owning service facade, and `architecture --facades` reports the admitted facade layer while the published package still uses one compact CLI entrypoint. `0.0.31` adds the public authority first-read index gate: `authority --first-read` reports the canonical read order and `authority --check` validates `llms.txt` plus `.agent-onboard/authority-path.json` in source context while preserving the compact npm package allowlist.
+The public architecture kernel is: `core`, `authority`, `work_items`, `claims`, `target`, and `release_package`. `0.0.29` adds the public command router boundary gate. `0.0.30` adds the public domain service facade gate: top-level routes declare their owning service facade, and `architecture --facades` reports the admitted facade layer while the published package still uses one compact CLI entrypoint. `0.0.31` adds the public authority first-read index gate: `authority --first-read` reports the canonical read order and `authority --check` validates `llms.txt` plus `.agent-onboard/authority-path.json` in source context while preserving the compact npm package allowlist. `0.0.32` adds the public target runtime namespace gate: `target runtime --namespace` reports the canonical `.agent-onboard/` namespace and `target runtime --check` validates `.agent-onboard/runtime-namespace.json` plus reserved future-file boundaries.
 
 ## Public authority first-read index
 
@@ -177,7 +175,23 @@ Validate the source authority files when running from a source repo, or validate
 npx agent-onboard authority --check
 ```
 
-The canonical read order is `AGENTS.md`, `llms.txt`, `.agent-onboard/authority-path.json`, `agent-onboard.target.json`, `.agent-onboard/project.json`, `.agent-onboard/work-items.json`, then `README.md`; raw evidence/source files are on-demand only after those authority files.
+The canonical read order is `AGENTS.md`, `llms.txt`, `.agent-onboard/authority-path.json`, `agent-onboard.target.json`, `.agent-onboard/runtime-namespace.json`, `.agent-onboard/project.json`, `.agent-onboard/work-items.json`, then `README.md`; raw evidence/source files are on-demand only after those authority files.
+
+## Public target runtime namespace
+
+Print the public target runtime namespace without writing files:
+
+```sh
+npx agent-onboard target runtime --namespace
+```
+
+Validate the embedded namespace contract and, in source context, `.agent-onboard/runtime-namespace.json`:
+
+```sh
+npx agent-onboard target runtime --check
+```
+
+The canonical runtime namespace root is `.agent-onboard/`. The admitted runtime files are `.agent-onboard/runtime-namespace.json`, `.agent-onboard/project.json`, `.agent-onboard/work-items.json`, and `.agent-onboard/authority-path.json`. Reserved future files such as `.agent-onboard/claims.jsonl` and `.agent-onboard/events.jsonl` are declared but not written by this gate.
 
 ## Public release verification
 
@@ -187,7 +201,7 @@ For a source release candidate, validate the package-owned release contract befo
 npx agent-onboard release --check
 ```
 
-The check validates package metadata, bin entrypoints, the projected npm pack allowlist, public artifact messaging, the public architecture map, the public command router, public domain service facades, the public authority first-read index, and the source work-item ledger when that ledger is present. It does not publish, mutate registry state, install dependencies, or run Git operations. The response reports whether it is running in a source-repository context or an installed-package context, then includes local pre-publish commands and post-publish verification commands for the operator.
+The check validates package metadata, bin entrypoints, the projected npm pack allowlist, public artifact messaging, the public architecture map, the public command router, public domain service facades, the public authority first-read index, the public target runtime namespace, and the source work-item ledger when that ledger is present. It does not publish, mutate registry state, install dependencies, or run Git operations. The response reports whether it is running in a source-repository context or an installed-package context, then includes local pre-publish commands and post-publish verification commands for the operator.
 
 Preview the release plan without running validation:
 
@@ -207,7 +221,7 @@ Print the release fixture matrix without mutating files, package state, or regis
 npx agent-onboard release --fixture
 ```
 
-The fixture matrix documents the contract regression cases used by the source tests: valid source context, valid installed-package context, stale package version, npm pack allowlist drift, missing bin entrypoint, reserved public artifact messaging tokens, projected installed-package parity smoke, target onboarding installed-package smoke, target onboarding post-publish handoff, published package acceptance rehearsal, real target repo trial, public architecture map, public command router boundary, public domain service facade boundary, and public authority first-read index boundary.
+The fixture matrix documents the contract regression cases used by the source tests: valid source context, valid installed-package context, stale package version, npm pack allowlist drift, missing bin entrypoint, reserved public artifact messaging tokens, projected installed-package parity smoke, target onboarding installed-package smoke, target onboarding post-publish handoff, published package acceptance rehearsal, real target repo trial, public architecture map, public command router boundary, public domain service facade boundary, public authority first-read index boundary, and public target runtime namespace boundary.
 
 Run the installed package parity smoke without executing package-manager, registry, Git, build, or temp-file write operations:
 
@@ -640,6 +654,8 @@ This version does not:
 
 `0.0.31` adds the public authority first-read index gate: `authority --first-read` reports the canonical read order, `authority --check` validates `llms.txt` and `.agent-onboard/authority-path.json`, and target onboarding now projects those first-read files as canonical target surface files.
 
+`0.0.32` adds the public target runtime namespace gate: `target runtime --namespace` reports the canonical `.agent-onboard/` namespace, `target runtime --check` validates `.agent-onboard/runtime-namespace.json`, and target onboarding projects the namespace file as a canonical target surface file.
+
 <!-- ## Star History
 
 [![Star History Chart](https://api.star-history.com/chart?repos=glogos-org/agent-onboard&type=date&legend=top-left)](https://www.star-history.com/?repos=glogos-org%2Fagent-onboard&type=date&legend=top-left) -->
@@ -650,15 +666,18 @@ The source repository can carry its own public Agent-Onboard operating surface:
 
 - `AGENTS.md` gives human-readable rules for agents.
 - `agent-onboard.target.json` declares the target-repo boundary.
+- `llms.txt` gives the AI-readable first-read entrypoint.
+- `.agent-onboard/authority-path.json` records the first-read order.
+- `.agent-onboard/runtime-namespace.json` declares the target runtime namespace.
 - `.agent-onboard/project.json` records the target identity.
 - `.agent-onboard/work-items.json` stores the public work-item ledger.
 
 Agent participation is explicit. An agent should first list the ledger, then claim only an assigned work item:
 
 ```sh
-npx agent-onboard@0.0.31 work-items --list
-npx agent-onboard@0.0.31 work-items --claim --dry-run --id <public-work-item-id> --actor <agent-or-human-name>
-npx agent-onboard@0.0.31 work-items --claim --write --id <public-work-item-id> --actor <agent-or-human-name>
+npx agent-onboard@0.0.32 work-items --list
+npx agent-onboard@0.0.32 work-items --claim --dry-run --id <public-work-item-id> --actor <agent-or-human-name>
+npx agent-onboard@0.0.32 work-items --claim --write --id <public-work-item-id> --actor <agent-or-human-name>
 ```
 
 The npm package surface remains intentionally compact. The self-dogfood files are source-repository operating files and are not included in the public npm tarball.

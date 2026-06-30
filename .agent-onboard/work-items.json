@@ -882,6 +882,45 @@
       "id": "P1S3M1W5",
       "milestone_id": "P1S3M1",
       "title": "Public target runtime namespace gate",
+      "status": "closed",
+      "closure": {
+        "actor": "release-maintainer",
+        "closed_at": "2026-06-30T00:00:00.000Z",
+        "summary": "Closed after preparing agent-onboard@0.0.32 with public target runtime namespace support, runtime namespace validation, target onboarding namespace projection, and release/architecture contract integration.",
+        "changed_files": [
+          "README.md",
+          "AGENTS.md",
+          "llms.txt",
+          ".agent-onboard/authority-path.json",
+          ".agent-onboard/runtime-namespace.json",
+          ".agent-onboard/work-items.json",
+          "cli/agent-onboard.js",
+          "test/agent-onboard.test.js",
+          "package.json"
+        ],
+        "checks_run": [
+          "npm test",
+          "node cli/agent-onboard.js target runtime --namespace",
+          "node cli/agent-onboard.js target runtime --check",
+          "node cli/agent-onboard.js architecture --check",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "npm pack --dry-run --json",
+          "npm publish --dry-run --json --ignore-scripts"
+        ],
+        "checks_not_run": [
+          "npm publish",
+          "registry post-publish verification with version-pinned npx commands"
+        ],
+        "known_non_pass": [
+          "npm publish --dry-run may report registry authentication warnings in unauthenticated environments while still producing the dry-run package JSON"
+        ]
+      }
+    },
+    {
+      "id": "P1S3M1W6",
+      "milestone_id": "P1S3M1",
+      "title": "Public package surface preservation gate",
       "status": "open"
     }
   ]

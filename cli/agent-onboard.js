@@ -6,7 +6,7 @@ const os = require('os');
 const path = require('path');
 const VERSION = require('../package.json').version;
 const TARGET_CONFIG_FILE = 'agent-onboard.target.json';
-const RELEASE_LINE = 'public_authority_first_read_index_gate';
+const RELEASE_LINE = 'public_target_runtime_namespace_gate';
 
 process.stdout.on('error', (error) => {
   if (error && error.code === 'EPIPE') process.exit(0);
@@ -261,7 +261,7 @@ const PUBLIC_ARCHITECTURE_MAP = Object.freeze({
       title: 'Authority and first-read domain',
       owns: Object.freeze(['read order', 'operator boundary language', 'first-read authority index', 'AI-readable repository entrypoint']),
       public_surface: Object.freeze(['authority --first-read', 'authority --check', 'AGENTS.md read order', 'llms.txt', '.agent-onboard/authority-path.json', 'agent-onboard.target.json authority level']),
-      state_files: Object.freeze(['AGENTS.md', 'llms.txt', '.agent-onboard/authority-path.json', 'agent-onboard.target.json'])
+      state_files: Object.freeze(['AGENTS.md', 'llms.txt', '.agent-onboard/authority-path.json', 'agent-onboard.target.json', '.agent-onboard/runtime-namespace.json'])
     }),
     Object.freeze({
       id: 'work_items',
@@ -280,9 +280,9 @@ const PUBLIC_ARCHITECTURE_MAP = Object.freeze({
     Object.freeze({
       id: 'target',
       title: 'Target repository onboarding domain',
-      owns: Object.freeze(['target config schema', 'target runtime project file', 'target onboarding plan', 'target write boundary', 'real target trial']),
-      public_surface: Object.freeze(['target-config', 'target onboarding', 'target bootstrap', 'target-instance takeover', 'guard --check-boundary']),
-      state_files: Object.freeze(['agent-onboard.target.json', '.agent-onboard/project.json', '.agent-onboard/work-items.json', 'AGENTS.md', 'llms.txt', '.agent-onboard/authority-path.json'])
+      owns: Object.freeze(['target config schema', 'target runtime namespace', 'target runtime project file', 'target onboarding plan', 'target write boundary', 'real target trial']),
+      public_surface: Object.freeze(['target-config', 'target runtime --namespace', 'target runtime --check', 'target onboarding', 'target bootstrap', 'target-instance takeover', 'guard --check-boundary']),
+      state_files: Object.freeze(['agent-onboard.target.json', '.agent-onboard/runtime-namespace.json', '.agent-onboard/project.json', '.agent-onboard/work-items.json', 'AGENTS.md', 'llms.txt', '.agent-onboard/authority-path.json'])
     }),
     Object.freeze({
       id: 'release_package',
@@ -313,6 +313,8 @@ const PUBLIC_ARCHITECTURE_MAP = Object.freeze({
     architecture_facades_command_writes_files: false,
     authority_first_read_command_writes_files: false,
     authority_check_command_writes_files: false,
+    target_runtime_namespace_command_writes_files: false,
+    target_runtime_check_command_writes_files: false,
     command_router_dispatch_must_be_table_driven: true,
     main_function_delegates_to_command_router: true,
     command_router_delegates_to_domain_service_facades: true,
@@ -326,8 +328,8 @@ const PUBLIC_ARCHITECTURE_MAP = Object.freeze({
       intent: 'Materialize the authority read order as a compact machine-readable public file.'
     }),
     Object.freeze({
-      title: 'Public target runtime namespace gate',
-      intent: 'Declare the canonical target runtime namespace after authority first-read ordering is admitted.'
+      title: 'Public package surface preservation gate',
+      intent: 'Preserve compact npm package output while the public source architecture grows.'
     })
   ])
 });
@@ -358,7 +360,7 @@ const PUBLIC_COMMAND_ROUTER = Object.freeze({
     Object.freeze({ command: 'release', domain: 'release_package', facade: 'releasePackageService', handler: 'runRelease', aliases: Object.freeze([]), nested: false, writes_files: false }),
     Object.freeze({ command: 'target-config', domain: 'target', facade: 'targetService', handler: 'runTargetConfig', aliases: Object.freeze([]), nested: false, writes_files: false }),
     Object.freeze({ command: 'work-items', domain: 'work_items', facade: 'workItemsService', handler: 'runWorkItems', aliases: Object.freeze([]), nested: false, writes_files: true }),
-    Object.freeze({ command: 'target', domain: 'target', facade: 'targetService', handler: 'runTargetCommand', aliases: Object.freeze([]), nested: true, nested_commands: Object.freeze(['onboarding', 'bootstrap']), writes_files: true }),
+    Object.freeze({ command: 'target', domain: 'target', facade: 'targetService', handler: 'runTargetCommand', aliases: Object.freeze([]), nested: true, nested_commands: Object.freeze(['runtime', 'onboarding', 'bootstrap']), writes_files: true }),
     Object.freeze({ command: 'target-instance', domain: 'target', facade: 'targetService', handler: 'runTargetInstance', aliases: Object.freeze([]), nested: true, nested_commands: Object.freeze(['takeover']), writes_files: true })
   ]),
   boundary: Object.freeze({
@@ -396,7 +398,7 @@ const PUBLIC_DOMAIN_SERVICE_FACADES = Object.freeze({
     Object.freeze({ id: 'authority', service: 'authorityService', owns_commands: Object.freeze(['agents', 'guard', 'authority --first-read', 'authority --check']), writes_files: true, state_writer: true }),
     Object.freeze({ id: 'work_items', service: 'workItemsService', owns_commands: Object.freeze(['work-items']), writes_files: true, state_writer: true }),
     Object.freeze({ id: 'claims', service: 'claimsService', owns_commands: Object.freeze(['work-items --claim', 'work-items --close']), writes_files: true, state_writer: true, shares_ledger_with: 'work_items' }),
-    Object.freeze({ id: 'target', service: 'targetService', owns_commands: Object.freeze(['init', 'target-config', 'target onboarding', 'target bootstrap', 'target-instance takeover']), writes_files: true, state_writer: true }),
+    Object.freeze({ id: 'target', service: 'targetService', owns_commands: Object.freeze(['init', 'target-config', 'target runtime --namespace', 'target runtime --check', 'target onboarding', 'target bootstrap', 'target-instance takeover']), writes_files: true, state_writer: true }),
     Object.freeze({ id: 'release_package', service: 'releasePackageService', owns_commands: Object.freeze(['release']), writes_files: false, state_writer: false })
   ]),
   boundary: Object.freeze({
@@ -430,10 +432,11 @@ const PUBLIC_AUTHORITY_FIRST_READ_INDEX = Object.freeze({
     Object.freeze({ order: 2, path: 'llms.txt', role: 'ai_readable_public_entrypoint', required_when_present: true }),
     Object.freeze({ order: 3, path: '.agent-onboard/authority-path.json', role: 'machine_readable_authority_index', required_when_present: true }),
     Object.freeze({ order: 4, path: 'agent-onboard.target.json', role: 'target_boundary_declaration', required_when_present: true }),
-    Object.freeze({ order: 5, path: '.agent-onboard/project.json', role: 'target_runtime_project_identity', required_when_present: true }),
-    Object.freeze({ order: 6, path: '.agent-onboard/work-items.json', role: 'public_work_item_ledger', required_when_present: true }),
-    Object.freeze({ order: 7, path: 'README.md', role: 'public_package_documentation', required_when_present: false }),
-    Object.freeze({ order: 8, path: 'raw evidence/source files', role: 'on_demand_only_after_authority_files', required_when_present: false })
+    Object.freeze({ order: 5, path: '.agent-onboard/runtime-namespace.json', role: 'target_runtime_namespace_declaration', required_when_present: true }),
+    Object.freeze({ order: 6, path: '.agent-onboard/project.json', role: 'target_runtime_project_identity', required_when_present: true }),
+    Object.freeze({ order: 7, path: '.agent-onboard/work-items.json', role: 'public_work_item_ledger', required_when_present: true }),
+    Object.freeze({ order: 8, path: 'README.md', role: 'public_package_documentation', required_when_present: false }),
+    Object.freeze({ order: 9, path: 'raw evidence/source files', role: 'on_demand_only_after_authority_files', required_when_present: false })
   ]),
   boundary: Object.freeze({
     first_read_command_writes_files: false,
@@ -450,8 +453,55 @@ const PUBLIC_AUTHORITY_FIRST_READ_INDEX = Object.freeze({
   })
 });
 
+
+const PUBLIC_TARGET_RUNTIME_NAMESPACE = Object.freeze({
+  schema: 'agent-onboard-public-target-runtime-namespace-001',
+  title: 'Agent-Onboard Public Target Runtime Namespace',
+  package_name: 'agent-onboard',
+  release_line: RELEASE_LINE,
+  command: 'agent-onboard target runtime --namespace',
+  check_command: 'agent-onboard target runtime --check',
+  purpose: 'Declare the canonical public runtime namespace under .agent-onboard/ after the authority first-read index is admitted.',
+  namespace_root: '.agent-onboard',
+  namespace_file: '.agent-onboard/runtime-namespace.json',
+  canonical_runtime_files: Object.freeze([
+    Object.freeze({ path: '.agent-onboard/runtime-namespace.json', domain: 'target', role: 'machine_readable_runtime_namespace', kind: 'json', required: true, written_by: 'target onboarding --write' }),
+    Object.freeze({ path: '.agent-onboard/project.json', domain: 'target', role: 'target_runtime_project_identity', kind: 'json', required: true, written_by: 'init --write or target onboarding --write or target-instance takeover --write' }),
+    Object.freeze({ path: '.agent-onboard/work-items.json', domain: 'work_items', role: 'public_work_item_ledger', kind: 'json', required: true, written_by: 'work-items --init --write or target onboarding --write or target-instance takeover --write' }),
+    Object.freeze({ path: '.agent-onboard/authority-path.json', domain: 'authority', role: 'authority_first_read_index', kind: 'json', required: true, written_by: 'target onboarding --write' })
+  ]),
+  top_level_authority_files: Object.freeze([
+    'AGENTS.md',
+    'llms.txt',
+    'agent-onboard.target.json'
+  ]),
+  reserved_future_files: Object.freeze([
+    Object.freeze({ path: '.agent-onboard/claims.jsonl', domain: 'claims', status: 'reserved_not_written_by_this_gate' }),
+    Object.freeze({ path: '.agent-onboard/events.jsonl', domain: 'target', status: 'reserved_not_written_by_this_gate' })
+  ]),
+  allowed_writers: Object.freeze([
+    'target onboarding --write',
+    'init --write',
+    'work-items --init --write',
+    'target-instance takeover --write'
+  ]),
+  boundary: Object.freeze({
+    namespace_command_writes_files: false,
+    check_command_writes_files: false,
+    writes_target_repository_state: false,
+    git_mutation: false,
+    installs_dependencies: false,
+    runs_package_manager: false,
+    runs_build_test_deploy: false,
+    publishes_package: false,
+    mutates_registry: false,
+    reserved_future_files_not_written: true,
+    package_allowlist_unchanged: true
+  })
+});
+
 const PUBLIC_RELEASE_CONTRACT = Object.freeze({
-  schema: 'agent-onboard-public-release-contract-013',
+  schema: 'agent-onboard-public-release-contract-014',
   title: 'Agent-Onboard Public Release Contract',
   package_name: 'agent-onboard',
   release_line: RELEASE_LINE,
@@ -469,6 +519,8 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
   architecture_check_command: 'agent-onboard architecture --check',
   authority_first_read_command: 'agent-onboard authority --first-read',
   authority_check_command: 'agent-onboard authority --check',
+  target_runtime_namespace_command: 'agent-onboard target runtime --namespace',
+  target_runtime_check_command: 'agent-onboard target runtime --check',
   expected_pack_files: Object.freeze(['LICENSE', 'README.md', 'cli/agent-onboard.js', 'package.json']),
   source_context_files: Object.freeze([
     '.agent-onboard/project.json',
@@ -477,6 +529,7 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
     'AGENTS.md',
     'llms.txt',
     '.agent-onboard/authority-path.json',
+    '.agent-onboard/runtime-namespace.json',
     'test/agent-onboard.test.js'
   ]),
   required_package_json: Object.freeze({
@@ -512,6 +565,8 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
     'node cli/agent-onboard.js architecture --facades',
     'node cli/agent-onboard.js authority --first-read',
     'node cli/agent-onboard.js authority --check',
+    'node cli/agent-onboard.js target runtime --namespace',
+    'node cli/agent-onboard.js target runtime --check',
     'node cli/agent-onboard.js architecture --check',
     'node cli/agent-onboard.js target onboarding --trial',
     'node cli/agent-onboard.js release --check',
@@ -533,6 +588,8 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
     'npx agent-onboard@<version> architecture --facades',
     'npx agent-onboard@<version> authority --first-read',
     'npx agent-onboard@<version> authority --check',
+    'npx agent-onboard@<version> target runtime --namespace',
+    'npx agent-onboard@<version> target runtime --check',
     'npx agent-onboard@<version> architecture --check',
     'npx agent-onboard@<version> release --check',
     'npx agent-onboard@<version> init --dry-run',
@@ -551,7 +608,7 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
 
 
 const PUBLIC_RELEASE_FIXTURE_MATRIX = Object.freeze({
-  schema: 'agent-onboard-public-release-fixture-matrix-009',
+  schema: 'agent-onboard-public-release-fixture-matrix-010',
   title: 'Agent-Onboard Public Package Contract Fixture Matrix',
   package_name: 'agent-onboard',
   release_line: PUBLIC_RELEASE_CONTRACT.release_line,
@@ -643,6 +700,12 @@ const PUBLIC_RELEASE_FIXTURE_MATRIX = Object.freeze({
       expected_status: 'ok',
       validates: Object.freeze(['canonical first-read order', 'AI-readable llms.txt entrypoint', 'machine-readable authority path index', 'source files stay outside npm package allowlist']),
       boundary: 'authority --first-read and authority --check are read-only; target onboarding may write first-read authority files only under explicit --write authorization'
+    }),
+    Object.freeze({
+      id: 'public_target_runtime_namespace',
+      expected_status: 'ok',
+      validates: Object.freeze(['canonical .agent-onboard namespace root', 'runtime namespace file', 'canonical runtime file order', 'reserved future files not written', 'compact npm package boundary']),
+      boundary: 'target runtime --namespace and target runtime --check are read-only; target onboarding writes the namespace file only with explicit --write authorization'
     })
   ]),
   boundary: Object.freeze({
@@ -666,6 +729,7 @@ const TARGET_ONBOARDING_SURFACE_PLAN = Object.freeze({
   purpose: 'Declare the public, read-only onboarding sequence for a target repository before write-capable onboarding commands are used.',
   canonical_files: Object.freeze([
     'agent-onboard.target.json',
+    '.agent-onboard/runtime-namespace.json',
     '.agent-onboard/project.json',
     '.agent-onboard/work-items.json',
     'AGENTS.md',
@@ -700,7 +764,7 @@ const TARGET_ONBOARDING_SURFACE_PLAN = Object.freeze({
     Object.freeze({
       id: 'write_explicit_full_onboarding',
       command: 'agent-onboard target onboarding --write',
-      output: 'agent-onboard.target.json, .agent-onboard/project.json, .agent-onboard/work-items.json, and AGENTS.md when explicitly authorized',
+      output: 'agent-onboard.target.json, .agent-onboard/runtime-namespace.json, .agent-onboard/project.json, .agent-onboard/work-items.json, AGENTS.md, llms.txt, and .agent-onboard/authority-path.json when explicitly authorized',
       writes_files: true
     }),
     Object.freeze({
@@ -813,6 +877,7 @@ function targetOnboardingDryRunFixture(cwd = process.cwd()) {
   const bootstrapPlan = planWritesForRoot(cwd, [['agent-onboard.target.json', targetConfigTemplate(cwd)]], { force: false });
   const bootstrapForcePlan = planWritesForRoot(cwd, [['agent-onboard.target.json', targetConfigTemplate(cwd)]], { force: true });
   const instancePlan = planWritesForRoot(cwd, [
+    ['.agent-onboard/runtime-namespace.json', targetRuntimeNamespaceTemplate(cwd)],
     ['.agent-onboard/project.json', runtimeProjectTemplate(cwd)],
     ['.agent-onboard/work-items.json', workItemsTemplate()]
   ], { force: false });
@@ -1182,10 +1247,11 @@ First-read order:
 2. llms.txt — AI-readable public entrypoint.
 3. .agent-onboard/authority-path.json — machine-readable authority path index.
 4. agent-onboard.target.json — target boundary declaration.
-5. .agent-onboard/project.json — target runtime identity.
-6. .agent-onboard/work-items.json — public work item ledger.
-7. README.md — public package or repository documentation.
-8. Raw evidence/source files — on demand only after the authority files above.
+5. .agent-onboard/runtime-namespace.json — target runtime namespace declaration.
+6. .agent-onboard/project.json — target runtime identity.
+7. .agent-onboard/work-items.json — public work item ledger.
+8. README.md — public package or repository documentation.
+9. Raw evidence/source files — on demand only after the authority files above.
 
 Default boundary: start read-only. Do not install dependencies, run builds/tests/deploys, publish, push, or overwrite non-identical files unless the repository owner explicitly authorizes that action.
 `;
@@ -1652,6 +1718,7 @@ function targetConfigTemplate(cwd = process.cwd()) {
       include: [
         'package.json',
         'agent-onboard.target.json',
+        '.agent-onboard/runtime-namespace.json',
         '.agent-onboard/project.json',
         '.agent-onboard/work-items.json',
         'AGENTS.md',
@@ -1659,6 +1726,42 @@ function targetConfigTemplate(cwd = process.cwd()) {
         '.agent-onboard/authority-path.json'
       ],
       exclude: ['node_modules', '.git', 'dist', 'build', '.venv', '.lake']
+    }
+  };
+}
+
+function targetRuntimeNamespaceTemplate(cwd = process.cwd()) {
+  const [name, kind] = targetName(cwd);
+  return {
+    schema: 'agent-onboard-target-runtime-namespace-001',
+    package_name: 'agent-onboard',
+    package_version: VERSION,
+    release_line: PUBLIC_TARGET_RUNTIME_NAMESPACE.release_line,
+    target: { name, root: '.', kind },
+    command: PUBLIC_TARGET_RUNTIME_NAMESPACE.command,
+    check_command: PUBLIC_TARGET_RUNTIME_NAMESPACE.check_command,
+    namespace_root: PUBLIC_TARGET_RUNTIME_NAMESPACE.namespace_root,
+    namespace_file: PUBLIC_TARGET_RUNTIME_NAMESPACE.namespace_file,
+    canonical_runtime_files: PUBLIC_TARGET_RUNTIME_NAMESPACE.canonical_runtime_files.map((entry) => ({
+      path: entry.path,
+      domain: entry.domain,
+      role: entry.role,
+      kind: entry.kind,
+      required: entry.required,
+      written_by: entry.written_by
+    })),
+    top_level_authority_files: PUBLIC_TARGET_RUNTIME_NAMESPACE.top_level_authority_files.slice(),
+    reserved_future_files: PUBLIC_TARGET_RUNTIME_NAMESPACE.reserved_future_files.map((entry) => ({
+      path: entry.path,
+      domain: entry.domain,
+      status: entry.status
+    })),
+    boundary: {
+      writes_require_explicit_write_flag: true,
+      reserved_future_files_not_written_by_target_onboarding: true,
+      dependency_install_requires_owner_authorization: true,
+      build_test_deploy_requires_owner_authorization: true,
+      publish_push_requires_owner_authorization: true
     }
   };
 }
@@ -1712,6 +1815,7 @@ function workItemsTemplate() {
 function initWriteSet(cwd = process.cwd()) {
   return [
     ['agent-onboard.target.json', targetConfigTemplate(cwd)],
+    ['.agent-onboard/runtime-namespace.json', targetRuntimeNamespaceTemplate(cwd)],
     ['.agent-onboard/project.json', runtimeProjectTemplate(cwd)],
     ['.agent-onboard/work-items.json', workItemsTemplate()]
   ];
@@ -1724,6 +1828,12 @@ function targetOnboardingWriteSet(cwd = process.cwd()) {
       kind: 'json',
       schema: 'agent-onboard-target-config-001',
       value: targetConfigTemplate(cwd)
+    },
+    {
+      path: '.agent-onboard/runtime-namespace.json',
+      kind: 'json',
+      schema: 'agent-onboard-target-runtime-namespace-001',
+      value: targetRuntimeNamespaceTemplate(cwd)
     },
     {
       path: '.agent-onboard/project.json',
@@ -2072,7 +2182,7 @@ function publicCommandRouterCheck(root = packageRoot()) {
   if (router.router.boundary.router_command_writes_files !== false) errors.push('architecture router command must remain no-write');
   if (router.router.boundary.unsupported_commands_fail_closed !== true) errors.push('unsupported commands must fail closed');
   const targetRoute = router.router.routes.find((route) => route.command === 'target');
-  if (!targetRoute || !arrayEquals(targetRoute.nested_commands.slice(), ['onboarding', 'bootstrap'])) errors.push('target nested route boundary must declare onboarding and bootstrap');
+  if (!targetRoute || !arrayEquals(targetRoute.nested_commands.slice(), ['runtime', 'onboarding', 'bootstrap'])) errors.push('target nested route boundary must declare runtime, onboarding, and bootstrap');
   return {
     schema: 'agent-onboard-public-command-router-check-result-001',
     status: errors.length === 0 ? 'ok' : 'error',
@@ -2091,7 +2201,7 @@ function publicCommandRouterCheck(root = packageRoot()) {
       dispatcher_boundary: router.router.dispatcher === 'dispatchCommand',
       router_command_no_write: router.router.boundary.router_command_writes_files === false,
       unsupported_commands_fail_closed: router.router.boundary.unsupported_commands_fail_closed === true,
-      nested_target_routes_explicit: !!targetRoute && arrayEquals(targetRoute.nested_commands.slice(), ['onboarding', 'bootstrap'])
+      nested_target_routes_explicit: !!targetRoute && arrayEquals(targetRoute.nested_commands.slice(), ['runtime', 'onboarding', 'bootstrap'])
     },
     expected_route_commands: expectedCommands,
     route_commands: routeCommands,
@@ -2222,7 +2332,7 @@ function publicAuthorityFirstRead(root = packageRoot()) {
 
 function publicAuthorityFirstReadCheck(root = packageRoot()) {
   const result = publicAuthorityFirstRead(root);
-  const expectedOrder = ['AGENTS.md', 'llms.txt', '.agent-onboard/authority-path.json', 'agent-onboard.target.json', '.agent-onboard/project.json', '.agent-onboard/work-items.json', 'README.md', 'raw evidence/source files'];
+  const expectedOrder = ['AGENTS.md', 'llms.txt', '.agent-onboard/authority-path.json', 'agent-onboard.target.json', '.agent-onboard/runtime-namespace.json', '.agent-onboard/project.json', '.agent-onboard/work-items.json', 'README.md', 'raw evidence/source files'];
   const actualOrder = result.read_order.map((entry) => entry.path);
   const expectedPackFiles = PUBLIC_RELEASE_CONTRACT.expected_pack_files.slice().sort();
   const projectedPackFiles = packageJsonProjectedPackFiles(readJson(path.join(root, 'package.json')));
@@ -2280,6 +2390,125 @@ function publicAuthorityFirstReadCheck(root = packageRoot()) {
   };
 }
 
+
+function publicTargetRuntimeNamespace(root = packageRoot()) {
+  const packageContext = sourceContext(root);
+  const sourceFile = PUBLIC_TARGET_RUNTIME_NAMESPACE.namespace_file;
+  const sourceFilePresent = fs.existsSync(path.join(root, sourceFile));
+  return {
+    schema: 'agent-onboard-public-target-runtime-namespace-result-001',
+    status: 'ok',
+    package_name: PUBLIC_TARGET_RUNTIME_NAMESPACE.package_name,
+    version: VERSION,
+    release_line: PUBLIC_TARGET_RUNTIME_NAMESPACE.release_line,
+    command: PUBLIC_TARGET_RUNTIME_NAMESPACE.command,
+    check_command: PUBLIC_TARGET_RUNTIME_NAMESPACE.check_command,
+    package_root: root,
+    package_context: packageContext.package_context,
+    namespace: PUBLIC_TARGET_RUNTIME_NAMESPACE,
+    namespace_root: PUBLIC_TARGET_RUNTIME_NAMESPACE.namespace_root,
+    namespace_file: PUBLIC_TARGET_RUNTIME_NAMESPACE.namespace_file,
+    canonical_runtime_files: PUBLIC_TARGET_RUNTIME_NAMESPACE.canonical_runtime_files.map((entry) => ({
+      path: entry.path,
+      domain: entry.domain,
+      role: entry.role,
+      kind: entry.kind,
+      required: entry.required,
+      written_by: entry.written_by
+    })),
+    top_level_authority_files: PUBLIC_TARGET_RUNTIME_NAMESPACE.top_level_authority_files.slice(),
+    reserved_future_files: PUBLIC_TARGET_RUNTIME_NAMESPACE.reserved_future_files.map((entry) => ({
+      path: entry.path,
+      domain: entry.domain,
+      status: entry.status
+    })),
+    source_file_present: sourceFilePresent,
+    source_file_missing: sourceFilePresent ? [] : [sourceFile],
+    projected_template: targetRuntimeNamespaceTemplate(root),
+    boundary: {
+      writes_files: false,
+      writes_source_state: false,
+      writes_target_repository_state: false,
+      git_mutation: false,
+      installs_dependencies: false,
+      runs_package_manager: false,
+      runs_build_test_deploy: false,
+      publishes_package: false,
+      mutates_registry: false
+    }
+  };
+}
+
+function publicTargetRuntimeNamespaceCheck(root = packageRoot()) {
+  const result = publicTargetRuntimeNamespace(root);
+  const expectedRuntimeFiles = ['.agent-onboard/runtime-namespace.json', '.agent-onboard/project.json', '.agent-onboard/work-items.json', '.agent-onboard/authority-path.json'];
+  const actualRuntimeFiles = result.canonical_runtime_files.map((entry) => entry.path);
+  const targetCanonical = TARGET_ONBOARDING_SURFACE_PLAN.canonical_files.slice();
+  const targetWritePaths = targetOnboardingWriteSet(root).map((entry) => entry.path);
+  const expectedPackFiles = PUBLIC_RELEASE_CONTRACT.expected_pack_files.slice().sort();
+  const projectedPackFiles = packageJsonProjectedPackFiles(readJson(path.join(root, 'package.json')));
+  const reservedPaths = PUBLIC_TARGET_RUNTIME_NAMESPACE.reserved_future_files.map((entry) => entry.path);
+  const writtenReservedPaths = targetWritePaths.filter((rel) => reservedPaths.includes(rel));
+  const errors = [];
+  if (PUBLIC_TARGET_RUNTIME_NAMESPACE.namespace_root !== '.agent-onboard') errors.push('target runtime namespace root must be .agent-onboard');
+  if (PUBLIC_TARGET_RUNTIME_NAMESPACE.namespace_file !== '.agent-onboard/runtime-namespace.json') errors.push('target runtime namespace file must be .agent-onboard/runtime-namespace.json');
+  if (!arrayEquals(actualRuntimeFiles, expectedRuntimeFiles)) errors.push(`target runtime file order must be ${expectedRuntimeFiles.join(', ')}`);
+  if (!targetCanonical.includes(PUBLIC_TARGET_RUNTIME_NAMESPACE.namespace_file)) errors.push('target onboarding canonical files must include .agent-onboard/runtime-namespace.json');
+  if (!targetWritePaths.includes(PUBLIC_TARGET_RUNTIME_NAMESPACE.namespace_file)) errors.push('target onboarding write set must include .agent-onboard/runtime-namespace.json');
+  if (writtenReservedPaths.length > 0) errors.push(`target onboarding must not write reserved runtime files: ${writtenReservedPaths.join(', ')}`);
+  if (PUBLIC_TARGET_RUNTIME_NAMESPACE.boundary.namespace_command_writes_files !== false) errors.push('target runtime --namespace command must remain no-write');
+  if (PUBLIC_TARGET_RUNTIME_NAMESPACE.boundary.check_command_writes_files !== false) errors.push('target runtime --check command must remain no-write');
+  if (!arrayEquals(projectedPackFiles, expectedPackFiles)) errors.push(`projected npm pack files must stay compact: ${expectedPackFiles.join(', ')}`);
+  if (result.package_context === 'source_repository') {
+    if (!result.source_file_present) errors.push('source runtime namespace file missing: .agent-onboard/runtime-namespace.json');
+    const namespacePath = path.join(root, '.agent-onboard', 'runtime-namespace.json');
+    if (fs.existsSync(namespacePath)) {
+      try {
+        const value = readJson(namespacePath);
+        const paths = Array.isArray(value.canonical_runtime_files) ? value.canonical_runtime_files.map((entry) => entry.path) : [];
+        if (value.schema !== 'agent-onboard-target-runtime-namespace-001') errors.push('runtime-namespace schema must be agent-onboard-target-runtime-namespace-001');
+        if (!arrayEquals(paths, expectedRuntimeFiles)) errors.push('runtime-namespace canonical_runtime_files must match canonical runtime order');
+        if (value.namespace_root !== '.agent-onboard') errors.push('runtime-namespace namespace_root must be .agent-onboard');
+      } catch (error) {
+        errors.push(`runtime-namespace is not valid JSON: ${error && error.message ? error.message : String(error)}`);
+      }
+    }
+  }
+  return {
+    schema: 'agent-onboard-public-target-runtime-namespace-check-result-001',
+    status: errors.length === 0 ? 'ok' : 'error',
+    package_name: PUBLIC_TARGET_RUNTIME_NAMESPACE.package_name,
+    version: VERSION,
+    release_line: PUBLIC_TARGET_RUNTIME_NAMESPACE.release_line,
+    command: PUBLIC_TARGET_RUNTIME_NAMESPACE.check_command,
+    package_root: root,
+    validated: {
+      namespace_root: PUBLIC_TARGET_RUNTIME_NAMESPACE.namespace_root === '.agent-onboard',
+      namespace_file: PUBLIC_TARGET_RUNTIME_NAMESPACE.namespace_file === '.agent-onboard/runtime-namespace.json',
+      runtime_file_order: arrayEquals(actualRuntimeFiles, expectedRuntimeFiles),
+      target_onboarding_canonical_file: targetCanonical.includes(PUBLIC_TARGET_RUNTIME_NAMESPACE.namespace_file),
+      target_onboarding_write_set: targetWritePaths.includes(PUBLIC_TARGET_RUNTIME_NAMESPACE.namespace_file),
+      reserved_future_files_not_written: writtenReservedPaths.length === 0,
+      runtime_commands_no_write: PUBLIC_TARGET_RUNTIME_NAMESPACE.boundary.namespace_command_writes_files === false && PUBLIC_TARGET_RUNTIME_NAMESPACE.boundary.check_command_writes_files === false,
+      source_runtime_namespace_file: result.package_context === 'source_repository' ? result.source_file_present : true,
+      compact_package_boundary: arrayEquals(projectedPackFiles, expectedPackFiles)
+    },
+    namespace_root: result.namespace_root,
+    namespace_file: result.namespace_file,
+    expected_runtime_files: expectedRuntimeFiles,
+    runtime_files: actualRuntimeFiles,
+    target_onboarding_canonical_files: targetCanonical,
+    target_onboarding_write_paths: targetWritePaths,
+    reserved_future_files: result.reserved_future_files,
+    source_file_present: result.source_file_present,
+    package_context: result.package_context,
+    expected_pack_files: expectedPackFiles,
+    projected_pack_files: projectedPackFiles,
+    boundary: result.boundary,
+    errors
+  };
+}
+
 function publicArchitectureMap(root = packageRoot()) {
   const pkg = readJson(path.join(root, 'package.json'));
   return {
@@ -2297,6 +2526,7 @@ function publicArchitectureMap(root = packageRoot()) {
     command_router: PUBLIC_COMMAND_ROUTER,
     domain_service_facades: PUBLIC_DOMAIN_SERVICE_FACADES,
     authority_first_read_index: PUBLIC_AUTHORITY_FIRST_READ_INDEX,
+    target_runtime_namespace: PUBLIC_TARGET_RUNTIME_NAMESPACE,
     current_runtime: {
       entrypoint: PUBLIC_ARCHITECTURE_MAP.public_source_shape.current_entrypoint,
       entrypoint_exists: fs.existsSync(path.join(root, PUBLIC_ARCHITECTURE_MAP.public_source_shape.current_entrypoint)),
@@ -2330,6 +2560,8 @@ function publicArchitectureCheck(root = packageRoot()) {
   const facadeErrors = facades.errors.map((error) => `domain service facades: ${error}`);
   const authority = publicAuthorityFirstReadCheck(root);
   const authorityErrors = authority.errors.map((error) => `authority: ${error}`);
+  const targetRuntime = publicTargetRuntimeNamespaceCheck(root);
+  const targetRuntimeErrors = targetRuntime.errors.map((error) => `target runtime: ${error}`);
   const errors = [];
   if (!arrayEquals(domainIds, expectedDomains)) errors.push(`architecture domain order must be ${expectedDomains.join(', ')}`);
   if (new Set(domainIds).size !== domainIds.length) errors.push('architecture domain ids must be unique');
@@ -2342,7 +2574,9 @@ function publicArchitectureCheck(root = packageRoot()) {
   if (map.map.package_boundary.architecture_facades_command_writes_files !== false) errors.push('architecture facades command must remain no-write');
   if (map.map.package_boundary.authority_first_read_command_writes_files !== false) errors.push('authority first-read command must remain no-write');
   if (map.map.package_boundary.authority_check_command_writes_files !== false) errors.push('authority check command must remain no-write');
-  errors.push(...routerErrors, ...facadeErrors, ...authorityErrors);
+  if (map.map.package_boundary.target_runtime_namespace_command_writes_files !== false) errors.push('target runtime namespace command must remain no-write');
+  if (map.map.package_boundary.target_runtime_check_command_writes_files !== false) errors.push('target runtime check command must remain no-write');
+  errors.push(...routerErrors, ...facadeErrors, ...authorityErrors, ...targetRuntimeErrors);
   return {
     schema: 'agent-onboard-public-architecture-check-result-001',
     status: errors.length === 0 ? 'ok' : 'error',
@@ -2360,7 +2594,8 @@ function publicArchitectureCheck(root = packageRoot()) {
       architecture_commands_no_write: map.map.package_boundary.architecture_map_command_writes_files === false && map.map.package_boundary.architecture_check_command_writes_files === false && map.map.package_boundary.architecture_router_command_writes_files === false && map.map.package_boundary.architecture_facades_command_writes_files === false && map.map.package_boundary.authority_first_read_command_writes_files === false && map.map.package_boundary.authority_check_command_writes_files === false,
       command_router_boundary: router.status === 'ok',
       domain_service_facades: facades.status === 'ok',
-      authority_first_read_index: authority.status === 'ok'
+      authority_first_read_index: authority.status === 'ok',
+      target_runtime_namespace: targetRuntime.status === 'ok'
     },
     domain_ids: domainIds,
     expected_pack_files: expectedPackFiles,
@@ -2368,6 +2603,7 @@ function publicArchitectureCheck(root = packageRoot()) {
     command_router: router,
     domain_service_facades: facades,
     authority_first_read_index: authority,
+    target_runtime_namespace: targetRuntime,
     boundary: map.boundary,
     errors
   };
@@ -2388,7 +2624,7 @@ function publicReleaseCheck(root = packageRoot()) {
   const architectureErrors = architecture.errors.map((error) => `architecture: ${error}`);
   const errors = [...metadataErrors, ...packErrors, ...messagingErrors, ...sourceLedgerErrors, ...architectureErrors];
   return {
-    schema: 'agent-onboard-public-release-check-result-008',
+    schema: 'agent-onboard-public-release-check-result-009',
     status: errors.length === 0 ? 'ok' : 'error',
     package_name: PUBLIC_RELEASE_CONTRACT.package_name,
     version: VERSION,
@@ -2408,7 +2644,8 @@ function publicReleaseCheck(root = packageRoot()) {
       public_architecture_map: architecture.status === 'ok',
       public_command_router: architecture.command_router && architecture.command_router.status === 'ok',
       public_domain_service_facades: architecture.domain_service_facades && architecture.domain_service_facades.status === 'ok',
-      public_authority_first_read_index: architecture.authority_first_read_index && architecture.authority_first_read_index.status === 'ok'
+      public_authority_first_read_index: architecture.authority_first_read_index && architecture.authority_first_read_index.status === 'ok',
+      public_target_runtime_namespace: architecture.target_runtime_namespace && architecture.target_runtime_namespace.status === 'ok'
     },
     expected_pack_files: expectedPackFiles,
     projected_pack_files: projectedPackFiles,
@@ -2626,6 +2863,8 @@ function publicTargetOnboardingPostPublishHandoff(root = packageRoot(), version 
     `npx agent-onboard@${version} architecture --facades`,
     `npx agent-onboard@${version} authority --first-read`,
     `npx agent-onboard@${version} authority --check`,
+    `npx agent-onboard@${version} target runtime --namespace`,
+    `npx agent-onboard@${version} target runtime --check`,
     `npx agent-onboard@${version} architecture --check`,
     `npx agent-onboard@${version} release --check`,
     `npx agent-onboard@${version} init --dry-run`,
@@ -2713,6 +2952,8 @@ function publicTargetOnboardingPublishedAcceptance(root = packageRoot()) {
     `npx agent-onboard@${VERSION} architecture --facades`,
     `npx agent-onboard@${VERSION} authority --first-read`,
     `npx agent-onboard@${VERSION} authority --check`,
+    `npx agent-onboard@${VERSION} target runtime --namespace`,
+    `npx agent-onboard@${VERSION} target runtime --check`,
     `npx agent-onboard@${VERSION} architecture --check`,
     `npx agent-onboard@${VERSION} target onboarding --plan`,
     `npx agent-onboard@${VERSION} target onboarding --fixture`,
@@ -2872,6 +3113,8 @@ function runRelease(args) {
       architecture_check_command: PUBLIC_RELEASE_CONTRACT.architecture_check_command,
       authority_first_read_command: PUBLIC_RELEASE_CONTRACT.authority_first_read_command,
       authority_check_command: PUBLIC_RELEASE_CONTRACT.authority_check_command,
+      target_runtime_namespace_command: PUBLIC_RELEASE_CONTRACT.target_runtime_namespace_command,
+      target_runtime_check_command: PUBLIC_RELEASE_CONTRACT.target_runtime_check_command,
       check_command: PUBLIC_RELEASE_CONTRACT.command,
       contract: PUBLIC_RELEASE_CONTRACT,
       fixture_matrix: PUBLIC_RELEASE_FIXTURE_MATRIX,
@@ -2879,6 +3122,7 @@ function runRelease(args) {
       command_router: PUBLIC_COMMAND_ROUTER,
       domain_service_facades: PUBLIC_DOMAIN_SERVICE_FACADES,
       authority_first_read_index: PUBLIC_AUTHORITY_FIRST_READ_INDEX,
+      target_runtime_namespace: PUBLIC_TARGET_RUNTIME_NAMESPACE,
       source_context: sourceContext(),
       post_publish_verification_commands: publicReleasePostPublishCommands(VERSION),
       boundary: {
@@ -2905,6 +3149,7 @@ function runRelease(args) {
       command_router: PUBLIC_COMMAND_ROUTER,
       domain_service_facades: PUBLIC_DOMAIN_SERVICE_FACADES,
       authority_first_read_index: PUBLIC_AUTHORITY_FIRST_READ_INDEX,
+      target_runtime_namespace: PUBLIC_TARGET_RUNTIME_NAMESPACE,
       source_context: sourceContext(),
       writes_files: false,
       publishes_package: false,
@@ -2925,6 +3170,7 @@ function runRelease(args) {
       command_router: PUBLIC_COMMAND_ROUTER,
       domain_service_facades: PUBLIC_DOMAIN_SERVICE_FACADES,
       authority_first_read_index: PUBLIC_AUTHORITY_FIRST_READ_INDEX,
+      target_runtime_namespace: PUBLIC_TARGET_RUNTIME_NAMESPACE,
       source_context: sourceContext(),
       writes_files: false,
       publishes_package: false,
@@ -3670,6 +3916,7 @@ function runTargetInstance(args) {
   if (write && dry) throw new Error('target-instance takeover accepts only one of --dry-run or --write');
 
   const plannedWrites = planWrites([
+    ['.agent-onboard/runtime-namespace.json', targetRuntimeNamespaceTemplate()],
     ['.agent-onboard/project.json', runtimeProjectTemplate()],
     ['.agent-onboard/work-items.json', workItemsTemplate()]
   ], { force });
@@ -3691,7 +3938,7 @@ function runTargetInstance(args) {
 }
 
 function help() {
-  process.stdout.write(`agent-onboard ${VERSION}\n\nagent-onboard status\nagent-onboard init --dry-run|--write [--force]\nagent-onboard agents --preview|--write [--force]\nagent-onboard guard --plan|--check-boundary\nagent-onboard authority --first-read|--check\nagent-onboard architecture --map|--router|--facades|--check\nagent-onboard release --plan|--contract|--fixture|--parity-smoke|--target-onboarding-smoke|--post-publish-handoff|--published-acceptance|--real-target-trial|--check\nagent-onboard target-config --schema\nagent-onboard target-config --template\nagent-onboard target-config --validate-template\nagent-onboard target-config --validate [agent-onboard.target.json]\nagent-onboard work-items --schema\nagent-onboard work-items --template\nagent-onboard work-items --validate-template\nagent-onboard work-items --validate [.agent-onboard/work-items.json]\nagent-onboard work-items --list [.agent-onboard/work-items.json]\nagent-onboard work-items --init --dry-run|--write [--force]\nagent-onboard work-items --append --dry-run|--write --id <public-work-item-id> --title <title>\nagent-onboard work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>\nagent-onboard work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>\nagent-onboard target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]\nagent-onboard target bootstrap --dry-run|--write [--force]\nagent-onboard target-instance takeover --dry-run|--write [--force]\n`);
+  process.stdout.write(`agent-onboard ${VERSION}\n\nagent-onboard status\nagent-onboard init --dry-run|--write [--force]\nagent-onboard agents --preview|--write [--force]\nagent-onboard guard --plan|--check-boundary\nagent-onboard authority --first-read|--check\nagent-onboard architecture --map|--router|--facades|--check\nagent-onboard release --plan|--contract|--fixture|--parity-smoke|--target-onboarding-smoke|--post-publish-handoff|--published-acceptance|--real-target-trial|--check\nagent-onboard target-config --schema\nagent-onboard target-config --template\nagent-onboard target-config --validate-template\nagent-onboard target-config --validate [agent-onboard.target.json]\nagent-onboard work-items --schema\nagent-onboard work-items --template\nagent-onboard work-items --validate-template\nagent-onboard work-items --validate [.agent-onboard/work-items.json]\nagent-onboard work-items --list [.agent-onboard/work-items.json]\nagent-onboard work-items --init --dry-run|--write [--force]\nagent-onboard work-items --append --dry-run|--write --id <public-work-item-id> --title <title>\nagent-onboard work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>\nagent-onboard work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>\nagent-onboard target runtime --namespace|--check\nagent-onboard target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]\nagent-onboard target bootstrap --dry-run|--write [--force]\nagent-onboard target-instance takeover --dry-run|--write [--force]\n`);
   return 0;
 }
 
@@ -3705,9 +3952,32 @@ function runStatus() {
   return 0;
 }
 
+
+function runTargetRuntime(args) {
+  if (args.length === 1 && args[0] === '--namespace') {
+    json(publicTargetRuntimeNamespace());
+    return 0;
+  }
+  if (args.length === 1 && args[0] === '--check') {
+    const result = publicTargetRuntimeNamespaceCheck();
+    json(result);
+    return result.status === 'ok' ? 0 : 1;
+  }
+  json({
+    schema: 'agent-onboard-target-runtime-command-error-001',
+    status: 'error',
+    command_family: 'target runtime',
+    message: 'target runtime requires --namespace or --check',
+    writes_files: false,
+    publishes_package: false
+  });
+  return 1;
+}
+
 function runTargetCommand(args) {
+  if (args[0] === 'runtime') return runTargetRuntime(args.slice(1));
   if (args[0] === 'onboarding') return runTargetOnboarding(args.slice(1));
-  if (args[0] !== 'bootstrap') throw new Error('target supports only: onboarding --plan|--fixture|--trial [--target <path>]|--write [--force], bootstrap');
+  if (args[0] !== 'bootstrap') throw new Error('target supports only: runtime --namespace|--check, onboarding --plan|--fixture|--trial [--target <path>]|--write [--force], bootstrap');
   return runTargetBootstrap(args.slice(1));
 }
 
@@ -3732,6 +4002,7 @@ const DOMAIN_SERVICE_FACADES = Object.freeze({
   targetService: Object.freeze({
     runInit,
     runTargetConfig,
+    runTargetRuntime,
     runTargetCommand,
     runTargetInstance
   }),
@@ -3815,10 +4086,12 @@ module.exports = {
   targetOnboardingDryRunFixture,
   targetOnboardingRealTargetTrial,
   targetOnboardingWriteSet,
+  targetRuntimeNamespaceTemplate,
   planTargetOnboardingWritesForRoot,
   TARGET_ONBOARDING_SURFACE_PLAN,
   TARGET_ONBOARDING_DRY_RUN_FIXTURE_MATRIX,
   PUBLIC_RELEASE_FIXTURE_MATRIX,
   PUBLIC_ARCHITECTURE_MAP,
-  PUBLIC_COMMAND_ROUTER
+  PUBLIC_COMMAND_ROUTER,
+  PUBLIC_TARGET_RUNTIME_NAMESPACE
 };
