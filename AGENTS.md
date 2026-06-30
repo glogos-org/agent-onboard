@@ -76,6 +76,8 @@ node cli/agent-onboard.js architecture --installed-fallback-smoke
 node cli/agent-onboard.js architecture --installed-fallback-check
 node cli/agent-onboard.js architecture --second-slice-plan
 node cli/agent-onboard.js architecture --second-slice-check
+node cli/agent-onboard.js architecture --authority-bundle-parity
+node cli/agent-onboard.js architecture --authority-bundle-parity-check
 node cli/agent-onboard.js architecture --check
 ```
 
@@ -173,6 +175,20 @@ Run these source checks before publishing this gate:
 ```sh
 node cli/agent-onboard.js architecture --second-slice-first-slice
 node cli/agent-onboard.js architecture --second-slice-first-slice-check
+node cli/agent-onboard.js architecture --authority-bundle-parity
+node cli/agent-onboard.js architecture --authority-bundle-parity-check
 ```
 
 The authority slice is source-only and is not a public import API.
+
+
+## Public source module extraction authority bundle parity gate
+
+Run these source checks before publishing this gate:
+
+```sh
+node cli/agent-onboard.js architecture --authority-bundle-parity
+node cli/agent-onboard.js architecture --authority-bundle-parity-check
+```
+
+The authority source slice must remain source-only, read-only, outside `package.json#files`, and must exclude write-capable `agents` extraction.

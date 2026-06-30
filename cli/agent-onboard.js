@@ -6,7 +6,7 @@ const os = require('os');
 const path = require('path');
 const VERSION = require('../package.json').version;
 const TARGET_CONFIG_FILE = 'agent-onboard.target.json';
-const RELEASE_LINE = 'public_source_module_extraction_second_slice_first_slice_gate';
+const RELEASE_LINE = 'public_source_module_extraction_authority_bundle_parity_gate';
 
 process.stdout.on('error', (error) => {
   if (error && error.code === 'EPIPE') process.exit(0);
@@ -301,7 +301,7 @@ const PUBLIC_ARCHITECTURE_MAP = Object.freeze({
   ]),
   public_source_shape: Object.freeze({
     current_entrypoint: 'cli/agent-onboard.js',
-    physical_domain_split_status: 'source_module_second_slice_first_slice_applied',
+    physical_domain_split_status: 'source_module_authority_bundle_parity_applied',
     source_partition_plan_file: '.agent-onboard/source-partition-plan.json',
     source_extraction_rehearsal_file: '.agent-onboard/source-extraction-rehearsal.json',
     source_extraction_golden_outputs_file: '.agent-onboard/source-extraction-golden-outputs.json',
@@ -315,6 +315,8 @@ const PUBLIC_ARCHITECTURE_MAP = Object.freeze({
     source_module_extraction_second_slice_planned_module: 'src/domains/authority.js',
     source_module_extraction_second_slice_first_slice_file: '.agent-onboard/source-module-extraction-second-slice-first-slice.json',
     source_module_extraction_second_slice_first_slice_module: 'src/domains/authority.js',
+    source_module_extraction_authority_bundle_parity_file: '.agent-onboard/source-module-extraction-authority-bundle-parity.json',
+    source_module_extraction_authority_bundle_parity_module: 'src/domains/authority.js',
     source_can_grow_with_tests: true,
     npm_package_remains_compact: true,
     expected_pack_files: Object.freeze(['LICENSE', 'README.md', 'cli/agent-onboard.js', 'package.json'])
@@ -351,6 +353,8 @@ const PUBLIC_ARCHITECTURE_MAP = Object.freeze({
     architecture_second_slice_check_command_writes_files: false,
     architecture_second_slice_first_slice_command_writes_files: false,
     architecture_second_slice_first_slice_check_command_writes_files: false,
+    architecture_authority_bundle_parity_command_writes_files: false,
+    architecture_authority_bundle_parity_check_command_writes_files: false,
     version_sprawl_check_command_writes_files: false,
     published_package_surface_file_count: 4,
     command_router_dispatch_must_be_table_driven: true,
@@ -367,7 +371,8 @@ const PUBLIC_ARCHITECTURE_MAP = Object.freeze({
     source_module_extraction_runtime_bridge_applied: true,
     source_module_extraction_installed_fallback_smoke_applied: true,
     source_module_extraction_second_slice_planning_applied: true,
-    source_module_extraction_second_slice_first_slice_applied: true
+    source_module_extraction_second_slice_first_slice_applied: true,
+    source_module_extraction_authority_bundle_parity_applied: true
   }),
   next_candidate_gates: Object.freeze([
     Object.freeze({
@@ -580,6 +585,7 @@ const PUBLIC_PACKAGE_SURFACE_PRESERVATION = Object.freeze({
     '.agent-onboard/source-module-extraction-installed-fallback-smoke.json',
     '.agent-onboard/source-module-extraction-second-slice-plan.json',
     '.agent-onboard/source-module-extraction-second-slice-first-slice.json',
+    '.agent-onboard/source-module-extraction-authority-bundle-parity.json',
     'src/domains/core.js',
     'src/domains/authority.js',
     'test/agent-onboard.test.js'
@@ -1193,6 +1199,54 @@ const PUBLIC_SOURCE_MODULE_EXTRACTION_SECOND_SLICE_FIRST_SLICE = Object.freeze({
   })
 });
 
+
+const PUBLIC_SOURCE_MODULE_EXTRACTION_AUTHORITY_BUNDLE_PARITY = Object.freeze({
+  schema: 'agent-onboard-public-source-module-extraction-authority-bundle-parity-001',
+  title: 'Agent-Onboard Public Source Module Extraction Authority Bundle Parity',
+  package_name: 'agent-onboard',
+  release_line: RELEASE_LINE,
+  command: 'agent-onboard architecture --authority-bundle-parity',
+  check_command: 'agent-onboard architecture --authority-bundle-parity-check',
+  authority_bundle_parity_file: '.agent-onboard/source-module-extraction-authority-bundle-parity.json',
+  source_module: PUBLIC_SOURCE_MODULE_EXTRACTION_SECOND_SLICE_FIRST_SLICE.source_module,
+  purpose: 'Prove that the source-only authority domain slice and the bundled CLI architecture/authority view remain equivalent before any authority runtime bridge is admitted.',
+  prerequisite_second_slice_first_slice_file: PUBLIC_SOURCE_MODULE_EXTRACTION_SECOND_SLICE_FIRST_SLICE.second_slice_first_slice_file,
+  parity_status: 'authority_source_slice_matches_bundled_cli_view',
+  parity_scope: Object.freeze([
+    'authority domain id and facade match between source slice and bundled architecture map',
+    'authority-owned read-only command set matches bundled command router authority and guard routes admitted for this slice',
+    'authority read order matches the bundled first-read index',
+    'write-capable agents command extraction remains excluded',
+    'source module remains source-only and excluded from npm package allowlist',
+    'installed package context may omit source-only modules while bundled CLI checks still pass'
+  ]),
+  bundled_view: Object.freeze({
+    source_of_truth: 'cli/agent-onboard.js bundled authority and architecture metadata',
+    public_bin_entrypoint: 'cli/agent-onboard.js',
+    published_package_file_count: 4
+  }),
+  boundary: Object.freeze({
+    authority_bundle_parity_command_writes_files: false,
+    authority_bundle_parity_check_command_writes_files: false,
+    creates_bundle_artifact: false,
+    creates_source_modules: false,
+    moves_existing_source_files: false,
+    changes_public_cli_outputs: false,
+    changes_cli_runtime_dependency_graph: false,
+    exports_source_module_as_public_api: false,
+    includes_write_capable_agents_command: false,
+    writes_package_root: false,
+    writes_target_repository_state: false,
+    git_mutation: false,
+    installs_dependencies: false,
+    runs_package_manager: false,
+    runs_build_test_deploy: false,
+    publishes_package: false,
+    mutates_registry: false,
+    package_allowlist_unchanged: true
+  })
+});
+
 const PUBLIC_VERSION_REFERENCE_POLICY = Object.freeze({
   schema: 'agent-onboard-public-version-reference-policy-001',
   title: 'Agent-Onboard Public Version Reference Policy',
@@ -1218,6 +1272,7 @@ const PUBLIC_VERSION_REFERENCE_POLICY = Object.freeze({
     '.agent-onboard/source-module-extraction-installed-fallback-smoke.json',
     '.agent-onboard/source-module-extraction-second-slice-plan.json',
     '.agent-onboard/source-module-extraction-second-slice-first-slice.json',
+    '.agent-onboard/source-module-extraction-authority-bundle-parity.json',
     'src/domains/core.js',
     'src/domains/authority.js',
     'test/agent-onboard.test.js'
@@ -1273,6 +1328,8 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
   architecture_second_slice_check_command: 'agent-onboard architecture --second-slice-check',
   architecture_second_slice_first_slice_command: 'agent-onboard architecture --second-slice-first-slice',
   architecture_second_slice_first_slice_check_command: 'agent-onboard architecture --second-slice-first-slice-check',
+  architecture_authority_bundle_parity_command: 'agent-onboard architecture --authority-bundle-parity',
+  architecture_authority_bundle_parity_check_command: 'agent-onboard architecture --authority-bundle-parity-check',
   version_sprawl_check_command: 'agent-onboard release --version-sprawl-check',
   architecture_check_command: 'agent-onboard architecture --check',
   authority_first_read_command: 'agent-onboard authority --first-read',
@@ -1300,6 +1357,7 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
     '.agent-onboard/source-module-extraction-installed-fallback-smoke.json',
     '.agent-onboard/source-module-extraction-second-slice-plan.json',
     '.agent-onboard/source-module-extraction-second-slice-first-slice.json',
+    '.agent-onboard/source-module-extraction-authority-bundle-parity.json',
     'src/domains/core.js',
     'src/domains/authority.js',
     'test/agent-onboard.test.js'
@@ -1356,6 +1414,8 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
     'node cli/agent-onboard.js architecture --second-slice-check',
     'node cli/agent-onboard.js architecture --second-slice-first-slice',
     'node cli/agent-onboard.js architecture --second-slice-first-slice-check',
+    'node cli/agent-onboard.js architecture --authority-bundle-parity',
+    'node cli/agent-onboard.js architecture --authority-bundle-parity-check',
     'node cli/agent-onboard.js release --version-sprawl-check',
     'node cli/agent-onboard.js authority --first-read',
     'node cli/agent-onboard.js authority --check',
@@ -1403,6 +1463,8 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
     'npx agent-onboard@<version> architecture --second-slice-check',
     'npx agent-onboard@<version> architecture --second-slice-first-slice',
     'npx agent-onboard@<version> architecture --second-slice-first-slice-check',
+    'npx agent-onboard@<version> architecture --authority-bundle-parity',
+    'npx agent-onboard@<version> architecture --authority-bundle-parity-check',
     'npx agent-onboard@<version> release --version-sprawl-check',
     'npx agent-onboard@<version> authority --first-read',
     'npx agent-onboard@<version> authority --check',
@@ -1598,6 +1660,12 @@ const PUBLIC_RELEASE_FIXTURE_MATRIX = Object.freeze({
       expected_status: 'ok',
       validates: Object.freeze(['the authority source-only module slice exists', 'the second slice exports the admitted authority metadata contract', 'write-capable agents command extraction remains excluded', 'the slice is not a public import API', 'npm package allowlist remains compact']),
       boundary: 'architecture --second-slice-first-slice and --second-slice-first-slice-check are read-only; they do not move existing source files, change public CLI outputs, export source modules as public API, expand the npm package allowlist, mutate Git, publish, or touch target repository state'
+    }),
+    Object.freeze({
+      id: 'public_source_module_extraction_authority_bundle_parity',
+      expected_status: 'ok',
+      validates: Object.freeze(['the source-only authority module output matches the bundled CLI authority view', 'the parity check is source-aware but installed-package tolerant', 'write-capable agents command extraction remains excluded', 'the authority source module remains outside the npm allowlist', 'runtime outputs and command routing stay unchanged']),
+      boundary: 'architecture --authority-bundle-parity and --authority-bundle-parity-check are read-only; they do not bundle files, move source, change public CLI outputs, expand the npm package allowlist, run npm, mutate Git, publish, or touch target repository state'
     }),
     Object.freeze({
       id: 'public_version_reference_policy',
@@ -4964,6 +5032,165 @@ function publicSourceModuleExtractionSecondSliceFirstSliceCheck(root = packageRo
   };
 }
 
+
+function bundledAuthorityDomainForParity(root = packageRoot()) {
+  const map = publicArchitectureMap(root);
+  const facade = PUBLIC_DOMAIN_SERVICE_FACADES.facades.find((item) => item.id === 'authority');
+  const domain = map.map.canonical_domains.find((item) => item.id === 'authority');
+  return {
+    schema: 'agent-onboard-public-bundled-authority-domain-view-001',
+    domain: domain ? domain.id : null,
+    facade: facade ? facade.service : null,
+    service: facade ? facade.service : null,
+    source: 'cli/agent-onboard.js',
+    owns_commands: PUBLIC_SOURCE_MODULE_EXTRACTION_SECOND_SLICE_FIRST_SLICE.expected_owned_commands.slice(),
+    excluded_commands: ['agents --write', 'agents --preview'],
+    writes_files: false,
+    state_writer: false,
+    state_files: domain ? domain.state_files.slice() : [],
+    read_order_paths: PUBLIC_AUTHORITY_FIRST_READ_INDEX.read_order.map((item) => item.path),
+    package_context: sourceContext(root).package_context
+  };
+}
+
+function publicSourceModuleExtractionAuthorityBundleParity(root = packageRoot()) {
+  const pkg = readJson(path.join(root, 'package.json'));
+  const context = sourceContext(root);
+  const sourceSlice = publicSourceModuleExtractionSecondSliceFirstSlice(root);
+  const bundledAuthority = bundledAuthorityDomainForParity(root);
+  return {
+    schema: 'agent-onboard-public-source-module-extraction-authority-bundle-parity-result-001',
+    status: sourceSlice.status,
+    package_name: PUBLIC_SOURCE_MODULE_EXTRACTION_AUTHORITY_BUNDLE_PARITY.package_name,
+    version: VERSION,
+    release_line: PUBLIC_SOURCE_MODULE_EXTRACTION_AUTHORITY_BUNDLE_PARITY.release_line,
+    command: PUBLIC_SOURCE_MODULE_EXTRACTION_AUTHORITY_BUNDLE_PARITY.command,
+    check_command: PUBLIC_SOURCE_MODULE_EXTRACTION_AUTHORITY_BUNDLE_PARITY.check_command,
+    package_root: root,
+    package_context: context.package_context,
+    package_json_version: pkg.version,
+    authority_bundle_parity_file: PUBLIC_SOURCE_MODULE_EXTRACTION_AUTHORITY_BUNDLE_PARITY.authority_bundle_parity_file,
+    authority_bundle_parity_file_present: fs.existsSync(path.join(root, PUBLIC_SOURCE_MODULE_EXTRACTION_AUTHORITY_BUNDLE_PARITY.authority_bundle_parity_file)),
+    source_module: PUBLIC_SOURCE_MODULE_EXTRACTION_AUTHORITY_BUNDLE_PARITY.source_module,
+    source_module_present: fs.existsSync(path.join(root, PUBLIC_SOURCE_MODULE_EXTRACTION_AUTHORITY_BUNDLE_PARITY.source_module)),
+    source_slice_value: sourceSlice.source_module_value,
+    source_slice_load_error: sourceSlice.source_module_load_error,
+    bundled_authority_view: bundledAuthority,
+    authority_bundle_parity: PUBLIC_SOURCE_MODULE_EXTRACTION_AUTHORITY_BUNDLE_PARITY,
+    projected_pack_files: packageJsonProjectedPackFiles(pkg),
+    boundary: {
+      writes_files: false,
+      writes_source_state: false,
+      writes_target_repository_state: false,
+      git_mutation: false,
+      installs_dependencies: false,
+      runs_package_manager: false,
+      runs_build_test_deploy: false,
+      publishes_package: false,
+      mutates_registry: false
+    }
+  };
+}
+
+function publicSourceModuleExtractionAuthorityBundleParityCheck(root = packageRoot()) {
+  const result = publicSourceModuleExtractionAuthorityBundleParity(root);
+  const firstSlice = publicSourceModuleExtractionSecondSliceFirstSliceCheck(root);
+  const expectedPackFiles = PUBLIC_RELEASE_CONTRACT.expected_pack_files.slice().sort();
+  const gate = PUBLIC_SOURCE_MODULE_EXTRACTION_AUTHORITY_BUNDLE_PARITY;
+  const errors = [];
+  if (firstSlice.status !== 'ok') errors.push(...firstSlice.errors.map((error) => `second slice first-slice: ${error}`));
+  if (result.status !== 'ok') errors.push(`authority source slice module load failed: ${result.source_slice_load_error}`);
+  if (!arrayEquals(result.projected_pack_files, expectedPackFiles)) errors.push(`projected npm pack files must remain ${expectedPackFiles.join(', ')}`);
+  if (gate.parity_status !== 'authority_source_slice_matches_bundled_cli_view') errors.push('authority bundle parity status must remain authority_source_slice_matches_bundled_cli_view');
+  if (gate.boundary.authority_bundle_parity_command_writes_files !== false) errors.push('architecture --authority-bundle-parity must remain no-write');
+  if (gate.boundary.authority_bundle_parity_check_command_writes_files !== false) errors.push('architecture --authority-bundle-parity-check must remain no-write');
+  if (gate.boundary.creates_bundle_artifact !== false) errors.push('authority bundle parity gate must not create bundle artifacts');
+  if (gate.boundary.changes_public_cli_outputs !== false) errors.push('authority bundle parity gate must not change public CLI outputs');
+  if (gate.boundary.changes_cli_runtime_dependency_graph !== false) errors.push('authority bundle parity gate must not change CLI runtime dependency graph');
+  if (gate.boundary.includes_write_capable_agents_command !== false) errors.push('authority bundle parity gate must exclude write-capable agents command extraction');
+  if (gate.boundary.package_allowlist_unchanged !== true) errors.push('authority bundle parity gate must preserve package allowlist');
+
+  let parityFileStatus = 'not_present_installed_context_allowed';
+  let parityFileSchema = null;
+  if (result.authority_bundle_parity_file_present) {
+    try {
+      const parityFile = readJson(path.join(root, result.authority_bundle_parity_file));
+      parityFileSchema = parityFile.schema || null;
+      if (parityFile.schema !== gate.schema) errors.push(`${result.authority_bundle_parity_file} schema must be ${gate.schema}`);
+      if (parityFile.source_module !== gate.source_module) errors.push(`${result.authority_bundle_parity_file} source_module must be ${gate.source_module}`);
+      if (parityFile.parity_status !== gate.parity_status) errors.push(`${result.authority_bundle_parity_file} parity_status must be ${gate.parity_status}`);
+      if (!parityFile.boundary || parityFile.boundary.package_allowlist_unchanged !== true) errors.push(`${result.authority_bundle_parity_file} must preserve package_allowlist_unchanged`);
+      if (!parityFile.boundary || parityFile.boundary.includes_write_capable_agents_command !== false) errors.push(`${result.authority_bundle_parity_file} must exclude write-capable agents command extraction`);
+      parityFileStatus = 'present_validated';
+    } catch (error) {
+      parityFileStatus = 'present_invalid_json';
+      errors.push(`${result.authority_bundle_parity_file} is not valid JSON: ${error && error.message ? error.message : String(error)}`);
+    }
+  } else if (result.package_context === 'source_repository') {
+    parityFileStatus = 'missing_source_context';
+    errors.push(`${result.authority_bundle_parity_file} must be present in source repository context`);
+  }
+
+  const sourceSlice = result.source_slice_value || null;
+  const sourceContextAllowedMissing = result.package_context === 'installed_package' && !sourceSlice;
+  const commandParity = sourceContextAllowedMissing || (sourceSlice && arrayEquals(sourceSlice.owns_commands || [], result.bundled_authority_view.owns_commands));
+  const domainParity = sourceContextAllowedMissing || (sourceSlice && sourceSlice.domain === result.bundled_authority_view.domain);
+  const facadeParity = sourceContextAllowedMissing || (sourceSlice && sourceSlice.facade === result.bundled_authority_view.facade);
+  const readOrderParity = sourceContextAllowedMissing || (sourceSlice && arrayEquals(sourceSlice.read_order_paths || [], result.bundled_authority_view.read_order_paths));
+  const excludedAgentsParity = sourceContextAllowedMissing || (sourceSlice && sourceSlice.includes_write_capable_agents_command === false && arrayEquals(sourceSlice.excluded_commands || [], result.bundled_authority_view.excluded_commands));
+  const writeParity = sourceContextAllowedMissing || (sourceSlice && sourceSlice.writes_files === result.bundled_authority_view.writes_files && sourceSlice.state_writer === result.bundled_authority_view.state_writer);
+  if (!domainParity) errors.push('authority source slice domain must match bundled authority domain view');
+  if (!facadeParity) errors.push('authority source slice facade must match bundled authority facade view');
+  if (!commandParity) errors.push('authority source slice owned commands must match bundled authority command routes');
+  if (!readOrderParity) errors.push('authority source slice read order must match bundled first-read index');
+  if (!excludedAgentsParity) errors.push('authority source slice must exclude write-capable agents commands');
+  if (!writeParity) errors.push('authority source slice read/write boundary must match bundled authority view');
+
+  return {
+    schema: 'agent-onboard-public-source-module-extraction-authority-bundle-parity-check-result-001',
+    status: errors.length === 0 ? 'ok' : 'error',
+    package_name: gate.package_name,
+    version: VERSION,
+    release_line: gate.release_line,
+    command: gate.check_command,
+    package_root: root,
+    validated: {
+      second_slice_first_slice: firstSlice.status === 'ok',
+      authority_bundle_parity_status: gate.parity_status === 'authority_source_slice_matches_bundled_cli_view',
+      source_slice_domain_matches_bundled_authority: domainParity,
+      source_slice_facade_matches_bundled_authority: facadeParity,
+      source_slice_commands_match_bundled_authority: commandParity,
+      source_slice_read_order_matches_bundled_first_read: readOrderParity,
+      write_capable_agents_command_excluded: excludedAgentsParity,
+      source_slice_write_boundary_matches_bundled_authority: writeParity,
+      source_module_present_or_installed_context_allowed: result.source_module_present || result.package_context === 'installed_package',
+      authority_bundle_parity_file_present_or_installed_context_allowed: parityFileStatus === 'present_validated' || parityFileStatus === 'not_present_installed_context_allowed',
+      authority_bundle_parity_commands_no_write: gate.boundary.authority_bundle_parity_command_writes_files === false && gate.boundary.authority_bundle_parity_check_command_writes_files === false,
+      public_cli_outputs_unchanged_by_gate: gate.boundary.changes_public_cli_outputs === false,
+      cli_runtime_dependency_graph_unchanged: gate.boundary.changes_cli_runtime_dependency_graph === false,
+      package_allowlist_unchanged: arrayEquals(result.projected_pack_files, expectedPackFiles)
+    },
+    source_slice: result.source_slice_value,
+    bundled_authority_view: result.bundled_authority_view,
+    source_authority_bundle_parity_file: {
+      path: result.authority_bundle_parity_file,
+      present: result.authority_bundle_parity_file_present,
+      status: parityFileStatus,
+      schema: parityFileSchema,
+      source_context_required: result.package_context === 'source_repository'
+    },
+    prerequisite_second_slice_first_slice: {
+      status: firstSlice.status,
+      errors: firstSlice.errors
+    },
+    projected_pack_files: result.projected_pack_files,
+    expected_pack_files: expectedPackFiles,
+    boundary: result.boundary,
+    errors
+  };
+}
+
+
 function publicArchitectureCheck(root = packageRoot()) {
   const map = publicArchitectureMap(root);
   const expectedDomains = ['core', 'authority', 'work_items', 'claims', 'target', 'release_package'];
@@ -4998,6 +5225,8 @@ function publicArchitectureCheck(root = packageRoot()) {
   const secondSlicePlanErrors = secondSlicePlan.errors.map((error) => `second slice plan: ${error}`);
   const secondSliceFirstSlice = publicSourceModuleExtractionSecondSliceFirstSliceCheck(root);
   const secondSliceFirstSliceErrors = secondSliceFirstSlice.errors.map((error) => `second slice first-slice: ${error}`);
+  const authorityBundleParity = publicSourceModuleExtractionAuthorityBundleParityCheck(root);
+  const authorityBundleParityErrors = authorityBundleParity.errors.map((error) => `authority bundle parity: ${error}`);
   const errors = [];
   if (!arrayEquals(domainIds, expectedDomains)) errors.push(`architecture domain order must be ${expectedDomains.join(', ')}`);
   if (new Set(domainIds).size !== domainIds.length) errors.push('architecture domain ids must be unique');
@@ -5028,12 +5257,14 @@ function publicArchitectureCheck(root = packageRoot()) {
   if (map.map.package_boundary.architecture_second_slice_check_command_writes_files !== false) errors.push('architecture second slice check command must remain no-write');
   if (map.map.package_boundary.architecture_second_slice_first_slice_command_writes_files !== false) errors.push('architecture second slice first-slice command must remain no-write');
   if (map.map.package_boundary.architecture_second_slice_first_slice_check_command_writes_files !== false) errors.push('architecture second slice first-slice check command must remain no-write');
+  if (map.map.package_boundary.architecture_authority_bundle_parity_command_writes_files !== false) errors.push('architecture authority bundle parity command must remain no-write');
+  if (map.map.package_boundary.architecture_authority_bundle_parity_check_command_writes_files !== false) errors.push('architecture authority bundle parity check command must remain no-write');
   if (map.map.package_boundary.version_sprawl_check_command_writes_files !== false) errors.push('version sprawl check command must remain no-write');
   if (map.map.package_boundary.authority_first_read_command_writes_files !== false) errors.push('authority first-read command must remain no-write');
   if (map.map.package_boundary.authority_check_command_writes_files !== false) errors.push('authority check command must remain no-write');
   if (map.map.package_boundary.target_runtime_namespace_command_writes_files !== false) errors.push('target runtime namespace command must remain no-write');
   if (map.map.package_boundary.target_runtime_check_command_writes_files !== false) errors.push('target runtime check command must remain no-write');
-  errors.push(...routerErrors, ...facadeErrors, ...authorityErrors, ...targetRuntimeErrors, ...sourcePartitionErrors, ...sourceExtractionErrors, ...goldenOutputErrors, ...adapterBoundaryErrors, ...firstSliceErrors, ...bundleParityErrors, ...runtimeBridgeErrors, ...installedFallbackSmokeErrors, ...secondSlicePlanErrors, ...secondSliceFirstSliceErrors);
+  errors.push(...routerErrors, ...facadeErrors, ...authorityErrors, ...targetRuntimeErrors, ...sourcePartitionErrors, ...sourceExtractionErrors, ...goldenOutputErrors, ...adapterBoundaryErrors, ...firstSliceErrors, ...bundleParityErrors, ...runtimeBridgeErrors, ...installedFallbackSmokeErrors, ...secondSlicePlanErrors, ...secondSliceFirstSliceErrors, ...authorityBundleParityErrors);
   return {
     schema: 'agent-onboard-public-architecture-check-result-001',
     status: errors.length === 0 ? 'ok' : 'error',
@@ -5048,7 +5279,7 @@ function publicArchitectureCheck(root = packageRoot()) {
       domain_ids_unique: new Set(domainIds).size === domainIds.length,
       runtime_entrypoint_present: map.current_runtime.entrypoint_exists,
       compact_package_boundary: arrayEquals(projectedPackFiles, expectedPackFiles),
-      architecture_commands_no_write: map.map.package_boundary.architecture_map_command_writes_files === false && map.map.package_boundary.architecture_check_command_writes_files === false && map.map.package_boundary.architecture_router_command_writes_files === false && map.map.package_boundary.architecture_facades_command_writes_files === false && map.map.package_boundary.architecture_partition_plan_command_writes_files === false && map.map.package_boundary.architecture_partition_check_command_writes_files === false && map.map.package_boundary.architecture_extraction_rehearsal_command_writes_files === false && map.map.package_boundary.architecture_extraction_check_command_writes_files === false && map.map.package_boundary.architecture_golden_outputs_command_writes_files === false && map.map.package_boundary.architecture_golden_check_command_writes_files === false && map.map.package_boundary.architecture_adapter_boundary_command_writes_files === false && map.map.package_boundary.architecture_adapter_check_command_writes_files === false && map.map.package_boundary.architecture_first_slice_command_writes_files === false && map.map.package_boundary.architecture_first_slice_check_command_writes_files === false && map.map.package_boundary.architecture_bundle_parity_command_writes_files === false && map.map.package_boundary.architecture_bundle_parity_check_command_writes_files === false && map.map.package_boundary.architecture_runtime_bridge_command_writes_files === false && map.map.package_boundary.architecture_runtime_bridge_check_command_writes_files === false && map.map.package_boundary.architecture_installed_fallback_smoke_command_writes_files === false && map.map.package_boundary.architecture_installed_fallback_check_command_writes_files === false && map.map.package_boundary.architecture_second_slice_plan_command_writes_files === false && map.map.package_boundary.architecture_second_slice_check_command_writes_files === false && map.map.package_boundary.architecture_second_slice_first_slice_command_writes_files === false && map.map.package_boundary.architecture_second_slice_first_slice_check_command_writes_files === false && map.map.package_boundary.version_sprawl_check_command_writes_files === false && map.map.package_boundary.authority_first_read_command_writes_files === false && map.map.package_boundary.authority_check_command_writes_files === false,
+      architecture_commands_no_write: map.map.package_boundary.architecture_map_command_writes_files === false && map.map.package_boundary.architecture_check_command_writes_files === false && map.map.package_boundary.architecture_router_command_writes_files === false && map.map.package_boundary.architecture_facades_command_writes_files === false && map.map.package_boundary.architecture_partition_plan_command_writes_files === false && map.map.package_boundary.architecture_partition_check_command_writes_files === false && map.map.package_boundary.architecture_extraction_rehearsal_command_writes_files === false && map.map.package_boundary.architecture_extraction_check_command_writes_files === false && map.map.package_boundary.architecture_golden_outputs_command_writes_files === false && map.map.package_boundary.architecture_golden_check_command_writes_files === false && map.map.package_boundary.architecture_adapter_boundary_command_writes_files === false && map.map.package_boundary.architecture_adapter_check_command_writes_files === false && map.map.package_boundary.architecture_first_slice_command_writes_files === false && map.map.package_boundary.architecture_first_slice_check_command_writes_files === false && map.map.package_boundary.architecture_bundle_parity_command_writes_files === false && map.map.package_boundary.architecture_bundle_parity_check_command_writes_files === false && map.map.package_boundary.architecture_runtime_bridge_command_writes_files === false && map.map.package_boundary.architecture_runtime_bridge_check_command_writes_files === false && map.map.package_boundary.architecture_installed_fallback_smoke_command_writes_files === false && map.map.package_boundary.architecture_installed_fallback_check_command_writes_files === false && map.map.package_boundary.architecture_second_slice_plan_command_writes_files === false && map.map.package_boundary.architecture_second_slice_check_command_writes_files === false && map.map.package_boundary.architecture_second_slice_first_slice_command_writes_files === false && map.map.package_boundary.architecture_second_slice_first_slice_check_command_writes_files === false && map.map.package_boundary.architecture_authority_bundle_parity_command_writes_files === false && map.map.package_boundary.architecture_authority_bundle_parity_check_command_writes_files === false && map.map.package_boundary.version_sprawl_check_command_writes_files === false && map.map.package_boundary.authority_first_read_command_writes_files === false && map.map.package_boundary.authority_check_command_writes_files === false,
       command_router_boundary: router.status === 'ok',
       domain_service_facades: facades.status === 'ok',
       authority_first_read_index: authority.status === 'ok',
@@ -5062,7 +5293,8 @@ function publicArchitectureCheck(root = packageRoot()) {
       source_module_extraction_runtime_bridge: runtimeBridge.status === 'ok',
       source_module_extraction_installed_fallback_smoke: installedFallbackSmoke.status === 'ok',
       source_module_extraction_second_slice_plan: secondSlicePlan.status === 'ok',
-      source_module_extraction_second_slice_first_slice: secondSliceFirstSlice.status === 'ok'
+      source_module_extraction_second_slice_first_slice: secondSliceFirstSlice.status === 'ok',
+      source_module_extraction_authority_bundle_parity: authorityBundleParity.status === 'ok'
     },
     domain_ids: domainIds,
     expected_pack_files: expectedPackFiles,
@@ -5081,6 +5313,7 @@ function publicArchitectureCheck(root = packageRoot()) {
     source_module_extraction_installed_fallback_smoke: installedFallbackSmoke,
     source_module_extraction_second_slice_plan: secondSlicePlan,
     source_module_extraction_second_slice_first_slice: secondSliceFirstSlice,
+    source_module_extraction_authority_bundle_parity: authorityBundleParity,
     boundary: map.boundary,
     errors
   };
@@ -5205,8 +5438,10 @@ function publicReleaseCheck(root = packageRoot()) {
   const secondSlicePlanErrors = secondSlicePlan.errors.map((error) => `second slice plan: ${error}`);
   const secondSliceFirstSlice = publicSourceModuleExtractionSecondSliceFirstSliceCheck(root);
   const secondSliceFirstSliceErrors = secondSliceFirstSlice.errors.map((error) => `second slice first-slice: ${error}`);
+  const authorityBundleParity = publicSourceModuleExtractionAuthorityBundleParityCheck(root);
+  const authorityBundleParityErrors = authorityBundleParity.errors.map((error) => `authority bundle parity: ${error}`);
   const architectureParityErrors = architectureParity.errors.map((error) => `installed architecture parity: ${error}`);
-  const errors = [...metadataErrors, ...packErrors, ...messagingErrors, ...sourceLedgerErrors, ...architectureErrors, ...packageSurfaceErrors, ...architectureParityErrors, ...installedFallbackSmokeErrors, ...secondSlicePlanErrors, ...secondSliceFirstSliceErrors, ...versionPolicyErrors];
+  const errors = [...metadataErrors, ...packErrors, ...messagingErrors, ...sourceLedgerErrors, ...architectureErrors, ...packageSurfaceErrors, ...architectureParityErrors, ...installedFallbackSmokeErrors, ...secondSlicePlanErrors, ...secondSliceFirstSliceErrors, ...authorityBundleParityErrors, ...versionPolicyErrors];
   return {
     schema: 'agent-onboard-public-release-check-result-013',
     status: errors.length === 0 ? 'ok' : 'error',
@@ -5240,6 +5475,7 @@ function publicReleaseCheck(root = packageRoot()) {
       public_source_module_extraction_installed_fallback_smoke: installedFallbackSmoke.status === 'ok',
       public_source_module_extraction_second_slice_plan: secondSlicePlan.status === 'ok',
       public_source_module_extraction_second_slice_first_slice: secondSliceFirstSlice.status === 'ok',
+      public_source_module_extraction_authority_bundle_parity: authorityBundleParity.status === 'ok',
       public_version_reference_policy: versionPolicy.status === 'ok',
       public_package_surface_preservation: packageSurface.status === 'ok',
       public_installed_parity_architecture_smoke: architectureParity.status === 'ok'
@@ -5258,6 +5494,7 @@ function publicReleaseCheck(root = packageRoot()) {
     public_source_module_extraction_installed_fallback_smoke: installedFallbackSmoke,
     public_source_module_extraction_second_slice_plan: secondSlicePlan,
     public_source_module_extraction_second_slice_first_slice: secondSliceFirstSlice,
+    public_source_module_extraction_authority_bundle_parity: authorityBundleParity,
     public_version_reference_policy: versionPolicy,
     public_package_surface_preservation: packageSurface,
     public_installed_parity_architecture_smoke: architectureParity,
@@ -5946,6 +6183,15 @@ function runArchitecture(args) {
     json(result);
     return result.status === 'ok' ? 0 : 1;
   }
+  if (args.length === 1 && args[0] === '--authority-bundle-parity') {
+    json(publicSourceModuleExtractionAuthorityBundleParity());
+    return 0;
+  }
+  if (args.length === 1 && args[0] === '--authority-bundle-parity-check') {
+    const result = publicSourceModuleExtractionAuthorityBundleParityCheck();
+    json(result);
+    return result.status === 'ok' ? 0 : 1;
+  }
   if (args.length === 1 && args[0] === '--check') {
     const result = publicArchitectureCheck();
     json(result);
@@ -5955,7 +6201,7 @@ function runArchitecture(args) {
     schema: 'agent-onboard-architecture-command-error-001',
     status: 'error',
     command_family: 'architecture',
-    message: 'architecture requires --map, --router, --facades, --partition-plan, --partition-check, --extraction-rehearsal, --extraction-check, --golden-outputs, --golden-check, --adapter-boundary, --adapter-check, --first-slice, --first-slice-check, --bundle-parity, --bundle-parity-check, --runtime-bridge, --runtime-bridge-check, --installed-fallback-smoke, --installed-fallback-check, --second-slice-plan, --second-slice-check, --second-slice-first-slice, --second-slice-first-slice-check, or --check',
+    message: 'architecture requires --map, --router, --facades, --partition-plan, --partition-check, --extraction-rehearsal, --extraction-check, --golden-outputs, --golden-check, --adapter-boundary, --adapter-check, --first-slice, --first-slice-check, --bundle-parity, --bundle-parity-check, --runtime-bridge, --runtime-bridge-check, --installed-fallback-smoke, --installed-fallback-check, --second-slice-plan, --second-slice-check, --second-slice-first-slice, --second-slice-first-slice-check, --authority-bundle-parity, --authority-bundle-parity-check, or --check',
     writes_files: false,
     publishes_package: false
   });
@@ -6024,6 +6270,8 @@ function runRelease(args) {
       architecture_second_slice_check_command: PUBLIC_RELEASE_CONTRACT.architecture_second_slice_check_command,
       architecture_second_slice_first_slice_command: PUBLIC_RELEASE_CONTRACT.architecture_second_slice_first_slice_command,
       architecture_second_slice_first_slice_check_command: PUBLIC_RELEASE_CONTRACT.architecture_second_slice_first_slice_check_command,
+      architecture_authority_bundle_parity_command: PUBLIC_RELEASE_CONTRACT.architecture_authority_bundle_parity_command,
+      architecture_authority_bundle_parity_check_command: PUBLIC_RELEASE_CONTRACT.architecture_authority_bundle_parity_check_command,
       version_sprawl_check_command: PUBLIC_RELEASE_CONTRACT.version_sprawl_check_command,
       architecture_check_command: PUBLIC_RELEASE_CONTRACT.architecture_check_command,
       authority_first_read_command: PUBLIC_RELEASE_CONTRACT.authority_first_read_command,
@@ -6910,7 +7158,7 @@ function runTargetInstance(args) {
 }
 
 function help() {
-  process.stdout.write(`agent-onboard ${VERSION}\n\nagent-onboard status\nagent-onboard init --dry-run|--write [--force]\nagent-onboard agents --preview|--write [--force]\nagent-onboard guard --plan|--check-boundary\nagent-onboard authority --first-read|--check\nagent-onboard architecture --map|--router|--facades|--partition-plan|--partition-check|--extraction-rehearsal|--extraction-check|--golden-outputs|--golden-check|--adapter-boundary|--adapter-check|--first-slice|--first-slice-check|--bundle-parity|--bundle-parity-check|--runtime-bridge|--runtime-bridge-check|--installed-fallback-smoke|--installed-fallback-check|--second-slice-plan|--second-slice-check|--second-slice-first-slice|--second-slice-first-slice-check|--check\nagent-onboard release --plan|--contract|--fixture|--surface|--surface-check|--version-sprawl-check|--parity-smoke|--architecture-parity-smoke|--target-onboarding-smoke|--post-publish-handoff|--published-acceptance|--real-target-trial|--check\nagent-onboard target-config --schema\nagent-onboard target-config --template\nagent-onboard target-config --validate-template\nagent-onboard target-config --validate [agent-onboard.target.json]\nagent-onboard work-items --schema\nagent-onboard work-items --template\nagent-onboard work-items --validate-template\nagent-onboard work-items --validate [.agent-onboard/work-items.json]\nagent-onboard work-items --list [.agent-onboard/work-items.json]\nagent-onboard work-items --init --dry-run|--write [--force]\nagent-onboard work-items --append --dry-run|--write --id <public-work-item-id> --title <title>\nagent-onboard work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>\nagent-onboard work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>\nagent-onboard target runtime --namespace|--check\nagent-onboard target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]\nagent-onboard target bootstrap --dry-run|--write [--force]\nagent-onboard target-instance takeover --dry-run|--write [--force]\n`);
+  process.stdout.write(`agent-onboard ${VERSION}\n\nagent-onboard status\nagent-onboard init --dry-run|--write [--force]\nagent-onboard agents --preview|--write [--force]\nagent-onboard guard --plan|--check-boundary\nagent-onboard authority --first-read|--check\nagent-onboard architecture --map|--router|--facades|--partition-plan|--partition-check|--extraction-rehearsal|--extraction-check|--golden-outputs|--golden-check|--adapter-boundary|--adapter-check|--first-slice|--first-slice-check|--bundle-parity|--bundle-parity-check|--runtime-bridge|--runtime-bridge-check|--installed-fallback-smoke|--installed-fallback-check|--second-slice-plan|--second-slice-check|--second-slice-first-slice|--second-slice-first-slice-check|--authority-bundle-parity|--authority-bundle-parity-check|--check\nagent-onboard release --plan|--contract|--fixture|--surface|--surface-check|--version-sprawl-check|--parity-smoke|--architecture-parity-smoke|--target-onboarding-smoke|--post-publish-handoff|--published-acceptance|--real-target-trial|--check\nagent-onboard target-config --schema\nagent-onboard target-config --template\nagent-onboard target-config --validate-template\nagent-onboard target-config --validate [agent-onboard.target.json]\nagent-onboard work-items --schema\nagent-onboard work-items --template\nagent-onboard work-items --validate-template\nagent-onboard work-items --validate [.agent-onboard/work-items.json]\nagent-onboard work-items --list [.agent-onboard/work-items.json]\nagent-onboard work-items --init --dry-run|--write [--force]\nagent-onboard work-items --append --dry-run|--write --id <public-work-item-id> --title <title>\nagent-onboard work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>\nagent-onboard work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>\nagent-onboard target runtime --namespace|--check\nagent-onboard target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]\nagent-onboard target bootstrap --dry-run|--write [--force]\nagent-onboard target-instance takeover --dry-run|--write [--force]\n`);
   return 0;
 }
 
@@ -7051,6 +7299,8 @@ module.exports = {
   publicArchitectureCheck,
   publicSourceDomainExtractionRehearsal,
   publicSourceDomainExtractionRehearsalCheck,
+  publicSourceModuleExtractionAuthorityBundleParity,
+  publicSourceModuleExtractionAuthorityBundleParityCheck,
   publicInstalledPackageParitySmoke,
   publicInstalledParityArchitectureSmoke,
   publicTargetOnboardingInstalledPackageSmoke,
@@ -7070,6 +7320,7 @@ module.exports = {
   PUBLIC_COMMAND_ROUTER,
   PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL,
   PUBLIC_SOURCE_MODULE_EXTRACTION_ADAPTER_BOUNDARY,
+  PUBLIC_SOURCE_MODULE_EXTRACTION_AUTHORITY_BUNDLE_PARITY,
   PUBLIC_TARGET_RUNTIME_NAMESPACE,
   PUBLIC_INSTALLED_PARITY_ARCHITECTURE_SMOKE
 };

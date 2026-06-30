@@ -51,3 +51,10 @@ Package surface gate:
 Public source module extraction second slice first-slice gate:
 - node cli/agent-onboard.js architecture --second-slice-first-slice
 - node cli/agent-onboard.js architecture --second-slice-first-slice-check
+- node cli/agent-onboard.js architecture --authority-bundle-parity
+- node cli/agent-onboard.js architecture --authority-bundle-parity-check
+
+
+Public source module extraction authority bundle parity gate:
+- node cli/agent-onboard.js architecture --authority-bundle-parity
+- node cli/agent-onboard.js architecture --authority-bundle-parity-check

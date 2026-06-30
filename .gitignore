@@ -29,6 +29,7 @@ agent-onboard-*.tgz
 !.agent-onboard/source-module-extraction-installed-fallback-smoke.json
 !.agent-onboard/source-module-extraction-second-slice-plan.json
 !.agent-onboard/source-module-extraction-second-slice-first-slice.json
+!.agent-onboard/source-module-extraction-authority-bundle-parity.json
 
 # Source modules are intentionally trackable while the npm package surface stays compact.
 !src/
