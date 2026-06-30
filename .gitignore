@@ -13,6 +13,7 @@ coverage/
 !.agent-onboard/
 !.agent-onboard/project.json
 !.agent-onboard/work-items.json
+!.agent-onboard/authority-path.json
 .env
 .env.*
 

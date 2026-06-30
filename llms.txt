@@ -1,0 +1,22 @@
+# agent-onboard agent-onboard first-read entrypoint
+
+This repository uses agent-onboard public authority ordering for human and AI-assisted work.
+
+Target:
+
+- name: agent-onboard
+- kind: node
+- control package: agent-onboard@0.0.31
+
+First-read order:
+
+1. AGENTS.md — human and agent operating rules.
+2. llms.txt — AI-readable public entrypoint.
+3. .agent-onboard/authority-path.json — machine-readable authority path index.
+4. agent-onboard.target.json — target boundary declaration.
+5. .agent-onboard/project.json — target runtime identity.
+6. .agent-onboard/work-items.json — public work item ledger.
+7. README.md — public package or repository documentation.
+8. Raw evidence/source files — on demand only after the authority files above.
+
+Default boundary: start read-only. Do not install dependencies, run builds/tests/deploys, publish, push, or overwrite non-identical files unless the repository owner explicitly authorizes that action.

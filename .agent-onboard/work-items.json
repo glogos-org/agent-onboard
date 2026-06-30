@@ -823,8 +823,8 @@
         "checks_not_run": [
           "npm publish",
           "npm view agent-onboard version dist-tags",
-          "npx agent-onboard@0.0.30 architecture --facades",
-          "npx agent-onboard@0.0.30 release --check"
+          "npx agent-onboard@0.0.31 architecture --facades",
+          "npx agent-onboard@0.0.31 release --check"
         ],
         "known_non_pass": [
           "Post-publish registry verification remains an operator handoff after publishing this source candidate."
@@ -835,6 +835,53 @@
       "id": "P1S3M1W4",
       "milestone_id": "P1S3M1",
       "title": "Public authority first-read index gate",
+      "status": "closed",
+      "closure": {
+        "actor": "release-maintainer",
+        "closed_at": "2026-06-30T00:00:00.000Z",
+        "summary": "Closed by adding the public authority first-read index gate in agent-onboard@0.0.31. The gate introduces authority --first-read and authority --check, materializes llms.txt and .agent-onboard/authority-path.json as source authority files, extends target onboarding canonical files with the first-read authority surface, validates authority ordering inside architecture --check and release --check, and preserves the compact npm package allowlist.",
+        "changed_files": [
+          "README.md",
+          "AGENTS.md",
+          "llms.txt",
+          ".agent-onboard/authority-path.json",
+          "cli/agent-onboard.js",
+          "test/agent-onboard.test.js",
+          "package.json",
+          ".agent-onboard/work-items.json"
+        ],
+        "checks_run": [
+          "npm test",
+          "node cli/agent-onboard.js authority --first-read",
+          "node cli/agent-onboard.js authority --check",
+          "node cli/agent-onboard.js architecture --map",
+          "node cli/agent-onboard.js architecture --router",
+          "node cli/agent-onboard.js architecture --facades",
+          "node cli/agent-onboard.js architecture --check",
+          "node cli/agent-onboard.js release --contract",
+          "node cli/agent-onboard.js release --fixture",
+          "node cli/agent-onboard.js release --post-publish-handoff",
+          "node cli/agent-onboard.js release --published-acceptance",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "npm pack --dry-run --json",
+          "npm publish --dry-run --json --ignore-scripts"
+        ],
+        "checks_not_run": [
+          "npm publish",
+          "npm view agent-onboard version dist-tags",
+          "npx agent-onboard@0.0.31 authority --check",
+          "npx agent-onboard@0.0.31 release --check"
+        ],
+        "known_non_pass": [
+          "Post-publish registry verification remains an operator handoff after publishing this source candidate."
+        ]
+      }
+    },
+    {
+      "id": "P1S3M1W5",
+      "milestone_id": "P1S3M1",
+      "title": "Public target runtime namespace gate",
       "status": "open"
     }
   ]

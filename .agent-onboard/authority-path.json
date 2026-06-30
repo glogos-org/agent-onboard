@@ -1,0 +1,76 @@
+{
+  "schema": "agent-onboard-authority-path-001",
+  "package_name": "agent-onboard",
+  "package_version": "0.0.31",
+  "release_line": "public_authority_first_read_index_gate",
+  "target": {
+    "name": "agent-onboard",
+    "root": ".",
+    "kind": "node"
+  },
+  "command": "agent-onboard authority --first-read",
+  "check_command": "agent-onboard authority --check",
+  "first_read_order": [
+    {
+      "order": 1,
+      "path": "AGENTS.md",
+      "role": "human_and_agent_operating_rules",
+      "required_when_present": true
+    },
+    {
+      "order": 2,
+      "path": "llms.txt",
+      "role": "ai_readable_public_entrypoint",
+      "required_when_present": true
+    },
+    {
+      "order": 3,
+      "path": ".agent-onboard/authority-path.json",
+      "role": "machine_readable_authority_index",
+      "required_when_present": true
+    },
+    {
+      "order": 4,
+      "path": "agent-onboard.target.json",
+      "role": "target_boundary_declaration",
+      "required_when_present": true
+    },
+    {
+      "order": 5,
+      "path": ".agent-onboard/project.json",
+      "role": "target_runtime_project_identity",
+      "required_when_present": true
+    },
+    {
+      "order": 6,
+      "path": ".agent-onboard/work-items.json",
+      "role": "public_work_item_ledger",
+      "required_when_present": true
+    },
+    {
+      "order": 7,
+      "path": "README.md",
+      "role": "public_package_documentation",
+      "required_when_present": false
+    },
+    {
+      "order": 8,
+      "path": "raw evidence/source files",
+      "role": "on_demand_only_after_authority_files",
+      "required_when_present": false
+    }
+  ],
+  "canonical_authority_files": [
+    "AGENTS.md",
+    "llms.txt",
+    ".agent-onboard/authority-path.json"
+  ],
+  "boundary": {
+    "start_mode": "read_only_preview",
+    "writes_require_explicit_owner_authorization": true,
+    "dependency_install_requires_owner_authorization": true,
+    "build_test_deploy_requires_owner_authorization": true,
+    "publish_push_requires_owner_authorization": true,
+    "raw_evidence_is_on_demand_only": true
+  }
+}
