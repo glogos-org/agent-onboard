@@ -8,10 +8,10 @@ The generated files are intended to be read by agents, wrappers, CI hooks, or fu
 
 ## Install
 
-For the `0.0.x` line, install with `~0.0.26` so target repos can receive later `0.0.x` updates without crossing the `0.1.0` boundary:
+For the `0.0.x` line, install with `~0.0.28` so target repos can receive later `0.0.x` updates without crossing the `0.1.0` boundary:
 
 ```sh
-npm install --save-dev agent-onboard@~0.0.26
+npm install --save-dev agent-onboard@~0.0.28
 ```
 
 Run without installing:
@@ -97,6 +97,8 @@ npx agent-onboard agents --preview
 npx agent-onboard agents --write
 npx agent-onboard guard --plan
 npx agent-onboard guard --check-boundary
+npx agent-onboard architecture --map
+npx agent-onboard architecture --check
 npx agent-onboard release --plan
 npx agent-onboard release --contract
 npx agent-onboard release --fixture
@@ -104,6 +106,7 @@ npx agent-onboard release --parity-smoke
 npx agent-onboard release --target-onboarding-smoke
 npx agent-onboard release --post-publish-handoff
 npx agent-onboard release --published-acceptance
+npx agent-onboard release --real-target-trial
 npx agent-onboard release --check
 npx agent-onboard target-config --schema
 npx agent-onboard target-config --template
@@ -124,12 +127,29 @@ npx agent-onboard work-items --close --dry-run --id <public-work-item-id> --acto
 npx agent-onboard work-items --close --write --id <public-work-item-id> --actor <actor> --summary <summary>
 npx agent-onboard target onboarding --plan
 npx agent-onboard target onboarding --fixture
+npx agent-onboard target onboarding --trial
 npx agent-onboard target onboarding --write
 npx agent-onboard target bootstrap --dry-run
 npx agent-onboard target bootstrap --write
 npx agent-onboard target-instance takeover --dry-run
 npx agent-onboard target-instance takeover --write
 ```
+
+## Public architecture map
+
+Print the public architecture kernel without moving files or writing state:
+
+```sh
+npx agent-onboard architecture --map
+```
+
+Validate that the public architecture map still declares the six canonical domains, preserves the compact npm package boundary, and keeps architecture commands read-only:
+
+```sh
+npx agent-onboard architecture --check
+```
+
+The public architecture kernel is: `core`, `authority`, `work_items`, `claims`, `target`, and `release_package`. The current package may still use one CLI entrypoint while the public source line prepares command-router and domain-facade gates.
 
 ## Public release verification
 
@@ -139,7 +159,7 @@ For a source release candidate, validate the package-owned release contract befo
 npx agent-onboard release --check
 ```
 
-The check validates package metadata, bin entrypoints, the projected npm pack allowlist, public artifact messaging, and the source work-item ledger when that ledger is present. It does not publish, mutate registry state, install dependencies, or run Git operations. The response reports whether it is running in a source-repository context or an installed-package context, then includes local pre-publish commands and post-publish verification commands for the operator.
+The check validates package metadata, bin entrypoints, the projected npm pack allowlist, public artifact messaging, the public architecture map, and the source work-item ledger when that ledger is present. It does not publish, mutate registry state, install dependencies, or run Git operations. The response reports whether it is running in a source-repository context or an installed-package context, then includes local pre-publish commands and post-publish verification commands for the operator.
 
 Preview the release plan without running validation:
 
@@ -159,7 +179,7 @@ Print the release fixture matrix without mutating files, package state, or regis
 npx agent-onboard release --fixture
 ```
 
-The fixture matrix documents the contract regression cases used by the source tests: valid source context, valid installed-package context, stale package version, npm pack allowlist drift, missing bin entrypoint, reserved public artifact messaging tokens, projected installed-package parity smoke, target onboarding installed-package smoke, target onboarding post-publish handoff, and published package acceptance rehearsal.
+The fixture matrix documents the contract regression cases used by the source tests: valid source context, valid installed-package context, stale package version, npm pack allowlist drift, missing bin entrypoint, reserved public artifact messaging tokens, projected installed-package parity smoke, target onboarding installed-package smoke, target onboarding post-publish handoff, published package acceptance rehearsal, real target repo trial, and public architecture map.
 
 Run the installed package parity smoke without executing package-manager, registry, Git, build, or temp-file write operations:
 
@@ -183,7 +203,7 @@ Emit the post-publish verification handoff for the exact package version:
 npx agent-onboard release --post-publish-handoff
 ```
 
-The post-publish handoff emits the version-pinned npm view and npx commands an operator should run after publishing. It includes metadata verification, installed-package release contract and fixture checks, parity smoke, target onboarding smoke, published acceptance, release check, and target onboarding plan/fixture checks. The command itself does not query the registry, publish, mutate registry state, install dependencies, run Git, or write target files.
+The post-publish handoff emits the version-pinned npm view and npx commands an operator should run after publishing. It includes metadata verification, installed-package release contract and fixture checks, parity smoke, target onboarding smoke, published acceptance, real target trial, architecture map/check, release check, and target onboarding plan/fixture/trial checks. The command itself does not query the registry, publish, mutate registry state, install dependencies, run Git, or write target files.
 
 Run the published package acceptance check after publish with a version-pinned package, or locally as a source rehearsal before publish:
 
@@ -191,7 +211,15 @@ Run the published package acceptance check after publish with a version-pinned p
 npx agent-onboard release --published-acceptance
 ```
 
-The published acceptance command composes release check, post-publish handoff validation, parity smoke, target onboarding smoke, target onboarding plan, and target onboarding fixture. When run from `npx agent-onboard@<version>` after publish it should report an installed-package context; when run in the source repo before publish it reports source-repository rehearsal. It does not publish, mutate registry state, install dependencies, run Git, or write target files outside its temporary smoke target.
+The published acceptance command composes release check, post-publish handoff validation, parity smoke, target onboarding smoke, target onboarding plan, target onboarding fixture, and real target trial. When run from `npx agent-onboard@<version>` after publish it should report an installed-package context; when run in the source repo before publish it reports source-repository rehearsal. It does not publish, mutate registry state, install dependencies, run Git, or write target files outside its temporary smoke target.
+
+Run the real target trial gate without writing target files:
+
+```sh
+npx agent-onboard release --real-target-trial
+```
+
+The real target trial command runs a no-write onboarding readiness check against a realistic temporary target repo. It verifies that target onboarding projects only canonical files, reports conflict readiness before writes, avoids package-manager/Git/build/publish operations, and cleans up its temporary target.
 
 After install, these command names are available:
 
@@ -219,6 +247,20 @@ npx agent-onboard target onboarding --fixture
 ```
 
 The fixture matrix covers the read-only plan, target bootstrap dry-run, target instance takeover dry-run, AGENTS.md preview, aggregate explicit-write projection, conflict detection, and force-preview/no-write behavior.
+
+Run a no-write trial against the current target repo before explicit onboarding writes:
+
+```sh
+npx agent-onboard target onboarding --trial
+```
+
+Run the same trial against an explicit target path from outside that repo:
+
+```sh
+npx agent-onboard target onboarding --trial --target <target-repo-path>
+```
+
+The trial reports target identity, planned canonical files, conflicts with existing non-identical files, and whether the target is ready for an explicit `target onboarding --write`. It writes nothing.
 
 Write the aggregate canonical onboarding surface with one explicit command:
 
@@ -564,6 +606,8 @@ This version does not:
 
 `0.0.26` adds the public target onboarding published package acceptance gate: `release --published-acceptance` composes release check, post-publish handoff validation, parity smoke, target onboarding smoke, plan, and fixture validation so the version-pinned published package can be accepted after registry verification.
 
+`0.0.28` adds the public target onboarding real target repo trial gate: `target onboarding --trial [--target <path>]` performs a read-only onboarding readiness check against the current or explicit target path, and `release --real-target-trial` validates the same no-write behavior against a realistic temporary target repo.
+
 <!-- ## Star History
 
 [![Star History Chart](https://api.star-history.com/chart?repos=glogos-org/agent-onboard&type=date&legend=top-left)](https://www.star-history.com/?repos=glogos-org%2Fagent-onboard&type=date&legend=top-left) -->
@@ -580,9 +624,9 @@ The source repository can carry its own public Agent-Onboard operating surface:
 Agent participation is explicit. An agent should first list the ledger, then claim only an assigned work item:
 
 ```sh
-npx agent-onboard@0.0.26 work-items --list
-npx agent-onboard@0.0.26 work-items --claim --dry-run --id <public-work-item-id> --actor <agent-or-human-name>
-npx agent-onboard@0.0.26 work-items --claim --write --id <public-work-item-id> --actor <agent-or-human-name>
+npx agent-onboard@0.0.28 work-items --list
+npx agent-onboard@0.0.28 work-items --claim --dry-run --id <public-work-item-id> --actor <agent-or-human-name>
+npx agent-onboard@0.0.28 work-items --claim --write --id <public-work-item-id> --actor <agent-or-human-name>
 ```
 
 The npm package surface remains intentionally compact. The self-dogfood files are source-repository operating files and are not included in the public npm tarball.

@@ -41,6 +41,12 @@
       "id": "P1S2",
       "program_id": "P1",
       "title": "Public target onboarding stage",
+      "status": "closed"
+    },
+    {
+      "id": "P1S3",
+      "program_id": "P1",
+      "title": "Public architecture absorption stage",
       "status": "open"
     }
   ],
@@ -61,6 +67,12 @@
       "id": "P1S2M1",
       "stage_id": "P1S2",
       "title": "Public target onboarding surface milestone",
+      "status": "closed"
+    },
+    {
+      "id": "P1S3M1",
+      "stage_id": "P1S3",
+      "title": "Public architecture kernel milestone",
       "status": "open"
     }
   ],
@@ -626,6 +638,119 @@
       "id": "P1S2M1W7",
       "milestone_id": "P1S2M1",
       "title": "Public target onboarding real target repo trial gate",
+      "status": "closed",
+      "closure": {
+        "actor": "release-maintainer",
+        "closed_at": "2026-06-30T00:00:00.000Z",
+        "summary": "Closed by adding the public target onboarding real target repo trial gate in agent-onboard@0.0.27. The gate adds a read-only target onboarding trial command for explicit target paths plus a release-level realistic target fixture trial that projects canonical onboarding files without writing target state.",
+        "changed_files": [
+          "README.md",
+          "AGENTS.md",
+          "cli/agent-onboard.js",
+          "test/agent-onboard.test.js",
+          "package.json",
+          ".agent-onboard/work-items.json"
+        ],
+        "checks_run": [
+          "npm test",
+          "npm pack --dry-run --json",
+          "npm publish --dry-run --json --ignore-scripts",
+          "node cli/agent-onboard.js status",
+          "node cli/agent-onboard.js target onboarding --plan",
+          "node cli/agent-onboard.js target onboarding --fixture",
+          "node cli/agent-onboard.js target onboarding --trial",
+          "node cli/agent-onboard.js release --contract",
+          "node cli/agent-onboard.js release --fixture",
+          "node cli/agent-onboard.js release --parity-smoke",
+          "node cli/agent-onboard.js release --target-onboarding-smoke",
+          "node cli/agent-onboard.js release --post-publish-handoff",
+          "node cli/agent-onboard.js release --published-acceptance",
+          "node cli/agent-onboard.js release --real-target-trial",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json"
+        ],
+        "checks_not_run": [
+          "npm publish"
+        ],
+        "known_non_pass": [
+          "No external real target repository was provided in this handoff; the source candidate includes a read-only --target path trial command and a realistic temporary target fixture trial."
+        ]
+      }
+    },
+    {
+      "id": "P1S2M1W8",
+      "milestone_id": "P1S2M1",
+      "title": "Public target onboarding owner handoff evidence gate",
+      "status": "closed",
+      "closure": {
+        "actor": "release-maintainer",
+        "closed_at": "2026-06-30T00:00:00.000Z",
+        "summary": "Closed by carrying the owner handoff from the 0.0.27 real target trial into agent-onboard@0.0.28. The next admitted public line is architecture absorption; any real target write remains owner-authorized only.",
+        "changed_files": [
+          ".agent-onboard/work-items.json",
+          "README.md",
+          "AGENTS.md",
+          "cli/agent-onboard.js",
+          "test/agent-onboard.test.js",
+          "package.json"
+        ],
+        "checks_run": [
+          "npm test",
+          "npm pack --dry-run --json",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js architecture --map",
+          "node cli/agent-onboard.js architecture --check"
+        ],
+        "checks_not_run": [
+          "npm publish",
+          "npm view agent-onboard version dist-tags",
+          "npx agent-onboard@0.0.28 release --check"
+        ],
+        "known_non_pass": [
+          "Post-publish registry verification remains an operator handoff after publishing this source candidate."
+        ]
+      }
+    },
+    {
+      "id": "P1S3M1W1",
+      "milestone_id": "P1S3M1",
+      "title": "Public architecture map gate",
+      "status": "closed",
+      "closure": {
+        "actor": "release-maintainer",
+        "closed_at": "2026-06-30T00:00:00.000Z",
+        "summary": "Closed by adding the public architecture map gate in agent-onboard@0.0.28. The gate declares the six-domain architecture kernel, exposes architecture --map and architecture --check, and includes architecture validation in release --check while preserving the compact npm package allowlist.",
+        "changed_files": [
+          "README.md",
+          "AGENTS.md",
+          "cli/agent-onboard.js",
+          "test/agent-onboard.test.js",
+          "package.json",
+          ".agent-onboard/work-items.json"
+        ],
+        "checks_run": [
+          "npm test",
+          "npm pack --dry-run --json",
+          "node cli/agent-onboard.js architecture --map",
+          "node cli/agent-onboard.js architecture --check",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js release --fixture"
+        ],
+        "checks_not_run": [
+          "npm publish",
+          "npm view agent-onboard version dist-tags",
+          "npx agent-onboard@0.0.28 architecture --check",
+          "npx agent-onboard@0.0.28 release --check"
+        ],
+        "known_non_pass": [
+          "Post-publish registry verification remains an operator handoff after publishing this source candidate."
+        ]
+      }
+    },
+    {
+      "id": "P1S3M1W2",
+      "milestone_id": "P1S3M1",
+      "title": "Public command router boundary gate",
       "status": "open"
     }
   ]

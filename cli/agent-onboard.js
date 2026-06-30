@@ -6,6 +6,7 @@ const os = require('os');
 const path = require('path');
 const VERSION = require('../package.json').version;
 const TARGET_CONFIG_FILE = 'agent-onboard.target.json';
+const RELEASE_LINE = 'public_architecture_map_gate';
 
 process.stdout.on('error', (error) => {
   if (error && error.code === 'EPIPE') process.exit(0);
@@ -238,11 +239,101 @@ const BOUNDARY_GUARD_CONTRACT = Object.freeze({
 });
 
 
+
+const PUBLIC_ARCHITECTURE_MAP = Object.freeze({
+  schema: 'agent-onboard-public-architecture-map-001',
+  title: 'Agent-Onboard Public Architecture Kernel Map',
+  package_name: 'agent-onboard',
+  release_line: RELEASE_LINE,
+  command: 'agent-onboard architecture --map',
+  check_command: 'agent-onboard architecture --check',
+  purpose: 'Declare the stable public architecture kernel before source code is physically partitioned into domain modules.',
+  canonical_domains: Object.freeze([
+    Object.freeze({
+      id: 'core',
+      title: 'Core command and utility domain',
+      owns: Object.freeze(['status output', 'help output', 'JSON response discipline', 'shared no-mutation boundary helpers']),
+      public_surface: Object.freeze(['status', 'help', 'version']),
+      state_files: Object.freeze([])
+    }),
+    Object.freeze({
+      id: 'authority',
+      title: 'Authority and first-read domain',
+      owns: Object.freeze(['read order', 'operator boundary language', 'future first-read authority index']),
+      public_surface: Object.freeze(['AGENTS.md read order', 'agent-onboard.target.json authority level']),
+      state_files: Object.freeze(['AGENTS.md', 'agent-onboard.target.json'])
+    }),
+    Object.freeze({
+      id: 'work_items',
+      title: 'Work item ledger domain',
+      owns: Object.freeze(['program/stage/milestone/work-item vocabulary', 'append flow', 'claim flow', 'closure envelope']),
+      public_surface: Object.freeze(['work-items --schema', 'work-items --template', 'work-items --list', 'work-items --append', 'work-items --claim', 'work-items --close']),
+      state_files: Object.freeze(['.agent-onboard/work-items.json'])
+    }),
+    Object.freeze({
+      id: 'claims',
+      title: 'Claim and handoff coordination domain',
+      owns: Object.freeze(['claim actor envelope', 'claim next steps', 'handoff evidence checklist', 'future stale-claim and conflict rules']),
+      public_surface: Object.freeze(['work-items --claim', 'work-items --close']),
+      state_files: Object.freeze(['.agent-onboard/work-items.json'])
+    }),
+    Object.freeze({
+      id: 'target',
+      title: 'Target repository onboarding domain',
+      owns: Object.freeze(['target config schema', 'target runtime project file', 'target onboarding plan', 'target write boundary', 'real target trial']),
+      public_surface: Object.freeze(['target-config', 'target onboarding', 'target bootstrap', 'target-instance takeover', 'guard --check-boundary']),
+      state_files: Object.freeze(['agent-onboard.target.json', '.agent-onboard/project.json', '.agent-onboard/work-items.json', 'AGENTS.md'])
+    }),
+    Object.freeze({
+      id: 'release_package',
+      title: 'Release and npm package domain',
+      owns: Object.freeze(['release contract', 'fixture matrix', 'npm pack allowlist', 'package parity smoke', 'post-publish handoff']),
+      public_surface: Object.freeze(['release --plan', 'release --contract', 'release --fixture', 'release --parity-smoke', 'release --target-onboarding-smoke', 'release --post-publish-handoff', 'release --published-acceptance', 'release --real-target-trial', 'release --check']),
+      state_files: Object.freeze(['package.json', 'README.md', 'LICENSE', 'cli/agent-onboard.js'])
+    })
+  ]),
+  runtime_flow: Object.freeze([
+    'CLI command',
+    'command adapter boundary',
+    'public domain service facade',
+    'state reader/writer boundary',
+    'canonical JSON or text artifact'
+  ]),
+  public_source_shape: Object.freeze({
+    current_entrypoint: 'cli/agent-onboard.js',
+    physical_domain_split_status: 'planned_after_map',
+    source_can_grow_with_tests: true,
+    npm_package_remains_compact: true,
+    expected_pack_files: Object.freeze(['LICENSE', 'README.md', 'cli/agent-onboard.js', 'package.json'])
+  }),
+  package_boundary: Object.freeze({
+    architecture_map_command_writes_files: false,
+    architecture_check_command_writes_files: false,
+    package_allowlist_must_stay_compact: true,
+    source_context_files_stay_out_of_npm_pack: true,
+    physical_partition_not_required_for_this_gate: true
+  }),
+  next_candidate_gates: Object.freeze([
+    Object.freeze({
+      title: 'Public command router boundary gate',
+      intent: 'Introduce a small router boundary while preserving the admitted CLI command surface.'
+    }),
+    Object.freeze({
+      title: 'Public domain service facade gate',
+      intent: 'Move command behavior behind named public domain facades without changing target repo files.'
+    }),
+    Object.freeze({
+      title: 'Public authority first-read index gate',
+      intent: 'Materialize the authority read order as a compact machine-readable public file.'
+    })
+  ])
+});
+
 const PUBLIC_RELEASE_CONTRACT = Object.freeze({
-  schema: 'agent-onboard-public-release-contract-009',
+  schema: 'agent-onboard-public-release-contract-010',
   title: 'Agent-Onboard Public Release Contract',
   package_name: 'agent-onboard',
-  release_line: 'public_target_onboarding_published_package_acceptance_gate',
+  release_line: RELEASE_LINE,
   command: 'agent-onboard release --check',
   contract_command: 'agent-onboard release --contract',
   fixture_command: 'agent-onboard release --fixture',
@@ -250,6 +341,9 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
   target_onboarding_smoke_command: 'agent-onboard release --target-onboarding-smoke',
   post_publish_handoff_command: 'agent-onboard release --post-publish-handoff',
   published_acceptance_command: 'agent-onboard release --published-acceptance',
+  real_target_trial_command: 'agent-onboard release --real-target-trial',
+  architecture_map_command: 'agent-onboard architecture --map',
+  architecture_check_command: 'agent-onboard architecture --check',
   expected_pack_files: Object.freeze(['LICENSE', 'README.md', 'cli/agent-onboard.js', 'package.json']),
   source_context_files: Object.freeze([
     '.agent-onboard/project.json',
@@ -285,6 +379,10 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
     'node cli/agent-onboard.js release --target-onboarding-smoke',
     'node cli/agent-onboard.js release --post-publish-handoff',
     'node cli/agent-onboard.js release --published-acceptance',
+    'node cli/agent-onboard.js release --real-target-trial',
+    'node cli/agent-onboard.js architecture --map',
+    'node cli/agent-onboard.js architecture --check',
+    'node cli/agent-onboard.js target onboarding --trial',
     'node cli/agent-onboard.js release --check',
     'node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json'
   ]),
@@ -298,10 +396,14 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
     'npx agent-onboard@<version> release --target-onboarding-smoke',
     'npx agent-onboard@<version> release --post-publish-handoff',
     'npx agent-onboard@<version> release --published-acceptance',
+    'npx agent-onboard@<version> release --real-target-trial',
+    'npx agent-onboard@<version> architecture --map',
+    'npx agent-onboard@<version> architecture --check',
     'npx agent-onboard@<version> release --check',
     'npx agent-onboard@<version> init --dry-run',
     'npx agent-onboard@<version> target onboarding --plan',
-    'npx agent-onboard@<version> target onboarding --fixture'
+    'npx agent-onboard@<version> target onboarding --fixture',
+    'npx agent-onboard@<version> target onboarding --trial'
   ]),
   boundary: Object.freeze({
     release_commands_publish_package: false,
@@ -314,7 +416,7 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
 
 
 const PUBLIC_RELEASE_FIXTURE_MATRIX = Object.freeze({
-  schema: 'agent-onboard-public-release-fixture-matrix-005',
+  schema: 'agent-onboard-public-release-fixture-matrix-006',
   title: 'Agent-Onboard Public Package Contract Fixture Matrix',
   package_name: 'agent-onboard',
   release_line: PUBLIC_RELEASE_CONTRACT.release_line,
@@ -376,6 +478,18 @@ const PUBLIC_RELEASE_FIXTURE_MATRIX = Object.freeze({
       expected_status: 'ok',
       validates: Object.freeze(['published version metadata command', 'version-pinned npx status command', 'release contract command', 'release fixture command', 'installed package parity smoke command', 'target onboarding smoke command', 'release check command', 'target onboarding plan and fixture commands']),
       boundary: 'handoff emits deterministic operator commands only; it does not query the registry, mutate package root, Git, dependencies, build, deploy, publish, push, or target repository state'
+    }),
+    Object.freeze({
+      id: 'target_onboarding_real_target_repo_trial',
+      expected_status: 'ok',
+      validates: Object.freeze(['real target repo path inspection', 'target onboarding plan projection', 'dry-run fixture projection', 'canonical write readiness report', 'no-write trial boundary']),
+      boundary: 'trial inspects an explicit target path or current directory; it writes no target files, installs no dependencies, runs no Git, and reports conflicts before any explicit onboarding write'
+    }),
+    Object.freeze({
+      id: 'public_architecture_map',
+      expected_status: 'ok',
+      validates: Object.freeze(['six-domain public architecture kernel', 'runtime flow declaration', 'compact npm package boundary', 'no-write architecture command']),
+      boundary: 'architecture map and check are read-only; they do not move files, write source state, mutate Git, install dependencies, publish, or touch target repositories'
     })
   ]),
   boundary: Object.freeze({
@@ -465,8 +579,8 @@ const TARGET_ONBOARDING_SURFACE_PLAN = Object.freeze({
     force_overwrite_requires_explicit_force_flag: true
   }),
   next_candidate_gate: Object.freeze({
-    title: 'Public target onboarding published package acceptance gate',
-    intent: 'Validate the published package against a clean target repo after registry verification is complete.'
+    title: 'Public architecture map gate',
+    intent: 'Declare the public architecture kernel before source code is physically partitioned.'
   })
 });
 
@@ -534,8 +648,8 @@ const TARGET_ONBOARDING_DRY_RUN_FIXTURE_MATRIX = Object.freeze({
     validates_force_preview_without_write: true
   }),
   next_candidate_gate: Object.freeze({
-    title: 'Public target onboarding published package acceptance gate',
-    intent: 'Validate the published package against a clean target repo after registry verification is complete.'
+    title: 'Public architecture map gate',
+    intent: 'Declare the public architecture kernel before source code is physically partitioned.'
   })
 });
 
@@ -594,6 +708,164 @@ function targetOnboardingDryRunFixture(cwd = process.cwd()) {
     },
     boundary: TARGET_ONBOARDING_DRY_RUN_FIXTURE_MATRIX.boundary,
     next_candidate_gate: TARGET_ONBOARDING_DRY_RUN_FIXTURE_MATRIX.next_candidate_gate
+  };
+}
+
+
+function targetOnboardingRealTargetTrial(targetRoot = process.cwd()) {
+  const absoluteTargetRoot = path.resolve(targetRoot);
+  const errors = [];
+  if (!fs.existsSync(absoluteTargetRoot)) errors.push(`target path does not exist: ${absoluteTargetRoot}`);
+  else if (!fs.statSync(absoluteTargetRoot).isDirectory()) errors.push(`target path is not a directory: ${absoluteTargetRoot}`);
+
+  let name = path.basename(absoluteTargetRoot) || 'target-repo';
+  let kind = 'generic';
+  let surfacePlan = null;
+  let fixture = null;
+  let plannedWrites = [];
+  if (errors.length === 0) {
+    [name, kind] = targetName(absoluteTargetRoot);
+    surfacePlan = targetOnboardingSurfacePlan(absoluteTargetRoot);
+    fixture = targetOnboardingDryRunFixture(absoluteTargetRoot);
+    plannedWrites = planTargetOnboardingWritesForRoot(absoluteTargetRoot, { force: false });
+    if (!surfacePlan || surfacePlan.status !== 'ok') errors.push('target onboarding plan must pass for real target trial');
+    if (!fixture || fixture.status !== 'ok') errors.push('target onboarding fixture must pass for real target trial');
+  }
+
+  const conflicts = plannedWrites.filter((item) => item.action === 'conflict');
+  const nonCanonical = plannedWrites.filter((item) => !TARGET_ONBOARDING_SURFACE_PLAN.canonical_files.includes(item.path));
+  const ready = errors.length === 0 && conflicts.length === 0 && nonCanonical.length === 0;
+  return {
+    schema: 'agent-onboard-public-target-onboarding-real-target-trial-result-001',
+    status: errors.length === 0 ? 'ok' : 'error',
+    package_name: 'agent-onboard',
+    version: VERSION,
+    release_line: PUBLIC_RELEASE_CONTRACT.release_line,
+    command: 'agent-onboard target onboarding --trial',
+    command_family: 'target onboarding',
+    mode: 'trial',
+    target: { name, kind, root: absoluteTargetRoot },
+    writes_performed: false,
+    ready_for_explicit_write: ready,
+    trial_outcome: ready ? 'ready_for_explicit_write' : 'blocked_by_existing_non_identical_files',
+    planned_writes: summarizePlan(plannedWrites),
+    conflicts: conflicts.map((item) => item.path),
+    non_canonical_planned_writes: nonCanonical.map((item) => item.path),
+    observed: {
+      target_exists: fs.existsSync(absoluteTargetRoot),
+      target_is_directory: fs.existsSync(absoluteTargetRoot) && fs.statSync(absoluteTargetRoot).isDirectory(),
+      surface_plan_status: surfacePlan ? surfacePlan.status : 'not_run',
+      dry_run_fixture_status: fixture ? fixture.status : 'not_run',
+      planned_canonical_file_count: plannedWrites.length,
+      conflict_count: conflicts.length
+    },
+    validated: {
+      target_path_readable: errors.length === 0,
+      target_onboarding_plan: surfacePlan ? surfacePlan.status === 'ok' : false,
+      target_onboarding_fixture: fixture ? fixture.status === 'ok' : false,
+      trial_writes_no_files: true,
+      planned_writes_are_canonical_only: nonCanonical.length === 0,
+      conflicts_reported_before_write: true
+    },
+    boundary: {
+      writes_files: false,
+      writes_target_repository_state: false,
+      explicit_write_still_requires_target_onboarding_write: true,
+      git_mutation: false,
+      installs_dependencies: false,
+      runs_package_manager: false,
+      runs_build_test_deploy: false,
+      publishes_or_pushes: false,
+      mutates_registry: false
+    },
+    next_steps: ready ? [
+      'operator may run target onboarding --write only after explicit owner authorization',
+      'run guard --check-boundary after canonical onboarding files exist',
+      'record changed files and checks in the handoff if the trial proceeds to write'
+    ] : [
+      'inspect conflicts before writing',
+      'merge existing target files manually or rerun the explicit write with --force only when the owner authorizes replacement'
+    ],
+    errors
+  };
+}
+
+function publicTargetOnboardingRealTargetRepoTrial(root = packageRoot()) {
+  const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'agent-onboard-real-target-trial-'));
+  let cleanedUp = false;
+  const errors = [];
+  let trial = null;
+  try {
+    fs.writeFileSync(path.join(tempRoot, 'package.json'), stableJson({ name: 'real-target-trial-fixture', private: true }));
+    fs.writeFileSync(path.join(tempRoot, 'README.md'), '# Real target trial fixture\n');
+    fs.mkdirSync(path.join(tempRoot, 'src'), { recursive: true });
+    fs.writeFileSync(path.join(tempRoot, 'src', 'index.js'), '\'use strict\';\n');
+    trial = targetOnboardingRealTargetTrial(tempRoot);
+    if (!trial || trial.status !== 'ok') errors.push('real target trial command must return ok for the realistic fixture target');
+    if (!trial || trial.ready_for_explicit_write !== true) errors.push('real target trial fixture must be ready for explicit write');
+    if (!trial || trial.writes_performed !== false) errors.push('real target trial must not write files');
+    const canonical = TARGET_ONBOARDING_SURFACE_PLAN.canonical_files.slice().sort();
+    const planned = trial ? trial.planned_writes.map((item) => item.path).sort() : [];
+    if (!arrayEquals(planned, canonical)) errors.push(`real target trial must project canonical files ${canonical.join(', ')}`);
+    for (const rel of canonical) {
+      if (fs.existsSync(path.join(tempRoot, rel))) errors.push(`real target trial unexpectedly wrote ${rel}`);
+    }
+  } catch (error) {
+    errors.push(error && error.message ? error.message : String(error));
+  } finally {
+    try {
+      fs.rmSync(tempRoot, { recursive: true, force: true });
+      cleanedUp = !fs.existsSync(tempRoot);
+    } catch (error) {
+      cleanedUp = false;
+      errors.push(error && error.message ? error.message : String(error));
+    }
+  }
+  if (!cleanedUp) errors.push('temporary real target trial fixture was not cleaned up');
+
+  return {
+    schema: 'agent-onboard-public-target-onboarding-real-target-repo-trial-gate-result-001',
+    status: errors.length === 0 ? 'ok' : 'error',
+    package_name: PUBLIC_RELEASE_CONTRACT.package_name,
+    version: VERSION,
+    release_line: PUBLIC_RELEASE_CONTRACT.release_line,
+    contract_schema: PUBLIC_RELEASE_CONTRACT.schema,
+    command: PUBLIC_RELEASE_CONTRACT.real_target_trial_command,
+    package_root: root,
+    source_context: sourceContext(root),
+    observed: {
+      temporary_target_root: tempRoot,
+      temporary_target_cleanup: cleanedUp,
+      trial_status: trial ? trial.status : 'not_run',
+      trial_ready_for_explicit_write: trial ? trial.ready_for_explicit_write : false,
+      trial_conflicts: trial ? trial.conflicts : []
+    },
+    validated: {
+      realistic_target_fixture_created: true,
+      target_onboarding_trial_status: trial ? trial.status === 'ok' : false,
+      target_ready_for_explicit_write: trial ? trial.ready_for_explicit_write === true : false,
+      canonical_files_projected_only: trial ? trial.non_canonical_planned_writes.length === 0 : false,
+      trial_writes_no_files: trial ? trial.writes_performed === false : false,
+      temporary_target_cleanup: cleanedUp
+    },
+    boundary: {
+      writes_package_root: false,
+      writes_target_repository_state: false,
+      creates_temp_target_repository: true,
+      cleans_up_temp_target_repository: cleanedUp,
+      git_mutation: false,
+      installs_dependencies: false,
+      runs_package_manager: false,
+      runs_build_test_deploy: false,
+      publishes_package: false,
+      mutates_registry: false
+    },
+    target_trial_command: 'agent-onboard target onboarding --trial --target <target-repo-path>',
+    next_candidate_gate: {
+      title: 'Public architecture map gate',
+      intent: 'Declare the public architecture kernel before source code is physically partitioned.'
+    },
+    errors
   };
 }
 
@@ -1517,6 +1789,80 @@ function sourceContext(root = packageRoot()) {
   };
 }
 
+
+function publicArchitectureMap(root = packageRoot()) {
+  const pkg = readJson(path.join(root, 'package.json'));
+  return {
+    schema: 'agent-onboard-public-architecture-map-result-001',
+    status: 'ok',
+    package_name: PUBLIC_ARCHITECTURE_MAP.package_name,
+    version: VERSION,
+    release_line: PUBLIC_ARCHITECTURE_MAP.release_line,
+    command: PUBLIC_ARCHITECTURE_MAP.command,
+    check_command: PUBLIC_ARCHITECTURE_MAP.check_command,
+    package_root: root,
+    package_context: sourceContext(root).package_context,
+    package_json_version: pkg.version,
+    map: PUBLIC_ARCHITECTURE_MAP,
+    current_runtime: {
+      entrypoint: PUBLIC_ARCHITECTURE_MAP.public_source_shape.current_entrypoint,
+      entrypoint_exists: fs.existsSync(path.join(root, PUBLIC_ARCHITECTURE_MAP.public_source_shape.current_entrypoint)),
+      physical_domain_split_status: PUBLIC_ARCHITECTURE_MAP.public_source_shape.physical_domain_split_status,
+      expected_pack_files: PUBLIC_ARCHITECTURE_MAP.public_source_shape.expected_pack_files.slice(),
+      projected_pack_files: packageJsonProjectedPackFiles(pkg)
+    },
+    boundary: {
+      writes_files: false,
+      writes_source_state: false,
+      writes_target_repository_state: false,
+      git_mutation: false,
+      installs_dependencies: false,
+      runs_package_manager: false,
+      runs_build_test_deploy: false,
+      publishes_package: false,
+      mutates_registry: false
+    }
+  };
+}
+
+function publicArchitectureCheck(root = packageRoot()) {
+  const map = publicArchitectureMap(root);
+  const expectedDomains = ['core', 'authority', 'work_items', 'claims', 'target', 'release_package'];
+  const domainIds = map.map.canonical_domains.map((domain) => domain.id);
+  const expectedPackFiles = map.map.public_source_shape.expected_pack_files.slice().sort();
+  const projectedPackFiles = map.current_runtime.projected_pack_files;
+  const errors = [];
+  if (!arrayEquals(domainIds, expectedDomains)) errors.push(`architecture domain order must be ${expectedDomains.join(', ')}`);
+  if (new Set(domainIds).size !== domainIds.length) errors.push('architecture domain ids must be unique');
+  if (map.map.canonical_domains.length !== 6) errors.push('architecture map must declare exactly 6 public domains');
+  if (!map.current_runtime.entrypoint_exists) errors.push(`architecture entrypoint is missing: ${map.current_runtime.entrypoint}`);
+  if (!arrayEquals(projectedPackFiles, expectedPackFiles)) errors.push(`projected npm pack files must match architecture package boundary ${expectedPackFiles.join(', ')}`);
+  if (map.map.package_boundary.architecture_map_command_writes_files !== false) errors.push('architecture map command must remain no-write');
+  if (map.map.package_boundary.architecture_check_command_writes_files !== false) errors.push('architecture check command must remain no-write');
+  return {
+    schema: 'agent-onboard-public-architecture-check-result-001',
+    status: errors.length === 0 ? 'ok' : 'error',
+    package_name: PUBLIC_ARCHITECTURE_MAP.package_name,
+    version: VERSION,
+    release_line: PUBLIC_ARCHITECTURE_MAP.release_line,
+    command: PUBLIC_ARCHITECTURE_MAP.check_command,
+    package_root: root,
+    validated: {
+      domain_count: map.map.canonical_domains.length === 6,
+      domain_order: arrayEquals(domainIds, expectedDomains),
+      domain_ids_unique: new Set(domainIds).size === domainIds.length,
+      runtime_entrypoint_present: map.current_runtime.entrypoint_exists,
+      compact_package_boundary: arrayEquals(projectedPackFiles, expectedPackFiles),
+      architecture_commands_no_write: map.map.package_boundary.architecture_map_command_writes_files === false && map.map.package_boundary.architecture_check_command_writes_files === false
+    },
+    domain_ids: domainIds,
+    expected_pack_files: expectedPackFiles,
+    projected_pack_files: projectedPackFiles,
+    boundary: map.boundary,
+    errors
+  };
+}
+
 function publicReleaseCheck(root = packageRoot()) {
   const pkg = readJson(path.join(root, 'package.json'));
   const metadataErrors = packageJsonReleaseErrors(pkg, root);
@@ -1528,7 +1874,9 @@ function publicReleaseCheck(root = packageRoot()) {
   const messagingErrors = publicArtifactMessagingErrors(root, expectedPackFiles);
   const sourceLedger = sourceWorkItemsLedgerCheck(root);
   const sourceLedgerErrors = sourceLedger.present ? sourceLedger.errors.map((error) => `source ledger: ${error}`) : [];
-  const errors = [...metadataErrors, ...packErrors, ...messagingErrors, ...sourceLedgerErrors];
+  const architecture = publicArchitectureCheck(root);
+  const architectureErrors = architecture.errors.map((error) => `architecture: ${error}`);
+  const errors = [...metadataErrors, ...packErrors, ...messagingErrors, ...sourceLedgerErrors, ...architectureErrors];
   return {
     schema: 'agent-onboard-public-release-check-result-005',
     status: errors.length === 0 ? 'ok' : 'error',
@@ -1546,11 +1894,13 @@ function publicReleaseCheck(root = packageRoot()) {
       projected_pack_allowlist: packErrors.length === 0,
       public_artifact_messaging: messagingErrors.length === 0,
       bin_entrypoints_exist: metadataErrors.filter((error) => error.includes('points to missing file')).length === 0,
-      source_work_items_ledger: sourceLedger.validated
+      source_work_items_ledger: sourceLedger.validated,
+      public_architecture_map: architecture.status === 'ok'
     },
     expected_pack_files: expectedPackFiles,
     projected_pack_files: projectedPackFiles,
     source_context_files: PUBLIC_RELEASE_CONTRACT.source_context_files.slice(),
+    public_architecture: architecture,
     local_pre_publish_commands: PUBLIC_RELEASE_CONTRACT.local_pre_publish_commands.slice(),
     post_publish_verification_commands: publicReleasePostPublishCommands(VERSION),
     boundary: {
@@ -1757,10 +2107,14 @@ function publicTargetOnboardingPostPublishHandoff(root = packageRoot(), version 
     `npx agent-onboard@${version} release --target-onboarding-smoke`,
     `npx agent-onboard@${version} release --post-publish-handoff`,
     `npx agent-onboard@${version} release --published-acceptance`,
+    `npx agent-onboard@${version} release --real-target-trial`,
+    `npx agent-onboard@${version} architecture --map`,
+    `npx agent-onboard@${version} architecture --check`,
     `npx agent-onboard@${version} release --check`,
     `npx agent-onboard@${version} init --dry-run`,
     `npx agent-onboard@${version} target onboarding --plan`,
-    `npx agent-onboard@${version} target onboarding --fixture`
+    `npx agent-onboard@${version} target onboarding --fixture`,
+    `npx agent-onboard@${version} target onboarding --trial`
   ];
   const missingCommands = requiredFragments.filter((fragment) => !commands.includes(fragment));
   const errors = [];
@@ -1829,14 +2183,19 @@ function publicTargetOnboardingPublishedAcceptance(root = packageRoot()) {
   const targetSmoke = publicTargetOnboardingInstalledPackageSmoke(root);
   const targetPlan = targetOnboardingSurfacePlan(root);
   const targetFixture = targetOnboardingDryRunFixture(root);
+  const realTargetTrial = publicTargetOnboardingRealTargetRepoTrial(root);
   const expectedPublishedCommand = `npx agent-onboard@${VERSION} release --published-acceptance`;
   const expectedCommands = [
     `npm view agent-onboard@${VERSION} name version license bin repository`,
     `npx agent-onboard@${VERSION} status`,
     `npx agent-onboard@${VERSION} release --check`,
     `npx agent-onboard@${VERSION} release --published-acceptance`,
+    `npx agent-onboard@${VERSION} release --real-target-trial`,
+    `npx agent-onboard@${VERSION} architecture --map`,
+    `npx agent-onboard@${VERSION} architecture --check`,
     `npx agent-onboard@${VERSION} target onboarding --plan`,
-    `npx agent-onboard@${VERSION} target onboarding --fixture`
+    `npx agent-onboard@${VERSION} target onboarding --fixture`,
+    `npx agent-onboard@${VERSION} target onboarding --trial`
   ];
   const missingHandoffCommands = expectedCommands.filter((command) => !handoff.verification_commands.includes(command));
   const errors = [];
@@ -1846,6 +2205,7 @@ function publicTargetOnboardingPublishedAcceptance(root = packageRoot()) {
   if (targetSmoke.status !== 'ok') errors.push('target onboarding smoke must pass for published package acceptance');
   if (targetPlan.status !== 'ok') errors.push('target onboarding plan must pass for published package acceptance');
   if (targetFixture.status !== 'ok') errors.push('target onboarding fixture must pass for published package acceptance');
+  if (realTargetTrial.status !== 'ok') errors.push('real target trial must pass for published package acceptance');
   for (const command of missingHandoffCommands) errors.push(`post-publish handoff is missing acceptance command: ${command}`);
 
   const installedPackageContextAccepted = context.package_context === 'installed_package';
@@ -1871,6 +2231,7 @@ function publicTargetOnboardingPublishedAcceptance(root = packageRoot()) {
       target_onboarding_smoke_status: targetSmoke.status,
       target_onboarding_plan_status: targetPlan.status,
       target_onboarding_fixture_status: targetFixture.status,
+      real_target_trial_status: realTargetTrial.status,
       handoff_missing_acceptance_commands: missingHandoffCommands,
       source_context_files_present: context.source_context_files_present,
       source_work_items_ledger_present: releaseCheck.source_work_items_ledger.present,
@@ -1883,6 +2244,7 @@ function publicTargetOnboardingPublishedAcceptance(root = packageRoot()) {
       target_onboarding_smoke: targetSmoke.status === 'ok',
       target_onboarding_plan: targetPlan.status === 'ok',
       target_onboarding_fixture: targetFixture.status === 'ok',
+      real_target_trial: realTargetTrial.status === 'ok',
       handoff_includes_published_acceptance_command: missingHandoffCommands.length === 0,
       installed_package_context_when_run_from_npx: installedPackageContextAccepted,
       source_repository_rehearsal: sourceRepositoryRehearsal
@@ -1895,6 +2257,7 @@ function publicTargetOnboardingPublishedAcceptance(root = packageRoot()) {
       version_pinned_published_acceptance_passes: true,
       target_onboarding_plan_and_fixture_pass_from_published_package: true,
       target_onboarding_smoke_passes_from_published_package: true,
+      real_target_trial_passes_from_published_package: true,
       no_source_ledger_required_in_installed_package_context: true
     },
     boundary: {
@@ -1914,6 +2277,28 @@ function publicTargetOnboardingPublishedAcceptance(root = packageRoot()) {
   };
 }
 
+
+function runArchitecture(args) {
+  if (args.length === 1 && args[0] === '--map') {
+    json(publicArchitectureMap());
+    return 0;
+  }
+  if (args.length === 1 && args[0] === '--check') {
+    const result = publicArchitectureCheck();
+    json(result);
+    return result.status === 'ok' ? 0 : 1;
+  }
+  json({
+    schema: 'agent-onboard-architecture-command-error-001',
+    status: 'error',
+    command_family: 'architecture',
+    message: 'architecture requires --map or --check',
+    writes_files: false,
+    publishes_package: false
+  });
+  return 1;
+}
+
 function runRelease(args) {
   if (args.length === 1 && args[0] === '--plan') {
     json({
@@ -1929,9 +2314,13 @@ function runRelease(args) {
       target_onboarding_smoke_command: PUBLIC_RELEASE_CONTRACT.target_onboarding_smoke_command,
       post_publish_handoff_command: PUBLIC_RELEASE_CONTRACT.post_publish_handoff_command,
       published_acceptance_command: PUBLIC_RELEASE_CONTRACT.published_acceptance_command,
+      real_target_trial_command: PUBLIC_RELEASE_CONTRACT.real_target_trial_command,
+      architecture_map_command: PUBLIC_RELEASE_CONTRACT.architecture_map_command,
+      architecture_check_command: PUBLIC_RELEASE_CONTRACT.architecture_check_command,
       check_command: PUBLIC_RELEASE_CONTRACT.command,
       contract: PUBLIC_RELEASE_CONTRACT,
       fixture_matrix: PUBLIC_RELEASE_FIXTURE_MATRIX,
+      architecture_map: PUBLIC_ARCHITECTURE_MAP,
       source_context: sourceContext(),
       post_publish_verification_commands: publicReleasePostPublishCommands(VERSION),
       boundary: {
@@ -1954,6 +2343,7 @@ function runRelease(args) {
       release_line: PUBLIC_RELEASE_CONTRACT.release_line,
       contract: PUBLIC_RELEASE_CONTRACT,
       fixture_matrix: PUBLIC_RELEASE_FIXTURE_MATRIX,
+      architecture_map: PUBLIC_ARCHITECTURE_MAP,
       source_context: sourceContext(),
       writes_files: false,
       publishes_package: false,
@@ -1970,6 +2360,7 @@ function runRelease(args) {
       release_line: PUBLIC_RELEASE_CONTRACT.release_line,
       contract_schema: PUBLIC_RELEASE_CONTRACT.schema,
       fixture_matrix: PUBLIC_RELEASE_FIXTURE_MATRIX,
+      architecture_map: PUBLIC_ARCHITECTURE_MAP,
       source_context: sourceContext(),
       writes_files: false,
       publishes_package: false,
@@ -1997,6 +2388,11 @@ function runRelease(args) {
     json(result);
     return result.status === 'ok' ? 0 : 1;
   }
+  if (args.length === 1 && args[0] === '--real-target-trial') {
+    const result = publicTargetOnboardingRealTargetRepoTrial();
+    json(result);
+    return result.status === 'ok' ? 0 : 1;
+  }
   if (args.length === 1 && args[0] === '--check') {
     const result = publicReleaseCheck();
     json(result);
@@ -2006,7 +2402,7 @@ function runRelease(args) {
     schema: 'agent-onboard-release-command-error-001',
     status: 'error',
     command_family: 'release',
-    message: 'release requires --plan, --contract, --fixture, --parity-smoke, --target-onboarding-smoke, --post-publish-handoff, --published-acceptance, or --check',
+    message: 'release requires --plan, --contract, --fixture, --parity-smoke, --target-onboarding-smoke, --post-publish-handoff, --published-acceptance, --real-target-trial, or --check',
     writes_files: false,
     publishes_package: false
   });
@@ -2608,12 +3004,20 @@ function runTargetOnboarding(args) {
   const plan = args.includes('--plan');
   const fixture = args.includes('--fixture');
   const write = args.includes('--write');
+  const trial = args.includes('--trial');
   const force = args.includes('--force');
-  const known = new Set(['--plan', '--fixture', '--write', '--force']);
-  const unknown = args.filter((arg) => !known.has(arg));
+  const targetIndex = args.indexOf('--target');
+  const targetRoot = targetIndex >= 0 ? args[targetIndex + 1] : process.cwd();
+  const known = new Set(['--plan', '--fixture', '--write', '--trial', '--force', '--target']);
+  const unknown = args.filter((arg, index) => {
+    if (targetIndex >= 0 && index === targetIndex + 1) return false;
+    return !known.has(arg);
+  });
+  if (targetIndex >= 0 && (!targetRoot || targetRoot.startsWith('-'))) throw new Error('target onboarding --target requires a path');
   if (unknown.length > 0) throw new Error(`target onboarding does not support: ${unknown.join(', ')}`);
-  if ([plan, fixture, write].filter(Boolean).length !== 1) throw new Error('target onboarding requires exactly one of --plan, --fixture, or --write');
+  if ([plan, fixture, write, trial].filter(Boolean).length !== 1) throw new Error('target onboarding requires exactly one of --plan, --fixture, --trial, or --write');
   if (force && !write) throw new Error('target onboarding --force requires --write');
+  if (targetIndex >= 0 && !trial) throw new Error('target onboarding --target is only supported with --trial');
   if (plan) {
     json(targetOnboardingSurfacePlan());
     return 0;
@@ -2621,6 +3025,11 @@ function runTargetOnboarding(args) {
   if (fixture) {
     json(targetOnboardingDryRunFixture());
     return 0;
+  }
+  if (trial) {
+    const result = targetOnboardingRealTargetTrial(targetRoot);
+    json(result);
+    return result.status === 'ok' ? 0 : 1;
   }
 
   const plannedWrites = planTargetOnboardingWrites({ force });
@@ -2718,7 +3127,7 @@ function runTargetInstance(args) {
 }
 
 function help() {
-  process.stdout.write(`agent-onboard ${VERSION}\n\nagent-onboard status\nagent-onboard init --dry-run|--write [--force]\nagent-onboard agents --preview|--write [--force]\nagent-onboard guard --plan|--check-boundary\nagent-onboard release --plan|--contract|--fixture|--parity-smoke|--target-onboarding-smoke|--post-publish-handoff|--published-acceptance|--check\nagent-onboard target-config --schema\nagent-onboard target-config --template\nagent-onboard target-config --validate-template\nagent-onboard target-config --validate [agent-onboard.target.json]\nagent-onboard work-items --schema\nagent-onboard work-items --template\nagent-onboard work-items --validate-template\nagent-onboard work-items --validate [.agent-onboard/work-items.json]\nagent-onboard work-items --list [.agent-onboard/work-items.json]\nagent-onboard work-items --init --dry-run|--write [--force]\nagent-onboard work-items --append --dry-run|--write --id <public-work-item-id> --title <title>\nagent-onboard work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>\nagent-onboard work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>\nagent-onboard target onboarding --plan|--fixture|--write [--force]\nagent-onboard target bootstrap --dry-run|--write [--force]\nagent-onboard target-instance takeover --dry-run|--write [--force]\n`);
+  process.stdout.write(`agent-onboard ${VERSION}\n\nagent-onboard status\nagent-onboard init --dry-run|--write [--force]\nagent-onboard agents --preview|--write [--force]\nagent-onboard guard --plan|--check-boundary\nagent-onboard architecture --map|--check\nagent-onboard release --plan|--contract|--fixture|--parity-smoke|--target-onboarding-smoke|--post-publish-handoff|--published-acceptance|--real-target-trial|--check\nagent-onboard target-config --schema\nagent-onboard target-config --template\nagent-onboard target-config --validate-template\nagent-onboard target-config --validate [agent-onboard.target.json]\nagent-onboard work-items --schema\nagent-onboard work-items --template\nagent-onboard work-items --validate-template\nagent-onboard work-items --validate [.agent-onboard/work-items.json]\nagent-onboard work-items --list [.agent-onboard/work-items.json]\nagent-onboard work-items --init --dry-run|--write [--force]\nagent-onboard work-items --append --dry-run|--write --id <public-work-item-id> --title <title>\nagent-onboard work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>\nagent-onboard work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>\nagent-onboard target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]\nagent-onboard target bootstrap --dry-run|--write [--force]\nagent-onboard target-instance takeover --dry-run|--write [--force]\n`);
   return 0;
 }
 
@@ -2736,12 +3145,13 @@ function main(argv = process.argv) {
   if (cmd === 'init') return runInit(args);
   if (cmd === 'agents') return runAgents(args);
   if (cmd === 'guard') return runGuard(args);
+  if (cmd === 'architecture') return runArchitecture(args);
   if (cmd === 'release') return runRelease(args);
   if (cmd === 'target-config') return runTargetConfig(args);
   if (cmd === 'work-items') return runWorkItems(args);
   if (cmd === 'target') {
     if (args[0] === 'onboarding') return runTargetOnboarding(args.slice(1));
-    if (args[0] !== 'bootstrap') throw new Error('target supports only: onboarding --plan|--fixture|--write [--force], bootstrap');
+    if (args[0] !== 'bootstrap') throw new Error('target supports only: onboarding --plan|--fixture|--trial [--target <path>]|--write [--force], bootstrap');
     return runTargetBootstrap(args.slice(1));
   }
   if (cmd === 'target-instance') return runTargetInstance(args);
@@ -2776,14 +3186,20 @@ module.exports = {
   sourceWorkItemsLedgerCheck,
   sourceContext,
   publicReleaseCheck,
+  publicArchitectureMap,
+  publicArchitectureCheck,
   publicInstalledPackageParitySmoke,
   publicTargetOnboardingInstalledPackageSmoke,
   publicTargetOnboardingPostPublishHandoff,
+  publicTargetOnboardingPublishedAcceptance,
+  publicTargetOnboardingRealTargetRepoTrial,
   targetOnboardingSurfacePlan,
   targetOnboardingDryRunFixture,
+  targetOnboardingRealTargetTrial,
   targetOnboardingWriteSet,
   planTargetOnboardingWritesForRoot,
   TARGET_ONBOARDING_SURFACE_PLAN,
   TARGET_ONBOARDING_DRY_RUN_FIXTURE_MATRIX,
-  PUBLIC_RELEASE_FIXTURE_MATRIX
+  PUBLIC_RELEASE_FIXTURE_MATRIX,
+  PUBLIC_ARCHITECTURE_MAP
 };
