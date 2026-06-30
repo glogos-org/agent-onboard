@@ -1,0 +1,71 @@
+{
+  "schema": "agent-onboard-public-work-items-domain-source-extraction-plan-001",
+  "title": "Agent-Onboard Public Work-Items Domain Source Extraction Planning Gate",
+  "package_name": "agent-onboard",
+  "release_line": "public_work_items_domain_source_extraction_planning_gate",
+  "command": "agent-onboard architecture --work-items-plan",
+  "check_command": "agent-onboard architecture --work-items-check",
+  "domain": {
+    "id": "work_items",
+    "facade": "workItemsService",
+    "command": "work-items",
+    "state_file": ".agent-onboard/work-items.json",
+    "planned_module": "src/domains/work-items.js",
+    "planned_contract_schema": "agent-onboard-public-source-module-work-items-first-slice-001",
+    "planned_status": "planned_not_created_by_this_gate"
+  },
+  "extraction_scope": [
+    "work item vocabulary schema and validator metadata",
+    "work item list and source ledger read path",
+    "work item append/init dry-run and explicit write boundary metadata",
+    "claim and close command ownership remains shared with the claims domain until a later claims-domain gate"
+  ],
+  "excluded_scope": [
+    "do not create src/domains/work-items.js in this planning gate",
+    "do not move validateWorkItems or work-items command handlers in this planning gate",
+    "do not extract claims-domain behavior from work-items --claim or work-items --close yet",
+    "do not expand the npm package allowlist",
+    "do not change public CLI output contracts"
+  ],
+  "followup_work_items": [
+    {
+      "id_components": {
+        "program": 1,
+        "stage": 3,
+        "milestone": 2,
+        "work_item": 3
+      },
+      "title": "Public work-items domain source extraction first-slice gate",
+      "expected_status": "open"
+    }
+  ],
+  "boundary": {
+    "work_items_plan_command_writes_files": false,
+    "work_items_check_command_writes_files": false,
+    "creates_source_modules": false,
+    "moves_existing_source_files": false,
+    "changes_public_cli_outputs": false,
+    "exports_source_module_as_public_api": false,
+    "writes_package_root": false,
+    "writes_target_repository_state": false,
+    "git_mutation": false,
+    "installs_dependencies": false,
+    "runs_package_manager": false,
+    "runs_build_test_deploy": false,
+    "publishes_package": false,
+    "mutates_registry": false,
+    "package_allowlist_unchanged": true
+  },
+  "work_item_components": {
+    "program": 1,
+    "stage": 3,
+    "milestone": 2,
+    "work_item": 2
+  },
+  "next_work_item_components": {
+    "program": 1,
+    "stage": 3,
+    "milestone": 2,
+    "work_item": 3
+  }
+}

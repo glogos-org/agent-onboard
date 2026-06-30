@@ -78,6 +78,12 @@ node cli/agent-onboard.js architecture --second-slice-plan
 node cli/agent-onboard.js architecture --second-slice-check
 node cli/agent-onboard.js architecture --authority-bundle-parity
 node cli/agent-onboard.js architecture --authority-bundle-parity-check
+node cli/agent-onboard.js architecture --authority-runtime-bridge
+node cli/agent-onboard.js architecture --authority-runtime-bridge-check
+node cli/agent-onboard.js architecture --m2-seed
+node cli/agent-onboard.js architecture --m2-seed-check
+node cli/agent-onboard.js architecture --work-items-plan
+node cli/agent-onboard.js architecture --work-items-check
 node cli/agent-onboard.js architecture --check
 ```
 
@@ -177,6 +183,8 @@ node cli/agent-onboard.js architecture --second-slice-first-slice
 node cli/agent-onboard.js architecture --second-slice-first-slice-check
 node cli/agent-onboard.js architecture --authority-bundle-parity
 node cli/agent-onboard.js architecture --authority-bundle-parity-check
+node cli/agent-onboard.js architecture --authority-runtime-bridge
+node cli/agent-onboard.js architecture --authority-runtime-bridge-check
 ```
 
 The authority slice is source-only and is not a public import API.
@@ -189,6 +197,20 @@ Run these source checks before publishing this gate:
 ```sh
 node cli/agent-onboard.js architecture --authority-bundle-parity
 node cli/agent-onboard.js architecture --authority-bundle-parity-check
+node cli/agent-onboard.js architecture --authority-runtime-bridge
+node cli/agent-onboard.js architecture --authority-runtime-bridge-check
 ```
 
 The authority source slice must remain source-only, read-only, outside `package.json#files`, and must exclude write-capable `agents` extraction.
+
+
+## Architecture milestone transition
+
+The architecture kernel milestone is closed. Before starting the next source-domain extraction task, inspect the milestone transition gate:
+
+```sh
+node cli/agent-onboard.js architecture --m2-seed
+node cli/agent-onboard.js architecture --m2-seed-check
+```
+
+The next architecture milestone remains open and the next executable work item is the work-items domain source extraction planning gate. Do not create the work-items source module until that gate is explicitly assigned.

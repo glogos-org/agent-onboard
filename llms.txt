@@ -53,8 +53,28 @@ Public source module extraction second slice first-slice gate:
 - node cli/agent-onboard.js architecture --second-slice-first-slice-check
 - node cli/agent-onboard.js architecture --authority-bundle-parity
 - node cli/agent-onboard.js architecture --authority-bundle-parity-check
-
+- node cli/agent-onboard.js architecture --authority-runtime-bridge
+- node cli/agent-onboard.js architecture --authority-runtime-bridge-check
+- node cli/agent-onboard.js architecture --m2-seed
+- node cli/agent-onboard.js architecture --m2-seed-check
+- node cli/agent-onboard.js architecture --work-items-plan
+- node cli/agent-onboard.js architecture --work-items-check
 
 Public source module extraction authority bundle parity gate:
 - node cli/agent-onboard.js architecture --authority-bundle-parity
 - node cli/agent-onboard.js architecture --authority-bundle-parity-check
+- node cli/agent-onboard.js architecture --authority-runtime-bridge
+- node cli/agent-onboard.js architecture --authority-runtime-bridge-check
+- node cli/agent-onboard.js architecture --m2-seed
+- node cli/agent-onboard.js architecture --m2-seed-check
+- node cli/agent-onboard.js architecture --work-items-plan
+- node cli/agent-onboard.js architecture --work-items-check
+
+
+Architecture milestone transition gate:
+- node cli/agent-onboard.js architecture --m2-seed
+- node cli/agent-onboard.js architecture --m2-seed-check
+- node cli/agent-onboard.js architecture --work-items-plan
+- node cli/agent-onboard.js architecture --work-items-check
+
+Current transition state: architecture kernel milestone closed; next architecture milestone open; work-items domain source extraction planning is closed; next executable gate is work-items domain source extraction first-slice. Keep source modules source-only and keep npm package files compact.
