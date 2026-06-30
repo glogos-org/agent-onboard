@@ -66,6 +66,8 @@ node cli/agent-onboard.js architecture --golden-outputs
 node cli/agent-onboard.js architecture --golden-check
 node cli/agent-onboard.js architecture --adapter-boundary
 node cli/agent-onboard.js architecture --adapter-check
+node cli/agent-onboard.js architecture --first-slice
+node cli/agent-onboard.js architecture --first-slice-check
 node cli/agent-onboard.js architecture --check
 ```
 

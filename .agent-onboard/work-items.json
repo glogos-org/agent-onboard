@@ -1170,6 +1170,47 @@
       "id": "P1S3M1W12",
       "milestone_id": "P1S3M1",
       "title": "Public source module extraction first slice gate",
+      "status": "closed",
+      "closure": {
+        "actor": "ChatGPT",
+        "closed_at": "2026-06-30T00:00:00Z",
+        "summary": "Implemented public source module extraction first slice gate: added source-only core domain module, first-slice metadata/check commands, release/architecture validation, and package-surface preservation checks.",
+        "changed_files": [
+          "package.json",
+          "cli/agent-onboard.js",
+          "src/domains/core.js",
+          ".agent-onboard/source-module-extraction-first-slice.json",
+          "test/agent-onboard.test.js",
+          "README.md",
+          "AGENTS.md",
+          "llms.txt",
+          ".agent-onboard/work-items.json"
+        ],
+        "checks_run": [
+          "npm test",
+          "node cli/agent-onboard.js architecture --first-slice",
+          "node cli/agent-onboard.js architecture --first-slice-check",
+          "node cli/agent-onboard.js architecture --check",
+          "node cli/agent-onboard.js release --architecture-parity-smoke",
+          "node cli/agent-onboard.js release --version-sprawl-check",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "npm pack --dry-run --json",
+          "npm publish --dry-run --json --ignore-scripts"
+        ],
+        "checks_not_run": [
+          "npm publish",
+          "registry post-publish npx verification"
+        ],
+        "known_non_pass": [
+          "npm publish not run by assistant; owner performs registry publish"
+        ]
+      }
+    },
+    {
+      "id": "P1S3M1W13",
+      "milestone_id": "P1S3M1",
+      "title": "Public source module extraction bundle parity gate",
       "status": "open"
     }
   ]

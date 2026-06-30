@@ -6,7 +6,7 @@ const os = require('os');
 const path = require('path');
 const VERSION = require('../package.json').version;
 const TARGET_CONFIG_FILE = 'agent-onboard.target.json';
-const RELEASE_LINE = 'public_source_module_extraction_adapter_boundary_gate';
+const RELEASE_LINE = 'public_source_module_extraction_first_slice_gate';
 
 process.stdout.on('error', (error) => {
   if (error && error.code === 'EPIPE') process.exit(0);
@@ -301,11 +301,13 @@ const PUBLIC_ARCHITECTURE_MAP = Object.freeze({
   ]),
   public_source_shape: Object.freeze({
     current_entrypoint: 'cli/agent-onboard.js',
-    physical_domain_split_status: 'source_module_adapter_boundary_declared_not_applied',
+    physical_domain_split_status: 'source_module_first_slice_applied_for_core_source_only',
     source_partition_plan_file: '.agent-onboard/source-partition-plan.json',
     source_extraction_rehearsal_file: '.agent-onboard/source-extraction-rehearsal.json',
     source_extraction_golden_outputs_file: '.agent-onboard/source-extraction-golden-outputs.json',
     source_module_extraction_adapter_boundary_file: '.agent-onboard/source-module-extraction-adapter-boundary.json',
+    source_module_extraction_first_slice_file: '.agent-onboard/source-module-extraction-first-slice.json',
+    source_module_extraction_first_slice_module: 'src/domains/core.js',
     source_can_grow_with_tests: true,
     npm_package_remains_compact: true,
     expected_pack_files: Object.freeze(['LICENSE', 'README.md', 'cli/agent-onboard.js', 'package.json'])
@@ -330,6 +332,8 @@ const PUBLIC_ARCHITECTURE_MAP = Object.freeze({
     architecture_golden_check_command_writes_files: false,
     architecture_adapter_boundary_command_writes_files: false,
     architecture_adapter_check_command_writes_files: false,
+    architecture_first_slice_command_writes_files: false,
+    architecture_first_slice_check_command_writes_files: false,
     version_sprawl_check_command_writes_files: false,
     published_package_surface_file_count: 4,
     command_router_dispatch_must_be_table_driven: true,
@@ -340,7 +344,8 @@ const PUBLIC_ARCHITECTURE_MAP = Object.freeze({
     physical_partition_not_required_for_this_gate: true,
     source_domain_module_partition_planned_not_applied: true,
     source_domain_extraction_rehearsed_not_applied: true,
-    source_module_extraction_adapter_boundary_declared_not_applied: true
+    source_module_extraction_adapter_boundary_declared_not_applied: true,
+    source_module_extraction_first_slice_applied_for_core_only: true
   }),
   next_candidate_gates: Object.freeze([
     Object.freeze({
@@ -547,6 +552,8 @@ const PUBLIC_PACKAGE_SURFACE_PRESERVATION = Object.freeze({
     '.agent-onboard/source-extraction-rehearsal.json',
     '.agent-onboard/source-extraction-golden-outputs.json',
     '.agent-onboard/source-module-extraction-adapter-boundary.json',
+    '.agent-onboard/source-module-extraction-first-slice.json',
+    'src/domains/core.js',
     'test/agent-onboard.test.js'
   ]),
   installed_context_policy: Object.freeze({
@@ -851,6 +858,60 @@ const PUBLIC_SOURCE_MODULE_EXTRACTION_ADAPTER_BOUNDARY = Object.freeze({
   })
 });
 
+
+const PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE = Object.freeze({
+  schema: 'agent-onboard-public-source-module-extraction-first-slice-001',
+  title: 'Agent-Onboard Public Source Module Extraction First Slice',
+  package_name: 'agent-onboard',
+  release_line: RELEASE_LINE,
+  command: 'agent-onboard architecture --first-slice',
+  check_command: 'agent-onboard architecture --first-slice-check',
+  first_slice_file: '.agent-onboard/source-module-extraction-first-slice.json',
+  source_module: 'src/domains/core.js',
+  purpose: 'Create the first source-only domain module slice for the core domain while preserving the published CLI adapter, runtime output contract, and compact npm package surface.',
+  prerequisite_adapter_boundary_file: PUBLIC_SOURCE_MODULE_EXTRACTION_ADAPTER_BOUNDARY.boundary_file,
+  first_slice_status: 'source_only_shadow_module_applied',
+  extracted_domain: Object.freeze({
+    id: 'core',
+    facade: 'coreService',
+    service: 'coreService',
+    planned_module: 'src/domains/core.js',
+    runtime_dependency_status: 'not_required_by_published_cli_runtime',
+    published_api_status: 'not_public_import_api',
+    owns_commands: Object.freeze(['help', 'version', 'status', 'architecture']),
+    writes_files: false,
+    state_writer: false
+  }),
+  expected_module_export_names: Object.freeze(['CORE_DOMAIN_FIRST_SLICE', 'getCoreDomainFirstSlice']),
+  parity_scope: Object.freeze([
+    'domain id matches public architecture map',
+    'facade matches public domain service facade',
+    'module owns only read-only core commands',
+    'module is source-only and absent from npm package allowlist',
+    'CLI runtime does not require src/domains/core.js in installed package context'
+  ]),
+  boundary: Object.freeze({
+    first_slice_command_writes_files: false,
+    first_slice_check_command_writes_files: false,
+    creates_exactly_one_source_module: true,
+    created_source_module: 'src/domains/core.js',
+    creates_non_core_source_modules: false,
+    moves_existing_source_files: false,
+    changes_runtime_outputs: false,
+    changes_cli_runtime_dependency_graph: false,
+    exports_source_module_as_public_api: false,
+    writes_package_root: false,
+    writes_target_repository_state: false,
+    git_mutation: false,
+    installs_dependencies: false,
+    runs_package_manager: false,
+    runs_build_test_deploy: false,
+    publishes_package: false,
+    mutates_registry: false,
+    package_allowlist_unchanged: true
+  })
+});
+
 const PUBLIC_VERSION_REFERENCE_POLICY = Object.freeze({
   schema: 'agent-onboard-public-version-reference-policy-001',
   title: 'Agent-Onboard Public Version Reference Policy',
@@ -870,6 +931,8 @@ const PUBLIC_VERSION_REFERENCE_POLICY = Object.freeze({
     '.agent-onboard/source-extraction-rehearsal.json',
     '.agent-onboard/source-extraction-golden-outputs.json',
     '.agent-onboard/source-module-extraction-adapter-boundary.json',
+    '.agent-onboard/source-module-extraction-first-slice.json',
+    'src/domains/core.js',
     'test/agent-onboard.test.js'
   ]),
   allowed_dynamic_version_surfaces: Object.freeze([
@@ -887,7 +950,7 @@ const PUBLIC_VERSION_REFERENCE_POLICY = Object.freeze({
 });
 
 const PUBLIC_RELEASE_CONTRACT = Object.freeze({
-  schema: 'agent-onboard-public-release-contract-020',
+  schema: 'agent-onboard-public-release-contract-021',
   title: 'Agent-Onboard Public Release Contract',
   package_name: 'agent-onboard',
   release_line: RELEASE_LINE,
@@ -911,6 +974,8 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
   architecture_golden_check_command: 'agent-onboard architecture --golden-check',
   architecture_adapter_boundary_command: 'agent-onboard architecture --adapter-boundary',
   architecture_adapter_check_command: 'agent-onboard architecture --adapter-check',
+  architecture_first_slice_command: 'agent-onboard architecture --first-slice',
+  architecture_first_slice_check_command: 'agent-onboard architecture --first-slice-check',
   version_sprawl_check_command: 'agent-onboard release --version-sprawl-check',
   architecture_check_command: 'agent-onboard architecture --check',
   authority_first_read_command: 'agent-onboard authority --first-read',
@@ -932,6 +997,8 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
     '.agent-onboard/source-extraction-rehearsal.json',
     '.agent-onboard/source-extraction-golden-outputs.json',
     '.agent-onboard/source-module-extraction-adapter-boundary.json',
+    '.agent-onboard/source-module-extraction-first-slice.json',
+    'src/domains/core.js',
     'test/agent-onboard.test.js'
   ]),
   required_package_json: Object.freeze({
@@ -974,6 +1041,8 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
     'node cli/agent-onboard.js architecture --golden-check',
     'node cli/agent-onboard.js architecture --adapter-boundary',
     'node cli/agent-onboard.js architecture --adapter-check',
+    'node cli/agent-onboard.js architecture --first-slice',
+    'node cli/agent-onboard.js architecture --first-slice-check',
     'node cli/agent-onboard.js release --version-sprawl-check',
     'node cli/agent-onboard.js authority --first-read',
     'node cli/agent-onboard.js authority --check',
@@ -1009,6 +1078,8 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
     'npx agent-onboard@<version> architecture --golden-check',
     'npx agent-onboard@<version> architecture --adapter-boundary',
     'npx agent-onboard@<version> architecture --adapter-check',
+    'npx agent-onboard@<version> architecture --first-slice',
+    'npx agent-onboard@<version> architecture --first-slice-check',
     'npx agent-onboard@<version> release --version-sprawl-check',
     'npx agent-onboard@<version> authority --first-read',
     'npx agent-onboard@<version> authority --check',
@@ -1034,7 +1105,7 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
 
 
 const PUBLIC_RELEASE_FIXTURE_MATRIX = Object.freeze({
-  schema: 'agent-onboard-public-release-fixture-matrix-014',
+  schema: 'agent-onboard-public-release-fixture-matrix-015',
   title: 'Agent-Onboard Public Package Contract Fixture Matrix',
   package_name: 'agent-onboard',
   release_line: PUBLIC_RELEASE_CONTRACT.release_line,
@@ -1168,6 +1239,12 @@ const PUBLIC_RELEASE_FIXTURE_MATRIX = Object.freeze({
       expected_status: 'ok',
       validates: Object.freeze(['CLI adapter boundary is declared', 'adapter units cover all six public domains', 'each adapter unit maps to the admitted facade', 'no physical module is created', 'npm package allowlist remains compact']),
       boundary: 'architecture --adapter-boundary and --adapter-check are read-only; they do not create modules, move files, export source modules as public API, run npm, mutate Git, publish, or touch target repository state'
+    }),
+    Object.freeze({
+      id: 'public_source_module_extraction_first_slice',
+      expected_status: 'ok',
+      validates: Object.freeze(['the core source-only module slice exists', 'the first slice exports the admitted core metadata contract', 'the slice is not a public import API', 'the CLI runtime dependency graph remains unchanged', 'npm package allowlist remains compact']),
+      boundary: 'architecture --first-slice and --first-slice-check are read-only; they do not move existing source files, change runtime outputs, export source modules as public API, expand the npm package allowlist, run npm, mutate Git, publish, or touch target repository state'
     }),
     Object.freeze({
       id: 'public_version_reference_policy',
@@ -3157,7 +3234,9 @@ function publicSourceDomainExtractionRehearsalCheck(root = packageRoot()) {
     if (!String(unit.rehearsal_module || '').startsWith('src/domains/')) errors.push(`source extraction rehearsal module path must stay under src/domains/: ${unit.rehearsal_module}`);
     if (unit.extraction_mode !== 'rehearsal_only_no_file_created') errors.push(`source extraction rehearsal unit ${unit.domain} must be rehearsal_only_no_file_created`);
   }
-  if (result.physical_module_paths_present.length > 0) errors.push(`physical source modules must not be created by this rehearsal gate: ${result.physical_module_paths_present.join(', ')}`);
+  const admittedFirstSlicePhysicalModules = ['src/domains/core.js'];
+  const unadmittedPhysicalModules = result.physical_module_paths_present.filter((rel) => !admittedFirstSlicePhysicalModules.includes(rel));
+  if (unadmittedPhysicalModules.length > 0) errors.push(`unadmitted physical source modules must not be created by this rehearsal gate: ${unadmittedPhysicalModules.join(', ')}`);
   if (result.rehearsal.entrypoint_preservation.physical_modules_created_by_this_gate !== false) errors.push('source extraction rehearsal must not create physical modules');
   if (result.rehearsal.entrypoint_preservation.runtime_output_change_allowed !== false) errors.push('source extraction rehearsal must not allow runtime output changes');
   if (result.rehearsal.entrypoint_preservation.package_allowlist_change_allowed !== false) errors.push('source extraction rehearsal must not allow package allowlist changes');
@@ -3202,7 +3281,7 @@ function publicSourceDomainExtractionRehearsalCheck(root = packageRoot()) {
       rehearsal_unit_domain_order: arrayEquals(unitDomains, expectedDomains),
       rehearsal_unit_domains_unique: new Set(unitDomains).size === unitDomains.length,
       rehearsal_units_map_to_facades: result.rehearsal.extraction_rehearsal_units.every((unit) => expectedFacades.has(unit.domain) && unit.facade === expectedFacades.get(unit.domain)),
-      no_physical_modules_created: result.physical_module_paths_present.length === 0,
+      no_physical_modules_created: unadmittedPhysicalModules.length === 0,
       runtime_output_change_not_allowed: result.rehearsal.entrypoint_preservation.runtime_output_change_allowed === false && result.rehearsal.boundary.changes_runtime_outputs === false,
       extraction_commands_no_write: result.rehearsal.boundary.extraction_rehearsal_command_writes_files === false && result.rehearsal.boundary.extraction_check_command_writes_files === false && result.rehearsal.boundary.moves_source_files === false && result.rehearsal.boundary.creates_source_modules === false,
       package_allowlist_unchanged: arrayEquals(result.projected_pack_files, expectedPackFiles),
@@ -3212,6 +3291,8 @@ function publicSourceDomainExtractionRehearsalCheck(root = packageRoot()) {
     rehearsal_unit_domains: unitDomains,
     extraction_rehearsal_units: result.rehearsal.extraction_rehearsal_units,
     physical_module_paths_present: result.physical_module_paths_present,
+    admitted_physical_module_paths: result.physical_module_paths_present.filter((rel) => admittedFirstSlicePhysicalModules.includes(rel)),
+    unadmitted_physical_module_paths: unadmittedPhysicalModules,
     prerequisite_partition_plan: {
       status: partition.status,
       errors: partition.errors
@@ -3513,6 +3594,180 @@ function publicSourceModuleExtractionAdapterBoundaryCheck(root = packageRoot()) 
 }
 
 
+function loadCoreFirstSliceModule(root = packageRoot()) {
+  const modulePath = path.join(root, PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE.source_module);
+  if (!fs.existsSync(modulePath)) return null;
+  const resolved = require.resolve(modulePath);
+  delete require.cache[resolved];
+  return require(resolved);
+}
+
+function publicSourceModuleExtractionFirstSlice(root = packageRoot()) {
+  const pkg = readJson(path.join(root, 'package.json'));
+  const context = sourceContext(root);
+  const firstSliceFile = PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE.first_slice_file;
+  const sourceModule = PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE.source_module;
+  let module_exports = [];
+  let module_value = null;
+  let module_load_error = null;
+  try {
+    const loaded = loadCoreFirstSliceModule(root);
+    if (loaded) {
+      module_exports = Object.keys(loaded).sort();
+      if (typeof loaded.getCoreDomainFirstSlice === 'function') {
+        module_value = loaded.getCoreDomainFirstSlice();
+      } else if (loaded.CORE_DOMAIN_FIRST_SLICE) {
+        module_value = loaded.CORE_DOMAIN_FIRST_SLICE;
+      }
+    }
+  } catch (error) {
+    module_load_error = error && error.message ? error.message : String(error);
+  }
+  return {
+    schema: 'agent-onboard-public-source-module-extraction-first-slice-result-001',
+    status: module_load_error ? 'error' : 'ok',
+    package_name: PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE.package_name,
+    version: VERSION,
+    release_line: PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE.release_line,
+    command: PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE.command,
+    check_command: PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE.check_command,
+    package_root: root,
+    package_context: context.package_context,
+    package_json_version: pkg.version,
+    first_slice_file: firstSliceFile,
+    first_slice_file_present: fs.existsSync(path.join(root, firstSliceFile)),
+    source_module: sourceModule,
+    source_module_present: fs.existsSync(path.join(root, sourceModule)),
+    source_module_exports: module_exports,
+    source_module_value: module_value,
+    source_module_load_error: module_load_error,
+    first_slice: PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE,
+    projected_pack_files: packageJsonProjectedPackFiles(pkg),
+    boundary: {
+      writes_files: false,
+      writes_source_state: false,
+      writes_target_repository_state: false,
+      git_mutation: false,
+      installs_dependencies: false,
+      runs_package_manager: false,
+      runs_build_test_deploy: false,
+      publishes_package: false,
+      mutates_registry: false
+    }
+  };
+}
+
+function publicSourceModuleExtractionFirstSliceCheck(root = packageRoot()) {
+  const result = publicSourceModuleExtractionFirstSlice(root);
+  const adapter = publicSourceModuleExtractionAdapterBoundaryCheck(root);
+  const expectedPackFiles = PUBLIC_RELEASE_CONTRACT.expected_pack_files.slice().sort();
+  const expectedExports = PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE.expected_module_export_names.slice().sort();
+  const expectedDomain = PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE.extracted_domain;
+  const errors = [];
+  if (adapter.status !== 'ok') errors.push(...adapter.errors.map((error) => `adapter boundary: ${error}`));
+  if (result.status !== 'ok') errors.push(`first slice module load failed: ${result.source_module_load_error}`);
+  if (!arrayEquals(result.projected_pack_files, expectedPackFiles)) errors.push(`projected npm pack files must remain ${expectedPackFiles.join(', ')}`);
+  if (PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE.first_slice_status !== 'source_only_shadow_module_applied') errors.push('first slice status must be source_only_shadow_module_applied');
+  if (PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE.extracted_domain.id !== 'core') errors.push('first slice must extract the core domain first');
+  if (PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE.boundary.created_source_module !== 'src/domains/core.js') errors.push('first slice created source module must be src/domains/core.js');
+  if (PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE.boundary.creates_exactly_one_source_module !== true) errors.push('first slice must create exactly one source module');
+  if (PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE.boundary.creates_non_core_source_modules !== false) errors.push('first slice must not create non-core source modules');
+  if (PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE.boundary.moves_existing_source_files !== false) errors.push('first slice must not move existing source files');
+  if (PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE.boundary.changes_runtime_outputs !== false) errors.push('first slice must not change runtime outputs');
+  if (PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE.boundary.changes_cli_runtime_dependency_graph !== false) errors.push('first slice must not make CLI runtime require source modules');
+  if (PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE.boundary.exports_source_module_as_public_api !== false) errors.push('first slice must not expose source module as public import API');
+  if (PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE.boundary.first_slice_command_writes_files !== false) errors.push('architecture --first-slice must remain no-write');
+  if (PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE.boundary.first_slice_check_command_writes_files !== false) errors.push('architecture --first-slice-check must remain no-write');
+
+  let firstSliceFileStatus = 'not_present_installed_context_allowed';
+  let firstSliceFileSchema = null;
+  if (result.first_slice_file_present) {
+    try {
+      const firstSliceFile = readJson(path.join(root, result.first_slice_file));
+      firstSliceFileSchema = firstSliceFile.schema || null;
+      if (firstSliceFile.schema !== PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE.schema) errors.push(`${result.first_slice_file} schema must be ${PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE.schema}`);
+      if (!firstSliceFile.extracted_domain || firstSliceFile.extracted_domain.id !== 'core') errors.push(`${result.first_slice_file} must declare extracted_domain.id core`);
+      if (firstSliceFile.source_module !== 'src/domains/core.js') errors.push(`${result.first_slice_file} source_module must be src/domains/core.js`);
+      firstSliceFileStatus = 'present_validated';
+    } catch (error) {
+      firstSliceFileStatus = 'present_invalid_json';
+      errors.push(`${result.first_slice_file} is not valid JSON: ${error && error.message ? error.message : String(error)}`);
+    }
+  } else if (result.package_context === 'source_repository') {
+    firstSliceFileStatus = 'missing_source_context';
+    errors.push(`${result.first_slice_file} must be present in source repository context`);
+  }
+
+  let sourceModuleStatus = 'not_present_installed_context_allowed';
+  const moduleValue = result.source_module_value || {};
+  const moduleExportsSorted = result.source_module_exports.slice().sort();
+  if (result.source_module_present) {
+    if (!arrayEquals(moduleExportsSorted, expectedExports)) errors.push(`${result.source_module} exports must be ${expectedExports.join(', ')}`);
+    if (moduleValue.schema !== 'agent-onboard-public-source-module-core-first-slice-001') errors.push(`${result.source_module} must export core first-slice schema`);
+    if (moduleValue.domain !== expectedDomain.id) errors.push(`${result.source_module} domain must be ${expectedDomain.id}`);
+    if (moduleValue.facade !== expectedDomain.facade) errors.push(`${result.source_module} facade must be ${expectedDomain.facade}`);
+    if (moduleValue.source_module !== result.source_module) errors.push(`${result.source_module} source_module field must match its path`);
+    if (moduleValue.runtime_dependency_status !== expectedDomain.runtime_dependency_status) errors.push(`${result.source_module} runtime dependency status must remain source-only shadow`);
+    if (moduleValue.exports_public_api !== false) errors.push(`${result.source_module} must not declare public import API`);
+    if (moduleValue.writes_files !== false || moduleValue.state_writer !== false) errors.push(`${result.source_module} must remain read-only and non-state-writer`);
+    sourceModuleStatus = 'present_validated';
+  } else if (result.package_context === 'source_repository') {
+    sourceModuleStatus = 'missing_source_context';
+    errors.push(`${result.source_module} must be present in source repository context`);
+  }
+
+  return {
+    schema: 'agent-onboard-public-source-module-extraction-first-slice-check-result-001',
+    status: errors.length === 0 ? 'ok' : 'error',
+    package_name: PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE.package_name,
+    version: VERSION,
+    release_line: PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE.release_line,
+    command: PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE.check_command,
+    package_root: root,
+    validated: {
+      adapter_boundary: adapter.status === 'ok',
+      first_slice_status: PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE.first_slice_status === 'source_only_shadow_module_applied',
+      extracted_domain_is_core: PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE.extracted_domain.id === 'core',
+      source_module_present_or_installed_context_allowed: sourceModuleStatus === 'present_validated' || sourceModuleStatus === 'not_present_installed_context_allowed',
+      first_slice_file_present_or_installed_context_allowed: firstSliceFileStatus === 'present_validated' || firstSliceFileStatus === 'not_present_installed_context_allowed',
+      source_module_exports: arrayEquals(moduleExportsSorted, expectedExports) || sourceModuleStatus === 'not_present_installed_context_allowed',
+      source_module_matches_core_facade: sourceModuleStatus === 'not_present_installed_context_allowed' || (moduleValue.domain === expectedDomain.id && moduleValue.facade === expectedDomain.facade),
+      source_module_not_public_api: sourceModuleStatus === 'not_present_installed_context_allowed' || moduleValue.exports_public_api === false,
+      source_module_read_only: sourceModuleStatus === 'not_present_installed_context_allowed' || (moduleValue.writes_files === false && moduleValue.state_writer === false),
+      exactly_one_source_module_created: PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE.boundary.creates_exactly_one_source_module === true && PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE.boundary.creates_non_core_source_modules === false,
+      runtime_outputs_unchanged_by_gate: PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE.boundary.changes_runtime_outputs === false,
+      cli_runtime_dependency_graph_unchanged: PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE.boundary.changes_cli_runtime_dependency_graph === false,
+      first_slice_commands_no_write: PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE.boundary.first_slice_command_writes_files === false && PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE.boundary.first_slice_check_command_writes_files === false,
+      package_allowlist_unchanged: arrayEquals(result.projected_pack_files, expectedPackFiles)
+    },
+    expected_domain: expectedDomain,
+    source_module: {
+      path: result.source_module,
+      present: result.source_module_present,
+      status: sourceModuleStatus,
+      exports: result.source_module_exports,
+      value: result.source_module_value,
+      source_context_required: result.package_context === 'source_repository'
+    },
+    source_first_slice_file: {
+      path: result.first_slice_file,
+      present: result.first_slice_file_present,
+      status: firstSliceFileStatus,
+      schema: firstSliceFileSchema,
+      source_context_required: result.package_context === 'source_repository'
+    },
+    prerequisite_adapter_boundary: {
+      status: adapter.status,
+      errors: adapter.errors
+    },
+    projected_pack_files: result.projected_pack_files,
+    expected_pack_files: expectedPackFiles,
+    boundary: result.boundary,
+    errors
+  };
+}
+
+
 function publicArchitectureMap(root = packageRoot()) {
   const pkg = readJson(path.join(root, 'package.json'));
   return {
@@ -3533,6 +3788,7 @@ function publicArchitectureMap(root = packageRoot()) {
     source_domain_extraction_rehearsal: PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL,
     source_extraction_golden_output_freeze: PUBLIC_SOURCE_EXTRACTION_GOLDEN_OUTPUT_FREEZE,
       source_module_extraction_adapter_boundary: PUBLIC_SOURCE_MODULE_EXTRACTION_ADAPTER_BOUNDARY,
+    source_module_extraction_first_slice: PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE,
     version_reference_policy: PUBLIC_VERSION_REFERENCE_POLICY,
     authority_first_read_index: PUBLIC_AUTHORITY_FIRST_READ_INDEX,
     target_runtime_namespace: PUBLIC_TARGET_RUNTIME_NAMESPACE,
@@ -3579,6 +3835,8 @@ function publicArchitectureCheck(root = packageRoot()) {
   const goldenOutputErrors = goldenOutputs.errors.map((error) => `golden outputs: ${error}`);
   const adapterBoundary = publicSourceModuleExtractionAdapterBoundaryCheck(root);
   const adapterBoundaryErrors = adapterBoundary.errors.map((error) => `adapter boundary: ${error}`);
+  const firstSlice = publicSourceModuleExtractionFirstSliceCheck(root);
+  const firstSliceErrors = firstSlice.errors.map((error) => `first slice: ${error}`);
   const errors = [];
   if (!arrayEquals(domainIds, expectedDomains)) errors.push(`architecture domain order must be ${expectedDomains.join(', ')}`);
   if (new Set(domainIds).size !== domainIds.length) errors.push('architecture domain ids must be unique');
@@ -3597,12 +3855,14 @@ function publicArchitectureCheck(root = packageRoot()) {
   if (map.map.package_boundary.architecture_golden_check_command_writes_files !== false) errors.push('architecture golden check command must remain no-write');
   if (map.map.package_boundary.architecture_adapter_boundary_command_writes_files !== false) errors.push('architecture adapter boundary command must remain no-write');
   if (map.map.package_boundary.architecture_adapter_check_command_writes_files !== false) errors.push('architecture adapter check command must remain no-write');
+  if (map.map.package_boundary.architecture_first_slice_command_writes_files !== false) errors.push('architecture first slice command must remain no-write');
+  if (map.map.package_boundary.architecture_first_slice_check_command_writes_files !== false) errors.push('architecture first slice check command must remain no-write');
   if (map.map.package_boundary.version_sprawl_check_command_writes_files !== false) errors.push('version sprawl check command must remain no-write');
   if (map.map.package_boundary.authority_first_read_command_writes_files !== false) errors.push('authority first-read command must remain no-write');
   if (map.map.package_boundary.authority_check_command_writes_files !== false) errors.push('authority check command must remain no-write');
   if (map.map.package_boundary.target_runtime_namespace_command_writes_files !== false) errors.push('target runtime namespace command must remain no-write');
   if (map.map.package_boundary.target_runtime_check_command_writes_files !== false) errors.push('target runtime check command must remain no-write');
-  errors.push(...routerErrors, ...facadeErrors, ...authorityErrors, ...targetRuntimeErrors, ...sourcePartitionErrors, ...sourceExtractionErrors, ...goldenOutputErrors, ...adapterBoundaryErrors);
+  errors.push(...routerErrors, ...facadeErrors, ...authorityErrors, ...targetRuntimeErrors, ...sourcePartitionErrors, ...sourceExtractionErrors, ...goldenOutputErrors, ...adapterBoundaryErrors, ...firstSliceErrors);
   return {
     schema: 'agent-onboard-public-architecture-check-result-001',
     status: errors.length === 0 ? 'ok' : 'error',
@@ -3617,7 +3877,7 @@ function publicArchitectureCheck(root = packageRoot()) {
       domain_ids_unique: new Set(domainIds).size === domainIds.length,
       runtime_entrypoint_present: map.current_runtime.entrypoint_exists,
       compact_package_boundary: arrayEquals(projectedPackFiles, expectedPackFiles),
-      architecture_commands_no_write: map.map.package_boundary.architecture_map_command_writes_files === false && map.map.package_boundary.architecture_check_command_writes_files === false && map.map.package_boundary.architecture_router_command_writes_files === false && map.map.package_boundary.architecture_facades_command_writes_files === false && map.map.package_boundary.architecture_partition_plan_command_writes_files === false && map.map.package_boundary.architecture_partition_check_command_writes_files === false && map.map.package_boundary.architecture_extraction_rehearsal_command_writes_files === false && map.map.package_boundary.architecture_extraction_check_command_writes_files === false && map.map.package_boundary.architecture_golden_outputs_command_writes_files === false && map.map.package_boundary.architecture_golden_check_command_writes_files === false && map.map.package_boundary.architecture_adapter_boundary_command_writes_files === false && map.map.package_boundary.architecture_adapter_check_command_writes_files === false && map.map.package_boundary.version_sprawl_check_command_writes_files === false && map.map.package_boundary.authority_first_read_command_writes_files === false && map.map.package_boundary.authority_check_command_writes_files === false,
+      architecture_commands_no_write: map.map.package_boundary.architecture_map_command_writes_files === false && map.map.package_boundary.architecture_check_command_writes_files === false && map.map.package_boundary.architecture_router_command_writes_files === false && map.map.package_boundary.architecture_facades_command_writes_files === false && map.map.package_boundary.architecture_partition_plan_command_writes_files === false && map.map.package_boundary.architecture_partition_check_command_writes_files === false && map.map.package_boundary.architecture_extraction_rehearsal_command_writes_files === false && map.map.package_boundary.architecture_extraction_check_command_writes_files === false && map.map.package_boundary.architecture_golden_outputs_command_writes_files === false && map.map.package_boundary.architecture_golden_check_command_writes_files === false && map.map.package_boundary.architecture_adapter_boundary_command_writes_files === false && map.map.package_boundary.architecture_adapter_check_command_writes_files === false && map.map.package_boundary.architecture_first_slice_command_writes_files === false && map.map.package_boundary.architecture_first_slice_check_command_writes_files === false && map.map.package_boundary.version_sprawl_check_command_writes_files === false && map.map.package_boundary.authority_first_read_command_writes_files === false && map.map.package_boundary.authority_check_command_writes_files === false,
       command_router_boundary: router.status === 'ok',
       domain_service_facades: facades.status === 'ok',
       authority_first_read_index: authority.status === 'ok',
@@ -3625,7 +3885,8 @@ function publicArchitectureCheck(root = packageRoot()) {
       source_domain_module_partition_plan: sourcePartition.status === 'ok',
       source_domain_extraction_rehearsal: sourceExtraction.status === 'ok',
       source_extraction_golden_output_freeze: goldenOutputs.status === 'ok',
-      source_module_extraction_adapter_boundary: adapterBoundary.status === 'ok'
+      source_module_extraction_adapter_boundary: adapterBoundary.status === 'ok',
+      source_module_extraction_first_slice: firstSlice.status === 'ok'
     },
     domain_ids: domainIds,
     expected_pack_files: expectedPackFiles,
@@ -3638,6 +3899,7 @@ function publicArchitectureCheck(root = packageRoot()) {
     source_domain_extraction_rehearsal: sourceExtraction,
     source_extraction_golden_output_freeze: goldenOutputs,
     source_module_extraction_adapter_boundary: adapterBoundary,
+    source_module_extraction_first_slice: firstSlice,
     boundary: map.boundary,
     errors
   };
@@ -3785,6 +4047,7 @@ function publicReleaseCheck(root = packageRoot()) {
       public_source_domain_extraction_rehearsal: architecture.source_domain_extraction_rehearsal && architecture.source_domain_extraction_rehearsal.status === 'ok',
       public_source_extraction_golden_output_freeze: architecture.source_extraction_golden_output_freeze && architecture.source_extraction_golden_output_freeze.status === 'ok',
       public_source_module_extraction_adapter_boundary: architecture.source_module_extraction_adapter_boundary && architecture.source_module_extraction_adapter_boundary.status === 'ok',
+      public_source_module_extraction_first_slice: architecture.source_module_extraction_first_slice && architecture.source_module_extraction_first_slice.status === 'ok',
       public_version_reference_policy: versionPolicy.status === 'ok',
       public_package_surface_preservation: packageSurface.status === 'ok',
       public_installed_parity_architecture_smoke: architectureParity.status === 'ok'
@@ -3797,6 +4060,7 @@ function publicReleaseCheck(root = packageRoot()) {
     public_source_domain_extraction_rehearsal: architecture.source_domain_extraction_rehearsal,
     public_source_extraction_golden_output_freeze: architecture.source_extraction_golden_output_freeze,
     public_source_module_extraction_adapter_boundary: architecture.source_module_extraction_adapter_boundary,
+    public_source_module_extraction_first_slice: architecture.source_module_extraction_first_slice,
     public_version_reference_policy: versionPolicy,
     public_package_surface_preservation: packageSurface,
     public_installed_parity_architecture_smoke: architectureParity,
@@ -3903,6 +4167,7 @@ function publicInstalledParityArchitectureSmoke(root = packageRoot()) {
   const sourceExtraction = publicSourceDomainExtractionRehearsalCheck(root);
   const goldenOutputs = publicSourceExtractionGoldenOutputFreezeCheck(root);
   const adapterBoundary = publicSourceModuleExtractionAdapterBoundaryCheck(root);
+  const firstSlice = publicSourceModuleExtractionFirstSliceCheck(root);
   const componentErrors = [];
   if (architecture.status !== 'ok') componentErrors.push(...architecture.errors.map((error) => `architecture: ${error}`));
   if (authority.status !== 'ok') componentErrors.push(...authority.errors.map((error) => `authority: ${error}`));
@@ -3912,6 +4177,7 @@ function publicInstalledParityArchitectureSmoke(root = packageRoot()) {
   if (sourceExtraction.status !== 'ok') componentErrors.push(...sourceExtraction.errors.map((error) => `source extraction: ${error}`));
   if (goldenOutputs.status !== 'ok') componentErrors.push(...goldenOutputs.errors.map((error) => `golden outputs: ${error}`));
   if (adapterBoundary.status !== 'ok') componentErrors.push(...adapterBoundary.errors.map((error) => `adapter boundary: ${error}`));
+  if (firstSlice.status !== 'ok') componentErrors.push(...firstSlice.errors.map((error) => `first slice: ${error}`));
 
   const parity = {
     package_metadata: metadataErrors.length === 0,
@@ -3930,6 +4196,7 @@ function publicInstalledParityArchitectureSmoke(root = packageRoot()) {
     source_domain_extraction_rehearsal_check: sourceExtraction.status === 'ok',
     source_extraction_golden_output_freeze_check: goldenOutputs.status === 'ok',
     source_module_extraction_adapter_boundary_check: adapterBoundary.status === 'ok',
+    source_module_extraction_first_slice_check: firstSlice.status === 'ok',
     runtime_version_matches_package_json: pkg.version === VERSION
   };
 
@@ -3972,6 +4239,7 @@ function publicInstalledParityArchitectureSmoke(root = packageRoot()) {
       source_domain_extraction_rehearsal_status: sourceExtraction.status,
       source_extraction_golden_output_freeze_status: goldenOutputs.status,
       source_module_extraction_adapter_boundary_status: adapterBoundary.status,
+      source_module_extraction_first_slice_status: firstSlice.status,
       package_context: context.package_context,
       source_context_files_present: context.source_context_files_present,
       source_context_files_missing: context.source_context_files_missing
@@ -3985,6 +4253,7 @@ function publicInstalledParityArchitectureSmoke(root = packageRoot()) {
     source_domain_extraction_rehearsal: sourceExtraction,
     source_extraction_golden_output_freeze: goldenOutputs,
     source_module_extraction_adapter_boundary: adapterBoundary,
+    source_module_extraction_first_slice: firstSlice,
     boundary: {
       writes_files: false,
       writes_package_root: false,
@@ -4137,6 +4406,8 @@ function publicTargetOnboardingPostPublishHandoff(root = packageRoot(), version 
     `npx agent-onboard@${version} architecture --golden-check`,
     `npx agent-onboard@${version} architecture --adapter-boundary`,
     `npx agent-onboard@${version} architecture --adapter-check`,
+    `npx agent-onboard@${version} architecture --first-slice`,
+    `npx agent-onboard@${version} architecture --first-slice-check`,
     `npx agent-onboard@${version} release --version-sprawl-check`,
     `npx agent-onboard@${version} authority --first-read`,
     `npx agent-onboard@${version} authority --check`,
@@ -4181,6 +4452,7 @@ function publicTargetOnboardingPostPublishHandoff(root = packageRoot(), version 
       'version-pinned architecture source extraction rehearsal check returns ok',
       'version-pinned architecture golden output freeze check returns ok',
       'version-pinned source module extraction adapter boundary check returns ok',
+      'version-pinned source module extraction first slice check returns ok',
       'version-pinned version sprawl check returns ok',
       'version-pinned target onboarding smoke returns ok',
       'version-pinned published acceptance returns ok',
@@ -4240,6 +4512,7 @@ function publicTargetOnboardingPublishedAcceptance(root = packageRoot()) {
     `npx agent-onboard@${VERSION} architecture --router`,
     `npx agent-onboard@${VERSION} architecture --facades`,
     `npx agent-onboard@${VERSION} architecture --golden-check`,
+    `npx agent-onboard@${VERSION} architecture --first-slice-check`,
     `npx agent-onboard@${VERSION} release --version-sprawl-check`,
     `npx agent-onboard@${VERSION} authority --first-read`,
     `npx agent-onboard@${VERSION} authority --check`,
@@ -4384,6 +4657,15 @@ function runArchitecture(args) {
     json(result);
     return result.status === 'ok' ? 0 : 1;
   }
+  if (args.length === 1 && args[0] === '--first-slice') {
+    json(publicSourceModuleExtractionFirstSlice());
+    return 0;
+  }
+  if (args.length === 1 && args[0] === '--first-slice-check') {
+    const result = publicSourceModuleExtractionFirstSliceCheck();
+    json(result);
+    return result.status === 'ok' ? 0 : 1;
+  }
   if (args.length === 1 && args[0] === '--check') {
     const result = publicArchitectureCheck();
     json(result);
@@ -4393,7 +4675,7 @@ function runArchitecture(args) {
     schema: 'agent-onboard-architecture-command-error-001',
     status: 'error',
     command_family: 'architecture',
-    message: 'architecture requires --map, --router, --facades, --partition-plan, --partition-check, --extraction-rehearsal, --extraction-check, --golden-outputs, --golden-check, --adapter-boundary, --adapter-check, or --check',
+    message: 'architecture requires --map, --router, --facades, --partition-plan, --partition-check, --extraction-rehearsal, --extraction-check, --golden-outputs, --golden-check, --adapter-boundary, --adapter-check, --first-slice, --first-slice-check, or --check',
     writes_files: false,
     publishes_package: false
   });
@@ -4450,6 +4732,8 @@ function runRelease(args) {
       architecture_golden_check_command: PUBLIC_RELEASE_CONTRACT.architecture_golden_check_command,
       architecture_adapter_boundary_command: PUBLIC_RELEASE_CONTRACT.architecture_adapter_boundary_command,
       architecture_adapter_check_command: PUBLIC_RELEASE_CONTRACT.architecture_adapter_check_command,
+      architecture_first_slice_command: PUBLIC_RELEASE_CONTRACT.architecture_first_slice_command,
+      architecture_first_slice_check_command: PUBLIC_RELEASE_CONTRACT.architecture_first_slice_check_command,
       version_sprawl_check_command: PUBLIC_RELEASE_CONTRACT.version_sprawl_check_command,
       architecture_check_command: PUBLIC_RELEASE_CONTRACT.architecture_check_command,
       authority_first_read_command: PUBLIC_RELEASE_CONTRACT.authority_first_read_command,
@@ -4468,6 +4752,7 @@ function runRelease(args) {
       source_domain_extraction_rehearsal: PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL,
       source_extraction_golden_output_freeze: PUBLIC_SOURCE_EXTRACTION_GOLDEN_OUTPUT_FREEZE,
       source_module_extraction_adapter_boundary: PUBLIC_SOURCE_MODULE_EXTRACTION_ADAPTER_BOUNDARY,
+      source_module_extraction_first_slice: PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE,
       version_reference_policy: PUBLIC_VERSION_REFERENCE_POLICY,
       authority_first_read_index: PUBLIC_AUTHORITY_FIRST_READ_INDEX,
       target_runtime_namespace: PUBLIC_TARGET_RUNTIME_NAMESPACE,
@@ -4502,6 +4787,7 @@ function runRelease(args) {
       source_domain_extraction_rehearsal: PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL,
       source_extraction_golden_output_freeze: PUBLIC_SOURCE_EXTRACTION_GOLDEN_OUTPUT_FREEZE,
       source_module_extraction_adapter_boundary: PUBLIC_SOURCE_MODULE_EXTRACTION_ADAPTER_BOUNDARY,
+      source_module_extraction_first_slice: PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE,
       version_reference_policy: PUBLIC_VERSION_REFERENCE_POLICY,
       authority_first_read_index: PUBLIC_AUTHORITY_FIRST_READ_INDEX,
       target_runtime_namespace: PUBLIC_TARGET_RUNTIME_NAMESPACE,
@@ -4530,6 +4816,7 @@ function runRelease(args) {
       source_domain_extraction_rehearsal: PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL,
       source_extraction_golden_output_freeze: PUBLIC_SOURCE_EXTRACTION_GOLDEN_OUTPUT_FREEZE,
       source_module_extraction_adapter_boundary: PUBLIC_SOURCE_MODULE_EXTRACTION_ADAPTER_BOUNDARY,
+      source_module_extraction_first_slice: PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE,
       version_reference_policy: PUBLIC_VERSION_REFERENCE_POLICY,
       authority_first_read_index: PUBLIC_AUTHORITY_FIRST_READ_INDEX,
       target_runtime_namespace: PUBLIC_TARGET_RUNTIME_NAMESPACE,
@@ -5321,7 +5608,7 @@ function runTargetInstance(args) {
 }
 
 function help() {
-  process.stdout.write(`agent-onboard ${VERSION}\n\nagent-onboard status\nagent-onboard init --dry-run|--write [--force]\nagent-onboard agents --preview|--write [--force]\nagent-onboard guard --plan|--check-boundary\nagent-onboard authority --first-read|--check\nagent-onboard architecture --map|--router|--facades|--partition-plan|--partition-check|--extraction-rehearsal|--extraction-check|--golden-outputs|--golden-check|--adapter-boundary|--adapter-check|--check\nagent-onboard release --plan|--contract|--fixture|--surface|--surface-check|--version-sprawl-check|--parity-smoke|--architecture-parity-smoke|--target-onboarding-smoke|--post-publish-handoff|--published-acceptance|--real-target-trial|--check\nagent-onboard target-config --schema\nagent-onboard target-config --template\nagent-onboard target-config --validate-template\nagent-onboard target-config --validate [agent-onboard.target.json]\nagent-onboard work-items --schema\nagent-onboard work-items --template\nagent-onboard work-items --validate-template\nagent-onboard work-items --validate [.agent-onboard/work-items.json]\nagent-onboard work-items --list [.agent-onboard/work-items.json]\nagent-onboard work-items --init --dry-run|--write [--force]\nagent-onboard work-items --append --dry-run|--write --id <public-work-item-id> --title <title>\nagent-onboard work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>\nagent-onboard work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>\nagent-onboard target runtime --namespace|--check\nagent-onboard target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]\nagent-onboard target bootstrap --dry-run|--write [--force]\nagent-onboard target-instance takeover --dry-run|--write [--force]\n`);
+  process.stdout.write(`agent-onboard ${VERSION}\n\nagent-onboard status\nagent-onboard init --dry-run|--write [--force]\nagent-onboard agents --preview|--write [--force]\nagent-onboard guard --plan|--check-boundary\nagent-onboard authority --first-read|--check\nagent-onboard architecture --map|--router|--facades|--partition-plan|--partition-check|--extraction-rehearsal|--extraction-check|--golden-outputs|--golden-check|--adapter-boundary|--adapter-check|--first-slice|--first-slice-check|--check\nagent-onboard release --plan|--contract|--fixture|--surface|--surface-check|--version-sprawl-check|--parity-smoke|--architecture-parity-smoke|--target-onboarding-smoke|--post-publish-handoff|--published-acceptance|--real-target-trial|--check\nagent-onboard target-config --schema\nagent-onboard target-config --template\nagent-onboard target-config --validate-template\nagent-onboard target-config --validate [agent-onboard.target.json]\nagent-onboard work-items --schema\nagent-onboard work-items --template\nagent-onboard work-items --validate-template\nagent-onboard work-items --validate [.agent-onboard/work-items.json]\nagent-onboard work-items --list [.agent-onboard/work-items.json]\nagent-onboard work-items --init --dry-run|--write [--force]\nagent-onboard work-items --append --dry-run|--write --id <public-work-item-id> --title <title>\nagent-onboard work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>\nagent-onboard work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>\nagent-onboard target runtime --namespace|--check\nagent-onboard target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]\nagent-onboard target bootstrap --dry-run|--write [--force]\nagent-onboard target-instance takeover --dry-run|--write [--force]\n`);
   return 0;
 }
 
