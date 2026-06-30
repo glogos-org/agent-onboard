@@ -8,10 +8,10 @@ The generated files are intended to be read by agents, wrappers, CI hooks, or fu
 
 ## Install
 
-For the `0.0.x` line, install with `~0.0.20` so target repos can receive later `0.0.x` updates without crossing the `0.1.0` boundary:
+For the `0.0.x` line, install with `~0.0.21` so target repos can receive later `0.0.x` updates without crossing the `0.1.0` boundary:
 
 ```sh
-npm install --save-dev agent-onboard@~0.0.20
+npm install --save-dev agent-onboard@~0.0.21
 ```
 
 Run without installing:
@@ -21,6 +21,14 @@ npx agent-onboard status
 ```
 
 ## Minimal target init
+
+Preview the target onboarding sequence before touching files:
+
+```sh
+npx agent-onboard target onboarding --plan
+```
+
+The plan is read-only. It declares the canonical target files, the preview commands, the explicit write commands, and the guard check that should be run after a read-only target boundary exists.
 
 Preview the files that would be created:
 
@@ -98,6 +106,7 @@ npx agent-onboard work-items --claim --dry-run --id <public-work-item-id> --acto
 npx agent-onboard work-items --claim --write --id <public-work-item-id> --actor <actor>
 npx agent-onboard work-items --close --dry-run --id <public-work-item-id> --actor <actor> --summary <summary>
 npx agent-onboard work-items --close --write --id <public-work-item-id> --actor <actor> --summary <summary>
+npx agent-onboard target onboarding --plan
 npx agent-onboard target bootstrap --dry-run
 npx agent-onboard target bootstrap --write
 npx agent-onboard target-instance takeover --dry-run
@@ -149,6 +158,16 @@ agent-onboard status
 aob status
 create-agent-onboard status
 ```
+
+## Target onboarding plan
+
+Print the public target onboarding sequence without writing files:
+
+```sh
+npx agent-onboard target onboarding --plan
+```
+
+The plan reports the target identity inferred from the current directory, the canonical files, the read-only preview phases, the explicit write phases, and the no-mutation boundary for the plan command itself. It is the first command to run when deciding how to onboard a target repo.
 
 ## Files written
 
@@ -466,6 +485,8 @@ This version does not:
 
 `0.0.20` adds installed package parity smoke: `release --parity-smoke` validates the source candidate check, projected npm package file set, source-context exclusion, bin entrypoint inclusion, and package/runtime version parity without running package-manager, registry, Git, or build commands.
 
+`0.0.21` adds the public target onboarding surface plan: `target onboarding --plan` prints the target onboarding sequence, canonical files, explicit write boundaries, and next candidate gate without mutating the target repo.
+
 <!-- ## Star History
 
 [![Star History Chart](https://api.star-history.com/chart?repos=glogos-org/agent-onboard&type=date&legend=top-left)](https://www.star-history.com/?repos=glogos-org%2Fagent-onboard&type=date&legend=top-left) -->
@@ -482,9 +503,9 @@ The source repository can carry its own public Agent-Onboard operating surface:
 Agent participation is explicit. An agent should first list the ledger, then claim only an assigned work item:
 
 ```sh
-npx agent-onboard@0.0.20 work-items --list
-npx agent-onboard@0.0.20 work-items --claim --dry-run --id <public-work-item-id> --actor <agent-or-human-name>
-npx agent-onboard@0.0.20 work-items --claim --write --id <public-work-item-id> --actor <agent-or-human-name>
+npx agent-onboard@0.0.21 work-items --list
+npx agent-onboard@0.0.21 work-items --claim --dry-run --id <public-work-item-id> --actor <agent-or-human-name>
+npx agent-onboard@0.0.21 work-items --claim --write --id <public-work-item-id> --actor <agent-or-human-name>
 ```
 
 The npm package surface remains intentionally compact. The self-dogfood files are source-repository operating files and are not included in the public npm tarball.
