@@ -6,7 +6,7 @@ const os = require('os');
 const path = require('path');
 const VERSION = require('../package.json').version;
 const TARGET_CONFIG_FILE = 'agent-onboard.target.json';
-const RELEASE_LINE = 'public_work_items_domain_source_extraction_installed_fallback_smoke_gate';
+const RELEASE_LINE = 'public_claims_domain_source_extraction_planning_gate';
 
 process.stdout.on('error', (error) => {
   if (error && error.code === 'EPIPE') process.exit(0);
@@ -301,7 +301,7 @@ const PUBLIC_ARCHITECTURE_MAP = Object.freeze({
   ]),
   public_source_shape: Object.freeze({
     current_entrypoint: 'cli/agent-onboard.js',
-    physical_domain_split_status: 'work_items_domain_source_installed_fallback_smoke_applied',
+    physical_domain_split_status: 'claims_domain_source_extraction_planning_applied',
     source_partition_plan_file: '.agent-onboard/source-partition-plan.json',
     source_extraction_rehearsal_file: '.agent-onboard/source-extraction-rehearsal.json',
     source_extraction_golden_outputs_file: '.agent-onboard/source-extraction-golden-outputs.json',
@@ -325,6 +325,8 @@ const PUBLIC_ARCHITECTURE_MAP = Object.freeze({
     work_items_domain_source_extraction_bundle_parity_file: '.agent-onboard/source-module-extraction-work-items-bundle-parity.json',
     work_items_domain_source_extraction_runtime_bridge_file: '.agent-onboard/source-module-extraction-work-items-runtime-bridge.json',
     work_items_domain_source_extraction_installed_fallback_smoke_file: '.agent-onboard/source-module-extraction-work-items-installed-fallback-smoke.json',
+    claims_domain_source_extraction_plan_file: '.agent-onboard/source-module-extraction-claims-plan.json',
+    claims_domain_source_extraction_planned_module: 'src/domains/claims.js',
     work_items_domain_source_extraction_module: 'src/domains/work-items.js',
     work_items_domain_source_extraction_planned_module: 'src/domains/work-items.js',
     architecture_milestone_transition_status: 'p1s3m1_closed_p1s3m2_seeded',
@@ -380,6 +382,8 @@ const PUBLIC_ARCHITECTURE_MAP = Object.freeze({
     architecture_work_items_runtime_bridge_check_command_writes_files: false,
     architecture_work_items_installed_fallback_smoke_command_writes_files: false,
     architecture_work_items_installed_fallback_check_command_writes_files: false,
+    architecture_claims_plan_command_writes_files: false,
+    architecture_claims_check_command_writes_files: false,
     version_sprawl_check_command_writes_files: false,
     published_package_surface_file_count: 4,
     command_router_dispatch_must_be_table_driven: true,
@@ -404,7 +408,8 @@ const PUBLIC_ARCHITECTURE_MAP = Object.freeze({
     work_items_domain_source_extraction_first_slice_applied: true,
     work_items_domain_source_extraction_bundle_parity_applied: true,
     work_items_domain_source_extraction_runtime_bridge_applied: true,
-    work_items_domain_source_extraction_installed_fallback_smoke_applied: true
+    work_items_domain_source_extraction_installed_fallback_smoke_applied: true,
+    claims_domain_source_extraction_planning_applied: true
   }),
   next_candidate_gates: Object.freeze([
     Object.freeze({
@@ -625,6 +630,7 @@ const PUBLIC_PACKAGE_SURFACE_PRESERVATION = Object.freeze({
     '.agent-onboard/source-module-extraction-work-items-bundle-parity.json',
     '.agent-onboard/source-module-extraction-work-items-runtime-bridge.json',
     '.agent-onboard/source-module-extraction-work-items-installed-fallback-smoke.json',
+    '.agent-onboard/source-module-extraction-claims-plan.json',
     'src/domains/core.js',
     'src/domains/authority.js',
     'src/domains/work-items.js',
@@ -1649,6 +1655,8 @@ const PUBLIC_WORK_ITEMS_DOMAIN_SOURCE_EXTRACTION_INSTALLED_FALLBACK_SMOKE = Obje
   boundary: Object.freeze({
     work_items_installed_fallback_smoke_command_writes_files: false,
     work_items_installed_fallback_check_command_writes_files: false,
+    claims_plan_command_writes_files: false,
+    claims_check_command_writes_files: false,
     creates_temp_files: false,
     creates_source_modules: false,
     moves_existing_source_files: false,
@@ -1658,6 +1666,67 @@ const PUBLIC_WORK_ITEMS_DOMAIN_SOURCE_EXTRACTION_INSTALLED_FALLBACK_SMOKE = Obje
     source_modules_remain_out_of_npm_pack: true,
     installed_context_fallback_required: true,
     includes_claim_and_close_commands: false,
+    writes_package_root: false,
+    writes_target_repository_state: false,
+    git_mutation: false,
+    installs_dependencies: false,
+    runs_package_manager: false,
+    runs_build_test_deploy: false,
+    publishes_package: false,
+    mutates_registry: false,
+    package_allowlist_unchanged: true
+  })
+});
+
+
+const PUBLIC_CLAIMS_DOMAIN_SOURCE_EXTRACTION_PLAN = Object.freeze({
+  schema: 'agent-onboard-public-claims-domain-source-extraction-plan-001',
+  title: 'Agent-Onboard Public Claims Domain Source Extraction Planning Gate',
+  package_name: 'agent-onboard',
+  release_line: RELEASE_LINE,
+  command: 'agent-onboard architecture --claims-plan',
+  check_command: 'agent-onboard architecture --claims-check',
+  plan_file: '.agent-onboard/source-module-extraction-claims-plan.json',
+  milestone_id: 'P1S3M2',
+  work_item_id: ['P', 1, 'S', 3, 'M', 2, 'W', 7].join(''),
+  next_work_item_id: ['P', 1, 'S', 3, 'M', 2, 'W', 8].join(''),
+  domain: Object.freeze({
+    id: 'claims',
+    facade: 'claimsService',
+    command_surface: Object.freeze(['work-items --claim', 'work-items --close']),
+    state_file: '.agent-onboard/work-items.json',
+    planned_module: 'src/domains/claims.js',
+    planned_contract_schema: 'agent-onboard-public-source-module-claims-first-slice-001',
+    planned_status: 'planned_not_created_by_this_gate'
+  }),
+  prerequisites: Object.freeze({
+    work_items_installed_fallback_check: 'agent-onboard architecture --work-items-installed-fallback-check',
+    package_surface_check: 'agent-onboard release --surface-check'
+  }),
+  extraction_scope: Object.freeze([
+    'claim dry-run/write proposal envelope for existing public work items',
+    'claim actor, claimed_at, and note metadata transitions',
+    'close dry-run/write closure envelope and handoff evidence checklist',
+    'claim/close validation boundaries while the canonical state remains .agent-onboard/work-items.json'
+  ]),
+  excluded_scope: Object.freeze([
+    'do not create src/domains/claims.js in this planning gate',
+    'do not move work-items --claim or work-items --close handlers in this planning gate',
+    'do not change work-items schema, template, init, validate, list, or append behavior',
+    'do not expand the npm package allowlist',
+    'do not change public CLI output contracts beyond adding this explicit planning/check surface'
+  ]),
+  followup_work_items: Object.freeze([
+    Object.freeze({ id: ['P', 1, 'S', 3, 'M', 2, 'W', 8].join(''), title: 'Public claims domain source extraction first-slice gate', expected_status: 'open' })
+  ]),
+  boundary: Object.freeze({
+    claims_plan_command_writes_files: false,
+    claims_check_command_writes_files: false,
+    creates_source_modules: false,
+    moves_existing_source_files: false,
+    changes_work_items_non_claim_runtime: false,
+    changes_public_cli_outputs: false,
+    exports_source_module_as_public_api: false,
     writes_package_root: false,
     writes_target_repository_state: false,
     git_mutation: false,
@@ -1703,6 +1772,7 @@ const PUBLIC_VERSION_REFERENCE_POLICY = Object.freeze({
     '.agent-onboard/source-module-extraction-work-items-bundle-parity.json',
     '.agent-onboard/source-module-extraction-work-items-runtime-bridge.json',
     '.agent-onboard/source-module-extraction-work-items-installed-fallback-smoke.json',
+    '.agent-onboard/source-module-extraction-claims-plan.json',
     'src/domains/core.js',
     'src/domains/authority.js',
     'src/domains/work-items.js',
@@ -1775,6 +1845,8 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
   architecture_work_items_runtime_bridge_check_command: 'agent-onboard architecture --work-items-runtime-bridge-check',
   architecture_work_items_installed_fallback_smoke_command: 'agent-onboard architecture --work-items-installed-fallback-smoke',
   architecture_work_items_installed_fallback_check_command: 'agent-onboard architecture --work-items-installed-fallback-check',
+  architecture_claims_plan_command: 'agent-onboard architecture --claims-plan',
+  architecture_claims_check_command: 'agent-onboard architecture --claims-check',
   version_sprawl_check_command: 'agent-onboard release --version-sprawl-check',
   architecture_check_command: 'agent-onboard architecture --check',
   authority_first_read_command: 'agent-onboard authority --first-read',
@@ -1810,6 +1882,7 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
     '.agent-onboard/source-module-extraction-work-items-bundle-parity.json',
     '.agent-onboard/source-module-extraction-work-items-runtime-bridge.json',
     '.agent-onboard/source-module-extraction-work-items-installed-fallback-smoke.json',
+    '.agent-onboard/source-module-extraction-claims-plan.json',
     'src/domains/core.js',
     'src/domains/authority.js',
     'src/domains/work-items.js',
@@ -1883,6 +1956,8 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
     'node cli/agent-onboard.js architecture --work-items-runtime-bridge-check',
     'node cli/agent-onboard.js architecture --work-items-installed-fallback-smoke',
     'node cli/agent-onboard.js architecture --work-items-installed-fallback-check',
+    'node cli/agent-onboard.js architecture --claims-plan',
+    'node cli/agent-onboard.js architecture --claims-check',
     'node cli/agent-onboard.js release --version-sprawl-check',
     'node cli/agent-onboard.js authority --first-read',
     'node cli/agent-onboard.js authority --check',
@@ -1946,6 +2021,8 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
     'npx agent-onboard@<version> architecture --work-items-runtime-bridge-check',
     'npx agent-onboard@<version> architecture --work-items-installed-fallback-smoke',
     'npx agent-onboard@<version> architecture --work-items-installed-fallback-check',
+    'npx agent-onboard@<version> architecture --claims-plan',
+    'npx agent-onboard@<version> architecture --claims-check',
     'npx agent-onboard@<version> release --version-sprawl-check',
     'npx agent-onboard@<version> authority --first-read',
     'npx agent-onboard@<version> authority --check',
@@ -6310,6 +6387,161 @@ function publicWorkItemsDomainSourceExtractionInstalledFallbackSmokeCheck(root =
   };
 }
 
+
+function publicClaimsDomainSourceExtractionPlan(root = packageRoot()) {
+  const pkg = readJson(path.join(root, 'package.json'));
+  const context = sourceContext(root);
+  const gate = PUBLIC_CLAIMS_DOMAIN_SOURCE_EXTRACTION_PLAN;
+  const ledgerPath = path.join(root, '.agent-onboard', 'work-items.json');
+  let ledger = null;
+  if (fs.existsSync(ledgerPath)) {
+    try {
+      ledger = readJson(ledgerPath);
+    } catch {
+      ledger = null;
+    }
+  }
+  const workItems = ledger && Array.isArray(ledger.work_items) ? ledger.work_items : [];
+  const milestones = ledger && Array.isArray(ledger.milestones) ? ledger.milestones : [];
+  const currentWorkItem = workItems.find((item) => item.id === gate.work_item_id) || null;
+  const nextWorkItem = workItems.find((item) => item.id === gate.next_work_item_id) || null;
+  const milestone = milestones.find((item) => item.id === gate.milestone_id) || null;
+  return {
+    schema: 'agent-onboard-public-claims-domain-source-extraction-plan-result-001',
+    status: 'ok',
+    package_name: gate.package_name,
+    version: VERSION,
+    release_line: gate.release_line,
+    command: gate.command,
+    check_command: gate.check_command,
+    package_root: root,
+    package_context: context.package_context,
+    package_json_version: pkg.version,
+    plan_file: gate.plan_file,
+    plan_file_present: fs.existsSync(path.join(root, gate.plan_file)),
+    plan: gate,
+    source_ledger_present: fs.existsSync(ledgerPath),
+    milestone,
+    work_items: {
+      current: currentWorkItem,
+      next: nextWorkItem
+    },
+    planned_source_module_present: fs.existsSync(path.join(root, gate.domain.planned_module)),
+    prerequisite_work_items_installed_fallback: publicWorkItemsDomainSourceExtractionInstalledFallbackSmokeCheck(root),
+    prerequisite_package_surface: publicPackageSurfaceCheck(root),
+    projected_pack_files: packageJsonProjectedPackFiles(pkg),
+    boundary: {
+      writes_files: false,
+      writes_source_state: false,
+      writes_target_repository_state: false,
+      creates_source_modules: false,
+      moves_existing_source_files: false,
+      git_mutation: false,
+      installs_dependencies: false,
+      runs_package_manager: false,
+      runs_build_test_deploy: false,
+      publishes_package: false,
+      mutates_registry: false
+    }
+  };
+}
+
+function publicClaimsDomainSourceExtractionPlanCheck(root = packageRoot()) {
+  const result = publicClaimsDomainSourceExtractionPlan(root);
+  const gate = PUBLIC_CLAIMS_DOMAIN_SOURCE_EXTRACTION_PLAN;
+  const expectedPackFiles = PUBLIC_RELEASE_CONTRACT.expected_pack_files.slice().sort();
+  const errors = [];
+
+  if (result.prerequisite_work_items_installed_fallback.status !== 'ok') errors.push(...result.prerequisite_work_items_installed_fallback.errors.map((error) => `work-items installed fallback smoke: ${error}`));
+  if (result.prerequisite_package_surface.status !== 'ok') errors.push(...result.prerequisite_package_surface.errors.map((error) => `package surface: ${error}`));
+  if (!arrayEquals(result.projected_pack_files, expectedPackFiles)) errors.push(`projected npm pack files must remain ${expectedPackFiles.join(', ')}`);
+  if (gate.boundary.claims_plan_command_writes_files !== false) errors.push('architecture --claims-plan must remain no-write');
+  if (gate.boundary.claims_check_command_writes_files !== false) errors.push('architecture --claims-check must remain no-write');
+  if (gate.boundary.creates_source_modules !== false) errors.push('claims planning gate must not create source modules');
+  if (gate.boundary.package_allowlist_unchanged !== true) errors.push('claims planning gate must preserve package allowlist');
+  if (gate.domain.id !== 'claims') errors.push('claims planning gate must select the claims domain');
+  if (gate.domain.facade !== 'claimsService') errors.push('claims planning gate must remain behind claimsService');
+  if (gate.domain.planned_module !== 'src/domains/claims.js') errors.push('planned claims module path must be src/domains/claims.js');
+  if (result.planned_source_module_present) errors.push('src/domains/claims.js must not be created by the planning gate');
+
+  let planFileStatus = 'not_present_installed_context_allowed';
+  let planFileSchema = null;
+  if (result.plan_file_present) {
+    try {
+      const planFile = readJson(path.join(root, result.plan_file));
+      planFileSchema = planFile.schema || null;
+      if (planFile.schema !== gate.schema) errors.push(`${result.plan_file} schema must be ${gate.schema}`);
+      if (!planFile.domain || planFile.domain.id !== gate.domain.id) errors.push(`${result.plan_file} must select claims domain`);
+      if (!planFile.domain || planFile.domain.facade !== gate.domain.facade) errors.push(`${result.plan_file} must remain behind claimsService`);
+      if (!planFile.domain || planFile.domain.planned_module !== gate.domain.planned_module) errors.push(`${result.plan_file} must plan ${gate.domain.planned_module}`);
+      if (!planFile.boundary || planFile.boundary.creates_source_modules !== false) errors.push(`${result.plan_file} must not create source modules`);
+      if (!planFile.boundary || planFile.boundary.package_allowlist_unchanged !== true) errors.push(`${result.plan_file} must preserve package allowlist`);
+      if (!Array.isArray(planFile.extraction_scope) || !planFile.extraction_scope.some((item) => /claim/.test(item)) || !planFile.extraction_scope.some((item) => /close|closure|handoff/.test(item))) errors.push(`${result.plan_file} must scope claim and closure/handoff behavior`);
+      if (!Array.isArray(planFile.excluded_scope) || !planFile.excluded_scope.some((item) => /schema|template|init|validate|list|append/.test(item))) errors.push(`${result.plan_file} must explicitly exclude non-claims work-items behavior`);
+      const nextFollowup = planFile.followup_work_items && planFile.followup_work_items[0] ? planFile.followup_work_items[0] : null;
+      const nextId = planFile.next_work_item_id || workItemIdFromComponents(planFile.next_work_item_components) || (nextFollowup && (nextFollowup.id || workItemIdFromComponents(nextFollowup.id_components)));
+      if (nextId !== gate.next_work_item_id) errors.push(`${result.plan_file} must seed ${gate.next_work_item_id} as the next work item`);
+      planFileStatus = 'present_validated';
+    } catch (error) {
+      planFileStatus = 'present_invalid_json';
+      errors.push(`${result.plan_file} is not valid JSON: ${error && error.message ? error.message : String(error)}`);
+    }
+  } else if (result.package_context === 'source_repository') {
+    planFileStatus = 'missing_source_context';
+    errors.push(`${result.plan_file} must be present in source repository context`);
+  }
+
+  const sourceLedgerRequired = result.package_context === 'source_repository';
+  const currentWorkItem = result.work_items.current;
+  const nextWorkItem = result.work_items.next;
+  if (sourceLedgerRequired && !result.source_ledger_present) errors.push('.agent-onboard/work-items.json must be present in source repository context');
+  if (result.source_ledger_present) {
+    if (!result.milestone) errors.push(`${gate.milestone_id} milestone must exist`);
+    else if (result.milestone.status !== 'open') errors.push(`${gate.milestone_id} milestone must remain open`);
+    if (!currentWorkItem) errors.push(`${gate.work_item_id} work item must exist`);
+    else if (currentWorkItem.status !== 'closed') errors.push(`${gate.work_item_id} claims planning work item must be closed`);
+    if (!nextWorkItem) errors.push(`${gate.next_work_item_id} work item must exist`);
+    else if (!['open', 'closed'].includes(nextWorkItem.status)) errors.push(`${gate.next_work_item_id} seeded work item must be open or closed`);
+  }
+
+  return {
+    schema: 'agent-onboard-public-claims-domain-source-extraction-plan-check-result-001',
+    status: errors.length === 0 ? 'ok' : 'error',
+    package_name: gate.package_name,
+    version: VERSION,
+    release_line: gate.release_line,
+    command: gate.check_command,
+    package_root: root,
+    validated: {
+      prerequisite_work_items_installed_fallback: result.prerequisite_work_items_installed_fallback.status === 'ok',
+      prerequisite_package_surface: result.prerequisite_package_surface.status === 'ok',
+      claims_domain_selected: gate.domain.id === 'claims',
+      planned_module_absent: !result.planned_source_module_present,
+      current_work_item_closed_or_installed_context_allowed: result.package_context === 'installed_package' || (currentWorkItem && currentWorkItem.status === 'closed'),
+      next_work_item_seeded_or_installed_context_allowed: result.package_context === 'installed_package' || !!nextWorkItem,
+      claims_plan_commands_no_write: gate.boundary.claims_plan_command_writes_files === false && gate.boundary.claims_check_command_writes_files === false,
+      package_allowlist_unchanged: arrayEquals(result.projected_pack_files, expectedPackFiles)
+    },
+    planned_domain: gate.domain,
+    work_items: result.work_items,
+    source_claims_plan_file: {
+      path: result.plan_file,
+      present: result.plan_file_present,
+      status: planFileStatus,
+      schema: planFileSchema,
+      source_context_required: result.package_context === 'source_repository'
+    },
+    prerequisite_work_items_installed_fallback: {
+      status: result.prerequisite_work_items_installed_fallback.status,
+      errors: result.prerequisite_work_items_installed_fallback.errors
+    },
+    projected_pack_files: result.projected_pack_files,
+    expected_pack_files: expectedPackFiles,
+    boundary: result.boundary,
+    errors
+  };
+}
+
 function publicArchitectureMap(root = packageRoot()) {
   const pkg = readJson(path.join(root, 'package.json'));
   return {
@@ -7040,6 +7272,8 @@ function publicArchitectureCheck(root = packageRoot()) {
   const workItemsRuntimeBridgeErrors = workItemsRuntimeBridge.errors.map((error) => `work-items runtime bridge: ${error}`);
   const workItemsInstalledFallback = publicWorkItemsDomainSourceExtractionInstalledFallbackSmokeCheck(root);
   const workItemsInstalledFallbackErrors = workItemsInstalledFallback.errors.map((error) => `work-items installed fallback smoke: ${error}`);
+  const claimsPlan = publicClaimsDomainSourceExtractionPlanCheck(root);
+  const claimsPlanErrors = claimsPlan.errors.map((error) => `claims source extraction plan: ${error}`);
   const errors = [];
   if (!arrayEquals(domainIds, expectedDomains)) errors.push(`architecture domain order must be ${expectedDomains.join(', ')}`);
   if (new Set(domainIds).size !== domainIds.length) errors.push('architecture domain ids must be unique');
@@ -7086,12 +7320,14 @@ function publicArchitectureCheck(root = packageRoot()) {
   if (map.map.package_boundary.architecture_work_items_runtime_bridge_check_command_writes_files !== false) errors.push('architecture work-items runtime bridge check command must remain no-write');
   if (map.map.package_boundary.architecture_work_items_installed_fallback_smoke_command_writes_files !== false) errors.push('architecture work-items installed fallback smoke command must remain no-write');
   if (map.map.package_boundary.architecture_work_items_installed_fallback_check_command_writes_files !== false) errors.push('architecture work-items installed fallback check command must remain no-write');
+  if (map.map.package_boundary.architecture_claims_plan_command_writes_files !== false) errors.push('architecture claims plan command must remain no-write');
+  if (map.map.package_boundary.architecture_claims_check_command_writes_files !== false) errors.push('architecture claims check command must remain no-write');
   if (map.map.package_boundary.version_sprawl_check_command_writes_files !== false) errors.push('version sprawl check command must remain no-write');
   if (map.map.package_boundary.authority_first_read_command_writes_files !== false) errors.push('authority first-read command must remain no-write');
   if (map.map.package_boundary.authority_check_command_writes_files !== false) errors.push('authority check command must remain no-write');
   if (map.map.package_boundary.target_runtime_namespace_command_writes_files !== false) errors.push('target runtime namespace command must remain no-write');
   if (map.map.package_boundary.target_runtime_check_command_writes_files !== false) errors.push('target runtime check command must remain no-write');
-  errors.push(...routerErrors, ...facadeErrors, ...authorityErrors, ...targetRuntimeErrors, ...sourcePartitionErrors, ...sourceExtractionErrors, ...goldenOutputErrors, ...adapterBoundaryErrors, ...firstSliceErrors, ...bundleParityErrors, ...runtimeBridgeErrors, ...installedFallbackSmokeErrors, ...secondSlicePlanErrors, ...secondSliceFirstSliceErrors, ...authorityBundleParityErrors, ...authorityRuntimeBridgeErrors, ...m2SeedErrors, ...workItemsPlanErrors, ...workItemsFirstSliceErrors, ...workItemsBundleParityErrors, ...workItemsRuntimeBridgeErrors, ...workItemsInstalledFallbackErrors);
+  errors.push(...routerErrors, ...facadeErrors, ...authorityErrors, ...targetRuntimeErrors, ...sourcePartitionErrors, ...sourceExtractionErrors, ...goldenOutputErrors, ...adapterBoundaryErrors, ...firstSliceErrors, ...bundleParityErrors, ...runtimeBridgeErrors, ...installedFallbackSmokeErrors, ...secondSlicePlanErrors, ...secondSliceFirstSliceErrors, ...authorityBundleParityErrors, ...authorityRuntimeBridgeErrors, ...m2SeedErrors, ...workItemsPlanErrors, ...workItemsFirstSliceErrors, ...workItemsBundleParityErrors, ...workItemsRuntimeBridgeErrors, ...workItemsInstalledFallbackErrors, ...claimsPlanErrors);
   return {
     schema: 'agent-onboard-public-architecture-check-result-001',
     status: errors.length === 0 ? 'ok' : 'error',
@@ -7106,7 +7342,7 @@ function publicArchitectureCheck(root = packageRoot()) {
       domain_ids_unique: new Set(domainIds).size === domainIds.length,
       runtime_entrypoint_present: map.current_runtime.entrypoint_exists,
       compact_package_boundary: arrayEquals(projectedPackFiles, expectedPackFiles),
-      architecture_commands_no_write: map.map.package_boundary.architecture_map_command_writes_files === false && map.map.package_boundary.architecture_check_command_writes_files === false && map.map.package_boundary.architecture_router_command_writes_files === false && map.map.package_boundary.architecture_facades_command_writes_files === false && map.map.package_boundary.architecture_partition_plan_command_writes_files === false && map.map.package_boundary.architecture_partition_check_command_writes_files === false && map.map.package_boundary.architecture_extraction_rehearsal_command_writes_files === false && map.map.package_boundary.architecture_extraction_check_command_writes_files === false && map.map.package_boundary.architecture_golden_outputs_command_writes_files === false && map.map.package_boundary.architecture_golden_check_command_writes_files === false && map.map.package_boundary.architecture_adapter_boundary_command_writes_files === false && map.map.package_boundary.architecture_adapter_check_command_writes_files === false && map.map.package_boundary.architecture_first_slice_command_writes_files === false && map.map.package_boundary.architecture_first_slice_check_command_writes_files === false && map.map.package_boundary.architecture_bundle_parity_command_writes_files === false && map.map.package_boundary.architecture_bundle_parity_check_command_writes_files === false && map.map.package_boundary.architecture_runtime_bridge_command_writes_files === false && map.map.package_boundary.architecture_runtime_bridge_check_command_writes_files === false && map.map.package_boundary.architecture_installed_fallback_smoke_command_writes_files === false && map.map.package_boundary.architecture_installed_fallback_check_command_writes_files === false && map.map.package_boundary.architecture_second_slice_plan_command_writes_files === false && map.map.package_boundary.architecture_second_slice_check_command_writes_files === false && map.map.package_boundary.architecture_second_slice_first_slice_command_writes_files === false && map.map.package_boundary.architecture_second_slice_first_slice_check_command_writes_files === false && map.map.package_boundary.architecture_authority_bundle_parity_command_writes_files === false && map.map.package_boundary.architecture_authority_bundle_parity_check_command_writes_files === false && map.map.package_boundary.architecture_authority_runtime_bridge_command_writes_files === false && map.map.package_boundary.architecture_authority_runtime_bridge_check_command_writes_files === false && map.map.package_boundary.architecture_m2_seed_command_writes_files === false && map.map.package_boundary.architecture_m2_seed_check_command_writes_files === false && map.map.package_boundary.architecture_work_items_plan_command_writes_files === false && map.map.package_boundary.architecture_work_items_check_command_writes_files === false && map.map.package_boundary.architecture_work_items_first_slice_command_writes_files === false && map.map.package_boundary.architecture_work_items_first_slice_check_command_writes_files === false && map.map.package_boundary.architecture_work_items_bundle_parity_command_writes_files === false && map.map.package_boundary.architecture_work_items_bundle_parity_check_command_writes_files === false && map.map.package_boundary.architecture_work_items_runtime_bridge_command_writes_files === false && map.map.package_boundary.architecture_work_items_runtime_bridge_check_command_writes_files === false && map.map.package_boundary.architecture_work_items_installed_fallback_smoke_command_writes_files === false && map.map.package_boundary.architecture_work_items_installed_fallback_check_command_writes_files === false && map.map.package_boundary.version_sprawl_check_command_writes_files === false && map.map.package_boundary.authority_first_read_command_writes_files === false && map.map.package_boundary.authority_check_command_writes_files === false,
+      architecture_commands_no_write: map.map.package_boundary.architecture_map_command_writes_files === false && map.map.package_boundary.architecture_check_command_writes_files === false && map.map.package_boundary.architecture_router_command_writes_files === false && map.map.package_boundary.architecture_facades_command_writes_files === false && map.map.package_boundary.architecture_partition_plan_command_writes_files === false && map.map.package_boundary.architecture_partition_check_command_writes_files === false && map.map.package_boundary.architecture_extraction_rehearsal_command_writes_files === false && map.map.package_boundary.architecture_extraction_check_command_writes_files === false && map.map.package_boundary.architecture_golden_outputs_command_writes_files === false && map.map.package_boundary.architecture_golden_check_command_writes_files === false && map.map.package_boundary.architecture_adapter_boundary_command_writes_files === false && map.map.package_boundary.architecture_adapter_check_command_writes_files === false && map.map.package_boundary.architecture_first_slice_command_writes_files === false && map.map.package_boundary.architecture_first_slice_check_command_writes_files === false && map.map.package_boundary.architecture_bundle_parity_command_writes_files === false && map.map.package_boundary.architecture_bundle_parity_check_command_writes_files === false && map.map.package_boundary.architecture_runtime_bridge_command_writes_files === false && map.map.package_boundary.architecture_runtime_bridge_check_command_writes_files === false && map.map.package_boundary.architecture_installed_fallback_smoke_command_writes_files === false && map.map.package_boundary.architecture_installed_fallback_check_command_writes_files === false && map.map.package_boundary.architecture_second_slice_plan_command_writes_files === false && map.map.package_boundary.architecture_second_slice_check_command_writes_files === false && map.map.package_boundary.architecture_second_slice_first_slice_command_writes_files === false && map.map.package_boundary.architecture_second_slice_first_slice_check_command_writes_files === false && map.map.package_boundary.architecture_authority_bundle_parity_command_writes_files === false && map.map.package_boundary.architecture_authority_bundle_parity_check_command_writes_files === false && map.map.package_boundary.architecture_authority_runtime_bridge_command_writes_files === false && map.map.package_boundary.architecture_authority_runtime_bridge_check_command_writes_files === false && map.map.package_boundary.architecture_m2_seed_command_writes_files === false && map.map.package_boundary.architecture_m2_seed_check_command_writes_files === false && map.map.package_boundary.architecture_work_items_plan_command_writes_files === false && map.map.package_boundary.architecture_work_items_check_command_writes_files === false && map.map.package_boundary.architecture_work_items_first_slice_command_writes_files === false && map.map.package_boundary.architecture_work_items_first_slice_check_command_writes_files === false && map.map.package_boundary.architecture_work_items_bundle_parity_command_writes_files === false && map.map.package_boundary.architecture_work_items_bundle_parity_check_command_writes_files === false && map.map.package_boundary.architecture_work_items_runtime_bridge_command_writes_files === false && map.map.package_boundary.architecture_work_items_runtime_bridge_check_command_writes_files === false && map.map.package_boundary.architecture_work_items_installed_fallback_smoke_command_writes_files === false && map.map.package_boundary.architecture_work_items_installed_fallback_check_command_writes_files === false && map.map.package_boundary.architecture_claims_plan_command_writes_files === false && map.map.package_boundary.architecture_claims_check_command_writes_files === false && map.map.package_boundary.version_sprawl_check_command_writes_files === false && map.map.package_boundary.authority_first_read_command_writes_files === false && map.map.package_boundary.authority_check_command_writes_files === false,
       command_router_boundary: router.status === 'ok',
       domain_service_facades: facades.status === 'ok',
       authority_first_read_index: authority.status === 'ok',
@@ -7128,7 +7364,8 @@ function publicArchitectureCheck(root = packageRoot()) {
       work_items_domain_source_extraction_first_slice: workItemsFirstSlice.status === 'ok',
       work_items_domain_source_extraction_bundle_parity: workItemsBundleParity.status === 'ok',
       work_items_domain_source_extraction_runtime_bridge: workItemsRuntimeBridge.status === 'ok',
-      work_items_domain_source_extraction_installed_fallback_smoke: workItemsInstalledFallback.status === 'ok'
+      work_items_domain_source_extraction_installed_fallback_smoke: workItemsInstalledFallback.status === 'ok',
+      claims_domain_source_extraction_plan: claimsPlan.status === 'ok'
     },
     domain_ids: domainIds,
     expected_pack_files: expectedPackFiles,
@@ -7155,6 +7392,7 @@ function publicArchitectureCheck(root = packageRoot()) {
     work_items_domain_source_extraction_bundle_parity: workItemsBundleParity,
     work_items_domain_source_extraction_runtime_bridge: workItemsRuntimeBridge,
     work_items_domain_source_extraction_installed_fallback_smoke: workItemsInstalledFallback,
+    claims_domain_source_extraction_plan: claimsPlan,
     boundary: map.boundary,
     errors
   };
@@ -7295,8 +7533,10 @@ function publicReleaseCheck(root = packageRoot()) {
   const workItemsRuntimeBridgeErrors = workItemsRuntimeBridge.errors.map((error) => `work-items runtime bridge: ${error}`);
   const workItemsInstalledFallback = publicWorkItemsDomainSourceExtractionInstalledFallbackSmokeCheck(root);
   const workItemsInstalledFallbackErrors = workItemsInstalledFallback.errors.map((error) => `work-items installed fallback smoke: ${error}`);
+  const claimsPlan = publicClaimsDomainSourceExtractionPlanCheck(root);
+  const claimsPlanErrors = claimsPlan.errors.map((error) => `claims source extraction plan: ${error}`);
   const architectureParityErrors = architectureParity.errors.map((error) => `installed architecture parity: ${error}`);
-  const errors = [...metadataErrors, ...packErrors, ...messagingErrors, ...sourceLedgerErrors, ...architectureErrors, ...packageSurfaceErrors, ...architectureParityErrors, ...installedFallbackSmokeErrors, ...secondSlicePlanErrors, ...secondSliceFirstSliceErrors, ...authorityBundleParityErrors, ...authorityRuntimeBridgeErrors, ...m2SeedErrors, ...workItemsFirstSliceErrors, ...workItemsBundleParityErrors, ...workItemsRuntimeBridgeErrors, ...workItemsInstalledFallbackErrors, ...versionPolicyErrors];
+  const errors = [...metadataErrors, ...packErrors, ...messagingErrors, ...sourceLedgerErrors, ...architectureErrors, ...packageSurfaceErrors, ...architectureParityErrors, ...installedFallbackSmokeErrors, ...secondSlicePlanErrors, ...secondSliceFirstSliceErrors, ...authorityBundleParityErrors, ...authorityRuntimeBridgeErrors, ...m2SeedErrors, ...workItemsFirstSliceErrors, ...workItemsBundleParityErrors, ...workItemsRuntimeBridgeErrors, ...workItemsInstalledFallbackErrors, ...claimsPlanErrors, ...versionPolicyErrors];
   return {
     schema: 'agent-onboard-public-release-check-result-013',
     status: errors.length === 0 ? 'ok' : 'error',
@@ -7339,6 +7579,7 @@ function publicReleaseCheck(root = packageRoot()) {
       work_items_domain_source_extraction_bundle_parity: workItemsBundleParity.status === 'ok',
       work_items_domain_source_extraction_runtime_bridge: workItemsRuntimeBridge.status === 'ok',
       work_items_domain_source_extraction_installed_fallback_smoke: workItemsInstalledFallback.status === 'ok',
+      claims_domain_source_extraction_plan: claimsPlan.status === 'ok',
       public_version_reference_policy: versionPolicy.status === 'ok',
       public_package_surface_preservation: packageSurface.status === 'ok',
       public_installed_parity_architecture_smoke: architectureParity.status === 'ok'
@@ -7365,6 +7606,7 @@ function publicReleaseCheck(root = packageRoot()) {
     work_items_domain_source_extraction_bundle_parity: workItemsBundleParity,
     work_items_domain_source_extraction_runtime_bridge: workItemsRuntimeBridge,
     work_items_domain_source_extraction_installed_fallback_smoke: workItemsInstalledFallback,
+    claims_domain_source_extraction_plan: claimsPlan,
     public_version_reference_policy: versionPolicy,
     public_package_surface_preservation: packageSurface,
     public_installed_parity_architecture_smoke: architectureParity,
@@ -7390,6 +7632,7 @@ function publicInstalledPackageParitySmoke(root = packageRoot()) {
   const projectedPackFiles = packageJsonProjectedPackFiles(pkg);
   const missingExpectedFiles = expectedPackFiles.filter((rel) => !fs.existsSync(path.join(root, rel)));
   const sourceContextFilesInPack = PUBLIC_RELEASE_CONTRACT.source_context_files.filter((rel) => expectedPackFiles.includes(rel));
+  const claimsPlan = publicClaimsDomainSourceExtractionPlanCheck(root);
   const binEntryErrors = [];
   for (const [name, rel] of Object.entries(PUBLIC_RELEASE_CONTRACT.required_package_json.bin)) {
     if (!expectedPackFiles.includes(rel)) binEntryErrors.push(`${name} bin target ${rel} is not in the projected npm package files`);
@@ -7482,6 +7725,7 @@ function publicInstalledParityArchitectureSmoke(root = packageRoot()) {
   const workItemsBundleParity = publicWorkItemsDomainSourceExtractionBundleParityCheck(root);
   const workItemsRuntimeBridge = publicWorkItemsDomainSourceExtractionRuntimeBridgeCheck(root);
   const workItemsInstalledFallback = publicWorkItemsDomainSourceExtractionInstalledFallbackSmokeCheck(root);
+  const claimsPlan = publicClaimsDomainSourceExtractionPlanCheck(root);
   const componentErrors = [];
   if (architecture.status !== 'ok') componentErrors.push(...architecture.errors.map((error) => `architecture: ${error}`));
   if (authority.status !== 'ok') componentErrors.push(...authority.errors.map((error) => `authority: ${error}`));
@@ -7502,6 +7746,7 @@ function publicInstalledParityArchitectureSmoke(root = packageRoot()) {
   if (workItemsBundleParity.status !== 'ok') componentErrors.push(...workItemsBundleParity.errors.map((error) => `work-items bundle parity: ${error}`));
   if (workItemsRuntimeBridge.status !== 'ok') componentErrors.push(...workItemsRuntimeBridge.errors.map((error) => `work-items runtime bridge: ${error}`));
   if (workItemsInstalledFallback.status !== 'ok') componentErrors.push(...workItemsInstalledFallback.errors.map((error) => `work-items installed fallback smoke: ${error}`));
+  if (claimsPlan.status !== 'ok') componentErrors.push(...claimsPlan.errors.map((error) => `claims source extraction plan: ${error}`));
 
   const parity = {
     package_metadata: metadataErrors.length === 0,
@@ -7531,6 +7776,7 @@ function publicInstalledParityArchitectureSmoke(root = packageRoot()) {
     work_items_domain_source_extraction_bundle_parity_check: workItemsBundleParity.status === 'ok',
     work_items_domain_source_extraction_runtime_bridge_check: workItemsRuntimeBridge.status === 'ok',
     work_items_domain_source_extraction_installed_fallback_smoke_check: workItemsInstalledFallback.status === 'ok',
+    claims_domain_source_extraction_plan_check: claimsPlan.status === 'ok',
     runtime_version_matches_package_json: pkg.version === VERSION
   };
 
@@ -7584,6 +7830,7 @@ function publicInstalledParityArchitectureSmoke(root = packageRoot()) {
       work_items_domain_source_extraction_bundle_parity_status: workItemsBundleParity.status,
       work_items_domain_source_extraction_runtime_bridge_status: workItemsRuntimeBridge.status,
       work_items_domain_source_extraction_installed_fallback_smoke_status: workItemsInstalledFallback.status,
+      claims_domain_source_extraction_plan_status: claimsPlan.status,
       package_context: context.package_context,
       source_context_files_present: context.source_context_files_present,
       source_context_files_missing: context.source_context_files_missing
@@ -7608,6 +7855,7 @@ function publicInstalledParityArchitectureSmoke(root = packageRoot()) {
     work_items_domain_source_extraction_bundle_parity: workItemsBundleParity,
     work_items_domain_source_extraction_runtime_bridge: workItemsRuntimeBridge,
     work_items_domain_source_extraction_installed_fallback_smoke: workItemsInstalledFallback,
+    claims_domain_source_extraction_plan: claimsPlan,
     boundary: {
       writes_files: false,
       writes_package_root: false,
@@ -8154,6 +8402,15 @@ function runArchitecture(args) {
     json(result);
     return result.status === 'ok' ? 0 : 1;
   }
+  if (args.length === 1 && args[0] === '--claims-plan') {
+    json(publicClaimsDomainSourceExtractionPlan());
+    return 0;
+  }
+  if (args.length === 1 && args[0] === '--claims-check') {
+    const result = publicClaimsDomainSourceExtractionPlanCheck();
+    json(result);
+    return result.status === 'ok' ? 0 : 1;
+  }
   if (args.length === 1 && args[0] === '--check') {
     const result = publicArchitectureCheck();
     json(result);
@@ -8163,7 +8420,7 @@ function runArchitecture(args) {
     schema: 'agent-onboard-architecture-command-error-001',
     status: 'error',
     command_family: 'architecture',
-    message: 'architecture requires --map, --router, --facades, --partition-plan, --partition-check, --extraction-rehearsal, --extraction-check, --golden-outputs, --golden-check, --adapter-boundary, --adapter-check, --first-slice, --first-slice-check, --bundle-parity, --bundle-parity-check, --runtime-bridge, --runtime-bridge-check, --installed-fallback-smoke, --installed-fallback-check, --second-slice-plan, --second-slice-check, --second-slice-first-slice, --second-slice-first-slice-check, --authority-bundle-parity, --authority-bundle-parity-check, --authority-runtime-bridge, --authority-runtime-bridge-check, --m2-seed, --m2-seed-check, --work-items-plan, --work-items-check, --work-items-first-slice, --work-items-first-slice-check, --work-items-bundle-parity, --work-items-bundle-parity-check, --work-items-runtime-bridge, --work-items-runtime-bridge-check, --work-items-installed-fallback-smoke, --work-items-installed-fallback-check, or --check',
+    message: 'architecture requires --map, --router, --facades, --partition-plan, --partition-check, --extraction-rehearsal, --extraction-check, --golden-outputs, --golden-check, --adapter-boundary, --adapter-check, --first-slice, --first-slice-check, --bundle-parity, --bundle-parity-check, --runtime-bridge, --runtime-bridge-check, --installed-fallback-smoke, --installed-fallback-check, --second-slice-plan, --second-slice-check, --second-slice-first-slice, --second-slice-first-slice-check, --authority-bundle-parity, --authority-bundle-parity-check, --authority-runtime-bridge, --authority-runtime-bridge-check, --m2-seed, --m2-seed-check, --work-items-plan, --work-items-check, --work-items-first-slice, --work-items-first-slice-check, --work-items-bundle-parity, --work-items-bundle-parity-check, --work-items-runtime-bridge, --work-items-runtime-bridge-check, --work-items-installed-fallback-smoke, --work-items-installed-fallback-check, --claims-plan, --claims-check, or --check',
     writes_files: false,
     publishes_package: false
   });
@@ -8246,6 +8503,8 @@ function runRelease(args) {
       architecture_work_items_runtime_bridge_check_command: PUBLIC_RELEASE_CONTRACT.architecture_work_items_runtime_bridge_check_command,
       architecture_work_items_installed_fallback_smoke_command: PUBLIC_RELEASE_CONTRACT.architecture_work_items_installed_fallback_smoke_command,
       architecture_work_items_installed_fallback_check_command: PUBLIC_RELEASE_CONTRACT.architecture_work_items_installed_fallback_check_command,
+      architecture_claims_plan_command: PUBLIC_RELEASE_CONTRACT.architecture_claims_plan_command,
+      architecture_claims_check_command: PUBLIC_RELEASE_CONTRACT.architecture_claims_check_command,
       version_sprawl_check_command: PUBLIC_RELEASE_CONTRACT.version_sprawl_check_command,
       architecture_check_command: PUBLIC_RELEASE_CONTRACT.architecture_check_command,
       authority_first_read_command: PUBLIC_RELEASE_CONTRACT.authority_first_read_command,
@@ -9147,7 +9406,7 @@ function runTargetInstance(args) {
 }
 
 function help() {
-  process.stdout.write(`agent-onboard ${VERSION}\n\nagent-onboard status\nagent-onboard init --dry-run|--write [--force]\nagent-onboard agents --preview|--write [--force]\nagent-onboard guard --plan|--check-boundary\nagent-onboard authority --first-read|--check\nagent-onboard architecture --map|--router|--facades|--partition-plan|--partition-check|--extraction-rehearsal|--extraction-check|--golden-outputs|--golden-check|--adapter-boundary|--adapter-check|--first-slice|--first-slice-check|--bundle-parity|--bundle-parity-check|--runtime-bridge|--runtime-bridge-check|--installed-fallback-smoke|--installed-fallback-check|--second-slice-plan|--second-slice-check|--second-slice-first-slice|--second-slice-first-slice-check|--authority-bundle-parity|--authority-bundle-parity-check|--authority-runtime-bridge|--authority-runtime-bridge-check|--m2-seed|--m2-seed-check|--work-items-plan|--work-items-check|--work-items-first-slice|--work-items-first-slice-check|--work-items-bundle-parity|--work-items-bundle-parity-check|--work-items-runtime-bridge|--work-items-runtime-bridge-check|--work-items-installed-fallback-smoke|--work-items-installed-fallback-check|--check\nagent-onboard release --plan|--contract|--fixture|--surface|--surface-check|--version-sprawl-check|--parity-smoke|--architecture-parity-smoke|--target-onboarding-smoke|--post-publish-handoff|--published-acceptance|--real-target-trial|--check\nagent-onboard target-config --schema\nagent-onboard target-config --template\nagent-onboard target-config --validate-template\nagent-onboard target-config --validate [agent-onboard.target.json]\nagent-onboard work-items --schema\nagent-onboard work-items --template\nagent-onboard work-items --validate-template\nagent-onboard work-items --validate [.agent-onboard/work-items.json]\nagent-onboard work-items --list [.agent-onboard/work-items.json]\nagent-onboard work-items --init --dry-run|--write [--force]\nagent-onboard work-items --append --dry-run|--write --id <public-work-item-id> --title <title>\nagent-onboard work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>\nagent-onboard work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>\nagent-onboard target runtime --namespace|--check\nagent-onboard target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]\nagent-onboard target bootstrap --dry-run|--write [--force]\nagent-onboard target-instance takeover --dry-run|--write [--force]\n`);
+  process.stdout.write(`agent-onboard ${VERSION}\n\nagent-onboard status\nagent-onboard init --dry-run|--write [--force]\nagent-onboard agents --preview|--write [--force]\nagent-onboard guard --plan|--check-boundary\nagent-onboard authority --first-read|--check\nagent-onboard architecture --map|--router|--facades|--partition-plan|--partition-check|--extraction-rehearsal|--extraction-check|--golden-outputs|--golden-check|--adapter-boundary|--adapter-check|--first-slice|--first-slice-check|--bundle-parity|--bundle-parity-check|--runtime-bridge|--runtime-bridge-check|--installed-fallback-smoke|--installed-fallback-check|--second-slice-plan|--second-slice-check|--second-slice-first-slice|--second-slice-first-slice-check|--authority-bundle-parity|--authority-bundle-parity-check|--authority-runtime-bridge|--authority-runtime-bridge-check|--m2-seed|--m2-seed-check|--work-items-plan|--work-items-check|--work-items-first-slice|--work-items-first-slice-check|--work-items-bundle-parity|--work-items-bundle-parity-check|--work-items-runtime-bridge|--work-items-runtime-bridge-check|--work-items-installed-fallback-smoke|--work-items-installed-fallback-check|--claims-plan|--claims-check|--check\nagent-onboard release --plan|--contract|--fixture|--surface|--surface-check|--version-sprawl-check|--parity-smoke|--architecture-parity-smoke|--target-onboarding-smoke|--post-publish-handoff|--published-acceptance|--real-target-trial|--check\nagent-onboard target-config --schema\nagent-onboard target-config --template\nagent-onboard target-config --validate-template\nagent-onboard target-config --validate [agent-onboard.target.json]\nagent-onboard work-items --schema\nagent-onboard work-items --template\nagent-onboard work-items --validate-template\nagent-onboard work-items --validate [.agent-onboard/work-items.json]\nagent-onboard work-items --list [.agent-onboard/work-items.json]\nagent-onboard work-items --init --dry-run|--write [--force]\nagent-onboard work-items --append --dry-run|--write --id <public-work-item-id> --title <title>\nagent-onboard work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>\nagent-onboard work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>\nagent-onboard target runtime --namespace|--check\nagent-onboard target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]\nagent-onboard target bootstrap --dry-run|--write [--force]\nagent-onboard target-instance takeover --dry-run|--write [--force]\n`);
   return 0;
 }
 

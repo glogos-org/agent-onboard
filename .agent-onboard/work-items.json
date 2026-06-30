@@ -1790,6 +1790,42 @@
       "id": "P1S3M2W7",
       "milestone_id": "P1S3M2",
       "title": "Public claims domain source extraction planning gate",
+      "status": "closed",
+      "closure": {
+        "actor": "chatgpt-gpt-5.5-thinking",
+        "closed_at": "2026-06-30T00:00:00.000Z",
+        "summary": "Admitted the public claims domain source extraction planning gate while preserving the compact npm package allowlist and leaving claims source-module creation to a follow-up first-slice gate.",
+        "changed_files": [
+          ".agent-onboard/work-items.json",
+          ".agent-onboard/source-module-extraction-claims-plan.json",
+          "cli/agent-onboard.js",
+          "package.json",
+          "README.md",
+          "AGENTS.md",
+          "llms.txt",
+          "test/agent-onboard.test.js"
+        ],
+        "checks_run": [
+          "node -c cli/agent-onboard.js",
+          "node cli/agent-onboard.js architecture --claims-check",
+          "node cli/agent-onboard.js architecture --check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node cli/agent-onboard.js release --check",
+          "npm pack --dry-run --json"
+        ],
+        "checks_not_run": [
+          "npm publish --dry-run --json --ignore-scripts",
+          "npm publish --access public"
+        ],
+        "known_non_pass": [
+          "Full npm test was attempted on the incoming 0.0.52 candidate but did not complete within the sandbox execution window; targeted release and architecture checks are authoritative for this handoff."
+        ]
+      }
+    },
+    {
+      "id": "P1S3M2W8",
+      "milestone_id": "P1S3M2",
+      "title": "Public claims domain source extraction first-slice gate",
       "status": "open"
     }
   ]

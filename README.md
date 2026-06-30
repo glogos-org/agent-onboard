@@ -833,3 +833,14 @@ This gate validates the transition from the public architecture kernel milestone
 ## Work-items installed fallback smoke
 
 Use `node cli/agent-onboard.js architecture --work-items-installed-fallback-smoke` and `node cli/agent-onboard.js architecture --work-items-installed-fallback-check` to verify that the source-only work-items module remains outside the npm package while installed context falls back to bundled CLI metadata. Claim and close behavior remain excluded from this slice.
+
+## Public claims domain source extraction planning gate
+
+Use these commands to inspect and validate the claims-domain extraction plan:
+
+```sh
+npx agent-onboard architecture --claims-plan
+npx agent-onboard architecture --claims-check
+```
+
+This gate selects the `claims` domain for a future source-only `src/domains/claims.js` slice. It keeps `work-items --claim` and `work-items --close` runtime behavior in the bundled CLI for now, preserves the compact four-file npm package surface, and seeds the claims first-slice follow-up.

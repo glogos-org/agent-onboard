@@ -1,0 +1,70 @@
+{
+  "schema": "agent-onboard-public-claims-domain-source-extraction-plan-001",
+  "title": "Agent-Onboard Public Claims Domain Source Extraction Planning Gate",
+  "package_name": "agent-onboard",
+  "release_line": "public_claims_domain_source_extraction_planning_gate",
+  "command": "agent-onboard architecture --claims-plan",
+  "check_command": "agent-onboard architecture --claims-check",
+  "domain": {
+    "id": "claims",
+    "facade": "claimsService",
+    "command_surface": [
+      "work-items --claim",
+      "work-items --close"
+    ],
+    "state_file": ".agent-onboard/work-items.json",
+    "planned_module": "src/domains/claims.js",
+    "planned_contract_schema": "agent-onboard-public-source-module-claims-first-slice-001",
+    "planned_status": "planned_not_created_by_this_gate"
+  },
+  "extraction_scope": [
+    "claim dry-run/write proposal envelope for existing public work items",
+    "claim actor, claimed_at, and note metadata transitions",
+    "close dry-run/write closure envelope and handoff evidence checklist",
+    "claim/close validation boundaries while the canonical state remains .agent-onboard/work-items.json"
+  ],
+  "excluded_scope": [
+    "do not create src/domains/claims.js in this planning gate",
+    "do not move work-items --claim or work-items --close handlers in this planning gate",
+    "do not change work-items schema, template, init, validate, list, or append behavior",
+    "do not expand the npm package allowlist",
+    "do not change public CLI output contracts beyond adding this explicit planning/check surface"
+  ],
+  "followup_work_items": [
+    {
+      "id": "P1S3M2W8",
+      "title": "Public claims domain source extraction first-slice gate",
+      "expected_status": "open"
+    }
+  ],
+  "work_item_components": {
+    "program": 1,
+    "stage": 3,
+    "milestone": 2,
+    "work_item": 7
+  },
+  "next_work_item_components": {
+    "program": 1,
+    "stage": 3,
+    "milestone": 2,
+    "work_item": 8
+  },
+  "boundary": {
+    "claims_plan_command_writes_files": false,
+    "claims_check_command_writes_files": false,
+    "creates_source_modules": false,
+    "moves_existing_source_files": false,
+    "changes_work_items_non_claim_runtime": false,
+    "changes_public_cli_outputs": false,
+    "exports_source_module_as_public_api": false,
+    "writes_package_root": false,
+    "writes_target_repository_state": false,
+    "git_mutation": false,
+    "installs_dependencies": false,
+    "runs_package_manager": false,
+    "runs_build_test_deploy": false,
+    "publishes_package": false,
+    "mutates_registry": false,
+    "package_allowlist_unchanged": true
+  }
+}
