@@ -1323,6 +1323,46 @@
       "id": "P1S3M1W15",
       "milestone_id": "P1S3M1",
       "title": "Public source module extraction installed fallback smoke gate",
+      "status": "closed",
+      "closure": {
+        "actor": "ChatGPT",
+        "closed_at": "2026-06-30T10:45:00Z",
+        "summary": "Implemented public source module extraction installed fallback smoke gate: added installed fallback smoke metadata/check commands, source-only smoke artifact, projected installed-context fallback validation, release/architecture integration, and compact package preservation.",
+        "changed_files": [
+          "package.json",
+          "cli/agent-onboard.js",
+          "test/agent-onboard.test.js",
+          "README.md",
+          "AGENTS.md",
+          "llms.txt",
+          ".agent-onboard/source-module-extraction-installed-fallback-smoke.json",
+          ".agent-onboard/work-items.json"
+        ],
+        "checks_run": [
+          "npm test",
+          "node cli/agent-onboard.js architecture --installed-fallback-smoke",
+          "node cli/agent-onboard.js architecture --installed-fallback-check",
+          "node cli/agent-onboard.js architecture --runtime-bridge-check",
+          "node cli/agent-onboard.js architecture --check",
+          "node cli/agent-onboard.js release --architecture-parity-smoke",
+          "node cli/agent-onboard.js release --version-sprawl-check",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "npm pack --dry-run --json"
+        ],
+        "checks_not_run": [
+          "npm publish",
+          "registry post-publish verification"
+        ],
+        "known_non_pass": [
+          "npm publish not run by assistant"
+        ]
+      }
+    },
+    {
+      "id": "P1S3M1W16",
+      "milestone_id": "P1S3M1",
+      "title": "Public source module extraction second slice planning gate",
       "status": "open"
     }
   ]

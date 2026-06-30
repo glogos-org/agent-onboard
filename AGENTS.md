@@ -72,6 +72,8 @@ node cli/agent-onboard.js architecture --bundle-parity
 node cli/agent-onboard.js architecture --bundle-parity-check
 node cli/agent-onboard.js architecture --runtime-bridge
 node cli/agent-onboard.js architecture --runtime-bridge-check
+node cli/agent-onboard.js architecture --installed-fallback-smoke
+node cli/agent-onboard.js architecture --installed-fallback-check
 node cli/agent-onboard.js architecture --check
 ```
 
