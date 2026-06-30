@@ -40,101 +40,104 @@ Use this source-repository lifecycle for public human/agent participation:
 Run the target onboarding plan before expanding target-surface behavior:
 
 ```sh
-npx agent-onboard@0.0.36 target onboarding --plan
-npx agent-onboard@0.0.36 target onboarding --fixture
-npx agent-onboard@0.0.36 target onboarding --trial
+node cli/agent-onboard.js target onboarding --plan
+node cli/agent-onboard.js target onboarding --fixture
+node cli/agent-onboard.js target onboarding --trial
 ```
 
 Use the aggregate onboarding write command only when the repository owner explicitly authorizes canonical target file creation or replacement:
 
 ```sh
-npx agent-onboard@0.0.36 target onboarding --write
+node cli/agent-onboard.js target onboarding --write
 ```
 
 
 Inspect the public architecture kernel and source partition plan and extraction rehearsal before expanding command or domain behavior:
 
 ```sh
-npx agent-onboard@0.0.36 architecture --map
-npx agent-onboard@0.0.36 architecture --router
-npx agent-onboard@0.0.36 architecture --facades
-npx agent-onboard@0.0.36 architecture --partition-plan
-npx agent-onboard@0.0.36 architecture --partition-check
-npx agent-onboard@0.0.36 architecture --extraction-rehearsal
-npx agent-onboard@0.0.36 architecture --extraction-check
-npx agent-onboard@0.0.36 architecture --check
+node cli/agent-onboard.js architecture --map
+node cli/agent-onboard.js architecture --router
+node cli/agent-onboard.js architecture --facades
+node cli/agent-onboard.js architecture --partition-plan
+node cli/agent-onboard.js architecture --partition-check
+node cli/agent-onboard.js architecture --extraction-rehearsal
+node cli/agent-onboard.js architecture --extraction-check
+node cli/agent-onboard.js architecture --golden-outputs
+node cli/agent-onboard.js architecture --golden-check
+node cli/agent-onboard.js architecture --check
 ```
 
 Inspect the public authority first-read index before expanding authority or target onboarding behavior:
 
 ```sh
-npx agent-onboard@0.0.36 authority --first-read
-npx agent-onboard@0.0.36 authority --check
+node cli/agent-onboard.js authority --first-read
+node cli/agent-onboard.js authority --check
 ```
 
 Inspect the public target runtime namespace before expanding target runtime files:
 
 ```sh
-npx agent-onboard@0.0.36 target runtime --namespace
-npx agent-onboard@0.0.36 target runtime --check
+node cli/agent-onboard.js target runtime --namespace
+node cli/agent-onboard.js target runtime --check
 ```
 
 Validate the public release contract and source/package surface before any package publish handoff:
 
 ```sh
-npx agent-onboard@0.0.36 release --check
+node cli/agent-onboard.js release --check
 ```
 
 Inspect the normalized release contract:
 
 ```sh
-npx agent-onboard@0.0.36 release --contract
+node cli/agent-onboard.js release --contract
 ```
 
 Inspect the release fixture matrix:
 
 ```sh
-npx agent-onboard@0.0.36 release --fixture
-npx agent-onboard@0.0.36 release --surface
-npx agent-onboard@0.0.36 release --surface-check
+node cli/agent-onboard.js release --fixture
+node cli/agent-onboard.js release --surface
+node cli/agent-onboard.js release --surface-check
+node cli/agent-onboard.js release --version-sprawl-check
 ```
 
 Run the installed package parity smoke:
 
 ```sh
-npx agent-onboard@0.0.36 release --parity-smoke
-npx agent-onboard@0.0.36 release --architecture-parity-smoke
+node cli/agent-onboard.js release --parity-smoke
+node cli/agent-onboard.js release --architecture-parity-smoke
 ```
 
 Run the target onboarding installed-package smoke before publish handoff:
 
 ```sh
-npx agent-onboard@0.0.36 release --target-onboarding-smoke
+node cli/agent-onboard.js release --target-onboarding-smoke
 ```
 
 Inspect the post-publish verification handoff before publishing:
 
 ```sh
-npx agent-onboard@0.0.36 release --post-publish-handoff
+node cli/agent-onboard.js release --post-publish-handoff
 ```
 
 Run the published package acceptance rehearsal before publish, then the version-pinned acceptance check after publish:
 
 ```sh
-npx agent-onboard@0.0.36 release --published-acceptance
-npx agent-onboard@0.0.36 release --real-target-trial
+node cli/agent-onboard.js release --published-acceptance
+node cli/agent-onboard.js release --real-target-trial
 ```
 
 Inspect the public ledger:
 
 ```sh
-npx agent-onboard@0.0.36 work-items --list
+node cli/agent-onboard.js work-items --list
 ```
 
 Claim an assigned work item only with an explicit write command:
 
 ```sh
-npx agent-onboard@0.0.36 work-items --claim --write --id <public-work-item-id> --actor <agent-or-human-name>
+node cli/agent-onboard.js work-items --claim --write --id <public-work-item-id> --actor <agent-or-human-name>
 ```
 
 After claiming, follow the `next_steps` returned by the CLI. Claiming is not admission to publish, push, install dependencies, or edit unrelated files.
@@ -142,7 +145,7 @@ After claiming, follow the `next_steps` returned by the CLI. Claiming is not adm
 Preview closure evidence before writing it:
 
 ```sh
-npx agent-onboard@0.0.36 work-items --close --dry-run --id <public-work-item-id> --actor <agent-or-human-name> --summary <summary>
+node cli/agent-onboard.js work-items --close --dry-run --id <public-work-item-id> --actor <agent-or-human-name> --summary <summary>
 ```
 
 A closure must separate changed files, checks run, checks not run, and known non-pass states.

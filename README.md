@@ -8,10 +8,10 @@ The generated files are intended to be read by agents, wrappers, CI hooks, or fu
 
 ## Install
 
-For the `0.0.x` line, install with `~0.0.36` so target repos can receive later `0.0.x` updates without crossing the `0.1.0` boundary:
+For the `0.0.x` line, install with `latest` for the current public line, or pin a specific published version only in release verification evidence:
 
 ```sh
-npm install --save-dev agent-onboard@~0.0.36
+npm install --save-dev agent-onboard@latest
 ```
 
 Run without installing:
@@ -166,7 +166,7 @@ Validate that the public architecture map still declares the six canonical domai
 npx agent-onboard architecture --check
 ```
 
-The public architecture kernel is: `core`, `authority`, `work_items`, `claims`, `target`, and `release_package`. `0.0.29` adds the public command router boundary gate. `0.0.30` adds the public domain service facade gate: top-level routes declare their owning service facade, and `architecture --facades` reports the admitted facade layer while the published package still uses one compact CLI entrypoint. `0.0.31` adds the public authority first-read index gate: `authority --first-read` reports the canonical read order and `authority --check` validates `llms.txt` plus `.agent-onboard/authority-path.json` in source context while preserving the compact npm package allowlist. `0.0.32` adds the public target runtime namespace gate: `target runtime --namespace` reports the canonical `.agent-onboard/` namespace and `target runtime --check` validates `.agent-onboard/runtime-namespace.json` plus reserved future-file boundaries. `0.0.33` adds the public package surface preservation gate: `release --surface` reports the compact npm package surface and `release --surface-check` validates that source-only context stays out of the npm package allowlist. `0.0.34` adds the public installed parity architecture smoke gate: `release --architecture-parity-smoke` validates that the compact installed package still exposes architecture, source-partition, source-extraction, authority, target-runtime, and package-surface checks. `0.0.35` adds the public source domain module partition planning gate: `architecture --partition-plan` reports the future `src/domains/*` module map and `architecture --partition-check` validates that no physical source move is performed while the npm package remains compact. `0.0.36` adds the public source domain extraction rehearsal gate: `architecture --extraction-rehearsal` reports rehearsal-only extraction units and `architecture --extraction-check` validates that no source modules were created, no runtime output change is admitted, and the npm package remains compact.
+The public architecture kernel is: `core`, `authority`, `work_items`, `claims`, `target`, and `release_package`. `0.0.29` adds the public command router boundary gate. `0.0.30` adds the public domain service facade gate: top-level routes declare their owning service facade, and `architecture --facades` reports the admitted facade layer while the published package still uses one compact CLI entrypoint. `0.0.31` adds the public authority first-read index gate: `authority --first-read` reports the canonical read order and `authority --check` validates `llms.txt` plus `.agent-onboard/authority-path.json` in source context while preserving the compact npm package allowlist. `0.0.32` adds the public target runtime namespace gate: `target runtime --namespace` reports the canonical `.agent-onboard/` namespace and `target runtime --check` validates `.agent-onboard/runtime-namespace.json` plus reserved future-file boundaries. `0.0.33` adds the public package surface preservation gate: `release --surface` reports the compact npm package surface and `release --surface-check` validates that source-only context stays out of the npm package allowlist. `0.0.34` adds the public installed parity architecture smoke gate: `release --architecture-parity-smoke` validates that the compact installed package still exposes architecture, source-partition, source-extraction, authority, target-runtime, and package-surface checks. `0.0.35` adds the public source domain module partition planning gate: `architecture --partition-plan` reports the future `src/domains/*` module map and `architecture --partition-check` validates that no physical source move is performed while the npm package remains compact. This release freezes public source-extraction golden outputs and adds version-sprawl protection: `architecture --golden-outputs` reports the frozen command set, `architecture --golden-check` validates it, and `release --version-sprawl-check` keeps `package.json#version` as the only patch-version source of truth.
 
 ## Public source domain module partition plan
 
@@ -196,6 +196,14 @@ Validate the rehearsal and source-only `.agent-onboard/source-extraction-rehears
 
 ```sh
 npx agent-onboard architecture --extraction-check
+```
+
+Freeze and validate the command-output contract before physical source extraction:
+
+```sh
+npx agent-onboard architecture --golden-outputs
+npx agent-onboard architecture --golden-check
+npx agent-onboard release --version-sprawl-check
 ```
 
 This gate rehearses `src/domains/*` extraction behind the admitted service facades. It does not create physical modules, move code, change runtime outputs, change `package.json#files`, run package-manager commands, mutate Git, or publish.
@@ -712,7 +720,7 @@ This version does not:
 
 `0.0.35` adds the public source domain module partition planning gate: `architecture --partition-plan` reports the future `src/domains/*` module map and `architecture --partition-check` validates that no physical source move is performed while the npm package remains compact.
 
-`0.0.36` adds the public source domain extraction rehearsal gate: `architecture --extraction-rehearsal` reports rehearsal-only source-domain extraction units and `architecture --extraction-check` validates that no physical modules are created and the compact package surface is preserved.
+This release adds the public source extraction golden output freeze gate: `architecture --golden-outputs` reports the frozen command-output contract, `architecture --golden-check` validates it, and `release --version-sprawl-check` prevents current patch-version literals from spreading through source docs and tests.
 
 <!-- ## Star History
 
@@ -733,9 +741,9 @@ The source repository can carry its own public Agent-Onboard operating surface:
 Agent participation is explicit. An agent should first list the ledger, then claim only an assigned work item:
 
 ```sh
-npx agent-onboard@0.0.36 work-items --list
-npx agent-onboard@0.0.36 work-items --claim --dry-run --id <public-work-item-id> --actor <agent-or-human-name>
-npx agent-onboard@0.0.36 work-items --claim --write --id <public-work-item-id> --actor <agent-or-human-name>
+npx agent-onboard work-items --list
+npx agent-onboard work-items --claim --dry-run --id <public-work-item-id> --actor <agent-or-human-name>
+npx agent-onboard work-items --claim --write --id <public-work-item-id> --actor <agent-or-human-name>
 ```
 
 The npm package surface remains intentionally compact. The self-dogfood files are source-repository operating files and are not included in the public npm tarball.

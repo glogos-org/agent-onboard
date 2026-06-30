@@ -6,7 +6,7 @@ const os = require('os');
 const path = require('path');
 const VERSION = require('../package.json').version;
 const TARGET_CONFIG_FILE = 'agent-onboard.target.json';
-const RELEASE_LINE = 'public_source_domain_extraction_rehearsal_gate';
+const RELEASE_LINE = 'public_source_extraction_golden_output_freeze_gate';
 
 process.stdout.on('error', (error) => {
   if (error && error.code === 'EPIPE') process.exit(0);
@@ -301,9 +301,10 @@ const PUBLIC_ARCHITECTURE_MAP = Object.freeze({
   ]),
   public_source_shape: Object.freeze({
     current_entrypoint: 'cli/agent-onboard.js',
-    physical_domain_split_status: 'source_domain_extraction_rehearsed_not_applied',
+    physical_domain_split_status: 'source_extraction_golden_outputs_frozen_not_applied',
     source_partition_plan_file: '.agent-onboard/source-partition-plan.json',
     source_extraction_rehearsal_file: '.agent-onboard/source-extraction-rehearsal.json',
+    source_extraction_golden_outputs_file: '.agent-onboard/source-extraction-golden-outputs.json',
     source_can_grow_with_tests: true,
     npm_package_remains_compact: true,
     expected_pack_files: Object.freeze(['LICENSE', 'README.md', 'cli/agent-onboard.js', 'package.json'])
@@ -324,6 +325,9 @@ const PUBLIC_ARCHITECTURE_MAP = Object.freeze({
     architecture_partition_check_command_writes_files: false,
     architecture_extraction_rehearsal_command_writes_files: false,
     architecture_extraction_check_command_writes_files: false,
+    architecture_golden_outputs_command_writes_files: false,
+    architecture_golden_check_command_writes_files: false,
+    version_sprawl_check_command_writes_files: false,
     published_package_surface_file_count: 4,
     command_router_dispatch_must_be_table_driven: true,
     main_function_delegates_to_command_router: true,
@@ -537,6 +541,7 @@ const PUBLIC_PACKAGE_SURFACE_PRESERVATION = Object.freeze({
     '.agent-onboard/runtime-namespace.json',
     '.agent-onboard/source-partition-plan.json',
     '.agent-onboard/source-extraction-rehearsal.json',
+    '.agent-onboard/source-extraction-golden-outputs.json',
     'test/agent-onboard.test.js'
   ]),
   installed_context_policy: Object.freeze({
@@ -727,8 +732,92 @@ const PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL = Object.freeze({
   })
 });
 
+const PUBLIC_SOURCE_EXTRACTION_GOLDEN_OUTPUT_FREEZE = Object.freeze({
+  schema: 'agent-onboard-public-source-extraction-golden-output-freeze-001',
+  title: 'Agent-Onboard Public Source Extraction Golden Output Freeze',
+  package_name: 'agent-onboard',
+  release_line: RELEASE_LINE,
+  command: 'agent-onboard architecture --golden-outputs',
+  check_command: 'agent-onboard architecture --golden-check',
+  freeze_file: '.agent-onboard/source-extraction-golden-outputs.json',
+  purpose: 'Freeze the command-output contract used to compare behavior before any physical source-domain extraction, while avoiding hard-coded package-version sprawl in source docs and tests.',
+  prerequisite_rehearsal_file: PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL.rehearsal_file,
+  freeze_status: 'frozen_before_physical_extraction',
+  version_policy: Object.freeze({
+    single_source_of_truth: 'package.json#version',
+    runtime_constant_source: "require('../package.json').version",
+    source_docs_must_not_hardcode_current_patch_version: true,
+    tests_must_not_hardcode_current_patch_version: true,
+    generated_post_publish_handoff_may_emit_version_pinned_commands: true
+  }),
+  golden_commands: Object.freeze([
+    Object.freeze({ command: 'status', schema: 'agent-onboard-status-001', required_fields: Object.freeze(['schema', 'status', 'version', 'release_line']) }),
+    Object.freeze({ command: 'architecture --map', schema: 'agent-onboard-public-architecture-map-result-001', required_fields: Object.freeze(['schema', 'status', 'version', 'release_line', 'map']) }),
+    Object.freeze({ command: 'architecture --router', schema: 'agent-onboard-public-command-router-result-001', required_fields: Object.freeze(['schema', 'status', 'version', 'release_line', 'router']) }),
+    Object.freeze({ command: 'architecture --facades', schema: 'agent-onboard-public-domain-service-facades-result-001', required_fields: Object.freeze(['schema', 'status', 'version', 'release_line', 'facades']) }),
+    Object.freeze({ command: 'architecture --partition-check', schema: 'agent-onboard-public-source-domain-module-partition-plan-check-result-001', required_fields: Object.freeze(['schema', 'status', 'version', 'release_line', 'validated']) }),
+    Object.freeze({ command: 'architecture --extraction-check', schema: 'agent-onboard-public-source-domain-extraction-rehearsal-check-result-001', required_fields: Object.freeze(['schema', 'status', 'version', 'release_line', 'validated']) }),
+    Object.freeze({ command: 'architecture --golden-check', schema: 'agent-onboard-public-source-extraction-golden-output-freeze-check-result-001', required_fields: Object.freeze(['schema', 'status', 'version', 'release_line', 'validated']) }),
+    Object.freeze({ command: 'release --version-sprawl-check', schema: 'agent-onboard-public-version-reference-policy-check-result-001', required_fields: Object.freeze(['schema', 'status', 'version', 'release_line', 'validated']) }),
+    Object.freeze({ command: 'authority --check', schema: 'agent-onboard-public-authority-first-read-index-check-result-001', required_fields: Object.freeze(['schema', 'status', 'version', 'release_line', 'validated']) }),
+    Object.freeze({ command: 'target runtime --check', schema: 'agent-onboard-public-target-runtime-namespace-check-result-001', required_fields: Object.freeze(['schema', 'status', 'version', 'release_line', 'validated']) }),
+    Object.freeze({ command: 'release --surface-check', schema: 'agent-onboard-public-package-surface-preservation-check-result-001', required_fields: Object.freeze(['schema', 'status', 'version', 'release_line', 'validated']) }),
+    Object.freeze({ command: 'release --check', schema: 'agent-onboard-public-release-check-result-007', required_fields: Object.freeze(['schema', 'status', 'version', 'release_line', 'validated']) })
+  ]),
+  boundary: Object.freeze({
+    golden_outputs_command_writes_files: false,
+    golden_check_command_writes_files: false,
+    creates_source_modules: false,
+    moves_source_files: false,
+    changes_runtime_outputs: false,
+    writes_package_root: false,
+    writes_target_repository_state: false,
+    git_mutation: false,
+    installs_dependencies: false,
+    runs_package_manager: false,
+    runs_build_test_deploy: false,
+    publishes_package: false,
+    mutates_registry: false,
+    package_allowlist_unchanged: true
+  })
+});
+
+const PUBLIC_VERSION_REFERENCE_POLICY = Object.freeze({
+  schema: 'agent-onboard-public-version-reference-policy-001',
+  title: 'Agent-Onboard Public Version Reference Policy',
+  package_name: 'agent-onboard',
+  release_line: RELEASE_LINE,
+  command: 'agent-onboard release --version-sprawl-check',
+  single_source_of_truth: 'package.json#version',
+  disallowed_current_version_scan_files: Object.freeze([
+    'README.md',
+    'AGENTS.md',
+    'llms.txt',
+    'agent-onboard.target.json',
+    '.agent-onboard/project.json',
+    '.agent-onboard/authority-path.json',
+    '.agent-onboard/runtime-namespace.json',
+    '.agent-onboard/source-partition-plan.json',
+    '.agent-onboard/source-extraction-rehearsal.json',
+    '.agent-onboard/source-extraction-golden-outputs.json',
+    'test/agent-onboard.test.js'
+  ]),
+  allowed_dynamic_version_surfaces: Object.freeze([
+    'package.json#version',
+    'runtime VERSION constant read from package.json',
+    'generated post-publish handoff command output',
+    'operator-supplied <version> placeholder in docs'
+  ]),
+  boundary: Object.freeze({
+    version_sprawl_check_writes_files: false,
+    reads_source_files_only: true,
+    publishes_package: false,
+    mutates_registry: false
+  })
+});
+
 const PUBLIC_RELEASE_CONTRACT = Object.freeze({
-  schema: 'agent-onboard-public-release-contract-018',
+  schema: 'agent-onboard-public-release-contract-019',
   title: 'Agent-Onboard Public Release Contract',
   package_name: 'agent-onboard',
   release_line: RELEASE_LINE,
@@ -748,6 +837,9 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
   architecture_partition_check_command: 'agent-onboard architecture --partition-check',
   architecture_extraction_rehearsal_command: 'agent-onboard architecture --extraction-rehearsal',
   architecture_extraction_check_command: 'agent-onboard architecture --extraction-check',
+  architecture_golden_outputs_command: 'agent-onboard architecture --golden-outputs',
+  architecture_golden_check_command: 'agent-onboard architecture --golden-check',
+  version_sprawl_check_command: 'agent-onboard release --version-sprawl-check',
   architecture_check_command: 'agent-onboard architecture --check',
   authority_first_read_command: 'agent-onboard authority --first-read',
   authority_check_command: 'agent-onboard authority --check',
@@ -766,6 +858,7 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
     '.agent-onboard/runtime-namespace.json',
     '.agent-onboard/source-partition-plan.json',
     '.agent-onboard/source-extraction-rehearsal.json',
+    '.agent-onboard/source-extraction-golden-outputs.json',
     'test/agent-onboard.test.js'
   ]),
   required_package_json: Object.freeze({
@@ -804,6 +897,9 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
     'node cli/agent-onboard.js architecture --partition-check',
     'node cli/agent-onboard.js architecture --extraction-rehearsal',
     'node cli/agent-onboard.js architecture --extraction-check',
+    'node cli/agent-onboard.js architecture --golden-outputs',
+    'node cli/agent-onboard.js architecture --golden-check',
+    'node cli/agent-onboard.js release --version-sprawl-check',
     'node cli/agent-onboard.js authority --first-read',
     'node cli/agent-onboard.js authority --check',
     'node cli/agent-onboard.js target runtime --namespace',
@@ -834,6 +930,9 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
     'npx agent-onboard@<version> architecture --partition-check',
     'npx agent-onboard@<version> architecture --extraction-rehearsal',
     'npx agent-onboard@<version> architecture --extraction-check',
+    'npx agent-onboard@<version> architecture --golden-outputs',
+    'npx agent-onboard@<version> architecture --golden-check',
+    'npx agent-onboard@<version> release --version-sprawl-check',
     'npx agent-onboard@<version> authority --first-read',
     'npx agent-onboard@<version> authority --check',
     'npx agent-onboard@<version> target runtime --namespace',
@@ -858,7 +957,7 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
 
 
 const PUBLIC_RELEASE_FIXTURE_MATRIX = Object.freeze({
-  schema: 'agent-onboard-public-release-fixture-matrix-013',
+  schema: 'agent-onboard-public-release-fixture-matrix-014',
   title: 'Agent-Onboard Public Package Contract Fixture Matrix',
   package_name: 'agent-onboard',
   release_line: PUBLIC_RELEASE_CONTRACT.release_line,
@@ -980,6 +1079,18 @@ const PUBLIC_RELEASE_FIXTURE_MATRIX = Object.freeze({
       expected_status: 'ok',
       validates: Object.freeze(['rehearsal units cover all six public domains', 'each rehearsal unit maps to the admitted facade', 'no physical module is created by this gate', 'golden output scope is declared before source extraction', 'npm package allowlist remains compact']),
       boundary: 'architecture --extraction-rehearsal and --extraction-check are read-only; they do not create modules, move files, change runtime outputs, run npm, mutate Git, publish, or touch target repository state'
+    }),
+    Object.freeze({
+      id: 'public_source_extraction_golden_output_freeze',
+      expected_status: 'ok',
+      validates: Object.freeze(['golden command order is frozen', 'source extraction rehearsal still passes', 'no physical module is created', 'runtime output change remains disallowed', 'npm package allowlist remains compact']),
+      boundary: 'architecture --golden-outputs and --golden-check are read-only; they do not create modules, move files, change runtime outputs, run npm, mutate Git, publish, or touch target repository state'
+    }),
+    Object.freeze({
+      id: 'public_version_reference_policy',
+      expected_status: 'ok',
+      validates: Object.freeze(['package.json is the only patch-version source of truth', 'docs avoid hard-coded current package versions', 'tests derive expected version from package.json', 'post-publish output may still emit explicit version-pinned commands']),
+      boundary: 'release --version-sprawl-check is read-only; it scans source files and writes no files, publishes nothing, and mutates no registry state'
     })
   ]),
   boundary: Object.freeze({
@@ -3036,6 +3147,170 @@ function publicSourceDomainExtractionRehearsalCheck(root = packageRoot()) {
   };
 }
 
+
+function publicSourceExtractionGoldenOutputs(root = packageRoot()) {
+  const pkg = readJson(path.join(root, 'package.json'));
+  const context = sourceContext(root);
+  const freezeFile = PUBLIC_SOURCE_EXTRACTION_GOLDEN_OUTPUT_FREEZE.freeze_file;
+  return {
+    schema: 'agent-onboard-public-source-extraction-golden-output-freeze-result-001',
+    status: 'ok',
+    package_name: PUBLIC_SOURCE_EXTRACTION_GOLDEN_OUTPUT_FREEZE.package_name,
+    version: VERSION,
+    release_line: PUBLIC_SOURCE_EXTRACTION_GOLDEN_OUTPUT_FREEZE.release_line,
+    command: PUBLIC_SOURCE_EXTRACTION_GOLDEN_OUTPUT_FREEZE.command,
+    check_command: PUBLIC_SOURCE_EXTRACTION_GOLDEN_OUTPUT_FREEZE.check_command,
+    package_root: root,
+    package_context: context.package_context,
+    package_json_version: pkg.version,
+    freeze_file: freezeFile,
+    freeze_file_present: fs.existsSync(path.join(root, freezeFile)),
+    golden_output_freeze: PUBLIC_SOURCE_EXTRACTION_GOLDEN_OUTPUT_FREEZE,
+    version_reference_policy: PUBLIC_VERSION_REFERENCE_POLICY,
+    projected_pack_files: packageJsonProjectedPackFiles(pkg),
+    boundary: {
+      writes_files: false,
+      writes_source_state: false,
+      writes_target_repository_state: false,
+      git_mutation: false,
+      installs_dependencies: false,
+      runs_package_manager: false,
+      runs_build_test_deploy: false,
+      publishes_package: false,
+      mutates_registry: false
+    }
+  };
+}
+
+function scanCurrentVersionLiterals(root = packageRoot()) {
+  const currentVersion = VERSION;
+  const currentPinnedPackage = `agent-onboard@${currentVersion}`;
+  const findings = [];
+  for (const rel of PUBLIC_VERSION_REFERENCE_POLICY.disallowed_current_version_scan_files) {
+    const abs = path.join(root, rel);
+    if (!fs.existsSync(abs) || fs.statSync(abs).isDirectory()) continue;
+    const text = fs.readFileSync(abs, 'utf8');
+    const checks = [currentPinnedPackage, currentVersion];
+    for (const token of checks) {
+      let index = text.indexOf(token);
+      while (index !== -1) {
+        const before = text.slice(0, index);
+        const line = before.split(/\r?\n/).length;
+        findings.push({ file: rel, line, token });
+        index = text.indexOf(token, index + token.length);
+      }
+    }
+  }
+  return findings;
+}
+
+function publicVersionReferencePolicyCheck(root = packageRoot()) {
+  const findings = scanCurrentVersionLiterals(root);
+  const errors = [];
+  if (findings.length > 0) {
+    errors.push(`current package version literal must not be hard-coded outside package.json or generated handoff output: ${findings.map((item) => `${item.file}:${item.line}:${item.token}`).join(', ')}`);
+  }
+  return {
+    schema: 'agent-onboard-public-version-reference-policy-check-result-001',
+    status: errors.length === 0 ? 'ok' : 'error',
+    package_name: PUBLIC_VERSION_REFERENCE_POLICY.package_name,
+    version: VERSION,
+    release_line: PUBLIC_VERSION_REFERENCE_POLICY.release_line,
+    command: PUBLIC_VERSION_REFERENCE_POLICY.command,
+    package_root: root,
+    validated: {
+      package_json_single_source_of_truth: true,
+      current_version_not_hardcoded_in_source_docs: findings.length === 0,
+      generated_post_publish_handoff_exempt: true,
+      tests_should_derive_expected_version_from_package_json: true
+    },
+    scan_files: PUBLIC_VERSION_REFERENCE_POLICY.disallowed_current_version_scan_files.slice(),
+    findings,
+    allowed_dynamic_version_surfaces: PUBLIC_VERSION_REFERENCE_POLICY.allowed_dynamic_version_surfaces.slice(),
+    boundary: PUBLIC_VERSION_REFERENCE_POLICY.boundary,
+    errors
+  };
+}
+
+function publicSourceExtractionGoldenOutputFreezeCheck(root = packageRoot()) {
+  const result = publicSourceExtractionGoldenOutputs(root);
+  const extraction = publicSourceDomainExtractionRehearsalCheck(root);
+  const versionPolicy = publicVersionReferencePolicyCheck(root);
+  const expectedPackFiles = PUBLIC_RELEASE_CONTRACT.expected_pack_files.slice().sort();
+  const goldenBaseCommands = PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL.golden_output_scope.slice();
+  const expectedCommands = goldenBaseCommands.slice(0, 6).concat(['architecture --golden-check', 'release --version-sprawl-check'], goldenBaseCommands.slice(6));
+  const actualCommands = result.golden_output_freeze.golden_commands.map((entry) => entry.command);
+  const errors = [];
+  if (extraction.status !== 'ok') errors.push(...extraction.errors.map((error) => `source extraction rehearsal: ${error}`));
+  if (versionPolicy.status !== 'ok') errors.push(...versionPolicy.errors.map((error) => `version reference policy: ${error}`));
+  if (result.golden_output_freeze.freeze_status !== 'frozen_before_physical_extraction') errors.push('golden output freeze status must be frozen_before_physical_extraction');
+  if (!arrayEquals(actualCommands, expectedCommands)) errors.push(`golden output commands must match ${expectedCommands.join(', ')}`);
+  if (!arrayEquals(result.projected_pack_files, expectedPackFiles)) errors.push(`projected npm pack files must remain ${expectedPackFiles.join(', ')}`);
+  if (result.golden_output_freeze.boundary.golden_outputs_command_writes_files !== false) errors.push('architecture --golden-outputs must remain no-write');
+  if (result.golden_output_freeze.boundary.golden_check_command_writes_files !== false) errors.push('architecture --golden-check must remain no-write');
+  if (result.golden_output_freeze.boundary.creates_source_modules !== false) errors.push('golden output freeze must not create source modules');
+  if (result.golden_output_freeze.boundary.moves_source_files !== false) errors.push('golden output freeze must not move source files');
+  if (result.golden_output_freeze.boundary.changes_runtime_outputs !== false) errors.push('golden output freeze must not change runtime outputs');
+
+  let freezeFileStatus = 'not_present_installed_context_allowed';
+  let freezeFileSchema = null;
+  if (result.freeze_file_present) {
+    try {
+      const freezeFile = readJson(path.join(root, result.freeze_file));
+      freezeFileSchema = freezeFile.schema || null;
+      if (freezeFile.schema !== PUBLIC_SOURCE_EXTRACTION_GOLDEN_OUTPUT_FREEZE.schema) errors.push(`${result.freeze_file} schema must be ${PUBLIC_SOURCE_EXTRACTION_GOLDEN_OUTPUT_FREEZE.schema}`);
+      const fileCommands = Array.isArray(freezeFile.golden_commands) ? freezeFile.golden_commands.map((entry) => entry.command) : [];
+      if (!arrayEquals(fileCommands, expectedCommands)) errors.push(`${result.freeze_file} golden_commands must match ${expectedCommands.join(', ')}`);
+      freezeFileStatus = 'present_validated';
+    } catch (error) {
+      freezeFileStatus = 'present_invalid_json';
+      errors.push(`${result.freeze_file} is not valid JSON: ${error && error.message ? error.message : String(error)}`);
+    }
+  } else if (result.package_context === 'source_repository') {
+    freezeFileStatus = 'missing_source_context';
+    errors.push(`${result.freeze_file} must be present in source repository context`);
+  }
+
+  return {
+    schema: 'agent-onboard-public-source-extraction-golden-output-freeze-check-result-001',
+    status: errors.length === 0 ? 'ok' : 'error',
+    package_name: PUBLIC_SOURCE_EXTRACTION_GOLDEN_OUTPUT_FREEZE.package_name,
+    version: VERSION,
+    release_line: PUBLIC_SOURCE_EXTRACTION_GOLDEN_OUTPUT_FREEZE.release_line,
+    command: PUBLIC_SOURCE_EXTRACTION_GOLDEN_OUTPUT_FREEZE.check_command,
+    package_root: root,
+    validated: {
+      source_extraction_rehearsal: extraction.status === 'ok',
+      golden_command_order: arrayEquals(actualCommands, expectedCommands),
+      freeze_status: result.golden_output_freeze.freeze_status === 'frozen_before_physical_extraction',
+      freeze_commands_no_write: result.golden_output_freeze.boundary.golden_outputs_command_writes_files === false && result.golden_output_freeze.boundary.golden_check_command_writes_files === false,
+      no_physical_modules_created: result.golden_output_freeze.boundary.creates_source_modules === false,
+      runtime_outputs_unchanged_by_gate: result.golden_output_freeze.boundary.changes_runtime_outputs === false,
+      package_allowlist_unchanged: arrayEquals(result.projected_pack_files, expectedPackFiles),
+      version_reference_policy: versionPolicy.status === 'ok',
+      source_freeze_file: freezeFileStatus === 'present_validated' || freezeFileStatus === 'not_present_installed_context_allowed'
+    },
+    expected_commands: expectedCommands,
+    golden_commands: actualCommands,
+    source_freeze_file: {
+      path: result.freeze_file,
+      present: result.freeze_file_present,
+      status: freezeFileStatus,
+      schema: freezeFileSchema,
+      source_context_required: result.package_context === 'source_repository'
+    },
+    version_reference_policy: {
+      status: versionPolicy.status,
+      findings: versionPolicy.findings,
+      errors: versionPolicy.errors
+    },
+    projected_pack_files: result.projected_pack_files,
+    expected_pack_files: expectedPackFiles,
+    boundary: result.boundary,
+    errors
+  };
+}
+
 function publicArchitectureMap(root = packageRoot()) {
   const pkg = readJson(path.join(root, 'package.json'));
   return {
@@ -3054,6 +3329,8 @@ function publicArchitectureMap(root = packageRoot()) {
     domain_service_facades: PUBLIC_DOMAIN_SERVICE_FACADES,
     source_domain_module_partition_plan: PUBLIC_SOURCE_DOMAIN_MODULE_PARTITION_PLAN,
     source_domain_extraction_rehearsal: PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL,
+    source_extraction_golden_output_freeze: PUBLIC_SOURCE_EXTRACTION_GOLDEN_OUTPUT_FREEZE,
+    version_reference_policy: PUBLIC_VERSION_REFERENCE_POLICY,
     authority_first_read_index: PUBLIC_AUTHORITY_FIRST_READ_INDEX,
     target_runtime_namespace: PUBLIC_TARGET_RUNTIME_NAMESPACE,
     current_runtime: {
@@ -3095,6 +3372,8 @@ function publicArchitectureCheck(root = packageRoot()) {
   const sourcePartitionErrors = sourcePartition.errors.map((error) => `source partition: ${error}`);
   const sourceExtraction = publicSourceDomainExtractionRehearsalCheck(root);
   const sourceExtractionErrors = sourceExtraction.errors.map((error) => `source extraction: ${error}`);
+  const goldenOutputs = publicSourceExtractionGoldenOutputFreezeCheck(root);
+  const goldenOutputErrors = goldenOutputs.errors.map((error) => `golden outputs: ${error}`);
   const errors = [];
   if (!arrayEquals(domainIds, expectedDomains)) errors.push(`architecture domain order must be ${expectedDomains.join(', ')}`);
   if (new Set(domainIds).size !== domainIds.length) errors.push('architecture domain ids must be unique');
@@ -3109,11 +3388,14 @@ function publicArchitectureCheck(root = packageRoot()) {
   if (map.map.package_boundary.architecture_partition_check_command_writes_files !== false) errors.push('architecture partition check command must remain no-write');
   if (map.map.package_boundary.architecture_extraction_rehearsal_command_writes_files !== false) errors.push('architecture extraction rehearsal command must remain no-write');
   if (map.map.package_boundary.architecture_extraction_check_command_writes_files !== false) errors.push('architecture extraction check command must remain no-write');
+  if (map.map.package_boundary.architecture_golden_outputs_command_writes_files !== false) errors.push('architecture golden outputs command must remain no-write');
+  if (map.map.package_boundary.architecture_golden_check_command_writes_files !== false) errors.push('architecture golden check command must remain no-write');
+  if (map.map.package_boundary.version_sprawl_check_command_writes_files !== false) errors.push('version sprawl check command must remain no-write');
   if (map.map.package_boundary.authority_first_read_command_writes_files !== false) errors.push('authority first-read command must remain no-write');
   if (map.map.package_boundary.authority_check_command_writes_files !== false) errors.push('authority check command must remain no-write');
   if (map.map.package_boundary.target_runtime_namespace_command_writes_files !== false) errors.push('target runtime namespace command must remain no-write');
   if (map.map.package_boundary.target_runtime_check_command_writes_files !== false) errors.push('target runtime check command must remain no-write');
-  errors.push(...routerErrors, ...facadeErrors, ...authorityErrors, ...targetRuntimeErrors, ...sourcePartitionErrors, ...sourceExtractionErrors);
+  errors.push(...routerErrors, ...facadeErrors, ...authorityErrors, ...targetRuntimeErrors, ...sourcePartitionErrors, ...sourceExtractionErrors, ...goldenOutputErrors);
   return {
     schema: 'agent-onboard-public-architecture-check-result-001',
     status: errors.length === 0 ? 'ok' : 'error',
@@ -3128,13 +3410,14 @@ function publicArchitectureCheck(root = packageRoot()) {
       domain_ids_unique: new Set(domainIds).size === domainIds.length,
       runtime_entrypoint_present: map.current_runtime.entrypoint_exists,
       compact_package_boundary: arrayEquals(projectedPackFiles, expectedPackFiles),
-      architecture_commands_no_write: map.map.package_boundary.architecture_map_command_writes_files === false && map.map.package_boundary.architecture_check_command_writes_files === false && map.map.package_boundary.architecture_router_command_writes_files === false && map.map.package_boundary.architecture_facades_command_writes_files === false && map.map.package_boundary.architecture_partition_plan_command_writes_files === false && map.map.package_boundary.architecture_partition_check_command_writes_files === false && map.map.package_boundary.architecture_extraction_rehearsal_command_writes_files === false && map.map.package_boundary.architecture_extraction_check_command_writes_files === false && map.map.package_boundary.authority_first_read_command_writes_files === false && map.map.package_boundary.authority_check_command_writes_files === false,
+      architecture_commands_no_write: map.map.package_boundary.architecture_map_command_writes_files === false && map.map.package_boundary.architecture_check_command_writes_files === false && map.map.package_boundary.architecture_router_command_writes_files === false && map.map.package_boundary.architecture_facades_command_writes_files === false && map.map.package_boundary.architecture_partition_plan_command_writes_files === false && map.map.package_boundary.architecture_partition_check_command_writes_files === false && map.map.package_boundary.architecture_extraction_rehearsal_command_writes_files === false && map.map.package_boundary.architecture_extraction_check_command_writes_files === false && map.map.package_boundary.architecture_golden_outputs_command_writes_files === false && map.map.package_boundary.architecture_golden_check_command_writes_files === false && map.map.package_boundary.version_sprawl_check_command_writes_files === false && map.map.package_boundary.authority_first_read_command_writes_files === false && map.map.package_boundary.authority_check_command_writes_files === false,
       command_router_boundary: router.status === 'ok',
       domain_service_facades: facades.status === 'ok',
       authority_first_read_index: authority.status === 'ok',
       target_runtime_namespace: targetRuntime.status === 'ok',
       source_domain_module_partition_plan: sourcePartition.status === 'ok',
-      source_domain_extraction_rehearsal: sourceExtraction.status === 'ok'
+      source_domain_extraction_rehearsal: sourceExtraction.status === 'ok',
+      source_extraction_golden_output_freeze: goldenOutputs.status === 'ok'
     },
     domain_ids: domainIds,
     expected_pack_files: expectedPackFiles,
@@ -3145,6 +3428,7 @@ function publicArchitectureCheck(root = packageRoot()) {
     target_runtime_namespace: targetRuntime,
     source_domain_module_partition_plan: sourcePartition,
     source_domain_extraction_rehearsal: sourceExtraction,
+    source_extraction_golden_output_freeze: goldenOutputs,
     boundary: map.boundary,
     errors
   };
@@ -3259,10 +3543,12 @@ function publicReleaseCheck(root = packageRoot()) {
   const architecture = publicArchitectureCheck(root);
   const architectureErrors = architecture.errors.map((error) => `architecture: ${error}`);
   const packageSurface = publicPackageSurfaceCheck(root);
+  const versionPolicy = publicVersionReferencePolicyCheck(root);
+  const versionPolicyErrors = versionPolicy.errors.map((error) => `version reference policy: ${error}`);
   const packageSurfaceErrors = packageSurface.errors.map((error) => `package surface: ${error}`);
   const architectureParity = publicInstalledParityArchitectureSmoke(root);
   const architectureParityErrors = architectureParity.errors.map((error) => `installed architecture parity: ${error}`);
-  const errors = [...metadataErrors, ...packErrors, ...messagingErrors, ...sourceLedgerErrors, ...architectureErrors, ...packageSurfaceErrors, ...architectureParityErrors];
+  const errors = [...metadataErrors, ...packErrors, ...messagingErrors, ...sourceLedgerErrors, ...architectureErrors, ...packageSurfaceErrors, ...architectureParityErrors, ...versionPolicyErrors];
   return {
     schema: 'agent-onboard-public-release-check-result-011',
     status: errors.length === 0 ? 'ok' : 'error',
@@ -3288,6 +3574,8 @@ function publicReleaseCheck(root = packageRoot()) {
       public_target_runtime_namespace: architecture.target_runtime_namespace && architecture.target_runtime_namespace.status === 'ok',
       public_source_domain_module_partition_plan: architecture.source_domain_module_partition_plan && architecture.source_domain_module_partition_plan.status === 'ok',
       public_source_domain_extraction_rehearsal: architecture.source_domain_extraction_rehearsal && architecture.source_domain_extraction_rehearsal.status === 'ok',
+      public_source_extraction_golden_output_freeze: architecture.source_extraction_golden_output_freeze && architecture.source_extraction_golden_output_freeze.status === 'ok',
+      public_version_reference_policy: versionPolicy.status === 'ok',
       public_package_surface_preservation: packageSurface.status === 'ok',
       public_installed_parity_architecture_smoke: architectureParity.status === 'ok'
     },
@@ -3297,6 +3585,8 @@ function publicReleaseCheck(root = packageRoot()) {
     public_architecture: architecture,
     public_source_domain_module_partition_plan: architecture.source_domain_module_partition_plan,
     public_source_domain_extraction_rehearsal: architecture.source_domain_extraction_rehearsal,
+    public_source_extraction_golden_output_freeze: architecture.source_extraction_golden_output_freeze,
+    public_version_reference_policy: versionPolicy,
     public_package_surface_preservation: packageSurface,
     public_installed_parity_architecture_smoke: architectureParity,
     local_pre_publish_commands: PUBLIC_RELEASE_CONTRACT.local_pre_publish_commands.slice(),
@@ -3400,6 +3690,7 @@ function publicInstalledParityArchitectureSmoke(root = packageRoot()) {
   const packageSurface = publicPackageSurfaceCheck(root);
   const sourcePartition = publicSourceDomainModulePartitionPlanCheck(root);
   const sourceExtraction = publicSourceDomainExtractionRehearsalCheck(root);
+  const goldenOutputs = publicSourceExtractionGoldenOutputFreezeCheck(root);
   const componentErrors = [];
   if (architecture.status !== 'ok') componentErrors.push(...architecture.errors.map((error) => `architecture: ${error}`));
   if (authority.status !== 'ok') componentErrors.push(...authority.errors.map((error) => `authority: ${error}`));
@@ -3407,6 +3698,7 @@ function publicInstalledParityArchitectureSmoke(root = packageRoot()) {
   if (packageSurface.status !== 'ok') componentErrors.push(...packageSurface.errors.map((error) => `package surface: ${error}`));
   if (sourcePartition.status !== 'ok') componentErrors.push(...sourcePartition.errors.map((error) => `source partition: ${error}`));
   if (sourceExtraction.status !== 'ok') componentErrors.push(...sourceExtraction.errors.map((error) => `source extraction: ${error}`));
+  if (goldenOutputs.status !== 'ok') componentErrors.push(...goldenOutputs.errors.map((error) => `golden outputs: ${error}`));
 
   const parity = {
     package_metadata: metadataErrors.length === 0,
@@ -3423,6 +3715,7 @@ function publicInstalledParityArchitectureSmoke(root = packageRoot()) {
     package_surface_check: packageSurface.status === 'ok',
     source_domain_module_partition_plan_check: sourcePartition.status === 'ok',
     source_domain_extraction_rehearsal_check: sourceExtraction.status === 'ok',
+    source_extraction_golden_output_freeze_check: goldenOutputs.status === 'ok',
     runtime_version_matches_package_json: pkg.version === VERSION
   };
 
@@ -3463,6 +3756,7 @@ function publicInstalledParityArchitectureSmoke(root = packageRoot()) {
       package_surface_check_status: packageSurface.status,
       source_domain_module_partition_plan_status: sourcePartition.status,
       source_domain_extraction_rehearsal_status: sourceExtraction.status,
+      source_extraction_golden_output_freeze_status: goldenOutputs.status,
       package_context: context.package_context,
       source_context_files_present: context.source_context_files_present,
       source_context_files_missing: context.source_context_files_missing
@@ -3474,6 +3768,7 @@ function publicInstalledParityArchitectureSmoke(root = packageRoot()) {
     package_surface_preservation: packageSurface,
     source_domain_module_partition_plan: sourcePartition,
     source_domain_extraction_rehearsal: sourceExtraction,
+    source_extraction_golden_output_freeze: goldenOutputs,
     boundary: {
       writes_files: false,
       writes_package_root: false,
@@ -3622,6 +3917,9 @@ function publicTargetOnboardingPostPublishHandoff(root = packageRoot(), version 
     `npx agent-onboard@${version} architecture --partition-check`,
     `npx agent-onboard@${version} architecture --extraction-rehearsal`,
     `npx agent-onboard@${version} architecture --extraction-check`,
+    `npx agent-onboard@${version} architecture --golden-outputs`,
+    `npx agent-onboard@${version} architecture --golden-check`,
+    `npx agent-onboard@${version} release --version-sprawl-check`,
     `npx agent-onboard@${version} authority --first-read`,
     `npx agent-onboard@${version} authority --check`,
     `npx agent-onboard@${version} target runtime --namespace`,
@@ -3663,6 +3961,8 @@ function publicTargetOnboardingPostPublishHandoff(root = packageRoot(), version 
       'version-pinned architecture parity smoke returns ok',
       'version-pinned architecture source partition check returns ok',
       'version-pinned architecture source extraction rehearsal check returns ok',
+      'version-pinned architecture golden output freeze check returns ok',
+      'version-pinned version sprawl check returns ok',
       'version-pinned target onboarding smoke returns ok',
       'version-pinned published acceptance returns ok',
       'version-pinned release check returns ok',
@@ -3720,6 +4020,8 @@ function publicTargetOnboardingPublishedAcceptance(root = packageRoot()) {
     `npx agent-onboard@${VERSION} architecture --map`,
     `npx agent-onboard@${VERSION} architecture --router`,
     `npx agent-onboard@${VERSION} architecture --facades`,
+    `npx agent-onboard@${VERSION} architecture --golden-check`,
+    `npx agent-onboard@${VERSION} release --version-sprawl-check`,
     `npx agent-onboard@${VERSION} authority --first-read`,
     `npx agent-onboard@${VERSION} authority --check`,
     `npx agent-onboard@${VERSION} target runtime --namespace`,
@@ -3845,6 +4147,15 @@ function runArchitecture(args) {
     json(result);
     return result.status === 'ok' ? 0 : 1;
   }
+  if (args.length === 1 && args[0] === '--golden-outputs') {
+    json(publicSourceExtractionGoldenOutputs());
+    return 0;
+  }
+  if (args.length === 1 && args[0] === '--golden-check') {
+    const result = publicSourceExtractionGoldenOutputFreezeCheck();
+    json(result);
+    return result.status === 'ok' ? 0 : 1;
+  }
   if (args.length === 1 && args[0] === '--check') {
     const result = publicArchitectureCheck();
     json(result);
@@ -3854,7 +4165,7 @@ function runArchitecture(args) {
     schema: 'agent-onboard-architecture-command-error-001',
     status: 'error',
     command_family: 'architecture',
-    message: 'architecture requires --map, --router, --facades, --partition-plan, --partition-check, --extraction-rehearsal, --extraction-check, or --check',
+    message: 'architecture requires --map, --router, --facades, --partition-plan, --partition-check, --extraction-rehearsal, --extraction-check, --golden-outputs, --golden-check, or --check',
     writes_files: false,
     publishes_package: false
   });
@@ -3907,6 +4218,9 @@ function runRelease(args) {
       architecture_partition_check_command: PUBLIC_RELEASE_CONTRACT.architecture_partition_check_command,
       architecture_extraction_rehearsal_command: PUBLIC_RELEASE_CONTRACT.architecture_extraction_rehearsal_command,
       architecture_extraction_check_command: PUBLIC_RELEASE_CONTRACT.architecture_extraction_check_command,
+      architecture_golden_outputs_command: PUBLIC_RELEASE_CONTRACT.architecture_golden_outputs_command,
+      architecture_golden_check_command: PUBLIC_RELEASE_CONTRACT.architecture_golden_check_command,
+      version_sprawl_check_command: PUBLIC_RELEASE_CONTRACT.version_sprawl_check_command,
       architecture_check_command: PUBLIC_RELEASE_CONTRACT.architecture_check_command,
       authority_first_read_command: PUBLIC_RELEASE_CONTRACT.authority_first_read_command,
       authority_check_command: PUBLIC_RELEASE_CONTRACT.authority_check_command,
@@ -3922,6 +4236,8 @@ function runRelease(args) {
       domain_service_facades: PUBLIC_DOMAIN_SERVICE_FACADES,
       source_domain_module_partition_plan: PUBLIC_SOURCE_DOMAIN_MODULE_PARTITION_PLAN,
       source_domain_extraction_rehearsal: PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL,
+      source_extraction_golden_output_freeze: PUBLIC_SOURCE_EXTRACTION_GOLDEN_OUTPUT_FREEZE,
+      version_reference_policy: PUBLIC_VERSION_REFERENCE_POLICY,
       authority_first_read_index: PUBLIC_AUTHORITY_FIRST_READ_INDEX,
       target_runtime_namespace: PUBLIC_TARGET_RUNTIME_NAMESPACE,
       package_surface_preservation: PUBLIC_PACKAGE_SURFACE_PRESERVATION,
@@ -3953,6 +4269,8 @@ function runRelease(args) {
       domain_service_facades: PUBLIC_DOMAIN_SERVICE_FACADES,
       source_domain_module_partition_plan: PUBLIC_SOURCE_DOMAIN_MODULE_PARTITION_PLAN,
       source_domain_extraction_rehearsal: PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL,
+      source_extraction_golden_output_freeze: PUBLIC_SOURCE_EXTRACTION_GOLDEN_OUTPUT_FREEZE,
+      version_reference_policy: PUBLIC_VERSION_REFERENCE_POLICY,
       authority_first_read_index: PUBLIC_AUTHORITY_FIRST_READ_INDEX,
       target_runtime_namespace: PUBLIC_TARGET_RUNTIME_NAMESPACE,
       package_surface_preservation: PUBLIC_PACKAGE_SURFACE_PRESERVATION,
@@ -3978,6 +4296,8 @@ function runRelease(args) {
       domain_service_facades: PUBLIC_DOMAIN_SERVICE_FACADES,
       source_domain_module_partition_plan: PUBLIC_SOURCE_DOMAIN_MODULE_PARTITION_PLAN,
       source_domain_extraction_rehearsal: PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL,
+      source_extraction_golden_output_freeze: PUBLIC_SOURCE_EXTRACTION_GOLDEN_OUTPUT_FREEZE,
+      version_reference_policy: PUBLIC_VERSION_REFERENCE_POLICY,
       authority_first_read_index: PUBLIC_AUTHORITY_FIRST_READ_INDEX,
       target_runtime_namespace: PUBLIC_TARGET_RUNTIME_NAMESPACE,
       package_surface_preservation: PUBLIC_PACKAGE_SURFACE_PRESERVATION,
@@ -3995,6 +4315,11 @@ function runRelease(args) {
   }
   if (args.length === 1 && args[0] === '--surface-check') {
     const result = publicPackageSurfaceCheck();
+    json(result);
+    return result.status === 'ok' ? 0 : 1;
+  }
+  if (args.length === 1 && args[0] === '--version-sprawl-check') {
+    const result = publicVersionReferencePolicyCheck();
     json(result);
     return result.status === 'ok' ? 0 : 1;
   }
@@ -4037,7 +4362,7 @@ function runRelease(args) {
     schema: 'agent-onboard-release-command-error-001',
     status: 'error',
     command_family: 'release',
-    message: 'release requires --plan, --contract, --fixture, --surface, --surface-check, --parity-smoke, --architecture-parity-smoke, --target-onboarding-smoke, --post-publish-handoff, --published-acceptance, --real-target-trial, or --check',
+    message: 'release requires --plan, --contract, --fixture, --surface, --surface-check, --version-sprawl-check, --parity-smoke, --architecture-parity-smoke, --target-onboarding-smoke, --post-publish-handoff, --published-acceptance, --real-target-trial, or --check',
     writes_files: false,
     publishes_package: false
   });
@@ -4763,7 +5088,7 @@ function runTargetInstance(args) {
 }
 
 function help() {
-  process.stdout.write(`agent-onboard ${VERSION}\n\nagent-onboard status\nagent-onboard init --dry-run|--write [--force]\nagent-onboard agents --preview|--write [--force]\nagent-onboard guard --plan|--check-boundary\nagent-onboard authority --first-read|--check\nagent-onboard architecture --map|--router|--facades|--partition-plan|--partition-check|--extraction-rehearsal|--extraction-check|--check\nagent-onboard release --plan|--contract|--fixture|--surface|--surface-check|--parity-smoke|--architecture-parity-smoke|--target-onboarding-smoke|--post-publish-handoff|--published-acceptance|--real-target-trial|--check\nagent-onboard target-config --schema\nagent-onboard target-config --template\nagent-onboard target-config --validate-template\nagent-onboard target-config --validate [agent-onboard.target.json]\nagent-onboard work-items --schema\nagent-onboard work-items --template\nagent-onboard work-items --validate-template\nagent-onboard work-items --validate [.agent-onboard/work-items.json]\nagent-onboard work-items --list [.agent-onboard/work-items.json]\nagent-onboard work-items --init --dry-run|--write [--force]\nagent-onboard work-items --append --dry-run|--write --id <public-work-item-id> --title <title>\nagent-onboard work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>\nagent-onboard work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>\nagent-onboard target runtime --namespace|--check\nagent-onboard target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]\nagent-onboard target bootstrap --dry-run|--write [--force]\nagent-onboard target-instance takeover --dry-run|--write [--force]\n`);
+  process.stdout.write(`agent-onboard ${VERSION}\n\nagent-onboard status\nagent-onboard init --dry-run|--write [--force]\nagent-onboard agents --preview|--write [--force]\nagent-onboard guard --plan|--check-boundary\nagent-onboard authority --first-read|--check\nagent-onboard architecture --map|--router|--facades|--partition-plan|--partition-check|--extraction-rehearsal|--extraction-check|--golden-outputs|--golden-check|--check\nagent-onboard release --plan|--contract|--fixture|--surface|--surface-check|--version-sprawl-check|--parity-smoke|--architecture-parity-smoke|--target-onboarding-smoke|--post-publish-handoff|--published-acceptance|--real-target-trial|--check\nagent-onboard target-config --schema\nagent-onboard target-config --template\nagent-onboard target-config --validate-template\nagent-onboard target-config --validate [agent-onboard.target.json]\nagent-onboard work-items --schema\nagent-onboard work-items --template\nagent-onboard work-items --validate-template\nagent-onboard work-items --validate [.agent-onboard/work-items.json]\nagent-onboard work-items --list [.agent-onboard/work-items.json]\nagent-onboard work-items --init --dry-run|--write [--force]\nagent-onboard work-items --append --dry-run|--write --id <public-work-item-id> --title <title>\nagent-onboard work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>\nagent-onboard work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>\nagent-onboard target runtime --namespace|--check\nagent-onboard target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]\nagent-onboard target bootstrap --dry-run|--write [--force]\nagent-onboard target-instance takeover --dry-run|--write [--force]\n`);
   return 0;
 }
 

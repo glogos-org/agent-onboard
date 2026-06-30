@@ -1,8 +1,7 @@
 {
   "schema": "agent-onboard-authority-path-001",
   "package_name": "agent-onboard",
-  "package_version": "0.0.36",
-  "release_line": "public_source_domain_extraction_rehearsal_gate",
+  "release_line": "public_source_extraction_golden_output_freeze_gate",
   "target": {
     "name": "agent-onboard",
     "root": ".",
@@ -78,5 +77,6 @@
     "build_test_deploy_requires_owner_authorization": true,
     "publish_push_requires_owner_authorization": true,
     "raw_evidence_is_on_demand_only": true
-  }
+  },
+  "package_version_source": "package.json#version"
 }
