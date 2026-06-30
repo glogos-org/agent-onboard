@@ -1635,6 +1635,47 @@
       "id": "P1S3M2W3",
       "milestone_id": "P1S3M2",
       "title": "Public work-items domain source extraction first-slice gate",
+      "status": "closed",
+      "closure": {
+        "actor": "release-maintainer",
+        "closed_at": "2026-06-30T00:00:00.000Z",
+        "summary": "Closed by creating the public work-items source-only first slice in agent-onboard@0.0.49: src/domains/work-items.js now exports the work_items domain metadata, excludes claim/close claims-domain behavior, preserves bundled CLI runtime output, and keeps the npm package allowlist compact.",
+        "changed_files": [
+          "README.md",
+          "AGENTS.md",
+          "llms.txt",
+          "cli/agent-onboard.js",
+          "src/domains/work-items.js",
+          "test/agent-onboard.test.js",
+          "package.json",
+          ".agent-onboard/work-items.json",
+          ".agent-onboard/source-module-extraction-work-items-first-slice.json"
+        ],
+        "checks_run": [
+          "node test/agent-onboard.test.js",
+          "npm pack --dry-run --json",
+          "node cli/agent-onboard.js architecture --work-items-first-slice-check",
+          "node cli/agent-onboard.js architecture --work-items-check",
+          "node cli/agent-onboard.js architecture --check",
+          "node cli/agent-onboard.js release --architecture-parity-smoke",
+          "node cli/agent-onboard.js release --surface-check",
+          "node cli/agent-onboard.js release --version-sprawl-check",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "packed package smoke: status, architecture --work-items-first-slice-check, architecture --work-items-check, architecture --check, release --surface-check, release --architecture-parity-smoke, release --check"
+        ],
+        "checks_not_run": [
+          "npm publish"
+        ],
+        "known_non_pass": [
+          "In this sandbox, npm test/stdout handling intermittently did not return cleanly after the underlying node test printed pass; node test/agent-onboard.test.js was used as the deterministic test evidence."
+        ]
+      }
+    },
+    {
+      "id": "P1S3M2W4",
+      "milestone_id": "P1S3M2",
+      "title": "Public work-items domain source extraction bundle parity gate",
       "status": "open"
     }
   ]

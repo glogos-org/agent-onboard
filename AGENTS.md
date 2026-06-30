@@ -84,6 +84,8 @@ node cli/agent-onboard.js architecture --m2-seed
 node cli/agent-onboard.js architecture --m2-seed-check
 node cli/agent-onboard.js architecture --work-items-plan
 node cli/agent-onboard.js architecture --work-items-check
+node cli/agent-onboard.js architecture --work-items-first-slice
+node cli/agent-onboard.js architecture --work-items-first-slice-check
 node cli/agent-onboard.js architecture --check
 ```
 

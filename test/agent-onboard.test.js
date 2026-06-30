@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_work_items_domain_source_extraction_planning_gate';
+const EXPECTED_RELEASE_LINE = 'public_work_items_domain_source_extraction_first_slice_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 
 function run(args, opts = {}) {
@@ -102,7 +102,7 @@ function cliTargetConfigForTest(dir) {
   assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
   assert.strictEqual(output.boundary.publishes_package, false);
   assert.ok(output.post_publish_verification_commands.some((command) => command.includes(`agent-onboard@${EXPECTED_VERSION}`)));
-  assert.strictEqual(output.contract_schema, 'agent-onboard-public-release-contract-027');
+  assert.strictEqual(output.contract_schema, 'agent-onboard-public-release-contract-028');
   assert.strictEqual(output.contract_command, 'agent-onboard release --contract');
   assert.strictEqual(output.fixture_command, 'agent-onboard release --fixture');
   assert.strictEqual(output.parity_smoke_command, 'agent-onboard release --parity-smoke');
@@ -136,6 +136,8 @@ function cliTargetConfigForTest(dir) {
   assert.strictEqual(output.architecture_authority_runtime_bridge_check_command, 'agent-onboard architecture --authority-runtime-bridge-check');
   assert.strictEqual(output.architecture_work_items_plan_command, 'agent-onboard architecture --work-items-plan');
   assert.strictEqual(output.architecture_work_items_check_command, 'agent-onboard architecture --work-items-check');
+  assert.strictEqual(output.architecture_work_items_first_slice_command, 'agent-onboard architecture --work-items-first-slice');
+  assert.strictEqual(output.architecture_work_items_first_slice_check_command, 'agent-onboard architecture --work-items-first-slice-check');
   assert.strictEqual(output.architecture_check_command, 'agent-onboard architecture --check');
   assert.strictEqual(output.authority_first_read_command, 'agent-onboard authority --first-read');
   assert.strictEqual(output.authority_check_command, 'agent-onboard authority --check');
@@ -150,7 +152,7 @@ function cliTargetConfigForTest(dir) {
   assert.strictEqual(output.schema, 'agent-onboard-public-release-contract-response-001');
   assert.strictEqual(output.version, EXPECTED_VERSION);
   assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
-  assert.strictEqual(output.contract.schema, 'agent-onboard-public-release-contract-027');
+  assert.strictEqual(output.contract.schema, 'agent-onboard-public-release-contract-028');
   assert.strictEqual(output.contract.contract_command, 'agent-onboard release --contract');
   assert.strictEqual(output.contract.fixture_command, 'agent-onboard release --fixture');
   assert.strictEqual(output.contract.parity_smoke_command, 'agent-onboard release --parity-smoke');
@@ -184,6 +186,8 @@ function cliTargetConfigForTest(dir) {
   assert.strictEqual(output.contract.architecture_authority_runtime_bridge_check_command, 'agent-onboard architecture --authority-runtime-bridge-check');
   assert.strictEqual(output.contract.architecture_work_items_plan_command, 'agent-onboard architecture --work-items-plan');
   assert.strictEqual(output.contract.architecture_work_items_check_command, 'agent-onboard architecture --work-items-check');
+  assert.strictEqual(output.contract.architecture_work_items_first_slice_command, 'agent-onboard architecture --work-items-first-slice');
+  assert.strictEqual(output.contract.architecture_work_items_first_slice_check_command, 'agent-onboard architecture --work-items-first-slice-check');
   assert.strictEqual(output.contract.architecture_check_command, 'agent-onboard architecture --check');
   assert.strictEqual(output.contract.authority_first_read_command, 'agent-onboard authority --first-read');
   assert.strictEqual(output.contract.authority_check_command, 'agent-onboard authority --check');
@@ -202,7 +206,7 @@ function cliTargetConfigForTest(dir) {
   assert.strictEqual(output.schema, 'agent-onboard-public-release-fixture-response-001');
   assert.strictEqual(output.version, EXPECTED_VERSION);
   assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
-  assert.strictEqual(output.contract_schema, 'agent-onboard-public-release-contract-027');
+  assert.strictEqual(output.contract_schema, 'agent-onboard-public-release-contract-028');
   assert.strictEqual(output.fixture_matrix.schema, 'agent-onboard-public-release-fixture-matrix-020');
   assert.ok(output.fixture_matrix.fixtures.some((fixture) => fixture.id === 'stale_package_version_contract'));
   assert.ok(output.fixture_matrix.fixtures.some((fixture) => fixture.id === 'pack_allowlist_drift_contract'));
@@ -248,7 +252,7 @@ function cliTargetConfigForTest(dir) {
   assert.strictEqual(output.command, 'agent-onboard architecture --map');
   assert.strictEqual(output.map.public_source_shape.source_partition_plan_file, '.agent-onboard/source-partition-plan.json');
   assert.strictEqual(output.map.public_source_shape.source_extraction_rehearsal_file, '.agent-onboard/source-extraction-rehearsal.json');
-  assert.strictEqual(output.map.public_source_shape.physical_domain_split_status, 'work_items_domain_source_extraction_planned');
+  assert.strictEqual(output.map.public_source_shape.physical_domain_split_status, 'work_items_domain_source_first_slice_applied');
   assert.strictEqual(output.map.public_source_shape.source_extraction_golden_outputs_file, '.agent-onboard/source-extraction-golden-outputs.json');
   assert.strictEqual(output.map.public_source_shape.source_module_extraction_adapter_boundary_file, '.agent-onboard/source-module-extraction-adapter-boundary.json');
   assert.strictEqual(output.map.public_source_shape.source_module_extraction_first_slice_file, '.agent-onboard/source-module-extraction-first-slice.json');
@@ -262,6 +266,8 @@ function cliTargetConfigForTest(dir) {
   assert.strictEqual(output.map.public_source_shape.source_module_extraction_authority_runtime_bridge_file, '.agent-onboard/source-module-extraction-authority-runtime-bridge.json');
   assert.strictEqual(output.map.public_source_shape.work_items_domain_source_extraction_plan_file, '.agent-onboard/source-module-extraction-work-items-plan.json');
   assert.strictEqual(output.map.public_source_shape.work_items_domain_source_extraction_planned_module, 'src/domains/work-items.js');
+  assert.strictEqual(output.map.public_source_shape.work_items_domain_source_extraction_first_slice_file, '.agent-onboard/source-module-extraction-work-items-first-slice.json');
+  assert.strictEqual(output.map.public_source_shape.work_items_domain_source_extraction_module, 'src/domains/work-items.js');
   assert.strictEqual(output.map.public_source_shape.source_module_extraction_authority_bundle_parity_module, 'src/domains/authority.js');
   assert.strictEqual(output.map.public_source_shape.source_module_extraction_second_slice_planned_module, 'src/domains/authority.js');
   assert.strictEqual(output.map.public_source_shape.source_module_extraction_first_slice_module, 'src/domains/core.js');
@@ -342,7 +348,7 @@ function cliTargetConfigForTest(dir) {
   assert.strictEqual(output.rehearsal_file, '.agent-onboard/source-extraction-rehearsal.json');
   assert.strictEqual(output.rehearsal.rehearsal_status, 'rehearsed_not_applied');
   assert.strictEqual(output.rehearsal.extraction_rehearsal_units.length, 6);
-  assert.deepStrictEqual(output.physical_module_paths_present, ['src/domains/core.js', 'src/domains/authority.js']);
+  assert.deepStrictEqual(output.physical_module_paths_present, ['src/domains/core.js', 'src/domains/authority.js', 'src/domains/work-items.js']);
   assert.strictEqual(output.boundary.creates_source_modules, false);
 }
 
@@ -641,7 +647,7 @@ function cliTargetConfigForTest(dir) {
   assert.ok(output.validated.public_architecture_m1_closure_m2_seed);
   assert.strictEqual(output.public_architecture_m1_closure_m2_seed.milestone_transition.closed_milestone.status, 'closed');
   assert.strictEqual(output.public_architecture_m1_closure_m2_seed.milestone_transition.opened_milestone.status, 'open');
-  assert.ok(output.source_work_items_ledger.open_work_items.some((item) => item.id === ['P', 1, 'S', 3, 'M', 2, 'W', 3].join('')));
+  assert.ok(output.source_work_items_ledger.open_work_items.some((item) => item.id === ['P', 1, 'S', 3, 'M', 2, 'W', 4].join('')));
   assert.ok(output.validated.public_version_reference_policy);
   assert.strictEqual(output.public_architecture.status, 'ok');
   assert.ok(!output.source_work_items_ledger.open_work_items.some((item) => item.title === 'Public installed parity architecture smoke gate'));
@@ -2150,7 +2156,7 @@ function cliTargetConfigForTest(dir) {
   const help = run(['--help']);
   assert.ok(help.stdout.includes('work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>'));
   assert.ok(help.stdout.includes('work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>'));
-  assert.ok(help.stdout.includes('authority --first-read|--check\nagent-onboard architecture --map|--router|--facades|--partition-plan|--partition-check|--extraction-rehearsal|--extraction-check|--golden-outputs|--golden-check|--adapter-boundary|--adapter-check|--first-slice|--first-slice-check|--bundle-parity|--bundle-parity-check|--runtime-bridge|--runtime-bridge-check|--installed-fallback-smoke|--installed-fallback-check|--second-slice-plan|--second-slice-check|--second-slice-first-slice|--second-slice-first-slice-check|--authority-bundle-parity|--authority-bundle-parity-check|--authority-runtime-bridge|--authority-runtime-bridge-check|--m2-seed|--m2-seed-check|--work-items-plan|--work-items-check|--check'));
+  assert.ok(help.stdout.includes('authority --first-read|--check\nagent-onboard architecture --map|--router|--facades|--partition-plan|--partition-check|--extraction-rehearsal|--extraction-check|--golden-outputs|--golden-check|--adapter-boundary|--adapter-check|--first-slice|--first-slice-check|--bundle-parity|--bundle-parity-check|--runtime-bridge|--runtime-bridge-check|--installed-fallback-smoke|--installed-fallback-check|--second-slice-plan|--second-slice-check|--second-slice-first-slice|--second-slice-first-slice-check|--authority-bundle-parity|--authority-bundle-parity-check|--authority-runtime-bridge|--authority-runtime-bridge-check|--m2-seed|--m2-seed-check|--work-items-plan|--work-items-check|--work-items-first-slice|--work-items-first-slice-check|--check'));
   assert.ok(help.stdout.includes('release --plan|--contract|--fixture|--surface|--surface-check|--version-sprawl-check|--parity-smoke|--architecture-parity-smoke|--target-onboarding-smoke|--post-publish-handoff|--published-acceptance|--real-target-trial|--check'));
   assert.ok(help.stdout.includes('target runtime --namespace|--check'));
   assert.ok(help.stdout.includes('target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]'));
@@ -2188,6 +2194,8 @@ function cliTargetConfigForTest(dir) {
   assert.ok(agents.includes('node cli/agent-onboard.js architecture --authority-runtime-bridge-check'));
   assert.ok(agents.includes('node cli/agent-onboard.js architecture --work-items-plan'));
   assert.ok(agents.includes('node cli/agent-onboard.js architecture --work-items-check'));
+  assert.ok(agents.includes('node cli/agent-onboard.js architecture --work-items-first-slice'));
+  assert.ok(agents.includes('node cli/agent-onboard.js architecture --work-items-first-slice-check'));
   assert.ok(agents.includes('node cli/agent-onboard.js architecture --check'));
 assert.ok(agents.includes('node cli/agent-onboard.js target runtime --namespace'));
 assert.ok(agents.includes('node cli/agent-onboard.js target runtime --check'));
@@ -2246,14 +2254,15 @@ assert.ok(agents.includes('node cli/agent-onboard.js target runtime --check'));
   assert.strictEqual(output.command, 'agent-onboard architecture --work-items-check');
   assert.ok(output.validated.prerequisite_m2_seed);
   assert.ok(output.validated.work_items_domain_selected);
-  assert.ok(output.validated.planned_module_not_created);
+  assert.ok(output.validated.planned_module_absent_or_created_by_followup);
   assert.ok(output.validated.current_work_item_closed_or_installed_context_allowed);
   assert.ok(output.validated.next_work_item_seeded_or_installed_context_allowed);
   assert.strictEqual(output.planned_domain.id, 'work_items');
   assert.strictEqual(output.planned_domain.planned_module, 'src/domains/work-items.js');
   assert.strictEqual(output.work_items.current.status, 'closed');
-  assert.strictEqual(output.work_items.next.status, 'open');
+  assert.strictEqual(output.work_items.next.status, 'closed');
   assert.deepStrictEqual(output.errors, []);
 }
 
 console.log('agent-onboard tests passed');
+process.exit(0);
