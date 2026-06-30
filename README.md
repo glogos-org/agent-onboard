@@ -8,10 +8,10 @@ The generated files are intended to be read by agents, wrappers, CI hooks, or fu
 
 ## Install
 
-For the `0.0.x` line, install with `~0.0.17` so target repos can receive later `0.0.x` updates without crossing the `0.1.0` boundary:
+For the `0.0.x` line, install with `~0.0.18` so target repos can receive later `0.0.x` updates without crossing the `0.1.0` boundary:
 
 ```sh
-npm install --save-dev agent-onboard@~0.0.17
+npm install --save-dev agent-onboard@~0.0.18
 ```
 
 Run without installing:
@@ -77,6 +77,7 @@ npx agent-onboard agents --write
 npx agent-onboard guard --plan
 npx agent-onboard guard --check-boundary
 npx agent-onboard release --plan
+npx agent-onboard release --contract
 npx agent-onboard release --check
 npx agent-onboard target-config --schema
 npx agent-onboard target-config --template
@@ -103,18 +104,24 @@ npx agent-onboard target-instance takeover --write
 
 ## Public release verification
 
-For a source release candidate, validate the package-owned release surface before publishing:
+For a source release candidate, validate the package-owned release contract before publishing:
 
 ```sh
 npx agent-onboard release --check
 ```
 
-The check validates package metadata, bin entrypoints, the projected npm pack allowlist, and public artifact messaging. It does not publish, mutate registry state, install dependencies, or run Git operations. The response includes the local pre-publish commands and the post-publish verification commands that the operator should run after publishing.
+The check validates package metadata, bin entrypoints, the projected npm pack allowlist, public artifact messaging, and the source work-item ledger when that ledger is present. It does not publish, mutate registry state, install dependencies, or run Git operations. The response reports whether it is running in a source-repository context or an installed-package context, then includes local pre-publish commands and post-publish verification commands for the operator.
 
-Preview the release contract without running validation:
+Preview the release plan without running validation:
 
 ```sh
 npx agent-onboard release --plan
+```
+
+Print the normalized release contract without running validation:
+
+```sh
+npx agent-onboard release --contract
 ```
 
 After install, these command names are available:
@@ -325,7 +332,7 @@ Claiming or closing a work item is not permission to publish, push, install depe
 
 If `agents --write` finds an existing non-identical `AGENTS.md`, it returns a conflict and writes nothing. That conflict is expected overwrite protection for target repos with their own agent instructions; merge manually or use `--force` only when the repository owner explicitly asks for replacement.
 
-This release adds narrow work-item closing with a public handoff evidence envelope. Admission, conflict detection, and milestone governance remain outside the command surface until documented and exposed by explicit commands.
+The current release surface keeps work-item closing narrow and adds a release contract check for package and source contexts. Admission, conflict detection, and milestone governance remain outside the command surface until documented and exposed by explicit commands.
 
 ## Boundary guard seed
 
@@ -435,6 +442,8 @@ This version does not:
 
 `0.0.17` adds public `release --plan` and `release --check` so a source release candidate can validate package metadata, projected npm pack files, bin entrypoints, public artifact messaging, and post-publish verification handoff without mutating the public registry.
 
+`0.0.18` absorbs that release surface into a normalized public release contract: `release --contract` prints the contract, `release --check` reports source-vs-package context, and source-ledger validation runs when the source ledger is present.
+
 <!-- ## Star History
 
 [![Star History Chart](https://api.star-history.com/chart?repos=glogos-org/agent-onboard&type=date&legend=top-left)](https://www.star-history.com/?repos=glogos-org%2Fagent-onboard&type=date&legend=top-left) -->
@@ -451,9 +460,9 @@ The source repository can carry its own public Agent-Onboard operating surface:
 Agent participation is explicit. An agent should first list the ledger, then claim only an assigned work item:
 
 ```sh
-npx agent-onboard@0.0.17 work-items --list
-npx agent-onboard@0.0.17 work-items --claim --dry-run --id <public-work-item-id> --actor <agent-or-human-name>
-npx agent-onboard@0.0.17 work-items --claim --write --id <public-work-item-id> --actor <agent-or-human-name>
+npx agent-onboard@0.0.18 work-items --list
+npx agent-onboard@0.0.18 work-items --claim --dry-run --id <public-work-item-id> --actor <agent-or-human-name>
+npx agent-onboard@0.0.18 work-items --claim --write --id <public-work-item-id> --actor <agent-or-human-name>
 ```
 
 The npm package surface remains intentionally compact. The self-dogfood files are source-repository operating files and are not included in the public npm tarball.

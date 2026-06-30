@@ -56,30 +56,49 @@ function cliTargetConfigForTest(dir) {
   const result = run(['status']);
   const output = readJsonOutput(result);
   assert.strictEqual(output.status, 'ok');
-  assert.strictEqual(output.version, '0.0.17');
-  assert.strictEqual(output.release_line, 'public_package_publish_verification_gate');
+  assert.strictEqual(output.version, '0.0.18');
+  assert.strictEqual(output.release_line, 'public_release_contract_absorption_gate');
 }
 
 {
   const result = run(['release', '--plan']);
   const output = readJsonOutput(result);
   assert.strictEqual(output.status, 'ok');
-  assert.strictEqual(output.schema, 'agent-onboard-public-release-plan-001');
-  assert.strictEqual(output.version, '0.0.17');
-  assert.strictEqual(output.release_line, 'public_package_publish_verification_gate');
+  assert.strictEqual(output.schema, 'agent-onboard-public-release-plan-002');
+  assert.strictEqual(output.version, '0.0.18');
+  assert.strictEqual(output.release_line, 'public_release_contract_absorption_gate');
   assert.strictEqual(output.boundary.publishes_package, false);
-  assert.ok(output.post_publish_verification_commands.some((command) => command.includes('agent-onboard@0.0.17')));
+  assert.ok(output.post_publish_verification_commands.some((command) => command.includes('agent-onboard@0.0.18')));
+  assert.strictEqual(output.contract_schema, 'agent-onboard-public-release-contract-002');
+  assert.strictEqual(output.contract_command, 'agent-onboard release --contract');
+}
+
+{
+  const result = run(['release', '--contract']);
+  const output = readJsonOutput(result);
+  assert.strictEqual(output.status, 'ok');
+  assert.strictEqual(output.schema, 'agent-onboard-public-release-contract-response-001');
+  assert.strictEqual(output.version, '0.0.18');
+  assert.strictEqual(output.release_line, 'public_release_contract_absorption_gate');
+  assert.strictEqual(output.contract.schema, 'agent-onboard-public-release-contract-002');
+  assert.strictEqual(output.contract.contract_command, 'agent-onboard release --contract');
+  assert.deepStrictEqual(output.contract.expected_pack_files, ['LICENSE', 'README.md', 'cli/agent-onboard.js', 'package.json']);
+  assert.strictEqual(output.publishes_package, false);
 }
 
 {
   const result = run(['release', '--check']);
   const output = readJsonOutput(result);
   assert.strictEqual(output.status, 'ok');
-  assert.strictEqual(output.schema, 'agent-onboard-public-release-check-result-001');
-  assert.strictEqual(output.version, '0.0.17');
+  assert.strictEqual(output.schema, 'agent-onboard-public-release-check-result-002');
+  assert.strictEqual(output.version, '0.0.18');
   assert.strictEqual(output.validated.package_metadata, true);
   assert.strictEqual(output.validated.projected_pack_allowlist, true);
   assert.strictEqual(output.validated.public_artifact_messaging, true);
+  assert.strictEqual(output.validated.source_work_items_ledger, true);
+  assert.strictEqual(output.source_context.package_context, 'source_repository');
+  assert.strictEqual(output.source_work_items_ledger.present, true);
+  assert.ok(output.source_work_items_ledger.open_work_items.some((item) => item.title === 'Public package contract fixture gate'));
   assert.deepStrictEqual(output.expected_pack_files, ['LICENSE', 'README.md', 'cli/agent-onboard.js', 'package.json']);
   assert.deepStrictEqual(output.projected_pack_files, ['LICENSE', 'README.md', 'cli/agent-onboard.js', 'package.json']);
   assert.strictEqual(output.boundary.mutates_registry, false);
@@ -617,6 +636,8 @@ function cliTargetConfigForTest(dir) {
 
   const m2w1 = findById(rootLedger.work_items, ['P', 1, 'S', 1, 'M', 2, 'W', 1].join(''));
 
+  const m2w2 = findById(rootLedger.work_items, ['P', 1, 'S', 1, 'M', 2, 'W', 2].join(''));
+
   assert.ok(program);
 
   assert.ok(stage);
@@ -671,7 +692,17 @@ function cliTargetConfigForTest(dir) {
 
   assert.strictEqual(m2w1.title, 'Public release contract absorption gate');
 
-  assert.strictEqual(m2w1.status, 'open');
+  assert.strictEqual(m2w1.status, 'closed');
+
+  assert.strictEqual(m2w1.closure.actor, 'release-maintainer');
+
+  assert.match(m2w1.closure.summary, /agent-onboard@0\.0\.18/);
+
+  assert.ok(m2w2);
+
+  assert.strictEqual(m2w2.title, 'Public package contract fixture gate');
+
+  assert.strictEqual(m2w2.status, 'open');
 
   assert.ok(fs.existsSync(path.join(ROOT, 'AGENTS.md')));
 
@@ -772,6 +803,19 @@ function cliTargetConfigForTest(dir) {
   assert.ok(cli.participationLifecycleNextSteps().some((step) => step.startsWith('discover:')));
   assert.ok(cli.handoffEvidenceChecklist().some((step) => step.startsWith('summary:')));
   assert.strictEqual(cli.publicReleaseCheck().status, 'ok');
+  assert.strictEqual(cli.sourceContext().package_context, 'source_repository');
+  assert.strictEqual(cli.sourceWorkItemsLedgerCheck().present, true);
+
+  const installedLike = fs.mkdtempSync(path.join(os.tmpdir(), 'agent-onboard-installed-like-'));
+  fs.mkdirSync(path.join(installedLike, 'cli'), { recursive: true });
+  for (const rel of ['package.json', 'README.md', 'LICENSE', 'cli/agent-onboard.js']) {
+    fs.copyFileSync(path.join(ROOT, rel), path.join(installedLike, rel));
+  }
+  const installedCheck = cli.publicReleaseCheck(installedLike);
+  assert.strictEqual(installedCheck.status, 'ok');
+  assert.strictEqual(installedCheck.source_context.package_context, 'installed_package');
+  assert.strictEqual(installedCheck.source_work_items_ledger.present, false);
+  assert.strictEqual(installedCheck.source_work_items_ledger.status, 'skipped');
 }
 
 
@@ -843,8 +887,11 @@ function cliTargetConfigForTest(dir) {
 
   assert.ok(readme.includes('`0.0.16` aligns public source closure tests'));
   assert.ok(readme.includes('`0.0.17` adds public `release --plan` and `release --check`'));
+  assert.ok(readme.includes('`0.0.18` absorbs that release surface into a normalized public release contract'));
+  assert.ok(readme.includes('npx agent-onboard release --contract'));
   assert.ok(readme.includes('npx agent-onboard release --check'));
   assert.ok(readme.includes('The check validates package metadata, bin entrypoints, the projected npm pack allowlist'));
+  assert.ok(readme.includes('source work-item ledger when that ledger is present'));
   assert.ok(readme.includes('The claim response also returns `next_steps`'));
   assert.ok(readme.includes('The close command reads the existing ledger'));
 }
@@ -854,15 +901,17 @@ function cliTargetConfigForTest(dir) {
   const help = run(['--help']);
   assert.ok(help.stdout.includes('work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>'));
   assert.ok(help.stdout.includes('work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>'));
-  assert.ok(help.stdout.includes('release --plan|--check'));
+  assert.ok(help.stdout.includes('release --plan|--contract|--check'));
 }
 
 {
   const agents = fs.readFileSync(path.join(ROOT, 'AGENTS.md'), 'utf8');
-  assert.ok(agents.includes('npx agent-onboard@0.0.17 work-items --list'));
-  assert.ok(agents.includes('npx agent-onboard@0.0.17 work-items --claim --write --id <public-work-item-id> --actor <agent-or-human-name>'));
-  assert.ok(agents.includes('npx agent-onboard@0.0.17 work-items --close --dry-run --id <public-work-item-id> --actor <agent-or-human-name> --summary <summary>'));
-  assert.ok(agents.includes('npx agent-onboard@0.0.17 release --check'));
+  assert.ok(agents.includes('npx agent-onboard@0.0.18 work-items --list'));
+  assert.ok(agents.includes('npx agent-onboard@0.0.18 work-items --claim --write --id <public-work-item-id> --actor <agent-or-human-name>'));
+  assert.ok(agents.includes('npx agent-onboard@0.0.18 work-items --close --dry-run --id <public-work-item-id> --actor <agent-or-human-name> --summary <summary>'));
+  assert.ok(agents.includes('npx agent-onboard@0.0.18 release --check'));
+  assert.ok(agents.includes('npx agent-onboard@0.0.18 release --contract'));
+  assert.ok(!agents.includes('npx agent-onboard@0.0.17'));
   assert.ok(!agents.includes('npx agent-onboard@0.0.16'));
   assert.ok(!agents.includes('npx agent-onboard@0.0.15'));
 }
