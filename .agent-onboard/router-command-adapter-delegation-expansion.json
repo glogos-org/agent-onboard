@@ -1,0 +1,85 @@
+{
+  "schema": "agent-onboard-public-router-command-adapter-delegation-expansion-001",
+  "package_name": "agent-onboard",
+  "release_line": "public_router_command_adapter_delegation_expansion_gate",
+  "milestone_id": "P1S3M3",
+  "work_item_id": "P1S3M3W12",
+  "next_work_item_id": "P1S3M3W14",
+  "delegation_status": "router_command_adapter_delegation_expanded",
+  "runtime_cutover_applied": true,
+  "entrypoint": "cli/agent-onboard.js",
+  "compatibility_port_module": "cli/agent_onboard/adapters/compatibility-command-port.js",
+  "delegated_commands": [
+    "--help",
+    "--version",
+    "-h",
+    "-v",
+    "agents",
+    "architecture",
+    "authority",
+    "guard",
+    "help",
+    "release",
+    "status",
+    "version"
+  ],
+  "adapter_groups": {
+    "core": [
+      "help",
+      "--help",
+      "-h",
+      "version",
+      "--version",
+      "-v",
+      "status"
+    ],
+    "architecture": [
+      "architecture"
+    ],
+    "release_package": [
+      "release"
+    ],
+    "authority": [
+      "authority",
+      "agents",
+      "guard"
+    ]
+  },
+  "adapter_modules": [
+    "cli/agent_onboard/adapters/commands/core.js",
+    "cli/agent_onboard/adapters/commands/release-package.js",
+    "cli/agent_onboard/adapters/commands/architecture.js",
+    "cli/agent_onboard/adapters/commands/authority.js"
+  ],
+  "expected_pack_files": [
+    "LICENSE",
+    "README.md",
+    "cli/agent-onboard.js",
+    "cli/agent_onboard/adapters/commands/architecture.js",
+    "cli/agent_onboard/adapters/commands/authority.js",
+    "cli/agent_onboard/adapters/commands/core.js",
+    "cli/agent_onboard/adapters/commands/release-package.js",
+    "cli/agent_onboard/adapters/compatibility-command-port.js",
+    "cli/agent_onboard/command-router.js",
+    "cli/agent_onboard/ports/compatibility-command-port.js",
+    "package.json"
+  ],
+  "boundary": {
+    "router_adapter_delegation_command_writes_files": false,
+    "router_adapter_delegation_check_command_writes_files": false,
+    "changes_public_cli_outputs": false,
+    "runtime_uses_packaged_router": true,
+    "runtime_uses_packaged_compatibility_port": true,
+    "runtime_uses_packaged_command_adapters": true,
+    "legacy_fallback_preserved_for_unextracted_commands": true,
+    "package_allowlist_unchanged": true,
+    "package_file_count": 11,
+    "writes_target_repository_state": false,
+    "git_mutation": false,
+    "installs_dependencies": false,
+    "runs_package_manager": false,
+    "runs_build_test_deploy": false,
+    "publishes_package": false,
+    "mutates_registry": false
+  }
+}

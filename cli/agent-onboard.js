@@ -6,9 +6,13 @@ const os = require('os');
 const path = require('path');
 const { route: routeCommand } = require('./agent_onboard/command-router');
 const { createCompatibilityCommandPort } = require('./agent_onboard/adapters/compatibility-command-port');
+const { createCoreCommandAdapter } = require('./agent_onboard/adapters/commands/core');
+const { createPackageCommandAdapter } = require('./agent_onboard/adapters/commands/release-package');
+const { createArchitectureCommandAdapter } = require('./agent_onboard/adapters/commands/architecture');
+const { createAuthorityCommandAdapter } = require('./agent_onboard/adapters/commands/authority');
 const VERSION = require('../package.json').version;
 const TARGET_CONFIG_FILE = 'agent-onboard.target.json';
-const RELEASE_LINE = 'public_thin_entrypoint_router_cutover_application_gate';
+const RELEASE_LINE = 'public_router_command_adapter_delegation_expansion_gate';
 const PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES = Object.freeze([
   'LICENSE',
   'README.md',
@@ -359,6 +363,7 @@ const PUBLIC_ARCHITECTURE_MAP = Object.freeze({
     architecture_command_adapter_module: 'cli/agent_onboard/adapters/commands/architecture.js',
     authority_command_adapter_extraction_file: '.agent-onboard/authority-command-adapter-extraction.json',
     authority_command_adapter_module: 'cli/agent_onboard/adapters/commands/authority.js',
+    router_command_adapter_delegation_file: '.agent-onboard/router-command-adapter-delegation-expansion.json',
     modular_runtime_package_inclusion_plan_file: '.agent-onboard/modular-runtime-package-inclusion-plan.json',
     claims_domain_source_extraction_module: 'src/domains/claims.js',
     claims_domain_source_extraction_planned_module: 'src/domains/claims.js',
@@ -445,6 +450,8 @@ const PUBLIC_ARCHITECTURE_MAP = Object.freeze({
     architecture_authority_adapter_check_command_writes_files: false,
     architecture_module_inclusion_plan_command_writes_files: false,
     architecture_module_inclusion_check_command_writes_files: false,
+    architecture_router_adapter_delegation_command_writes_files: false,
+    architecture_router_adapter_delegation_check_command_writes_files: false,
     version_sprawl_check_command_writes_files: false,
     published_package_surface_file_count: 11,
     command_router_dispatch_must_be_table_driven: true,
@@ -2653,6 +2660,81 @@ const PUBLIC_THIN_ENTRYPOINT_ROUTER_CUTOVER_APPLICATION = Object.freeze({
   })
 });
 
+const PUBLIC_ROUTER_COMMAND_ADAPTER_DELEGATION_EXPANSION = Object.freeze({
+  schema: 'agent-onboard-public-router-command-adapter-delegation-expansion-001',
+  title: 'Agent-Onboard Public Router Command Adapter Delegation Expansion Gate',
+  package_name: 'agent-onboard',
+  release_line: RELEASE_LINE,
+  command: 'agent-onboard architecture --router-adapter-delegation',
+  check_command: 'agent-onboard architecture --router-adapter-delegation-check',
+  delegation_file: '.agent-onboard/router-command-adapter-delegation-expansion.json',
+  milestone_id: 'P1S3M3',
+  work_item_id: ['P', 1, 'S', 3, 'M', 3, 'W', 12].join(''),
+  next_work_item_id: ['P', 1, 'S', 3, 'M', 3, 'W', 14].join(''),
+  delegation_status: 'router_command_adapter_delegation_expanded',
+  runtime_cutover_applied: true,
+  entrypoint: 'cli/agent-onboard.js',
+  compatibility_port_module: 'cli/agent_onboard/adapters/compatibility-command-port.js',
+  expected_pack_files: PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES,
+  adapter_modules: Object.freeze([
+    Object.freeze({
+      group: 'core',
+      path: 'cli/agent_onboard/adapters/commands/core.js',
+      factory: 'createCoreCommandAdapter',
+      describe: 'describeCoreCommandAdapterExtraction',
+      commands: Object.freeze(['help', '--help', '-h', 'version', '--version', '-v', 'status'])
+    }),
+    Object.freeze({
+      group: 'release_package',
+      path: 'cli/agent_onboard/adapters/commands/release-package.js',
+      factory: 'createPackageCommandAdapter',
+      describe: 'describePackageCommandAdapterExtraction',
+      commands: Object.freeze(['release'])
+    }),
+    Object.freeze({
+      group: 'architecture',
+      path: 'cli/agent_onboard/adapters/commands/architecture.js',
+      factory: 'createArchitectureCommandAdapter',
+      describe: 'describeArchitectureCommandAdapterExtraction',
+      commands: Object.freeze(['architecture'])
+    }),
+    Object.freeze({
+      group: 'authority',
+      path: 'cli/agent_onboard/adapters/commands/authority.js',
+      factory: 'createAuthorityCommandAdapter',
+      describe: 'describeAuthorityCommandAdapterExtraction',
+      commands: Object.freeze(['authority', 'agents', 'guard'])
+    })
+  ]),
+  delegated_commands: Object.freeze(['--help', '--version', '-h', '-v', 'agents', 'architecture', 'authority', 'guard', 'help', 'release', 'status', 'version']),
+  legacy_fallback_commands: Object.freeze(['init', 'target-config', 'work-items', 'target', 'target-instance']),
+  smoke_vectors: Object.freeze([
+    Object.freeze({ id: 'status', argv: Object.freeze(['node', 'cli/agent-onboard.js', 'status']), expected_exit_code: 0 }),
+    Object.freeze({ id: 'version_alias', argv: Object.freeze(['node', 'cli/agent-onboard.js', '--version']), expected_exit_code: 0 }),
+    Object.freeze({ id: 'architecture_router', argv: Object.freeze(['node', 'cli/agent-onboard.js', 'architecture', '--router']), expected_exit_code: 0 }),
+    Object.freeze({ id: 'release_surface_check', argv: Object.freeze(['node', 'cli/agent-onboard.js', 'release', '--surface-check']), expected_exit_code: 0 }),
+    Object.freeze({ id: 'authority_first_read', argv: Object.freeze(['node', 'cli/agent-onboard.js', 'authority', '--first-read']), expected_exit_code: 0 })
+  ]),
+  boundary: Object.freeze({
+    router_adapter_delegation_command_writes_files: false,
+    router_adapter_delegation_check_command_writes_files: false,
+    changes_public_cli_outputs: false,
+    runtime_uses_packaged_router: true,
+    runtime_uses_packaged_compatibility_port: true,
+    runtime_uses_packaged_command_adapters: true,
+    legacy_fallback_preserved_for_unextracted_commands: true,
+    package_allowlist_unchanged: true,
+    package_file_count: PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES.length,
+    writes_target_repository_state: false,
+    git_mutation: false,
+    installs_dependencies: false,
+    runs_package_manager: false,
+    runs_build_test_deploy: false,
+    publishes_package: false,
+    mutates_registry: false
+  })
+});
+
 const PUBLIC_VERSION_REFERENCE_POLICY = Object.freeze({
   schema: 'agent-onboard-public-version-reference-policy-001',
   title: 'Agent-Onboard Public Version Reference Policy',
@@ -2723,7 +2805,7 @@ const PUBLIC_VERSION_REFERENCE_POLICY = Object.freeze({
 });
 
 const PUBLIC_RELEASE_CONTRACT = Object.freeze({
-  schema: 'agent-onboard-public-release-contract-037',
+  schema: 'agent-onboard-public-release-contract-038',
   title: 'Agent-Onboard Public Release Contract',
   package_name: 'agent-onboard',
   release_line: RELEASE_LINE,
@@ -2809,6 +2891,8 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
   architecture_thin_entrypoint_rehearsal_check_command: 'agent-onboard architecture --thin-entrypoint-rehearsal-check',
   architecture_thin_entrypoint_cutover_command: 'agent-onboard architecture --thin-entrypoint-cutover',
   architecture_thin_entrypoint_cutover_check_command: 'agent-onboard architecture --thin-entrypoint-cutover-check',
+  architecture_router_adapter_delegation_command: 'agent-onboard architecture --router-adapter-delegation',
+  architecture_router_adapter_delegation_check_command: 'agent-onboard architecture --router-adapter-delegation-check',
   version_sprawl_check_command: 'agent-onboard release --version-sprawl-check',
   architecture_check_command: 'agent-onboard architecture --check',
   authority_first_read_command: 'agent-onboard authority --first-read',
@@ -2967,6 +3051,8 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
     'node cli/agent-onboard.js architecture --thin-entrypoint-rehearsal-check',
     'node cli/agent-onboard.js architecture --thin-entrypoint-cutover',
     'node cli/agent-onboard.js architecture --thin-entrypoint-cutover-check',
+    'node cli/agent-onboard.js architecture --router-adapter-delegation',
+    'node cli/agent-onboard.js architecture --router-adapter-delegation-check',
     'node cli/agent-onboard.js release --version-sprawl-check',
     'node cli/agent-onboard.js authority --first-read',
     'node cli/agent-onboard.js authority --check',
@@ -11267,6 +11353,244 @@ function publicThinEntrypointRouterCutoverApplicationCheck(root = packageRoot())
   };
 }
 
+function inspectRuntimeAdapterModule(root, spec) {
+  const report = inspectPackagedModule(root, spec.path, Object.freeze([spec.factory, spec.describe]));
+  let describedBoundary = null;
+  let describedRole = null;
+  let describedCommands = [];
+  let describeError = null;
+  try {
+    const moduleValue = require(path.join(root, spec.path));
+    const described = typeof moduleValue[spec.describe] === 'function' ? moduleValue[spec.describe]() : null;
+    describedBoundary = described && described.boundary ? described.boundary : null;
+    describedRole = described && described.role ? described.role : null;
+    describedCommands = described && Array.isArray(described.owned_top_level_commands) ? described.owned_top_level_commands.slice() : [];
+  } catch (error) {
+    describeError = error && error.message ? error.message : String(error);
+  }
+  return Object.freeze({
+    ...report,
+    group: spec.group,
+    factory: spec.factory,
+    describe: spec.describe,
+    expected_commands: spec.commands.slice(),
+    described_role: describedRole,
+    described_commands: describedCommands,
+    described_boundary: describedBoundary,
+    describe_error: describeError
+  });
+}
+
+function runSuppressedMainSmoke(argv) {
+  const originalWrite = process.stdout.write;
+  try {
+    process.stdout.write = () => true;
+    return main(argv);
+  } finally {
+    process.stdout.write = originalWrite;
+  }
+}
+
+function publicRouterCommandAdapterDelegationExpansion(root = packageRoot()) {
+  const gate = PUBLIC_ROUTER_COMMAND_ADAPTER_DELEGATION_EXPANSION;
+  const pkg = readJson(path.join(root, 'package.json'));
+  const context = sourceContext(root);
+  const entrypointPath = path.join(root, gate.entrypoint);
+  const entrypointExists = fs.existsSync(entrypointPath);
+  const entrypointText = entrypointExists ? fs.readFileSync(entrypointPath, 'utf8') : '';
+  const port = createRuntimeCompatibilityPort();
+  const ledgerPath = path.join(root, '.agent-onboard', 'work-items.json');
+  let ledger = null;
+  if (fs.existsSync(ledgerPath)) {
+    try { ledger = readJson(ledgerPath); } catch { ledger = null; }
+  }
+  const workItems = ledger && Array.isArray(ledger.work_items) ? ledger.work_items : [];
+  const smokeReports = gate.smoke_vectors.map((vector) => {
+    let exitCode = null;
+    let error = null;
+    try {
+      exitCode = runSuppressedMainSmoke(vector.argv.slice());
+    } catch (caught) {
+      error = caught && caught.message ? caught.message : String(caught);
+    }
+    return Object.freeze({
+      id: vector.id,
+      argv: vector.argv.slice(),
+      expected_exit_code: vector.expected_exit_code,
+      actual_exit_code: exitCode,
+      matched: exitCode === vector.expected_exit_code && !error,
+      error
+    });
+  });
+  return {
+    schema: 'agent-onboard-public-router-command-adapter-delegation-expansion-result-001',
+    status: 'ok',
+    package_name: gate.package_name,
+    version: VERSION,
+    release_line: gate.release_line,
+    command: gate.command,
+    check_command: gate.check_command,
+    package_root: root,
+    package_context: context.package_context,
+    delegation_file: gate.delegation_file,
+    delegation_file_present: fs.existsSync(path.join(root, gate.delegation_file)),
+    delegation_status: gate.delegation_status,
+    runtime_cutover: {
+      applied: gate.runtime_cutover_applied,
+      entrypoint: gate.entrypoint,
+      entrypoint_exists: entrypointExists,
+      imports_router: entrypointText.includes("require('./agent_onboard/command-router')"),
+      imports_compatibility_port: entrypointText.includes("require('./agent_onboard/adapters/compatibility-command-port')"),
+      imports_core_adapter: entrypointText.includes("require('./agent_onboard/adapters/commands/core')"),
+      imports_package_adapter: entrypointText.includes("require('./agent_onboard/adapters/commands/release-package')"),
+      imports_architecture_adapter: entrypointText.includes("require('./agent_onboard/adapters/commands/architecture')"),
+      imports_authority_adapter: entrypointText.includes("require('./agent_onboard/adapters/commands/authority')"),
+      main_delegates_to_router: /function main[\s\S]*routeCommand\(argv, createRuntimeCompatibilityPort\(\)\)/.test(entrypointText)
+    },
+    compatibility_port: {
+      schema: port.schema,
+      command_adapters_required_in_this_gate: port.seed && port.seed.boundary && port.seed.boundary.command_adapters_required_in_this_gate === true,
+      adapter_delegation_expanded_in_this_gate: port.seed && port.seed.boundary && port.seed.boundary.adapter_delegation_expanded_in_this_gate === true,
+      delegated_commands: Array.isArray(port.delegated_commands) ? port.delegated_commands.slice() : [],
+      adapter_groups: port.adapter_groups || null
+    },
+    adapter_module_reports: gate.adapter_modules.map((spec) => inspectRuntimeAdapterModule(root, spec)),
+    smoke_reports: smokeReports,
+    expected_pack_files: gate.expected_pack_files.slice().sort(),
+    projected_pack_files: packageJsonProjectedPackFiles(pkg).slice().sort(),
+    milestone_state: {
+      work_item: workItems.find((item) => item.id === gate.work_item_id) || null,
+      next_work_item: workItems.find((item) => item.id === gate.next_work_item_id) || null
+    },
+    delegation_contract: gate,
+    boundary: {
+      writes_files: false,
+      writes_source_state: false,
+      writes_target_repository_state: false,
+      git_mutation: false,
+      installs_dependencies: false,
+      runs_package_manager: false,
+      runs_build_test_deploy: false,
+      publishes_package: false,
+      mutates_registry: false
+    },
+    errors: []
+  };
+}
+
+function publicRouterCommandAdapterDelegationExpansionCheck(root = packageRoot()) {
+  const result = publicRouterCommandAdapterDelegationExpansion(root);
+  const gate = PUBLIC_ROUTER_COMMAND_ADAPTER_DELEGATION_EXPANSION;
+  const sourceLedgerRequired = result.package_context === 'source_repository';
+  const expectedPackFiles = gate.expected_pack_files.slice().sort();
+  const errors = [];
+  if (gate.delegation_status !== 'router_command_adapter_delegation_expanded') errors.push('router command adapter delegation status must be expanded');
+  if (gate.runtime_cutover_applied !== true) errors.push('router command adapter delegation must keep runtime cutover applied');
+  if (!arrayEquals(result.projected_pack_files, expectedPackFiles)) errors.push(`projected npm pack files must remain ${expectedPackFiles.join(', ')}`);
+  if (!result.runtime_cutover.entrypoint_exists) errors.push(`${gate.entrypoint} must exist`);
+  if (!result.runtime_cutover.imports_router) errors.push(`${gate.entrypoint} must import packaged command router`);
+  if (!result.runtime_cutover.imports_compatibility_port) errors.push(`${gate.entrypoint} must import packaged compatibility command port`);
+  if (!result.runtime_cutover.imports_core_adapter) errors.push(`${gate.entrypoint} must import packaged core command adapter`);
+  if (!result.runtime_cutover.imports_package_adapter) errors.push(`${gate.entrypoint} must import packaged release package command adapter`);
+  if (!result.runtime_cutover.imports_architecture_adapter) errors.push(`${gate.entrypoint} must import packaged architecture command adapter`);
+  if (!result.runtime_cutover.imports_authority_adapter) errors.push(`${gate.entrypoint} must import packaged authority command adapter`);
+  if (!result.runtime_cutover.main_delegates_to_router) errors.push(`${gate.entrypoint} main() must continue delegating through command router`);
+  if (!result.compatibility_port.command_adapters_required_in_this_gate) errors.push('compatibility command port must require command adapters in this gate');
+  if (!result.compatibility_port.adapter_delegation_expanded_in_this_gate) errors.push('compatibility command port must declare adapter delegation expanded');
+  if (!arrayEquals(result.compatibility_port.delegated_commands.slice().sort(), gate.delegated_commands.slice().sort())) {
+    errors.push(`runtime delegated commands must be ${gate.delegated_commands.join(', ')}`);
+  }
+  for (const report of result.adapter_module_reports) {
+    if (!report.present) errors.push(`${report.path} must exist for router command adapter delegation`);
+    if (report.status !== 'present_validated') errors.push(`${report.path} must be require-able without side effects${report.require_error ? `: ${report.require_error}` : ''}`);
+    if (report.describe_error) errors.push(`${report.path} describe contract failed: ${report.describe_error}`);
+    if (!result.projected_pack_files.includes(report.path)) errors.push(`${report.path} must remain in projected npm pack files`);
+    if (!report.described_boundary || report.described_boundary.used_by_runtime_entrypoint_in_this_gate !== true) errors.push(`${report.path} must declare runtime entrypoint use in this gate`);
+    if (!report.described_boundary || report.described_boundary.packaged_in_npm_tarball_in_this_gate !== true) errors.push(`${report.path} must declare npm tarball inclusion in this gate`);
+    for (const command of report.expected_commands.filter((item) => !item.startsWith('-'))) {
+      if (!report.described_commands.includes(command)) errors.push(`${report.path} must describe owned command ${command}`);
+    }
+  }
+  for (const report of result.smoke_reports) {
+    if (!report.matched) errors.push(`router adapter delegation smoke ${report.id} must return ${report.expected_exit_code}`);
+  }
+
+  let delegationFileStatus = 'not_present_installed_context_allowed';
+  let delegationFileSchema = null;
+  const delegationPath = path.join(root, gate.delegation_file);
+  if (fs.existsSync(delegationPath)) {
+    try {
+      const artifact = readJson(delegationPath);
+      delegationFileSchema = artifact.schema || null;
+      if (artifact.schema !== gate.schema) errors.push(`${gate.delegation_file} schema must be ${gate.schema}`);
+      if (artifact.work_item_id !== gate.work_item_id) errors.push(`${gate.delegation_file} must identify ${gate.work_item_id}`);
+      if (artifact.next_work_item_id !== gate.next_work_item_id) errors.push(`${gate.delegation_file} must seed ${gate.next_work_item_id}`);
+      if (artifact.delegation_status !== gate.delegation_status) errors.push(`${gate.delegation_file} must admit ${gate.delegation_status}`);
+      if (artifact.runtime_cutover_applied !== true) errors.push(`${gate.delegation_file} must keep runtime cutover applied`);
+      if (!artifact.boundary || artifact.boundary.package_allowlist_unchanged !== true) errors.push(`${gate.delegation_file} must declare package_allowlist_unchanged`);
+      delegationFileStatus = 'present_validated';
+    } catch (error) {
+      delegationFileStatus = 'present_invalid_json';
+      errors.push(`${gate.delegation_file} must be valid JSON: ${error && error.message ? error.message : String(error)}`);
+    }
+  } else if (sourceLedgerRequired) {
+    delegationFileStatus = 'missing_source_context';
+    errors.push(`${gate.delegation_file} must exist in source repository context`);
+  }
+  const workItem = result.milestone_state.work_item;
+  const nextWorkItem = result.milestone_state.next_work_item;
+  if (sourceLedgerRequired) {
+    if (!workItem) errors.push(`${gate.work_item_id} work item must exist`);
+    else if (workItem.status !== 'closed') errors.push(`${gate.work_item_id} work item must be closed`);
+    if (!nextWorkItem) errors.push(`${gate.next_work_item_id} work item must exist`);
+    else if (!['open', 'closed'].includes(nextWorkItem.status)) errors.push(`${gate.next_work_item_id} work item must be open or closed after router command adapter delegation expansion`);
+  }
+
+  return {
+    schema: 'agent-onboard-public-router-command-adapter-delegation-expansion-check-result-001',
+    status: errors.length === 0 ? 'ok' : 'error',
+    package_name: gate.package_name,
+    version: VERSION,
+    release_line: gate.release_line,
+    command: gate.check_command,
+    package_root: root,
+    package_context: result.package_context,
+    validated: {
+      delegation_status_expanded: gate.delegation_status === 'router_command_adapter_delegation_expanded',
+      runtime_cutover_still_applied: gate.runtime_cutover_applied === true,
+      entrypoint_imports_packaged_adapters: result.runtime_cutover.imports_core_adapter && result.runtime_cutover.imports_package_adapter && result.runtime_cutover.imports_architecture_adapter && result.runtime_cutover.imports_authority_adapter,
+      compatibility_port_delegates_to_adapters: result.compatibility_port.command_adapters_required_in_this_gate && result.compatibility_port.adapter_delegation_expanded_in_this_gate,
+      delegated_commands_match_contract: arrayEquals(result.compatibility_port.delegated_commands.slice().sort(), gate.delegated_commands.slice().sort()),
+      adapter_modules_present: result.adapter_module_reports.every((report) => report.present),
+      adapter_modules_requireable: result.adapter_module_reports.every((report) => report.status === 'present_validated'),
+      adapter_modules_used_by_runtime: result.adapter_module_reports.every((report) => report.described_boundary && report.described_boundary.used_by_runtime_entrypoint_in_this_gate === true),
+      adapter_modules_in_projected_pack: result.adapter_module_reports.every((report) => result.projected_pack_files.includes(report.path)),
+      runtime_smoke_vectors_pass: result.smoke_reports.every((report) => report.matched),
+      package_allowlist_unchanged: arrayEquals(result.projected_pack_files, expectedPackFiles),
+      delegation_commands_no_write: gate.boundary.router_adapter_delegation_command_writes_files === false && gate.boundary.router_adapter_delegation_check_command_writes_files === false,
+      delegation_file_present_or_installed_context_allowed: delegationFileStatus === 'present_validated' || delegationFileStatus === 'not_present_installed_context_allowed',
+      work_item_closed_or_installed_context_allowed: !sourceLedgerRequired || (workItem && workItem.status === 'closed'),
+      next_gate_open_or_installed_context_allowed: !sourceLedgerRequired || (nextWorkItem && ['open', 'closed'].includes(nextWorkItem.status))
+    },
+    source_router_command_adapter_delegation_file: {
+      path: gate.delegation_file,
+      present: fs.existsSync(delegationPath),
+      status: delegationFileStatus,
+      schema: delegationFileSchema,
+      source_context_required: sourceLedgerRequired
+    },
+    runtime_cutover: result.runtime_cutover,
+    compatibility_port: result.compatibility_port,
+    adapter_module_reports: result.adapter_module_reports,
+    smoke_reports: result.smoke_reports,
+    milestone_state: result.milestone_state,
+    expected_pack_files: expectedPackFiles,
+    projected_pack_files: result.projected_pack_files,
+    boundary: result.boundary,
+    errors
+  };
+}
+
 function publicArchitectureMap(root = packageRoot()) {
   const pkg = readJson(path.join(root, 'package.json'));
   return {
@@ -12031,6 +12355,8 @@ function publicArchitectureCheck(root = packageRoot()) {
   const thinEntrypointRehearsalErrors = thinEntrypointRehearsal.errors.map((error) => `thin entrypoint rehearsal: ${error}`);
   const thinEntrypointCutover = publicThinEntrypointRouterCutoverApplicationCheck(root);
   const thinEntrypointCutoverErrors = thinEntrypointCutover.errors.map((error) => `thin entrypoint cutover: ${error}`);
+  const routerAdapterDelegation = publicRouterCommandAdapterDelegationExpansionCheck(root);
+  const routerAdapterDelegationErrors = routerAdapterDelegation.errors.map((error) => `router adapter delegation: ${error}`);
   const errors = [];
   if (!arrayEquals(domainIds, expectedDomains)) errors.push(`architecture domain order must be ${expectedDomains.join(', ')}`);
   if (new Set(domainIds).size !== domainIds.length) errors.push('architecture domain ids must be unique');
@@ -12105,12 +12431,14 @@ function publicArchitectureCheck(root = packageRoot()) {
   if (map.map.package_boundary.architecture_authority_adapter_check_command_writes_files !== false) errors.push('architecture authority adapter check command must remain no-write');
   if (map.map.package_boundary.architecture_module_inclusion_plan_command_writes_files !== false) errors.push('architecture module inclusion plan command must remain no-write');
   if (map.map.package_boundary.architecture_module_inclusion_check_command_writes_files !== false) errors.push('architecture module inclusion check command must remain no-write');
+  if (map.map.package_boundary.architecture_router_adapter_delegation_command_writes_files !== false) errors.push('architecture router adapter delegation command must remain no-write');
+  if (map.map.package_boundary.architecture_router_adapter_delegation_check_command_writes_files !== false) errors.push('architecture router adapter delegation check command must remain no-write');
   if (map.map.package_boundary.version_sprawl_check_command_writes_files !== false) errors.push('version sprawl check command must remain no-write');
   if (map.map.package_boundary.authority_first_read_command_writes_files !== false) errors.push('authority first-read command must remain no-write');
   if (map.map.package_boundary.authority_check_command_writes_files !== false) errors.push('authority check command must remain no-write');
   if (map.map.package_boundary.target_runtime_namespace_command_writes_files !== false) errors.push('target runtime namespace command must remain no-write');
   if (map.map.package_boundary.target_runtime_check_command_writes_files !== false) errors.push('target runtime check command must remain no-write');
-  errors.push(...routerErrors, ...facadeErrors, ...authorityErrors, ...targetRuntimeErrors, ...sourcePartitionErrors, ...sourceExtractionErrors, ...goldenOutputErrors, ...adapterBoundaryErrors, ...firstSliceErrors, ...bundleParityErrors, ...runtimeBridgeErrors, ...installedFallbackSmokeErrors, ...secondSlicePlanErrors, ...secondSliceFirstSliceErrors, ...authorityBundleParityErrors, ...authorityRuntimeBridgeErrors, ...m2SeedErrors, ...workItemsPlanErrors, ...workItemsFirstSliceErrors, ...workItemsBundleParityErrors, ...workItemsRuntimeBridgeErrors, ...workItemsInstalledFallbackErrors, ...claimsPlanErrors, ...claimsFirstSliceErrors, ...claimsBundleParityErrors, ...claimsRuntimeBridgeErrors, ...claimsInstalledFallbackErrors, ...sourceDomainClosureReviewErrors, ...cliRuntimePlanErrors, ...thinCliRouterErrors, ...compatibilityPortErrors, ...coreAdapterErrors, ...packageAdapterErrors, ...architectureAdapterErrors, ...authorityAdapterErrors, ...moduleInclusionPlanErrors, ...packagedRouterPortErrors, ...thinEntrypointRehearsalErrors, ...thinEntrypointCutoverErrors);
+  errors.push(...routerErrors, ...facadeErrors, ...authorityErrors, ...targetRuntimeErrors, ...sourcePartitionErrors, ...sourceExtractionErrors, ...goldenOutputErrors, ...adapterBoundaryErrors, ...firstSliceErrors, ...bundleParityErrors, ...runtimeBridgeErrors, ...installedFallbackSmokeErrors, ...secondSlicePlanErrors, ...secondSliceFirstSliceErrors, ...authorityBundleParityErrors, ...authorityRuntimeBridgeErrors, ...m2SeedErrors, ...workItemsPlanErrors, ...workItemsFirstSliceErrors, ...workItemsBundleParityErrors, ...workItemsRuntimeBridgeErrors, ...workItemsInstalledFallbackErrors, ...claimsPlanErrors, ...claimsFirstSliceErrors, ...claimsBundleParityErrors, ...claimsRuntimeBridgeErrors, ...claimsInstalledFallbackErrors, ...sourceDomainClosureReviewErrors, ...cliRuntimePlanErrors, ...thinCliRouterErrors, ...compatibilityPortErrors, ...coreAdapterErrors, ...packageAdapterErrors, ...architectureAdapterErrors, ...authorityAdapterErrors, ...moduleInclusionPlanErrors, ...packagedRouterPortErrors, ...thinEntrypointRehearsalErrors, ...thinEntrypointCutoverErrors, ...routerAdapterDelegationErrors);
   return {
     schema: 'agent-onboard-public-architecture-check-result-001',
     status: errors.length === 0 ? 'ok' : 'error',
@@ -12164,7 +12492,8 @@ function publicArchitectureCheck(root = packageRoot()) {
       modular_runtime_package_inclusion_plan: moduleInclusionPlan.status === 'ok',
       packaged_router_port_inclusion: packagedRouterPort.status === 'ok',
       thin_entrypoint_router_cutover_rehearsal: thinEntrypointRehearsal.status === 'ok',
-      thin_entrypoint_router_cutover_application: thinEntrypointCutover.status === 'ok'
+      thin_entrypoint_router_cutover_application: thinEntrypointCutover.status === 'ok',
+      router_command_adapter_delegation_expansion: routerAdapterDelegation.status === 'ok'
     },
     domain_ids: domainIds,
     expected_pack_files: expectedPackFiles,
@@ -12208,6 +12537,7 @@ function publicArchitectureCheck(root = packageRoot()) {
     packaged_router_port_inclusion: packagedRouterPort,
     thin_entrypoint_router_cutover_rehearsal: thinEntrypointRehearsal,
     thin_entrypoint_router_cutover_application: thinEntrypointCutover,
+    router_command_adapter_delegation_expansion: routerAdapterDelegation,
     boundary: map.boundary,
     errors
   };
@@ -12381,8 +12711,10 @@ function publicReleaseCheck(root = packageRoot()) {
   const thinEntrypointRehearsalErrors = thinEntrypointRehearsal.errors.map((error) => `thin entrypoint rehearsal: ${error}`);
   const thinEntrypointCutover = publicThinEntrypointRouterCutoverApplicationCheck(root);
   const thinEntrypointCutoverErrors = thinEntrypointCutover.errors.map((error) => `thin entrypoint cutover: ${error}`);
+  const routerAdapterDelegation = publicRouterCommandAdapterDelegationExpansionCheck(root);
+  const routerAdapterDelegationErrors = routerAdapterDelegation.errors.map((error) => `router adapter delegation: ${error}`);
   const architectureParityErrors = architectureParity.errors.map((error) => `installed architecture parity: ${error}`);
-  const errors = [...metadataErrors, ...packErrors, ...messagingErrors, ...sourceLedgerErrors, ...architectureErrors, ...packageSurfaceErrors, ...architectureParityErrors, ...installedFallbackSmokeErrors, ...secondSlicePlanErrors, ...secondSliceFirstSliceErrors, ...authorityBundleParityErrors, ...authorityRuntimeBridgeErrors, ...m2SeedErrors, ...workItemsFirstSliceErrors, ...workItemsBundleParityErrors, ...workItemsRuntimeBridgeErrors, ...workItemsInstalledFallbackErrors, ...claimsPlanErrors, ...claimsFirstSliceErrors, ...claimsBundleParityErrors, ...claimsRuntimeBridgeErrors, ...claimsInstalledFallbackErrors, ...sourceDomainClosureReviewErrors, ...cliRuntimePlanErrors, ...thinCliRouterErrors, ...compatibilityPortErrors, ...coreAdapterErrors, ...packageAdapterErrors, ...architectureAdapterErrors, ...authorityAdapterErrors, ...moduleInclusionPlanErrors, ...packagedRouterPortErrors, ...thinEntrypointRehearsalErrors, ...thinEntrypointCutoverErrors, ...versionPolicyErrors];
+  const errors = [...metadataErrors, ...packErrors, ...messagingErrors, ...sourceLedgerErrors, ...architectureErrors, ...packageSurfaceErrors, ...architectureParityErrors, ...installedFallbackSmokeErrors, ...secondSlicePlanErrors, ...secondSliceFirstSliceErrors, ...authorityBundleParityErrors, ...authorityRuntimeBridgeErrors, ...m2SeedErrors, ...workItemsFirstSliceErrors, ...workItemsBundleParityErrors, ...workItemsRuntimeBridgeErrors, ...workItemsInstalledFallbackErrors, ...claimsPlanErrors, ...claimsFirstSliceErrors, ...claimsBundleParityErrors, ...claimsRuntimeBridgeErrors, ...claimsInstalledFallbackErrors, ...sourceDomainClosureReviewErrors, ...cliRuntimePlanErrors, ...thinCliRouterErrors, ...compatibilityPortErrors, ...coreAdapterErrors, ...packageAdapterErrors, ...architectureAdapterErrors, ...authorityAdapterErrors, ...moduleInclusionPlanErrors, ...packagedRouterPortErrors, ...thinEntrypointRehearsalErrors, ...thinEntrypointCutoverErrors, ...routerAdapterDelegationErrors, ...versionPolicyErrors];
   return {
     schema: 'agent-onboard-public-release-check-result-014',
     status: errors.length === 0 ? 'ok' : 'error',
@@ -12442,6 +12774,7 @@ function publicReleaseCheck(root = packageRoot()) {
       packaged_router_port_inclusion: packagedRouterPort.status === 'ok',
       thin_entrypoint_router_cutover_rehearsal: thinEntrypointRehearsal.status === 'ok',
       thin_entrypoint_router_cutover_application: thinEntrypointCutover.status === 'ok',
+      router_command_adapter_delegation_expansion: routerAdapterDelegation.status === 'ok',
       public_version_reference_policy: versionPolicy.status === 'ok',
       public_package_surface_preservation: packageSurface.status === 'ok',
       public_installed_parity_architecture_smoke: architectureParity.status === 'ok'
@@ -12484,6 +12817,7 @@ function publicReleaseCheck(root = packageRoot()) {
     packaged_router_port_inclusion: packagedRouterPort,
     thin_entrypoint_router_cutover_rehearsal: thinEntrypointRehearsal,
     thin_entrypoint_router_cutover_application: thinEntrypointCutover,
+    router_command_adapter_delegation_expansion: routerAdapterDelegation,
     claims_domain_source_extraction_installed_fallback_smoke: claimsInstalledFallback,
     public_version_reference_policy: versionPolicy,
     public_package_surface_preservation: packageSurface,
@@ -12620,6 +12954,7 @@ function publicInstalledParityArchitectureSmoke(root = packageRoot()) {
   const packagedRouterPort = publicPackagedRouterPortInclusionCheck(root);
   const thinEntrypointRehearsal = publicThinEntrypointRouterCutoverRehearsalCheck(root);
   const thinEntrypointCutover = publicThinEntrypointRouterCutoverApplicationCheck(root);
+  const routerAdapterDelegation = publicRouterCommandAdapterDelegationExpansionCheck(root);
   const componentErrors = [];
   if (architecture.status !== 'ok') componentErrors.push(...architecture.errors.map((error) => `architecture: ${error}`));
   if (authority.status !== 'ok') componentErrors.push(...authority.errors.map((error) => `authority: ${error}`));
@@ -12657,6 +12992,7 @@ function publicInstalledParityArchitectureSmoke(root = packageRoot()) {
   if (packagedRouterPort.status !== 'ok') componentErrors.push(...packagedRouterPort.errors.map((error) => `packaged router port inclusion: ${error}`));
   if (thinEntrypointRehearsal.status !== 'ok') componentErrors.push(...thinEntrypointRehearsal.errors.map((error) => `thin entrypoint rehearsal: ${error}`));
   if (thinEntrypointCutover.status !== 'ok') componentErrors.push(...thinEntrypointCutover.errors.map((error) => `thin entrypoint cutover: ${error}`));
+  if (routerAdapterDelegation.status !== 'ok') componentErrors.push(...routerAdapterDelegation.errors.map((error) => `router adapter delegation: ${error}`));
 
   const parity = {
     package_metadata: metadataErrors.length === 0,
@@ -12703,6 +13039,7 @@ function publicInstalledParityArchitectureSmoke(root = packageRoot()) {
     packaged_router_port_inclusion_check: packagedRouterPort.status === 'ok',
     thin_entrypoint_router_cutover_rehearsal_check: thinEntrypointRehearsal.status === 'ok',
     thin_entrypoint_router_cutover_application_check: thinEntrypointCutover.status === 'ok',
+    router_command_adapter_delegation_expansion_check: routerAdapterDelegation.status === 'ok',
     runtime_version_matches_package_json: pkg.version === VERSION
   };
 
@@ -12773,6 +13110,7 @@ function publicInstalledParityArchitectureSmoke(root = packageRoot()) {
       packaged_router_port_inclusion_status: packagedRouterPort.status,
       thin_entrypoint_router_cutover_rehearsal_status: thinEntrypointRehearsal.status,
       thin_entrypoint_router_cutover_application_status: thinEntrypointCutover.status,
+      router_command_adapter_delegation_expansion_status: routerAdapterDelegation.status,
       package_context: context.package_context,
       source_context_files_present: context.source_context_files_present,
       source_context_files_missing: context.source_context_files_missing
@@ -12814,6 +13152,7 @@ function publicInstalledParityArchitectureSmoke(root = packageRoot()) {
     packaged_router_port_inclusion: packagedRouterPort,
     thin_entrypoint_router_cutover_rehearsal: thinEntrypointRehearsal,
     thin_entrypoint_router_cutover_application: thinEntrypointCutover,
+    router_command_adapter_delegation_expansion: routerAdapterDelegation,
     boundary: {
       writes_files: false,
       writes_package_root: false,
@@ -13514,6 +13853,15 @@ function runArchitecture(args) {
     json(result);
     return result.status === 'ok' ? 0 : 1;
   }
+  if (args.length === 1 && args[0] === '--router-adapter-delegation') {
+    json(publicRouterCommandAdapterDelegationExpansion());
+    return 0;
+  }
+  if (args.length === 1 && args[0] === '--router-adapter-delegation-check') {
+    const result = publicRouterCommandAdapterDelegationExpansionCheck();
+    json(result);
+    return result.status === 'ok' ? 0 : 1;
+  }
   if (args.length === 1 && args[0] === '--check') {
     const result = publicArchitectureCheck();
     json(result);
@@ -13523,7 +13871,7 @@ function runArchitecture(args) {
     schema: 'agent-onboard-architecture-command-error-001',
     status: 'error',
     command_family: 'architecture',
-    message: 'architecture requires --map, --router, --facades, --partition-plan, --partition-check, --extraction-rehearsal, --extraction-check, --golden-outputs, --golden-check, --adapter-boundary, --adapter-check, --first-slice, --first-slice-check, --bundle-parity, --bundle-parity-check, --runtime-bridge, --runtime-bridge-check, --installed-fallback-smoke, --installed-fallback-check, --second-slice-plan, --second-slice-check, --second-slice-first-slice, --second-slice-first-slice-check, --authority-bundle-parity, --authority-bundle-parity-check, --authority-runtime-bridge, --authority-runtime-bridge-check, --m2-seed, --m2-seed-check, --work-items-plan, --work-items-check, --work-items-first-slice, --work-items-first-slice-check, --work-items-bundle-parity, --work-items-bundle-parity-check, --work-items-runtime-bridge, --work-items-runtime-bridge-check, --work-items-installed-fallback-smoke, --work-items-installed-fallback-check, --claims-plan, --claims-check, --claims-first-slice, --claims-first-slice-check, --claims-bundle-parity, --claims-bundle-parity-check, --claims-runtime-bridge, --claims-runtime-bridge-check, --claims-installed-fallback-smoke, --claims-installed-fallback-check, --source-domain-closure-review, --source-domain-closure-check, --cli-runtime-plan, --cli-runtime-check, --thin-router, --thin-router-check, --compatibility-port, --compatibility-port-check, --core-adapter, --core-adapter-check, --package-adapter, --package-adapter-check, --architecture-adapter, --architecture-adapter-check, --authority-adapter, --authority-adapter-check, --module-inclusion-plan, --module-inclusion-check, --packaged-router-port, --packaged-router-port-check, --thin-entrypoint-rehearsal, --thin-entrypoint-rehearsal-check, --thin-entrypoint-cutover, --thin-entrypoint-cutover-check, or --check',
+    message: 'architecture requires --map, --router, --facades, --partition-plan, --partition-check, --extraction-rehearsal, --extraction-check, --golden-outputs, --golden-check, --adapter-boundary, --adapter-check, --first-slice, --first-slice-check, --bundle-parity, --bundle-parity-check, --runtime-bridge, --runtime-bridge-check, --installed-fallback-smoke, --installed-fallback-check, --second-slice-plan, --second-slice-check, --second-slice-first-slice, --second-slice-first-slice-check, --authority-bundle-parity, --authority-bundle-parity-check, --authority-runtime-bridge, --authority-runtime-bridge-check, --m2-seed, --m2-seed-check, --work-items-plan, --work-items-check, --work-items-first-slice, --work-items-first-slice-check, --work-items-bundle-parity, --work-items-bundle-parity-check, --work-items-runtime-bridge, --work-items-runtime-bridge-check, --work-items-installed-fallback-smoke, --work-items-installed-fallback-check, --claims-plan, --claims-check, --claims-first-slice, --claims-first-slice-check, --claims-bundle-parity, --claims-bundle-parity-check, --claims-runtime-bridge, --claims-runtime-bridge-check, --claims-installed-fallback-smoke, --claims-installed-fallback-check, --source-domain-closure-review, --source-domain-closure-check, --cli-runtime-plan, --cli-runtime-check, --thin-router, --thin-router-check, --compatibility-port, --compatibility-port-check, --core-adapter, --core-adapter-check, --package-adapter, --package-adapter-check, --architecture-adapter, --architecture-adapter-check, --authority-adapter, --authority-adapter-check, --module-inclusion-plan, --module-inclusion-check, --packaged-router-port, --packaged-router-port-check, --thin-entrypoint-rehearsal, --thin-entrypoint-rehearsal-check, --thin-entrypoint-cutover, --thin-entrypoint-cutover-check, --router-adapter-delegation, --router-adapter-delegation-check, or --check',
     writes_files: false,
     publishes_package: false
   });
@@ -13640,6 +13988,8 @@ function runRelease(args) {
       architecture_thin_entrypoint_rehearsal_check_command: PUBLIC_RELEASE_CONTRACT.architecture_thin_entrypoint_rehearsal_check_command,
       architecture_thin_entrypoint_cutover_command: PUBLIC_RELEASE_CONTRACT.architecture_thin_entrypoint_cutover_command,
       architecture_thin_entrypoint_cutover_check_command: PUBLIC_RELEASE_CONTRACT.architecture_thin_entrypoint_cutover_check_command,
+      architecture_router_adapter_delegation_command: PUBLIC_RELEASE_CONTRACT.architecture_router_adapter_delegation_command,
+      architecture_router_adapter_delegation_check_command: PUBLIC_RELEASE_CONTRACT.architecture_router_adapter_delegation_check_command,
       version_sprawl_check_command: PUBLIC_RELEASE_CONTRACT.version_sprawl_check_command,
       architecture_check_command: PUBLIC_RELEASE_CONTRACT.architecture_check_command,
       authority_first_read_command: PUBLIC_RELEASE_CONTRACT.authority_first_read_command,
@@ -13683,6 +14033,7 @@ function runRelease(args) {
       packaged_router_port_inclusion: PUBLIC_PACKAGED_ROUTER_PORT_INCLUSION,
       thin_entrypoint_router_cutover_rehearsal: PUBLIC_THIN_ENTRYPOINT_ROUTER_CUTOVER_REHEARSAL,
       thin_entrypoint_router_cutover_application: PUBLIC_THIN_ENTRYPOINT_ROUTER_CUTOVER_APPLICATION,
+      router_command_adapter_delegation_expansion: PUBLIC_ROUTER_COMMAND_ADAPTER_DELEGATION_EXPANSION,
       version_reference_policy: PUBLIC_VERSION_REFERENCE_POLICY,
       authority_first_read_index: PUBLIC_AUTHORITY_FIRST_READ_INDEX,
       target_runtime_namespace: PUBLIC_TARGET_RUNTIME_NAMESPACE,
@@ -13742,6 +14093,7 @@ function runRelease(args) {
       packaged_router_port_inclusion: PUBLIC_PACKAGED_ROUTER_PORT_INCLUSION,
       thin_entrypoint_router_cutover_rehearsal: PUBLIC_THIN_ENTRYPOINT_ROUTER_CUTOVER_REHEARSAL,
       thin_entrypoint_router_cutover_application: PUBLIC_THIN_ENTRYPOINT_ROUTER_CUTOVER_APPLICATION,
+      router_command_adapter_delegation_expansion: PUBLIC_ROUTER_COMMAND_ADAPTER_DELEGATION_EXPANSION,
       version_reference_policy: PUBLIC_VERSION_REFERENCE_POLICY,
       authority_first_read_index: PUBLIC_AUTHORITY_FIRST_READ_INDEX,
       target_runtime_namespace: PUBLIC_TARGET_RUNTIME_NAMESPACE,
@@ -13795,6 +14147,7 @@ function runRelease(args) {
       packaged_router_port_inclusion: PUBLIC_PACKAGED_ROUTER_PORT_INCLUSION,
       thin_entrypoint_router_cutover_rehearsal: PUBLIC_THIN_ENTRYPOINT_ROUTER_CUTOVER_REHEARSAL,
       thin_entrypoint_router_cutover_application: PUBLIC_THIN_ENTRYPOINT_ROUTER_CUTOVER_APPLICATION,
+      router_command_adapter_delegation_expansion: PUBLIC_ROUTER_COMMAND_ADAPTER_DELEGATION_EXPANSION,
       version_reference_policy: PUBLIC_VERSION_REFERENCE_POLICY,
       authority_first_read_index: PUBLIC_AUTHORITY_FIRST_READ_INDEX,
       target_runtime_namespace: PUBLIC_TARGET_RUNTIME_NAMESPACE,
@@ -14586,7 +14939,7 @@ function runTargetInstance(args) {
 }
 
 function help() {
-  process.stdout.write(`agent-onboard ${VERSION}\n\nagent-onboard status\nagent-onboard init --dry-run|--write [--force]\nagent-onboard agents --preview|--write [--force]\nagent-onboard guard --plan|--check-boundary\nagent-onboard authority --first-read|--check\nagent-onboard architecture --map|--router|--facades|--partition-plan|--partition-check|--extraction-rehearsal|--extraction-check|--golden-outputs|--golden-check|--adapter-boundary|--adapter-check|--first-slice|--first-slice-check|--bundle-parity|--bundle-parity-check|--runtime-bridge|--runtime-bridge-check|--installed-fallback-smoke|--installed-fallback-check|--second-slice-plan|--second-slice-check|--second-slice-first-slice|--second-slice-first-slice-check|--authority-bundle-parity|--authority-bundle-parity-check|--authority-runtime-bridge|--authority-runtime-bridge-check|--m2-seed|--m2-seed-check|--work-items-plan|--work-items-check|--work-items-first-slice|--work-items-first-slice-check|--work-items-bundle-parity|--work-items-bundle-parity-check|--work-items-runtime-bridge|--work-items-runtime-bridge-check|--work-items-installed-fallback-smoke|--work-items-installed-fallback-check|--claims-plan|--claims-check|--claims-first-slice|--claims-first-slice-check|--claims-bundle-parity|--claims-bundle-parity-check|--claims-runtime-bridge|--claims-runtime-bridge-check|--claims-installed-fallback-smoke|--claims-installed-fallback-check|--source-domain-closure-review|--source-domain-closure-check|--cli-runtime-plan|--cli-runtime-check|--thin-router|--thin-router-check|--compatibility-port|--compatibility-port-check|--core-adapter|--core-adapter-check|--package-adapter|--package-adapter-check|--architecture-adapter|--architecture-adapter-check|--authority-adapter|--authority-adapter-check|--module-inclusion-plan|--module-inclusion-check|--packaged-router-port|--packaged-router-port-check|--thin-entrypoint-rehearsal|--thin-entrypoint-rehearsal-check|--thin-entrypoint-cutover|--thin-entrypoint-cutover-check|--check\nagent-onboard release --plan|--contract|--fixture|--surface|--surface-check|--version-sprawl-check|--parity-smoke|--architecture-parity-smoke|--target-onboarding-smoke|--post-publish-handoff|--published-acceptance|--real-target-trial|--check\nagent-onboard target-config --schema\nagent-onboard target-config --template\nagent-onboard target-config --validate-template\nagent-onboard target-config --validate [agent-onboard.target.json]\nagent-onboard work-items --schema\nagent-onboard work-items --template\nagent-onboard work-items --validate-template\nagent-onboard work-items --validate [.agent-onboard/work-items.json]\nagent-onboard work-items --list [.agent-onboard/work-items.json]\nagent-onboard work-items --init --dry-run|--write [--force]\nagent-onboard work-items --append --dry-run|--write --id <public-work-item-id> --title <title>\nagent-onboard work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>\nagent-onboard work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>\nagent-onboard target runtime --namespace|--check\nagent-onboard target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]\nagent-onboard target bootstrap --dry-run|--write [--force]\nagent-onboard target-instance takeover --dry-run|--write [--force]\n`);
+  process.stdout.write(`agent-onboard ${VERSION}\n\nagent-onboard status\nagent-onboard init --dry-run|--write [--force]\nagent-onboard agents --preview|--write [--force]\nagent-onboard guard --plan|--check-boundary\nagent-onboard authority --first-read|--check\nagent-onboard architecture --map|--router|--facades|--partition-plan|--partition-check|--extraction-rehearsal|--extraction-check|--golden-outputs|--golden-check|--adapter-boundary|--adapter-check|--first-slice|--first-slice-check|--bundle-parity|--bundle-parity-check|--runtime-bridge|--runtime-bridge-check|--installed-fallback-smoke|--installed-fallback-check|--second-slice-plan|--second-slice-check|--second-slice-first-slice|--second-slice-first-slice-check|--authority-bundle-parity|--authority-bundle-parity-check|--authority-runtime-bridge|--authority-runtime-bridge-check|--m2-seed|--m2-seed-check|--work-items-plan|--work-items-check|--work-items-first-slice|--work-items-first-slice-check|--work-items-bundle-parity|--work-items-bundle-parity-check|--work-items-runtime-bridge|--work-items-runtime-bridge-check|--work-items-installed-fallback-smoke|--work-items-installed-fallback-check|--claims-plan|--claims-check|--claims-first-slice|--claims-first-slice-check|--claims-bundle-parity|--claims-bundle-parity-check|--claims-runtime-bridge|--claims-runtime-bridge-check|--claims-installed-fallback-smoke|--claims-installed-fallback-check|--source-domain-closure-review|--source-domain-closure-check|--cli-runtime-plan|--cli-runtime-check|--thin-router|--thin-router-check|--compatibility-port|--compatibility-port-check|--core-adapter|--core-adapter-check|--package-adapter|--package-adapter-check|--architecture-adapter|--architecture-adapter-check|--authority-adapter|--authority-adapter-check|--module-inclusion-plan|--module-inclusion-check|--packaged-router-port|--packaged-router-port-check|--thin-entrypoint-rehearsal|--thin-entrypoint-rehearsal-check|--thin-entrypoint-cutover|--thin-entrypoint-cutover-check|--router-adapter-delegation|--router-adapter-delegation-check|--check\nagent-onboard release --plan|--contract|--fixture|--surface|--surface-check|--version-sprawl-check|--parity-smoke|--architecture-parity-smoke|--target-onboarding-smoke|--post-publish-handoff|--published-acceptance|--real-target-trial|--check\nagent-onboard target-config --schema\nagent-onboard target-config --template\nagent-onboard target-config --validate-template\nagent-onboard target-config --validate [agent-onboard.target.json]\nagent-onboard work-items --schema\nagent-onboard work-items --template\nagent-onboard work-items --validate-template\nagent-onboard work-items --validate [.agent-onboard/work-items.json]\nagent-onboard work-items --list [.agent-onboard/work-items.json]\nagent-onboard work-items --init --dry-run|--write [--force]\nagent-onboard work-items --append --dry-run|--write --id <public-work-item-id> --title <title>\nagent-onboard work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>\nagent-onboard work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>\nagent-onboard target runtime --namespace|--check\nagent-onboard target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]\nagent-onboard target bootstrap --dry-run|--write [--force]\nagent-onboard target-instance takeover --dry-run|--write [--force]\n`);
   return 0;
 }
 
@@ -14690,6 +15043,46 @@ function dispatchCommand(argv = []) {
 }
 
 function createRuntimeCompatibilityPort() {
+  const coreAdapter = createCoreCommandAdapter({
+    version: VERSION,
+    releaseLine: RELEASE_LINE,
+    handlers: Object.freeze({
+      help: DOMAIN_SERVICE_FACADES.coreService.help,
+      version: DOMAIN_SERVICE_FACADES.coreService.printVersion,
+      status: DOMAIN_SERVICE_FACADES.coreService.runStatus
+    })
+  });
+  const packageAdapter = createPackageCommandAdapter({
+    handlers: Object.freeze({
+      release: DOMAIN_SERVICE_FACADES.releasePackageService.runRelease
+    })
+  });
+  const architectureAdapter = createArchitectureCommandAdapter({
+    handlers: Object.freeze({
+      architecture: DOMAIN_SERVICE_FACADES.coreService.runArchitecture
+    })
+  });
+  const authorityAdapter = createAuthorityCommandAdapter({
+    handlers: Object.freeze({
+      agents: DOMAIN_SERVICE_FACADES.authorityService.runAgents,
+      guard: DOMAIN_SERVICE_FACADES.authorityService.runGuard,
+      authority: DOMAIN_SERVICE_FACADES.authorityService.runAuthority
+    })
+  });
+  const adapters = Object.freeze({
+    help: coreAdapter,
+    '--help': coreAdapter,
+    '-h': coreAdapter,
+    version: coreAdapter,
+    '--version': coreAdapter,
+    '-v': coreAdapter,
+    status: coreAdapter,
+    release: packageAdapter,
+    architecture: architectureAdapter,
+    authority: authorityAdapter,
+    agents: authorityAdapter,
+    guard: authorityAdapter
+  });
   const handlers = {};
   for (const command of Object.keys(COMMAND_ROUTE_HANDLERS)) {
     handlers[command] = (argv = []) => {
@@ -14705,7 +15098,7 @@ function createRuntimeCompatibilityPort() {
     const command = argv[2] || 'help';
     throw new Error(`unsupported command: ${command}`);
   };
-  return createCompatibilityCommandPort(Object.freeze(handlers));
+  return createCompatibilityCommandPort(Object.freeze(handlers), Object.freeze({ adapters }));
 }
 
 function main(argv = process.argv) {
@@ -14770,6 +15163,8 @@ module.exports = {
   publicThinEntrypointRouterCutoverRehearsalCheck,
   publicThinEntrypointRouterCutoverApplication,
   publicThinEntrypointRouterCutoverApplicationCheck,
+  publicRouterCommandAdapterDelegationExpansion,
+  publicRouterCommandAdapterDelegationExpansionCheck,
   publicClaimsDomainSourceExtractionPlan,
   publicClaimsDomainSourceExtractionPlanCheck,
   publicClaimsDomainSourceExtractionFirstSlice,
@@ -14811,6 +15206,7 @@ module.exports = {
   PUBLIC_CLAIMS_DOMAIN_SOURCE_EXTRACTION_INSTALLED_FALLBACK_SMOKE,
   PUBLIC_TARGET_RUNTIME_NAMESPACE,
   PUBLIC_INSTALLED_PARITY_ARCHITECTURE_SMOKE,
+  PUBLIC_ROUTER_COMMAND_ADAPTER_DELEGATION_EXPANSION,
   PUBLIC_CLI_RUNTIME_DE_MONOLITH_PLANNING,
   PUBLIC_ARCHITECTURE_COMMAND_ADAPTER_EXTRACTION,
   PUBLIC_AUTHORITY_COMMAND_ADAPTER_EXTRACTION,

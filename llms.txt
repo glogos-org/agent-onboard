@@ -135,7 +135,9 @@ Public thin entrypoint router cutover application:
 - node cli/agent-onboard.js architecture --thin-entrypoint-rehearsal-check
 - node cli/agent-onboard.js architecture --thin-entrypoint-cutover
 - node cli/agent-onboard.js architecture --thin-entrypoint-cutover-check
+- node cli/agent-onboard.js architecture --router-adapter-delegation
+- node cli/agent-onboard.js architecture --router-adapter-delegation-check
 - node cli/agent-onboard.js architecture --check
 - node cli/agent-onboard.js release --check
 
-Current command adapter state: core, release package, architecture, and authority adapter extraction gates are closed. The router, compatibility command port, port facade, and admitted command adapters are packaged in the 11-file npm surface. The thin entrypoint router cutover is applied; next executable gate is router command adapter delegation expansion.
+Current command adapter state: core, release package, architecture, and authority adapter extraction gates are closed. The router, compatibility command port, port facade, and admitted command adapters are packaged in the 11-file npm surface. The thin entrypoint router cutover is applied, and router command adapter delegation expansion is the active gate.

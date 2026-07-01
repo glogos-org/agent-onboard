@@ -263,6 +263,8 @@ npx agent-onboard architecture --thin-entrypoint-rehearsal
 npx agent-onboard architecture --thin-entrypoint-rehearsal-check
 npx agent-onboard architecture --thin-entrypoint-cutover
 npx agent-onboard architecture --thin-entrypoint-cutover-check
+npx agent-onboard architecture --router-adapter-delegation
+npx agent-onboard architecture --router-adapter-delegation-check
 npx agent-onboard release --version-sprawl-check
 ```
 
@@ -795,6 +797,8 @@ This release adds the public packaged router port inclusion gate: `architecture 
 This release adds the public thin entrypoint router cutover rehearsal gate: `architecture --thin-entrypoint-rehearsal` reports the future thin-entrypoint delegation shape, and `architecture --thin-entrypoint-rehearsal-check` validates no-write router/compatibility-port rehearsal vectors while keeping `cli/agent-onboard.js` as the current runtime entrypoint and preserving the 11-file modular package surface.
 
 This release adds the public thin entrypoint router cutover application gate: `architecture --thin-entrypoint-cutover` reports the applied runtime delegation, and `architecture --thin-entrypoint-cutover-check` validates that `cli/agent-onboard.js` now routes `main(process.argv)` through the packaged command router and compatibility command port while preserving the 11-file package surface.
+
+This release adds the public router command adapter delegation expansion gate: `architecture --router-adapter-delegation` reports the adapter-backed runtime routes, and `architecture --router-adapter-delegation-check` validates that core, release, architecture, and authority command families delegate through the packaged command adapters while keeping the 11-file package surface unchanged.
 
 <!-- ## Star History
 

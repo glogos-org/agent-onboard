@@ -304,8 +304,10 @@ node cli/agent-onboard.js architecture --thin-entrypoint-rehearsal
 node cli/agent-onboard.js architecture --thin-entrypoint-rehearsal-check
 node cli/agent-onboard.js architecture --thin-entrypoint-cutover
 node cli/agent-onboard.js architecture --thin-entrypoint-cutover-check
+node cli/agent-onboard.js architecture --router-adapter-delegation
+node cli/agent-onboard.js architecture --router-adapter-delegation-check
 node cli/agent-onboard.js architecture --check
 node cli/agent-onboard.js release --check
 ```
 
-This gate applies the `process.argv` delegation through the packaged router and compatibility command port. It keeps the 11-file package surface unchanged; future gates should expand adapter delegation without growing `cli/agent-onboard.js` again.
+This gate expands runtime delegation through the packaged command adapters after the `process.argv` router cutover. It keeps the 11-file package surface unchanged; future gates should continue extracting command families without growing `cli/agent-onboard.js` again.

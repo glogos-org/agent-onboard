@@ -163,6 +163,10 @@ function syntaxTasks() {
     nodeTask('syntax: command-router', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'command-router.js')]),
     nodeTask('syntax: compatibility-command-port adapter', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'adapters', 'compatibility-command-port.js')]),
     nodeTask('syntax: compatibility-command-port port', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'ports', 'compatibility-command-port.js')]),
+    nodeTask('syntax: core command adapter', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'adapters', 'commands', 'core.js')]),
+    nodeTask('syntax: release package command adapter', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'adapters', 'commands', 'release-package.js')]),
+    nodeTask('syntax: architecture command adapter', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'adapters', 'commands', 'architecture.js')]),
+    nodeTask('syntax: authority command adapter', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'adapters', 'commands', 'authority.js')]),
     nodeTask('syntax: legacy full test', ['-c', path.join(ROOT, 'test', 'agent-onboard.test.js')]),
     nodeTask('syntax: parallel runner', ['-c', __filename])
   ];
@@ -173,6 +177,7 @@ function quickTasks() {
     ...syntaxTasks(),
     cliTask('status', ['status'], expectStatusOk),
     cliTask('architecture thin entrypoint cutover check', ['architecture', '--thin-entrypoint-cutover-check'], expectStatusOk),
+    cliTask('architecture router adapter delegation check', ['architecture', '--router-adapter-delegation-check'], expectStatusOk),
     cliTask('architecture check', ['architecture', '--check'], expectStatusOk),
     cliTask('release surface check', ['release', '--surface-check'], expectStatusOk),
     cliTask('release version sprawl check', ['release', '--version-sprawl-check'], expectStatusOk),
