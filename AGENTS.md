@@ -37,6 +37,8 @@ Use this source-repository lifecycle for public human/agent participation:
 6. Handoff: report changed files, checks run, checks not run, and known non-pass states.
 7. Close: record a closure envelope only after handoff evidence is ready.
 
+For source validation, `npm test` runs the parallel quick gate. Use `npm run test:full` for the legacy exhaustive fixture matrix, and `npm run test:all` when both the quick gate and the full fixture matrix are needed before release handoff.
+
 Run the target onboarding plan before expanding target-surface behavior:
 
 ```sh

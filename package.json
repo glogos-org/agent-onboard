@@ -277,7 +277,10 @@
     "node": ">=18"
   },
   "scripts": {
-    "test": "node test/agent-onboard.test.js"
+    "test": "node test/run-tests.js quick",
+    "test:quick": "node test/run-tests.js quick",
+    "test:full": "node test/run-tests.js full",
+    "test:all": "node test/run-tests.js all"
   },
   "bin": {
     "agent-onboard": "cli/agent-onboard.js",

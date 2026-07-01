@@ -154,6 +154,26 @@ npx agent-onboard target-instance takeover --dry-run
 npx agent-onboard target-instance takeover --write
 ```
 
+## Source Checks
+
+Use the parallel quick gate for normal source validation:
+
+```sh
+npm test
+```
+
+The quick gate runs read-only CLI checks, syntax checks, work-item ledger validation, and an npm pack dry run in parallel. Use the legacy exhaustive source test when a change needs the full fixture matrix:
+
+```sh
+npm run test:full
+```
+
+Run both suites explicitly before a higher-risk release handoff:
+
+```sh
+npm run test:all
+```
+
 ## Public architecture map
 
 Print the public architecture kernel without moving files or writing state:

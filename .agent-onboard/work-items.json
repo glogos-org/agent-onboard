@@ -2481,6 +2481,38 @@
       "milestone_id": "P1S3M3",
       "title": "Public router command adapter delegation expansion gate",
       "status": "open"
+    },
+    {
+      "id": "P1S3M3W13",
+      "milestone_id": "P1S3M3",
+      "title": "Public source test parallel quick gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-01T11:42:05.421Z"
+      },
+      "closure": {
+        "actor": "codex-gpt-5",
+        "closed_at": "2026-07-01T11:42:15.901Z",
+        "summary": "Closed by splitting source validation into a parallel quick npm test gate while preserving the legacy exhaustive fixture matrix under npm run test:full and keeping tests outside the npm package allowlist.",
+        "changed_files": [
+          ".agent-onboard/work-items.json",
+          "AGENTS.md",
+          "README.md",
+          "package.json",
+          "test/run-tests.js"
+        ],
+        "checks_run": [
+          "npm test",
+          "node -c test/run-tests.js",
+          "git diff --check"
+        ],
+        "checks_not_run": [
+          "npm run test:full",
+          "npm publish --access public"
+        ],
+        "known_non_pass": []
+      }
     }
   ]
 }
