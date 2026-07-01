@@ -10,6 +10,8 @@ const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_PACK_FILES = Array.from(new Set(PACKAGE_JSON.files.concat(['package.json']))).sort();
 const MAX_OUTPUT_BYTES = 20 * 1024 * 1024;
 const DEFAULT_CONCURRENCY = Math.max(1, Math.min(4, os.cpus().length || 1));
+const DEFAULT_FULL_SOURCE_TEST_SHARDS = DEFAULT_CONCURRENCY * 4;
+const FULL_SOURCE_TEST = path.join(ROOT, 'test', 'agent-onboard.test.js');
 
 function nodeTask(name, args, validate) {
   return {
@@ -169,7 +171,7 @@ function syntaxTasks() {
     nodeTask('syntax: authority command adapter', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'adapters', 'commands', 'authority.js')]),
     nodeTask('syntax: target command adapter', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'adapters', 'commands', 'target.js')]),
     nodeTask('syntax: public artifact boundary check', ['-c', path.join(ROOT, 'scripts', 'check-public-artifact-boundary.js')]),
-    nodeTask('syntax: legacy full test', ['-c', path.join(ROOT, 'test', 'agent-onboard.test.js')]),
+    nodeTask('syntax: full source test', ['-c', FULL_SOURCE_TEST]),
     nodeTask('syntax: parallel runner', ['-c', __filename])
   ];
 }
@@ -191,9 +193,19 @@ function quickTasks() {
   ];
 }
 
+function fullTasks(shards) {
+  return Array.from({ length: shards }, (_, index) => (
+    nodeTask(`full source test shard ${index}/${shards}`, [FULL_SOURCE_TEST, `--shard=${index}/${shards}`])
+  ));
+}
+
+function testConcurrency() {
+  return Number.parseInt(process.env.AGENT_ONBOARD_TEST_CONCURRENCY || '', 10) || DEFAULT_CONCURRENCY;
+}
+
 async function runQuick() {
   const startedAt = Date.now();
-  const concurrency = Number.parseInt(process.env.AGENT_ONBOARD_TEST_CONCURRENCY || '', 10) || DEFAULT_CONCURRENCY;
+  const concurrency = testConcurrency();
   const tasks = quickTasks();
   process.stdout.write(`agent-onboard quick test suite: ${tasks.length} checks, concurrency ${Math.min(concurrency, tasks.length)}\n`);
   const results = await runPool(tasks, concurrency);
@@ -215,19 +227,34 @@ async function runQuick() {
   process.stdout.write(`agent-onboard quick test suite passed in ${seconds}s\n`);
 }
 
-async function runFull() {
-  const result = await runTask(nodeTask('legacy full test', [path.join(ROOT, 'test', 'agent-onboard.test.js')]));
-  const seconds = (result.durationMs / 1000).toFixed(1);
-  process.stdout.write(`[${result.ok ? 'pass' : 'fail'}] ${result.task.name} (${seconds}s)\n`);
-  if (!result.ok) {
-    process.stderr.write(`command: ${commandForDisplay(result.task)}\n`);
-    process.stderr.write(`error: ${result.error}\n`);
-    const stdout = trimOutput(result.stdout);
-    const stderr = trimOutput(result.stderr);
-    if (stdout) process.stderr.write(`stdout:\n${stdout}\n`);
-    if (stderr) process.stderr.write(`stderr:\n${stderr}\n`);
+async function runSuite(label, tasks, concurrency) {
+  const startedAt = Date.now();
+  process.stdout.write(`agent-onboard ${label} test suite: ${tasks.length} checks, concurrency ${Math.min(concurrency, tasks.length)}\n`);
+  const results = await runPool(tasks, concurrency);
+  const failed = results.filter((result) => !result.ok);
+  if (failed.length > 0) {
+    for (const result of failed) {
+      process.stderr.write(`\n[fail] ${result.task.name}\n`);
+      process.stderr.write(`command: ${commandForDisplay(result.task)}\n`);
+      process.stderr.write(`error: ${result.error}\n`);
+      const stdout = trimOutput(result.stdout);
+      const stderr = trimOutput(result.stderr);
+      if (stdout) process.stderr.write(`stdout:\n${stdout}\n`);
+      if (stderr) process.stderr.write(`stderr:\n${stderr}\n`);
+    }
     process.exitCode = 1;
+    return false;
   }
+  const seconds = ((Date.now() - startedAt) / 1000).toFixed(1);
+  process.stdout.write(`agent-onboard ${label} test suite passed in ${seconds}s\n`);
+  return true;
+}
+
+async function runFull() {
+  const concurrency = testConcurrency();
+  const shardCount = Number.parseInt(process.env.AGENT_ONBOARD_FULL_TEST_SHARDS || '', 10) || DEFAULT_FULL_SOURCE_TEST_SHARDS;
+  const tasks = fullTasks(Math.max(1, shardCount));
+  await runSuite('full', tasks, concurrency);
 }
 
 async function main() {

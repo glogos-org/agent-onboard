@@ -2594,6 +2594,97 @@
         ],
         "known_non_pass": []
       }
+    },
+    {
+      "id": "P1S3M3W15",
+      "milestone_id": "P1S3M3",
+      "title": "Public full source test parallelization gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-01T16:57:03.782Z"
+      },
+      "closure": {
+        "actor": "codex-gpt-5",
+        "closed_at": "2026-07-01T16:57:28.507Z",
+        "summary": "Closed by making npm run test:full run the legacy exhaustive source matrix as parallel shards through test/run-tests.js, adding shard selection to the legacy test file, keeping the public artifact boundary guard self-clean, and documenting the parallel full gate.",
+        "changed_files": [
+          ".agent-onboard/work-items.json",
+          "AGENTS.md",
+          "README.md",
+          "cli/agent-onboard.js",
+          "package.json",
+          "scripts/check-public-artifact-boundary.js",
+          "test/agent-onboard.test.js",
+          "test/run-tests.js"
+        ],
+        "checks_run": [
+          "node -c test/run-tests.js",
+          "node -c test/agent-onboard.test.js",
+          "node test/agent-onboard.test.js --list",
+          "node test/agent-onboard.test.js --shard=0/4",
+          "node scripts/check-public-artifact-boundary.js",
+          "node test/agent-onboard.test.js --shard=1/4",
+          "node cli/agent-onboard.js release --version-sprawl-check",
+          "npm run test:full",
+          "npm test",
+          "node cli/agent-onboard.js release --check",
+          "npm pack --dry-run --json",
+          "git diff --check",
+          "node cli/agent-onboard.js work-items --append --dry-run --id P1S3M3W15 --title \"Public full source test parallelization gate\"",
+          "node cli/agent-onboard.js work-items --append --write --id P1S3M3W15 --title \"Public full source test parallelization gate\"",
+          "node cli/agent-onboard.js work-items --claim --write --id P1S3M3W15 --actor codex-gpt-5",
+          "node cli/agent-onboard.js work-items --close --dry-run --id P1S3M3W15 --actor codex-gpt-5 --summary <summary>",
+          "node cli/agent-onboard.js work-items --close --write --id P1S3M3W15 --actor codex-gpt-5 --summary <summary>"
+        ],
+        "checks_not_run": [
+          "npm publish --access public"
+        ],
+        "known_non_pass": []
+      }
+    },
+    {
+      "id": "P1S3M3W16",
+      "milestone_id": "P1S3M3",
+      "title": "Public full source test shard balancing gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-01T17:06:41.389Z"
+      },
+      "closure": {
+        "actor": "codex-gpt-5",
+        "closed_at": "2026-07-01T17:18:00.000Z",
+        "summary": "Closed by balancing npm run test:full with 16 full-source shards, removing current test harness legacy naming, cutting the oversized source-level test case that repeatedly ran release checks, and bumping the public package candidate to 0.0.74.",
+        "changed_files": [
+          ".agent-onboard/work-items.json",
+          "AGENTS.md",
+          "README.md",
+          "cli/agent-onboard.js",
+          "package.json",
+          "test/agent-onboard.test.js",
+          "test/run-tests.js"
+        ],
+        "checks_run": [
+          "node -c test/run-tests.js",
+          "node -c test/agent-onboard.test.js",
+          "node -c cli/agent-onboard.js",
+          "node test/agent-onboard.test.js --list",
+          "node test/agent-onboard.test.js --shard=75/106",
+          "npm run test:full (passed in 68.2s)",
+          "node cli/agent-onboard.js release --version-sprawl-check",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "node cli/agent-onboard.js release --check",
+          "npm pack --dry-run --json",
+          "npm test (passed in 26.3s)",
+          "git diff --check",
+          "npm view agent-onboard@0.0.74 version --json (expected E404: version not published yet)"
+        ],
+        "checks_not_run": [
+          "npm publish --access public"
+        ],
+        "known_non_pass": []
+      }
     }
   ]
 }

@@ -162,7 +162,7 @@ Use the parallel quick gate for normal source validation:
 npm test
 ```
 
-The quick gate runs read-only CLI checks, syntax checks, work-item ledger validation, and an npm pack dry run in parallel. Use the legacy exhaustive source test when a change needs the full fixture matrix:
+The quick gate runs read-only CLI checks, syntax checks, work-item ledger validation, and an npm pack dry run in parallel. Use the parallel full source test when a change needs the full fixture matrix:
 
 ```sh
 npm run test:full

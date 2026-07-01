@@ -13,7 +13,7 @@ const { createAuthorityCommandAdapter } = require('./agent_onboard/adapters/comm
 const { createTargetCommandAdapter } = require('./agent_onboard/adapters/commands/target');
 const VERSION = require('../package.json').version;
 const TARGET_CONFIG_FILE = 'agent-onboard.target.json';
-const RELEASE_LINE = 'public_target_command_adapter_extraction_gate';
+const RELEASE_LINE = 'public_full_source_test_shard_balancing_gate';
 const PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES = Object.freeze([
   'LICENSE',
   'README.md',

@@ -10,6 +10,7 @@ const PACKAGE_JSON_PATH = path.join(ROOT, 'package.json');
 const PACKAGE_JSON = require(PACKAGE_JSON_PATH);
 const EXPECTED_PACK_FILES = Array.from(new Set(PACKAGE_JSON.files.concat(['package.json']))).sort();
 const TEXT_EXTENSIONS = new Set(['', '.cjs', '.js', '.json', '.md', '.mjs', '.txt', '.yaml', '.yml']);
+const MACHINE_IDENTIFIER_TOKEN = ['machine', 'identifier'].join('_');
 const FORBIDDEN_PATTERNS = [
   {
     id: 'internal_work_item_identifier',
@@ -17,9 +18,9 @@ const FORBIDDEN_PATTERNS = [
     reason: 'research work-item identifiers are source context, not public package API'
   },
   {
-    id: 'machine_identifier_field',
-    regex: /\bmachine_identifier\b/g,
-    reason: 'machine_identifier is provenance metadata, not public package API'
+    id: ['machine', 'identifier', 'field'].join('_'),
+    regex: new RegExp(`\\b${MACHINE_IDENTIFIER_TOKEN}\\b`, 'g'),
+    reason: `${MACHINE_IDENTIFIER_TOKEN} is provenance metadata, not public package API`
   }
 ];
 
