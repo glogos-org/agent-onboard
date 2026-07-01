@@ -6,7 +6,7 @@ const os = require('os');
 const path = require('path');
 const VERSION = require('../package.json').version;
 const TARGET_CONFIG_FILE = 'agent-onboard.target.json';
-const RELEASE_LINE = 'public_thin_cli_router_seed_gate';
+const RELEASE_LINE = 'public_compatibility_command_port_seed_gate';
 
 process.stdout.on('error', (error) => {
   if (error && error.code === 'EPIPE') process.exit(0);
@@ -407,6 +407,8 @@ const PUBLIC_ARCHITECTURE_MAP = Object.freeze({
     architecture_cli_runtime_check_command_writes_files: false,
     architecture_thin_router_command_writes_files: false,
     architecture_thin_router_check_command_writes_files: false,
+    architecture_compatibility_port_command_writes_files: false,
+    architecture_compatibility_port_check_command_writes_files: false,
     version_sprawl_check_command_writes_files: false,
     published_package_surface_file_count: 4,
     command_router_dispatch_must_be_table_driven: true,
@@ -667,7 +669,10 @@ const PUBLIC_PACKAGE_SURFACE_PRESERVATION = Object.freeze({
     '.agent-onboard/source-domain-extraction-stabilization-closure-review.json',
     '.agent-onboard/cli-runtime-de-monolith-planning.json',
     '.agent-onboard/thin-cli-router-seed.json',
+    '.agent-onboard/compatibility-command-port-seed.json',
     'cli/agent_onboard/command-router.js',
+    'cli/agent_onboard/adapters/compatibility-command-port.js',
+    'cli/agent_onboard/ports/compatibility-command-port.js',
     'src/domains/core.js',
     'src/domains/authority.js',
     'src/domains/work-items.js',
@@ -2162,6 +2167,55 @@ const PUBLIC_THIN_CLI_ROUTER_SEED = Object.freeze({
   })
 });
 
+
+const PUBLIC_COMPATIBILITY_COMMAND_PORT_SEED = Object.freeze({
+  schema: 'agent-onboard-public-compatibility-command-port-seed-001',
+  title: 'Agent-Onboard Public Compatibility Command Port Seed Gate',
+  package_name: 'agent-onboard',
+  release_line: RELEASE_LINE,
+  command: 'agent-onboard architecture --compatibility-port',
+  check_command: 'agent-onboard architecture --compatibility-port-check',
+  seed_file: '.agent-onboard/compatibility-command-port-seed.json',
+  adapter_module: 'cli/agent_onboard/adapters/compatibility-command-port.js',
+  port_module: 'cli/agent_onboard/ports/compatibility-command-port.js',
+  router_module: 'cli/agent_onboard/command-router.js',
+  milestone_id: 'P1S3M3',
+  work_item_id: ['P', 1, 'S', 3, 'M', 3, 'W', 3].join(''),
+  next_work_item_id: ['P', 1, 'S', 3, 'M', 3, 'W', 4].join(''),
+  seed_status: 'compatibility_command_port_seed_admitted',
+  runtime_cutover_applied: false,
+  package_strategy: 'controlled_source_module_inclusion',
+  port_seed_max_lines: 250,
+  expected_adapter_export_names: Object.freeze(['COMPATIBILITY_COMMAND_PORT_SEED', 'describeCompatibilityCommandPortSeed', 'createCompatibilityCommandPort']),
+  expected_port_export_names: Object.freeze(['createCompatibilityCommandPort']),
+  expected_command_groups: Object.freeze(['architecture', 'coordination', 'core', 'onboarding', 'release_package', 'target']),
+  acceptance_criteria: Object.freeze([
+    'Create the public source-only compatibility command port adapter module at cli/agent_onboard/adapters/compatibility-command-port.js.',
+    'Create the public source-only port facade module at cli/agent_onboard/ports/compatibility-command-port.js.',
+    'Keep cli/agent-onboard.js as the packaged runtime entrypoint for this seed gate.',
+    'Keep the compact npm package allowlist unchanged until controlled source-module inclusion.',
+    'Require the compatibility command port modules to be side-effect-free on require and under the port seed line budget.',
+    'Seed the next command adapter extraction gate.'
+  ]),
+  boundary: Object.freeze({
+    compatibility_port_command_writes_files: false,
+    compatibility_port_check_command_writes_files: false,
+    changes_public_cli_outputs: false,
+    changes_cli_runtime_dependency_graph: false,
+    uses_compatibility_port_as_runtime_entrypoint: false,
+    source_port_modules_remain_out_of_pack: true,
+    package_allowlist_unchanged: true,
+    creates_runtime_modules: true,
+    writes_target_repository_state: false,
+    git_mutation: false,
+    installs_dependencies: false,
+    runs_package_manager: false,
+    runs_build_test_deploy: false,
+    publishes_package: false,
+    mutates_registry: false
+  })
+});
+
 const PUBLIC_VERSION_REFERENCE_POLICY = Object.freeze({
   schema: 'agent-onboard-public-version-reference-policy-001',
   title: 'Agent-Onboard Public Version Reference Policy',
@@ -2203,7 +2257,10 @@ const PUBLIC_VERSION_REFERENCE_POLICY = Object.freeze({
     '.agent-onboard/source-domain-extraction-stabilization-closure-review.json',
     '.agent-onboard/cli-runtime-de-monolith-planning.json',
     '.agent-onboard/thin-cli-router-seed.json',
+    '.agent-onboard/compatibility-command-port-seed.json',
     'cli/agent_onboard/command-router.js',
+    'cli/agent_onboard/adapters/compatibility-command-port.js',
+    'cli/agent_onboard/ports/compatibility-command-port.js',
     'src/domains/core.js',
     'src/domains/authority.js',
     'src/domains/work-items.js',
@@ -2225,7 +2282,7 @@ const PUBLIC_VERSION_REFERENCE_POLICY = Object.freeze({
 });
 
 const PUBLIC_RELEASE_CONTRACT = Object.freeze({
-  schema: 'agent-onboard-public-release-contract-029',
+  schema: 'agent-onboard-public-release-contract-030',
   title: 'Agent-Onboard Public Release Contract',
   package_name: 'agent-onboard',
   release_line: RELEASE_LINE,
@@ -2293,6 +2350,8 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
   architecture_cli_runtime_check_command: 'agent-onboard architecture --cli-runtime-check',
   architecture_thin_router_command: 'agent-onboard architecture --thin-router',
   architecture_thin_router_check_command: 'agent-onboard architecture --thin-router-check',
+  architecture_compatibility_port_command: 'agent-onboard architecture --compatibility-port',
+  architecture_compatibility_port_check_command: 'agent-onboard architecture --compatibility-port-check',
   version_sprawl_check_command: 'agent-onboard release --version-sprawl-check',
   architecture_check_command: 'agent-onboard architecture --check',
   authority_first_read_command: 'agent-onboard authority --first-read',
@@ -2336,7 +2395,10 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
     '.agent-onboard/source-domain-extraction-stabilization-closure-review.json',
     '.agent-onboard/cli-runtime-de-monolith-planning.json',
     '.agent-onboard/thin-cli-router-seed.json',
+    '.agent-onboard/compatibility-command-port-seed.json',
     'cli/agent_onboard/command-router.js',
+    'cli/agent_onboard/adapters/compatibility-command-port.js',
+    'cli/agent_onboard/ports/compatibility-command-port.js',
     'src/domains/core.js',
     'src/domains/authority.js',
     'src/domains/work-items.js',
@@ -2421,6 +2483,12 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
     'node cli/agent-onboard.js architecture --claims-runtime-bridge-check',
     'node cli/agent-onboard.js architecture --claims-installed-fallback-smoke',
     'node cli/agent-onboard.js architecture --claims-installed-fallback-check',
+    'node cli/agent-onboard.js architecture --cli-runtime-plan',
+    'node cli/agent-onboard.js architecture --cli-runtime-check',
+    'node cli/agent-onboard.js architecture --thin-router',
+    'node cli/agent-onboard.js architecture --thin-router-check',
+    'node cli/agent-onboard.js architecture --compatibility-port',
+    'node cli/agent-onboard.js architecture --compatibility-port-check',
     'node cli/agent-onboard.js release --version-sprawl-check',
     'node cli/agent-onboard.js authority --first-read',
     'node cli/agent-onboard.js authority --check',
@@ -2494,6 +2562,12 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
     'npx agent-onboard@<version> architecture --claims-runtime-bridge-check',
     'npx agent-onboard@<version> architecture --claims-installed-fallback-smoke',
     'npx agent-onboard@<version> architecture --claims-installed-fallback-check',
+    'npx agent-onboard@<version> architecture --cli-runtime-plan',
+    'npx agent-onboard@<version> architecture --cli-runtime-check',
+    'npx agent-onboard@<version> architecture --thin-router',
+    'npx agent-onboard@<version> architecture --thin-router-check',
+    'npx agent-onboard@<version> architecture --compatibility-port',
+    'npx agent-onboard@<version> architecture --compatibility-port-check',
     'npx agent-onboard@<version> release --version-sprawl-check',
     'npx agent-onboard@<version> authority --first-read',
     'npx agent-onboard@<version> authority --check',
@@ -8284,6 +8358,236 @@ function publicThinCliRouterSeedCheck(root = packageRoot()) {
   };
 }
 
+
+function publicCompatibilityCommandPortSeed(root = packageRoot()) {
+  const gate = PUBLIC_COMPATIBILITY_COMMAND_PORT_SEED;
+  const pkg = readJson(path.join(root, 'package.json'));
+  const context = sourceContext(root);
+  const adapterModulePath = path.join(root, gate.adapter_module);
+  const portModulePath = path.join(root, gate.port_module);
+  const artifactPath = path.join(root, gate.seed_file);
+  const adapterLineCount = countFileLines(root, gate.adapter_module);
+  const portLineCount = countFileLines(root, gate.port_module);
+  let adapterModuleStatus = 'not_present_installed_context_allowed';
+  let adapterModuleSchema = null;
+  let adapterModuleExports = [];
+  let adapterCommandGroups = [];
+  let adapterRequireError = null;
+  if (fs.existsSync(adapterModulePath)) {
+    try {
+      delete require.cache[require.resolve(adapterModulePath)];
+      const adapterModule = require(adapterModulePath);
+      adapterModuleExports = Object.keys(adapterModule).sort();
+      const described = typeof adapterModule.describeCompatibilityCommandPortSeed === 'function' ? adapterModule.describeCompatibilityCommandPortSeed() : null;
+      adapterModuleSchema = described && described.schema ? described.schema : null;
+      adapterCommandGroups = described && described.command_groups ? Object.keys(described.command_groups).sort() : [];
+      adapterModuleStatus = 'present_validated';
+    } catch (error) {
+      adapterModuleStatus = 'present_require_failed';
+      adapterRequireError = error && error.message ? error.message : String(error);
+    }
+  }
+  let portModuleStatus = 'not_present_installed_context_allowed';
+  let portModuleExports = [];
+  let portRequireError = null;
+  if (fs.existsSync(portModulePath)) {
+    try {
+      delete require.cache[require.resolve(portModulePath)];
+      const portModule = require(portModulePath);
+      portModuleExports = Object.keys(portModule).sort();
+      portModuleStatus = 'present_validated';
+    } catch (error) {
+      portModuleStatus = 'present_require_failed';
+      portRequireError = error && error.message ? error.message : String(error);
+    }
+  }
+  const ledgerPath = path.join(root, '.agent-onboard', 'work-items.json');
+  let ledger = null;
+  if (fs.existsSync(ledgerPath)) {
+    try { ledger = readJson(ledgerPath); } catch { ledger = null; }
+  }
+  const workItems = ledger && Array.isArray(ledger.work_items) ? ledger.work_items : [];
+  return {
+    schema: 'agent-onboard-public-compatibility-command-port-seed-result-001',
+    status: 'ok',
+    package_name: gate.package_name,
+    version: VERSION,
+    release_line: gate.release_line,
+    command: gate.command,
+    check_command: gate.check_command,
+    package_root: root,
+    package_context: context.package_context,
+    package_json_version: pkg.version,
+    seed_file: gate.seed_file,
+    seed_file_present: fs.existsSync(artifactPath),
+    adapter_module: {
+      path: gate.adapter_module,
+      present: fs.existsSync(adapterModulePath),
+      status: adapterModuleStatus,
+      schema: adapterModuleSchema,
+      exports: adapterModuleExports,
+      command_groups: adapterCommandGroups,
+      require_error: adapterRequireError,
+      line_count: adapterLineCount,
+      max_lines: gate.port_seed_max_lines
+    },
+    port_module: {
+      path: gate.port_module,
+      present: fs.existsSync(portModulePath),
+      status: portModuleStatus,
+      exports: portModuleExports,
+      require_error: portRequireError,
+      line_count: portLineCount,
+      max_lines: gate.port_seed_max_lines
+    },
+    router_module: gate.router_module,
+    runtime_cutover: {
+      applied: gate.runtime_cutover_applied,
+      entrypoint: 'cli/agent-onboard.js',
+      entrypoint_line_count: countFileLines(root, 'cli/agent-onboard.js'),
+      compatibility_port_used_by_entrypoint_in_this_gate: gate.boundary.uses_compatibility_port_as_runtime_entrypoint
+    },
+    package_strategy: gate.package_strategy,
+    expected_pack_files: PUBLIC_RELEASE_CONTRACT.expected_pack_files.slice().sort(),
+    projected_pack_files: packageJsonProjectedPackFiles(pkg).slice().sort(),
+    milestone_state: {
+      work_item: workItems.find((item) => item.id === gate.work_item_id) || null,
+      next_work_item: workItems.find((item) => item.id === gate.next_work_item_id) || null
+    },
+    port_contract: gate,
+    boundary: {
+      writes_files: false,
+      writes_source_state: false,
+      writes_target_repository_state: false,
+      git_mutation: false,
+      installs_dependencies: false,
+      runs_package_manager: false,
+      runs_build_test_deploy: false,
+      publishes_package: false,
+      mutates_registry: false
+    },
+    errors: []
+  };
+}
+
+function publicCompatibilityCommandPortSeedCheck(root = packageRoot()) {
+  const result = publicCompatibilityCommandPortSeed(root);
+  const gate = PUBLIC_COMPATIBILITY_COMMAND_PORT_SEED;
+  const sourceLedgerRequired = result.package_context === 'source_repository';
+  const expectedPackFiles = PUBLIC_RELEASE_CONTRACT.expected_pack_files.slice().sort();
+  const errors = [];
+  if (gate.seed_status !== 'compatibility_command_port_seed_admitted') errors.push('compatibility command port seed status must be admitted');
+  if (gate.runtime_cutover_applied !== false) errors.push('compatibility port seed gate must not apply runtime cutover');
+  if (gate.package_strategy !== 'controlled_source_module_inclusion') errors.push('compatibility port seed must preserve controlled_source_module_inclusion package strategy');
+  if (!arrayEquals(result.projected_pack_files, expectedPackFiles)) errors.push(`projected npm pack files must remain ${expectedPackFiles.join(', ')}`);
+  if (gate.boundary.compatibility_port_command_writes_files !== false) errors.push('architecture --compatibility-port must remain no-write');
+  if (gate.boundary.compatibility_port_check_command_writes_files !== false) errors.push('architecture --compatibility-port-check must remain no-write');
+  if (gate.boundary.changes_public_cli_outputs !== false) errors.push('compatibility port seed must not change public CLI outputs');
+  if (gate.boundary.changes_cli_runtime_dependency_graph !== false) errors.push('compatibility port seed must not change packaged CLI runtime dependency graph');
+  if (gate.boundary.uses_compatibility_port_as_runtime_entrypoint !== false) errors.push('compatibility port seed must not use source modules as the packaged runtime entrypoint yet');
+  if (gate.boundary.source_port_modules_remain_out_of_pack !== true) errors.push('source compatibility port modules must remain out of npm pack for this gate');
+  if (result.adapter_module.line_count > gate.port_seed_max_lines) errors.push(`${gate.adapter_module} must stay within ${gate.port_seed_max_lines} lines`);
+  if (result.port_module.line_count > gate.port_seed_max_lines) errors.push(`${gate.port_module} must stay within ${gate.port_seed_max_lines} lines`);
+
+  let artifactStatus = 'not_present_installed_context_allowed';
+  let artifactSchema = null;
+  const artifactPath = path.join(root, gate.seed_file);
+  if (fs.existsSync(artifactPath)) {
+    try {
+      const artifact = readJson(artifactPath);
+      artifactSchema = artifact.schema || null;
+      if (artifact.schema !== gate.schema) errors.push(`${gate.seed_file} schema must be ${gate.schema}`);
+      if (artifact.work_item_id !== gate.work_item_id) errors.push(`${gate.seed_file} must identify ${gate.work_item_id}`);
+      if (artifact.next_work_item_id !== gate.next_work_item_id) errors.push(`${gate.seed_file} must seed ${gate.next_work_item_id}`);
+      if (artifact.adapter_module !== gate.adapter_module) errors.push(`${gate.seed_file} must declare ${gate.adapter_module}`);
+      if (artifact.port_module !== gate.port_module) errors.push(`${gate.seed_file} must declare ${gate.port_module}`);
+      if (artifact.runtime_cutover_applied !== false) errors.push(`${gate.seed_file} must not apply runtime cutover`);
+      if (!artifact.boundary || artifact.boundary.package_allowlist_unchanged !== true) errors.push(`${gate.seed_file} must preserve package_allowlist_unchanged`);
+      artifactStatus = 'present_validated';
+    } catch (error) {
+      artifactStatus = 'present_invalid_json';
+      errors.push(`${gate.seed_file} must be valid JSON: ${error && error.message ? error.message : String(error)}`);
+    }
+  } else if (sourceLedgerRequired) {
+    artifactStatus = 'missing_source_context';
+    errors.push(`${gate.seed_file} must exist in source repository context`);
+  }
+
+  const adapterModulePresentOrAllowed = result.adapter_module.present || result.package_context === 'installed_package';
+  const portModulePresentOrAllowed = result.port_module.present || result.package_context === 'installed_package';
+  if (!adapterModulePresentOrAllowed) errors.push(`${gate.adapter_module} must exist in source repository context`);
+  if (!portModulePresentOrAllowed) errors.push(`${gate.port_module} must exist in source repository context`);
+  if (result.adapter_module.present) {
+    if (result.adapter_module.status !== 'present_validated') errors.push(`${gate.adapter_module} must be require-able without side effects${result.adapter_module.require_error ? `: ${result.adapter_module.require_error}` : ''}`);
+    if (result.adapter_module.schema !== 'agent-onboard-public-compatibility-command-port-seed-module-001') errors.push(`${gate.adapter_module} must expose compatibility port seed module schema`);
+    for (const exportName of gate.expected_adapter_export_names) {
+      if (!result.adapter_module.exports.includes(exportName)) errors.push(`${gate.adapter_module} must export ${exportName}`);
+    }
+    for (const groupName of gate.expected_command_groups) {
+      if (!result.adapter_module.command_groups.includes(groupName)) errors.push(`${gate.adapter_module} must declare command group ${groupName}`);
+    }
+  }
+  if (result.port_module.present) {
+    if (result.port_module.status !== 'present_validated') errors.push(`${gate.port_module} must be require-able without side effects${result.port_module.require_error ? `: ${result.port_module.require_error}` : ''}`);
+    for (const exportName of gate.expected_port_export_names) {
+      if (!result.port_module.exports.includes(exportName)) errors.push(`${gate.port_module} must export ${exportName}`);
+    }
+  }
+  const workItem = result.milestone_state.work_item;
+  const nextWorkItem = result.milestone_state.next_work_item;
+  if (sourceLedgerRequired) {
+    if (!workItem) errors.push(`${gate.work_item_id} work item must exist`);
+    else if (workItem.status !== 'closed') errors.push(`${gate.work_item_id} work item must be closed`);
+    if (!nextWorkItem) errors.push(`${gate.next_work_item_id} work item must exist`);
+    else if (nextWorkItem.status !== 'open') errors.push(`${gate.next_work_item_id} work item must be open`);
+  }
+
+  return {
+    schema: 'agent-onboard-public-compatibility-command-port-seed-check-result-001',
+    status: errors.length === 0 ? 'ok' : 'error',
+    package_name: gate.package_name,
+    version: VERSION,
+    release_line: gate.release_line,
+    command: gate.check_command,
+    package_root: root,
+    package_context: result.package_context,
+    validated: {
+      compatibility_port_seed_status_admitted: gate.seed_status === 'compatibility_command_port_seed_admitted',
+      adapter_module_present_or_installed_context_allowed: adapterModulePresentOrAllowed,
+      port_module_present_or_installed_context_allowed: portModulePresentOrAllowed,
+      adapter_module_requireable_when_present: !result.adapter_module.present || result.adapter_module.status === 'present_validated',
+      port_module_requireable_when_present: !result.port_module.present || result.port_module.status === 'present_validated',
+      port_modules_under_line_budget: result.adapter_module.line_count <= gate.port_seed_max_lines && result.port_module.line_count <= gate.port_seed_max_lines,
+      adapter_exports_contract: gate.expected_adapter_export_names.every((name) => !result.adapter_module.present || result.adapter_module.exports.includes(name)),
+      port_exports_contract: gate.expected_port_export_names.every((name) => !result.port_module.present || result.port_module.exports.includes(name)),
+      command_group_contract: gate.expected_command_groups.every((name) => !result.adapter_module.present || result.adapter_module.command_groups.includes(name)),
+      runtime_cutover_not_applied: gate.runtime_cutover_applied === false,
+      packaged_runtime_dependency_graph_unchanged: gate.boundary.changes_cli_runtime_dependency_graph === false,
+      package_allowlist_unchanged: arrayEquals(result.projected_pack_files, expectedPackFiles),
+      port_modules_out_of_pack_for_this_gate: gate.boundary.source_port_modules_remain_out_of_pack === true,
+      seed_file_present_or_installed_context_allowed: artifactStatus === 'present_validated' || artifactStatus === 'not_present_installed_context_allowed',
+      work_item_closed_or_installed_context_allowed: !sourceLedgerRequired || (workItem && workItem.status === 'closed'),
+      next_adapter_gate_open_or_installed_context_allowed: !sourceLedgerRequired || (nextWorkItem && nextWorkItem.status === 'open'),
+      compatibility_port_commands_no_write: gate.boundary.compatibility_port_command_writes_files === false && gate.boundary.compatibility_port_check_command_writes_files === false
+    },
+    adapter_module: result.adapter_module,
+    port_module: result.port_module,
+    runtime_cutover: result.runtime_cutover,
+    source_compatibility_port_seed_file: {
+      path: gate.seed_file,
+      present: fs.existsSync(artifactPath),
+      status: artifactStatus,
+      schema: artifactSchema,
+      source_context_required: sourceLedgerRequired
+    },
+    milestone_state: result.milestone_state,
+    expected_pack_files: expectedPackFiles,
+    projected_pack_files: result.projected_pack_files,
+    boundary: result.boundary,
+    errors
+  };
+}
+
 function publicArchitectureMap(root = packageRoot()) {
   const pkg = readJson(path.join(root, 'package.json'));
   return {
@@ -9030,6 +9334,8 @@ function publicArchitectureCheck(root = packageRoot()) {
   const cliRuntimePlanErrors = cliRuntimePlan.errors.map((error) => `cli runtime de-monolith planning: ${error}`);
   const thinCliRouter = publicThinCliRouterSeedCheck(root);
   const thinCliRouterErrors = thinCliRouter.errors.map((error) => `thin CLI router seed: ${error}`);
+  const compatibilityPort = publicCompatibilityCommandPortSeedCheck(root);
+  const compatibilityPortErrors = compatibilityPort.errors.map((error) => `compatibility command port seed: ${error}`);
   const errors = [];
   if (!arrayEquals(domainIds, expectedDomains)) errors.push(`architecture domain order must be ${expectedDomains.join(', ')}`);
   if (new Set(domainIds).size !== domainIds.length) errors.push('architecture domain ids must be unique');
@@ -9092,12 +9398,14 @@ function publicArchitectureCheck(root = packageRoot()) {
   if (map.map.package_boundary.architecture_cli_runtime_check_command_writes_files !== false) errors.push('architecture CLI runtime check command must remain no-write');
   if (map.map.package_boundary.architecture_thin_router_command_writes_files !== false) errors.push('architecture thin router command must remain no-write');
   if (map.map.package_boundary.architecture_thin_router_check_command_writes_files !== false) errors.push('architecture thin router check command must remain no-write');
+  if (map.map.package_boundary.architecture_compatibility_port_command_writes_files !== false) errors.push('architecture compatibility port command must remain no-write');
+  if (map.map.package_boundary.architecture_compatibility_port_check_command_writes_files !== false) errors.push('architecture compatibility port check command must remain no-write');
   if (map.map.package_boundary.version_sprawl_check_command_writes_files !== false) errors.push('version sprawl check command must remain no-write');
   if (map.map.package_boundary.authority_first_read_command_writes_files !== false) errors.push('authority first-read command must remain no-write');
   if (map.map.package_boundary.authority_check_command_writes_files !== false) errors.push('authority check command must remain no-write');
   if (map.map.package_boundary.target_runtime_namespace_command_writes_files !== false) errors.push('target runtime namespace command must remain no-write');
   if (map.map.package_boundary.target_runtime_check_command_writes_files !== false) errors.push('target runtime check command must remain no-write');
-  errors.push(...routerErrors, ...facadeErrors, ...authorityErrors, ...targetRuntimeErrors, ...sourcePartitionErrors, ...sourceExtractionErrors, ...goldenOutputErrors, ...adapterBoundaryErrors, ...firstSliceErrors, ...bundleParityErrors, ...runtimeBridgeErrors, ...installedFallbackSmokeErrors, ...secondSlicePlanErrors, ...secondSliceFirstSliceErrors, ...authorityBundleParityErrors, ...authorityRuntimeBridgeErrors, ...m2SeedErrors, ...workItemsPlanErrors, ...workItemsFirstSliceErrors, ...workItemsBundleParityErrors, ...workItemsRuntimeBridgeErrors, ...workItemsInstalledFallbackErrors, ...claimsPlanErrors, ...claimsFirstSliceErrors, ...claimsBundleParityErrors, ...claimsRuntimeBridgeErrors, ...claimsInstalledFallbackErrors, ...sourceDomainClosureReviewErrors, ...cliRuntimePlanErrors, ...thinCliRouterErrors);
+  errors.push(...routerErrors, ...facadeErrors, ...authorityErrors, ...targetRuntimeErrors, ...sourcePartitionErrors, ...sourceExtractionErrors, ...goldenOutputErrors, ...adapterBoundaryErrors, ...firstSliceErrors, ...bundleParityErrors, ...runtimeBridgeErrors, ...installedFallbackSmokeErrors, ...secondSlicePlanErrors, ...secondSliceFirstSliceErrors, ...authorityBundleParityErrors, ...authorityRuntimeBridgeErrors, ...m2SeedErrors, ...workItemsPlanErrors, ...workItemsFirstSliceErrors, ...workItemsBundleParityErrors, ...workItemsRuntimeBridgeErrors, ...workItemsInstalledFallbackErrors, ...claimsPlanErrors, ...claimsFirstSliceErrors, ...claimsBundleParityErrors, ...claimsRuntimeBridgeErrors, ...claimsInstalledFallbackErrors, ...sourceDomainClosureReviewErrors, ...cliRuntimePlanErrors, ...thinCliRouterErrors, ...compatibilityPortErrors);
   return {
     schema: 'agent-onboard-public-architecture-check-result-001',
     status: errors.length === 0 ? 'ok' : 'error',
@@ -9141,7 +9449,9 @@ function publicArchitectureCheck(root = packageRoot()) {
       claims_domain_source_extraction_runtime_bridge: claimsRuntimeBridge.status === 'ok',
       claims_domain_source_extraction_installed_fallback_smoke: claimsInstalledFallback.status === 'ok',
       source_domain_extraction_stabilization_closure_review: sourceDomainClosureReview.status === 'ok',
-      cli_runtime_de_monolith_planning: cliRuntimePlan.status === 'ok'
+      cli_runtime_de_monolith_planning: cliRuntimePlan.status === 'ok',
+      thin_cli_router_seed: thinCliRouter.status === 'ok',
+      compatibility_command_port_seed: compatibilityPort.status === 'ok'
     },
     domain_ids: domainIds,
     expected_pack_files: expectedPackFiles,
@@ -9176,7 +9486,7 @@ function publicArchitectureCheck(root = packageRoot()) {
     source_domain_extraction_stabilization_closure_review: sourceDomainClosureReview,
     cli_runtime_de_monolith_planning: cliRuntimePlan,
     thin_cli_router_seed: thinCliRouter,
-    thin_cli_router_seed: thinCliRouter,
+    compatibility_command_port_seed: compatibilityPort,
     boundary: map.boundary,
     errors
   };
@@ -9333,8 +9643,10 @@ function publicReleaseCheck(root = packageRoot()) {
   const cliRuntimePlanErrors = cliRuntimePlan.errors.map((error) => `cli runtime de-monolith planning: ${error}`);
   const thinCliRouter = publicThinCliRouterSeedCheck(root);
   const thinCliRouterErrors = thinCliRouter.errors.map((error) => `thin CLI router seed: ${error}`);
+  const compatibilityPort = publicCompatibilityCommandPortSeedCheck(root);
+  const compatibilityPortErrors = compatibilityPort.errors.map((error) => `compatibility command port seed: ${error}`);
   const architectureParityErrors = architectureParity.errors.map((error) => `installed architecture parity: ${error}`);
-  const errors = [...metadataErrors, ...packErrors, ...messagingErrors, ...sourceLedgerErrors, ...architectureErrors, ...packageSurfaceErrors, ...architectureParityErrors, ...installedFallbackSmokeErrors, ...secondSlicePlanErrors, ...secondSliceFirstSliceErrors, ...authorityBundleParityErrors, ...authorityRuntimeBridgeErrors, ...m2SeedErrors, ...workItemsFirstSliceErrors, ...workItemsBundleParityErrors, ...workItemsRuntimeBridgeErrors, ...workItemsInstalledFallbackErrors, ...claimsPlanErrors, ...claimsFirstSliceErrors, ...claimsBundleParityErrors, ...claimsRuntimeBridgeErrors, ...claimsInstalledFallbackErrors, ...sourceDomainClosureReviewErrors, ...cliRuntimePlanErrors, ...versionPolicyErrors];
+  const errors = [...metadataErrors, ...packErrors, ...messagingErrors, ...sourceLedgerErrors, ...architectureErrors, ...packageSurfaceErrors, ...architectureParityErrors, ...installedFallbackSmokeErrors, ...secondSlicePlanErrors, ...secondSliceFirstSliceErrors, ...authorityBundleParityErrors, ...authorityRuntimeBridgeErrors, ...m2SeedErrors, ...workItemsFirstSliceErrors, ...workItemsBundleParityErrors, ...workItemsRuntimeBridgeErrors, ...workItemsInstalledFallbackErrors, ...claimsPlanErrors, ...claimsFirstSliceErrors, ...claimsBundleParityErrors, ...claimsRuntimeBridgeErrors, ...claimsInstalledFallbackErrors, ...sourceDomainClosureReviewErrors, ...cliRuntimePlanErrors, ...thinCliRouterErrors, ...compatibilityPortErrors, ...versionPolicyErrors];
   return {
     schema: 'agent-onboard-public-release-check-result-013',
     status: errors.length === 0 ? 'ok' : 'error',
@@ -9384,6 +9696,8 @@ function publicReleaseCheck(root = packageRoot()) {
       claims_domain_source_extraction_installed_fallback_smoke: claimsInstalledFallback.status === 'ok',
       source_domain_extraction_stabilization_closure_review: sourceDomainClosureReview.status === 'ok',
       cli_runtime_de_monolith_planning: cliRuntimePlan.status === 'ok',
+      thin_cli_router_seed: thinCliRouter.status === 'ok',
+      compatibility_command_port_seed: compatibilityPort.status === 'ok',
       public_version_reference_policy: versionPolicy.status === 'ok',
       public_package_surface_preservation: packageSurface.status === 'ok',
       public_installed_parity_architecture_smoke: architectureParity.status === 'ok'
@@ -9417,6 +9731,7 @@ function publicReleaseCheck(root = packageRoot()) {
     claims_domain_source_extraction_stabilization_closure_review: sourceDomainClosureReview,
     cli_runtime_de_monolith_planning: cliRuntimePlan,
     thin_cli_router_seed: thinCliRouter,
+    compatibility_command_port_seed: compatibilityPort,
     claims_domain_source_extraction_installed_fallback_smoke: claimsInstalledFallback,
     public_version_reference_policy: versionPolicy,
     public_package_surface_preservation: packageSurface,
@@ -10322,6 +10637,15 @@ function runArchitecture(args) {
     json(result);
     return result.status === 'ok' ? 0 : 1;
   }
+  if (args.length === 1 && args[0] === '--compatibility-port') {
+    json(publicCompatibilityCommandPortSeed());
+    return 0;
+  }
+  if (args.length === 1 && args[0] === '--compatibility-port-check') {
+    const result = publicCompatibilityCommandPortSeedCheck();
+    json(result);
+    return result.status === 'ok' ? 0 : 1;
+  }
   if (args.length === 1 && args[0] === '--check') {
     const result = publicArchitectureCheck();
     json(result);
@@ -10331,7 +10655,7 @@ function runArchitecture(args) {
     schema: 'agent-onboard-architecture-command-error-001',
     status: 'error',
     command_family: 'architecture',
-    message: 'architecture requires --map, --router, --facades, --partition-plan, --partition-check, --extraction-rehearsal, --extraction-check, --golden-outputs, --golden-check, --adapter-boundary, --adapter-check, --first-slice, --first-slice-check, --bundle-parity, --bundle-parity-check, --runtime-bridge, --runtime-bridge-check, --installed-fallback-smoke, --installed-fallback-check, --second-slice-plan, --second-slice-check, --second-slice-first-slice, --second-slice-first-slice-check, --authority-bundle-parity, --authority-bundle-parity-check, --authority-runtime-bridge, --authority-runtime-bridge-check, --m2-seed, --m2-seed-check, --work-items-plan, --work-items-check, --work-items-first-slice, --work-items-first-slice-check, --work-items-bundle-parity, --work-items-bundle-parity-check, --work-items-runtime-bridge, --work-items-runtime-bridge-check, --work-items-installed-fallback-smoke, --work-items-installed-fallback-check, --claims-plan, --claims-check, --claims-first-slice, --claims-first-slice-check, --claims-bundle-parity, --claims-bundle-parity-check, --claims-runtime-bridge, --claims-runtime-bridge-check, --claims-installed-fallback-smoke, --claims-installed-fallback-check, --source-domain-closure-review, --source-domain-closure-check, --cli-runtime-plan, --cli-runtime-check, --thin-router, --thin-router-check, or --check',
+    message: 'architecture requires --map, --router, --facades, --partition-plan, --partition-check, --extraction-rehearsal, --extraction-check, --golden-outputs, --golden-check, --adapter-boundary, --adapter-check, --first-slice, --first-slice-check, --bundle-parity, --bundle-parity-check, --runtime-bridge, --runtime-bridge-check, --installed-fallback-smoke, --installed-fallback-check, --second-slice-plan, --second-slice-check, --second-slice-first-slice, --second-slice-first-slice-check, --authority-bundle-parity, --authority-bundle-parity-check, --authority-runtime-bridge, --authority-runtime-bridge-check, --m2-seed, --m2-seed-check, --work-items-plan, --work-items-check, --work-items-first-slice, --work-items-first-slice-check, --work-items-bundle-parity, --work-items-bundle-parity-check, --work-items-runtime-bridge, --work-items-runtime-bridge-check, --work-items-installed-fallback-smoke, --work-items-installed-fallback-check, --claims-plan, --claims-check, --claims-first-slice, --claims-first-slice-check, --claims-bundle-parity, --claims-bundle-parity-check, --claims-runtime-bridge, --claims-runtime-bridge-check, --claims-installed-fallback-smoke, --claims-installed-fallback-check, --source-domain-closure-review, --source-domain-closure-check, --cli-runtime-plan, --cli-runtime-check, --thin-router, --thin-router-check, --compatibility-port, --compatibility-port-check, or --check',
     writes_files: false,
     publishes_package: false
   });
@@ -10428,6 +10752,10 @@ function runRelease(args) {
       architecture_source_domain_closure_check_command: PUBLIC_RELEASE_CONTRACT.architecture_source_domain_closure_check_command,
       architecture_cli_runtime_plan_command: PUBLIC_RELEASE_CONTRACT.architecture_cli_runtime_plan_command,
       architecture_cli_runtime_check_command: PUBLIC_RELEASE_CONTRACT.architecture_cli_runtime_check_command,
+      architecture_thin_router_command: PUBLIC_RELEASE_CONTRACT.architecture_thin_router_command,
+      architecture_thin_router_check_command: PUBLIC_RELEASE_CONTRACT.architecture_thin_router_check_command,
+      architecture_compatibility_port_command: PUBLIC_RELEASE_CONTRACT.architecture_compatibility_port_command,
+      architecture_compatibility_port_check_command: PUBLIC_RELEASE_CONTRACT.architecture_compatibility_port_check_command,
       version_sprawl_check_command: PUBLIC_RELEASE_CONTRACT.version_sprawl_check_command,
       architecture_check_command: PUBLIC_RELEASE_CONTRACT.architecture_check_command,
       authority_first_read_command: PUBLIC_RELEASE_CONTRACT.authority_first_read_command,
@@ -11350,7 +11678,7 @@ function runTargetInstance(args) {
 }
 
 function help() {
-  process.stdout.write(`agent-onboard ${VERSION}\n\nagent-onboard status\nagent-onboard init --dry-run|--write [--force]\nagent-onboard agents --preview|--write [--force]\nagent-onboard guard --plan|--check-boundary\nagent-onboard authority --first-read|--check\nagent-onboard architecture --map|--router|--facades|--partition-plan|--partition-check|--extraction-rehearsal|--extraction-check|--golden-outputs|--golden-check|--adapter-boundary|--adapter-check|--first-slice|--first-slice-check|--bundle-parity|--bundle-parity-check|--runtime-bridge|--runtime-bridge-check|--installed-fallback-smoke|--installed-fallback-check|--second-slice-plan|--second-slice-check|--second-slice-first-slice|--second-slice-first-slice-check|--authority-bundle-parity|--authority-bundle-parity-check|--authority-runtime-bridge|--authority-runtime-bridge-check|--m2-seed|--m2-seed-check|--work-items-plan|--work-items-check|--work-items-first-slice|--work-items-first-slice-check|--work-items-bundle-parity|--work-items-bundle-parity-check|--work-items-runtime-bridge|--work-items-runtime-bridge-check|--work-items-installed-fallback-smoke|--work-items-installed-fallback-check|--claims-plan|--claims-check|--claims-first-slice|--claims-first-slice-check|--claims-bundle-parity|--claims-bundle-parity-check|--claims-runtime-bridge|--claims-runtime-bridge-check|--claims-installed-fallback-smoke|--claims-installed-fallback-check|--source-domain-closure-review|--source-domain-closure-check|--cli-runtime-plan|--cli-runtime-check|--thin-router|--thin-router-check|--check\nagent-onboard release --plan|--contract|--fixture|--surface|--surface-check|--version-sprawl-check|--parity-smoke|--architecture-parity-smoke|--target-onboarding-smoke|--post-publish-handoff|--published-acceptance|--real-target-trial|--check\nagent-onboard target-config --schema\nagent-onboard target-config --template\nagent-onboard target-config --validate-template\nagent-onboard target-config --validate [agent-onboard.target.json]\nagent-onboard work-items --schema\nagent-onboard work-items --template\nagent-onboard work-items --validate-template\nagent-onboard work-items --validate [.agent-onboard/work-items.json]\nagent-onboard work-items --list [.agent-onboard/work-items.json]\nagent-onboard work-items --init --dry-run|--write [--force]\nagent-onboard work-items --append --dry-run|--write --id <public-work-item-id> --title <title>\nagent-onboard work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>\nagent-onboard work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>\nagent-onboard target runtime --namespace|--check\nagent-onboard target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]\nagent-onboard target bootstrap --dry-run|--write [--force]\nagent-onboard target-instance takeover --dry-run|--write [--force]\n`);
+  process.stdout.write(`agent-onboard ${VERSION}\n\nagent-onboard status\nagent-onboard init --dry-run|--write [--force]\nagent-onboard agents --preview|--write [--force]\nagent-onboard guard --plan|--check-boundary\nagent-onboard authority --first-read|--check\nagent-onboard architecture --map|--router|--facades|--partition-plan|--partition-check|--extraction-rehearsal|--extraction-check|--golden-outputs|--golden-check|--adapter-boundary|--adapter-check|--first-slice|--first-slice-check|--bundle-parity|--bundle-parity-check|--runtime-bridge|--runtime-bridge-check|--installed-fallback-smoke|--installed-fallback-check|--second-slice-plan|--second-slice-check|--second-slice-first-slice|--second-slice-first-slice-check|--authority-bundle-parity|--authority-bundle-parity-check|--authority-runtime-bridge|--authority-runtime-bridge-check|--m2-seed|--m2-seed-check|--work-items-plan|--work-items-check|--work-items-first-slice|--work-items-first-slice-check|--work-items-bundle-parity|--work-items-bundle-parity-check|--work-items-runtime-bridge|--work-items-runtime-bridge-check|--work-items-installed-fallback-smoke|--work-items-installed-fallback-check|--claims-plan|--claims-check|--claims-first-slice|--claims-first-slice-check|--claims-bundle-parity|--claims-bundle-parity-check|--claims-runtime-bridge|--claims-runtime-bridge-check|--claims-installed-fallback-smoke|--claims-installed-fallback-check|--source-domain-closure-review|--source-domain-closure-check|--cli-runtime-plan|--cli-runtime-check|--thin-router|--thin-router-check|--compatibility-port|--compatibility-port-check|--check\nagent-onboard release --plan|--contract|--fixture|--surface|--surface-check|--version-sprawl-check|--parity-smoke|--architecture-parity-smoke|--target-onboarding-smoke|--post-publish-handoff|--published-acceptance|--real-target-trial|--check\nagent-onboard target-config --schema\nagent-onboard target-config --template\nagent-onboard target-config --validate-template\nagent-onboard target-config --validate [agent-onboard.target.json]\nagent-onboard work-items --schema\nagent-onboard work-items --template\nagent-onboard work-items --validate-template\nagent-onboard work-items --validate [.agent-onboard/work-items.json]\nagent-onboard work-items --list [.agent-onboard/work-items.json]\nagent-onboard work-items --init --dry-run|--write [--force]\nagent-onboard work-items --append --dry-run|--write --id <public-work-item-id> --title <title>\nagent-onboard work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>\nagent-onboard work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>\nagent-onboard target runtime --namespace|--check\nagent-onboard target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]\nagent-onboard target bootstrap --dry-run|--write [--force]\nagent-onboard target-instance takeover --dry-run|--write [--force]\n`);
   return 0;
 }
 
