@@ -277,3 +277,8 @@ The claims bundle parity gate may add only the source-only parity evidence artif
 Claims installed fallback smoke rule: `src/domains/claims.js` remains source-only and outside `package.json#files`; installed context must resolve claims metadata through bundled fallback while preserving the shared `.agent-onboard/work-items.json` authority and excluding non-claim work-items commands.
 
 Source-domain stabilization closure review: `architecture --source-domain-closure-review` reports M2 closure across work-items and claims extraction gates, and `architecture --source-domain-closure-check` validates the M2 closure plus M3 seed while keeping source modules outside the npm package.
+
+
+## Public CLI runtime de-monolith planning
+
+`cli/agent-onboard.js` is now declared as monolith debt; the public runtime cutover path uses controlled source-module inclusion, keeps the current compact npm package allowlist unchanged for this planning gate, and seeds the thin CLI router cutover.

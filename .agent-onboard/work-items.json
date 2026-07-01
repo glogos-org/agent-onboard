@@ -84,7 +84,7 @@
     {
       "id": "P1S3M3",
       "stage_id": "P1S3",
-      "title": "Public target and release domain source extraction milestone",
+      "title": "Public CLI runtime de-monolith milestone",
       "status": "open"
     }
   ],
@@ -2050,7 +2050,49 @@
     {
       "id": "P1S3M3W1",
       "milestone_id": "P1S3M3",
-      "title": "Public target domain source extraction planning gate",
+      "title": "Public CLI runtime de-monolith planning gate",
+      "status": "closed",
+      "closure": {
+        "actor": "chatgpt-gpt-5.5-thinking",
+        "closed_at": "2026-07-01T00:00:00.000Z",
+        "summary": "Admitted the public CLI runtime de-monolith planning gate: declared the 11k-line public CLI as monolith debt, selected controlled source-module inclusion as the public package strategy for future physical cutover, set a thin-entrypoint line budget, and seeded the router cutover gate without changing the compact npm package allowlist.",
+        "changed_files": [
+          ".agent-onboard/work-items.json",
+          ".agent-onboard/cli-runtime-de-monolith-planning.json",
+          "cli/agent-onboard.js",
+          "package.json",
+          "README.md",
+          "AGENTS.md",
+          "llms.txt",
+          "test/agent-onboard.test.js"
+        ],
+        "checks_run": [
+          "node -c cli/agent-onboard.js",
+          "node -c test/agent-onboard.test.js",
+          "node cli/agent-onboard.js architecture --cli-runtime-plan",
+          "node cli/agent-onboard.js architecture --cli-runtime-check",
+          "node cli/agent-onboard.js architecture --source-domain-closure-check",
+          "node cli/agent-onboard.js architecture --check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node cli/agent-onboard.js release --version-sprawl-check",
+          "node cli/agent-onboard.js release --architecture-parity-smoke",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "npm pack --dry-run --json",
+          "installed tarball smoke: status, architecture --cli-runtime-check, architecture --check, release --check"
+        ],
+        "checks_not_run": [
+          "npm publish --access public"
+        ],
+        "known_non_pass": [
+          "npm test was attempted after updating test expectations, but it did not complete within the sandbox execution window; no assertion failure was emitted before timeout. Targeted syntax, architecture, release, ledger, npm pack, and installed-tarball smoke checks passed."
+        ]
+      }
+    },
+    {
+      "id": "P1S3M3W2",
+      "milestone_id": "P1S3M3",
+      "title": "Public thin CLI router seed gate",
       "status": "open"
     }
   ]

@@ -114,3 +114,8 @@ Public claims domain source extraction first-slice gate:
 Current transition state: work-items installed fallback, claims-domain planning, claims-domain first-slice, claims-domain bundle parity, claims-domain runtime bridge, and claims-domain installed fallback smoke are closed; next executable gate is the public source-domain extraction stabilization closure review gate. Keep src/domains/claims.js source-only and keep npm package files compact.
 
 Source-domain stabilization closure review: `architecture --source-domain-closure-review` reports M2 closure across work-items and claims extraction gates, and `architecture --source-domain-closure-check` validates the M2 closure plus M3 seed while keeping source modules outside the npm package.
+
+
+## Public CLI runtime de-monolith planning
+
+`cli/agent-onboard.js` is now declared as monolith debt; the public runtime cutover path uses controlled source-module inclusion, keeps the current compact npm package allowlist unchanged for this planning gate, and seeds the thin CLI router cutover.

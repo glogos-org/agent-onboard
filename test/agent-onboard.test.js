@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_source_domain_extraction_stabilization_closure_review_gate';
+const EXPECTED_RELEASE_LINE = 'public_cli_runtime_de_monolith_planning_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 
 function run(args, opts = {}) {
@@ -114,7 +114,7 @@ function cliTargetConfigForTest(dir) {
   assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
   assert.strictEqual(output.boundary.publishes_package, false);
   assert.ok(output.post_publish_verification_commands.some((command) => command.includes(`agent-onboard@${EXPECTED_VERSION}`)));
-  assert.strictEqual(output.contract_schema, 'agent-onboard-public-release-contract-028');
+  assert.strictEqual(output.contract_schema, 'agent-onboard-public-release-contract-029');
   assert.strictEqual(output.contract_command, 'agent-onboard release --contract');
   assert.strictEqual(output.fixture_command, 'agent-onboard release --fixture');
   assert.strictEqual(output.parity_smoke_command, 'agent-onboard release --parity-smoke');
@@ -168,6 +168,8 @@ function cliTargetConfigForTest(dir) {
   assert.strictEqual(output.architecture_claims_installed_fallback_check_command, 'agent-onboard architecture --claims-installed-fallback-check');
   assert.strictEqual(output.architecture_source_domain_closure_review_command, 'agent-onboard architecture --source-domain-closure-review');
   assert.strictEqual(output.architecture_source_domain_closure_check_command, 'agent-onboard architecture --source-domain-closure-check');
+  assert.strictEqual(output.architecture_cli_runtime_plan_command, 'agent-onboard architecture --cli-runtime-plan');
+  assert.strictEqual(output.architecture_cli_runtime_check_command, 'agent-onboard architecture --cli-runtime-check');
   assert.strictEqual(output.architecture_check_command, 'agent-onboard architecture --check');
   assert.strictEqual(output.authority_first_read_command, 'agent-onboard authority --first-read');
   assert.strictEqual(output.authority_check_command, 'agent-onboard authority --check');
@@ -182,7 +184,7 @@ function cliTargetConfigForTest(dir) {
   assert.strictEqual(output.schema, 'agent-onboard-public-release-contract-response-001');
   assert.strictEqual(output.version, EXPECTED_VERSION);
   assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
-  assert.strictEqual(output.contract.schema, 'agent-onboard-public-release-contract-028');
+  assert.strictEqual(output.contract.schema, 'agent-onboard-public-release-contract-029');
   assert.strictEqual(output.contract.contract_command, 'agent-onboard release --contract');
   assert.strictEqual(output.contract.fixture_command, 'agent-onboard release --fixture');
   assert.strictEqual(output.contract.parity_smoke_command, 'agent-onboard release --parity-smoke');
@@ -236,6 +238,8 @@ function cliTargetConfigForTest(dir) {
   assert.strictEqual(output.contract.architecture_claims_installed_fallback_check_command, 'agent-onboard architecture --claims-installed-fallback-check');
   assert.strictEqual(output.contract.architecture_source_domain_closure_review_command, 'agent-onboard architecture --source-domain-closure-review');
   assert.strictEqual(output.contract.architecture_source_domain_closure_check_command, 'agent-onboard architecture --source-domain-closure-check');
+  assert.strictEqual(output.contract.architecture_cli_runtime_plan_command, 'agent-onboard architecture --cli-runtime-plan');
+  assert.strictEqual(output.contract.architecture_cli_runtime_check_command, 'agent-onboard architecture --cli-runtime-check');
   assert.strictEqual(output.contract.architecture_check_command, 'agent-onboard architecture --check');
   assert.strictEqual(output.contract.authority_first_read_command, 'agent-onboard authority --first-read');
   assert.strictEqual(output.contract.authority_check_command, 'agent-onboard authority --check');
@@ -254,8 +258,8 @@ function cliTargetConfigForTest(dir) {
   assert.strictEqual(output.schema, 'agent-onboard-public-release-fixture-response-001');
   assert.strictEqual(output.version, EXPECTED_VERSION);
   assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
-  assert.strictEqual(output.contract_schema, 'agent-onboard-public-release-contract-028');
-  assert.strictEqual(output.fixture_matrix.schema, 'agent-onboard-public-release-fixture-matrix-020');
+  assert.strictEqual(output.contract_schema, 'agent-onboard-public-release-contract-029');
+  assert.strictEqual(output.fixture_matrix.schema, 'agent-onboard-public-release-fixture-matrix-021');
   assert.ok(output.fixture_matrix.fixtures.some((fixture) => fixture.id === 'stale_package_version_contract'));
   assert.ok(output.fixture_matrix.fixtures.some((fixture) => fixture.id === 'pack_allowlist_drift_contract'));
   assert.ok(output.fixture_matrix.fixtures.some((fixture) => fixture.id === 'missing_bin_entrypoint_contract'));
@@ -303,7 +307,7 @@ function cliTargetConfigForTest(dir) {
   assert.strictEqual(output.command, 'agent-onboard architecture --map');
   assert.strictEqual(output.map.public_source_shape.source_partition_plan_file, '.agent-onboard/source-partition-plan.json');
   assert.strictEqual(output.map.public_source_shape.source_extraction_rehearsal_file, '.agent-onboard/source-extraction-rehearsal.json');
-  assert.strictEqual(output.map.public_source_shape.physical_domain_split_status, 'source_domain_extraction_stabilization_closure_review_applied');
+  assert.strictEqual(output.map.public_source_shape.physical_domain_split_status, 'cli_runtime_de_monolith_planning_applied');
   assert.strictEqual(output.map.public_source_shape.source_extraction_golden_outputs_file, '.agent-onboard/source-extraction-golden-outputs.json');
   assert.strictEqual(output.map.public_source_shape.source_module_extraction_adapter_boundary_file, '.agent-onboard/source-module-extraction-adapter-boundary.json');
   assert.strictEqual(output.map.public_source_shape.source_module_extraction_first_slice_file, '.agent-onboard/source-module-extraction-first-slice.json');
@@ -1935,7 +1939,7 @@ function cliTargetConfigForTest(dir) {
   assert.strictEqual(installedArchitectureParity.source_context.package_context, 'installed_package');
   assert.strictEqual(installedArchitectureParity.parity.architecture_check, true);
   assert.strictEqual(installedArchitectureParity.parity.source_context_excluded_from_pack, true);
-  assert.strictEqual(cli.PUBLIC_RELEASE_FIXTURE_MATRIX.schema, 'agent-onboard-public-release-fixture-matrix-020');
+  assert.strictEqual(cli.PUBLIC_RELEASE_FIXTURE_MATRIX.schema, 'agent-onboard-public-release-fixture-matrix-021');
   assert.ok(cli.PUBLIC_RELEASE_FIXTURE_MATRIX.fixtures.some((fixture) => fixture.id === 'public_work_items_domain_source_extraction_plan'));
   assert.ok(cli.PUBLIC_RELEASE_FIXTURE_MATRIX.fixtures.some((fixture) => fixture.id === 'target_onboarding_dry_run_fixture_matrix'));
   assert.strictEqual(cli.TARGET_ONBOARDING_SURFACE_PLAN.schema, 'agent-onboard-public-target-onboarding-surface-plan-001');
@@ -2225,7 +2229,7 @@ function cliTargetConfigForTest(dir) {
   const help = run(['--help']);
   assert.ok(help.stdout.includes('work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>'));
   assert.ok(help.stdout.includes('work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>'));
-  assert.ok(help.stdout.includes('--claims-installed-fallback-smoke|--claims-installed-fallback-check|--source-domain-closure-review|--source-domain-closure-check|--check'));
+  assert.ok(help.stdout.includes('--claims-installed-fallback-smoke|--claims-installed-fallback-check|--source-domain-closure-review|--source-domain-closure-check|--cli-runtime-plan|--cli-runtime-check|--check'));
   assert.ok(help.stdout.includes('release --plan|--contract|--fixture|--surface|--surface-check|--version-sprawl-check|--parity-smoke|--architecture-parity-smoke|--target-onboarding-smoke|--post-publish-handoff|--published-acceptance|--real-target-trial|--check'));
   assert.ok(help.stdout.includes('target runtime --namespace|--check'));
   assert.ok(help.stdout.includes('target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]'));
@@ -2521,7 +2525,32 @@ assert.ok(agents.includes('node cli/agent-onboard.js target runtime --check'));
   assert.strictEqual(output.source_closure_review_file.status, 'present_validated');
   assert.strictEqual(output.milestone_transition.closed_milestone.status, 'closed');
   assert.strictEqual(output.milestone_transition.opened_milestone.status, 'open');
-  assert.strictEqual(output.milestone_transition.seed_work_item.status, 'open');
+  assert.strictEqual(output.milestone_transition.seed_work_item.status, 'closed');
+  assert.deepStrictEqual(output.errors, []);
+}
+
+
+{
+  const result = run(['architecture', '--cli-runtime-check']);
+  const output = readJsonOutput(result);
+  assert.strictEqual(output.schema, 'agent-onboard-public-cli-runtime-de-monolith-planning-check-result-001');
+  assert.strictEqual(output.status, 'ok');
+  assert.strictEqual(output.version, EXPECTED_VERSION);
+  assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
+  assert.strictEqual(output.command, 'agent-onboard architecture --cli-runtime-check');
+  assert.ok(output.validated.monolith_debt_declared);
+  assert.ok(output.validated.cli_line_count_floor_observed);
+  assert.ok(output.validated.controlled_source_module_inclusion_selected);
+  assert.ok(output.validated.compact_pack_allowlist_unchanged_for_this_gate);
+  assert.ok(output.validated.thin_entrypoint_budget_declared);
+  assert.ok(output.validated.monolith_growth_blocked);
+  assert.ok(output.validated.planning_file_present_or_installed_context_allowed);
+  assert.ok(output.validated.work_item_closed_or_installed_context_allowed);
+  assert.ok(output.validated.next_router_gate_open_or_installed_context_allowed);
+  assert.strictEqual(output.source_cli_runtime_plan_file.path, '.agent-onboard/cli-runtime-de-monolith-planning.json');
+  assert.strictEqual(output.source_cli_runtime_plan_file.status, 'present_validated');
+  assert.strictEqual(output.selected_package_strategy.id, 'controlled_source_module_inclusion');
+  assert.strictEqual(output.cli_line_budget.target_entrypoint_max_lines, 300);
   assert.deepStrictEqual(output.errors, []);
 }
 
