@@ -174,6 +174,7 @@ function syntaxTasks() {
     nodeTask('syntax: work-items command adapter', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'adapters', 'commands', 'work-items.js')]),
     nodeTask('syntax: runtime service partitions', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'service-partitions.js')]),
     nodeTask('syntax: architecture M3 runtime catalog', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'architecture', 'm3-runtime-catalog.js')]),
+    nodeTask('syntax: architecture aggregate check service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'architecture', 'services', 'checks', 'architecture-check-service.js')]),
     nodeTask('syntax: architecture runtime service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'architecture', 'services', 'runtime', 'architecture-runtime-service.js')]),
     nodeTask('syntax: architecture source extraction service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'architecture', 'services', 'source-extraction', 'architecture-source-extraction-service.js')]),
     nodeTask('syntax: architecture source domain orchestrator service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'architecture', 'services', 'source-domains', 'architecture-source-domain-service.js')]),

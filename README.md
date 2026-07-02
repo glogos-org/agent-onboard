@@ -820,6 +820,8 @@ This release splits source-extraction and bridge handlers from the architecture 
 
 This release extracts the work-items and claims source-domain architecture checks from `cli/agent-onboard.js` into packaged `cli/agent_onboard/domains/architecture/services/source-domains/*` services, keeping the entrypoint below 7k lines and preserving architecture and release outputs.
 
+This release extracts the aggregate `architecture --check` coordinator from `cli/agent-onboard.js` into `cli/agent_onboard/domains/architecture/services/checks/architecture-check-service.js`, keeping the entrypoint smaller while preserving the full architecture check contract.
+
 <!-- ## Star History
 
 [![Star History Chart](https://api.star-history.com/chart?repos=glogos-org/agent-onboard&type=date&legend=top-left)](https://www.star-history.com/?repos=glogos-org%2Fagent-onboard&type=date&legend=top-left) -->

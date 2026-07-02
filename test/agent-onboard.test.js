@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_architecture_source_domain_service_extraction_gate';
+const EXPECTED_RELEASE_LINE = 'public_architecture_aggregate_check_service_extraction_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const EXPECTED_PACK_FILES = [
   'LICENSE',
@@ -25,6 +25,7 @@ const EXPECTED_PACK_FILES = [
   'cli/agent_onboard/adapters/compatibility-command-port.js',
   'cli/agent_onboard/command-router.js',
   'cli/agent_onboard/domains/architecture/m3-runtime-catalog.js',
+  'cli/agent_onboard/domains/architecture/services/checks/architecture-check-service.js',
   'cli/agent_onboard/domains/architecture/services/runtime/architecture-runtime-service.js',
   'cli/agent_onboard/domains/architecture/services/source-domains/architecture-source-domain-service.js',
   'cli/agent_onboard/domains/architecture/services/source-domains/claims-source-domain-service.js',

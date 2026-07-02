@@ -370,3 +370,7 @@ The public line splits source-extraction and bridge handlers into `cli/agent_onb
 ## Public architecture source domain service split
 
 The public line splits work-items and claims source-domain architecture handlers into `cli/agent_onboard/domains/architecture/services/source-domains/*` services. Keep the orchestrator thin, keep subservices dependency-injected, and do not move private or source-only context into the npm package surface.
+
+## Public architecture aggregate check service split
+
+The public line extracts the aggregate `architecture --check` coordinator into `cli/agent_onboard/domains/architecture/services/checks/architecture-check-service.js`. Keep the service dependency-injected and keep `cli/agent-onboard.js` as wiring plus command dispatch.
