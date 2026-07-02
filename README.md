@@ -806,6 +806,8 @@ This release deletes the legacy bundled work-items fallback from `cli/agent-onbo
 
 This release extracts the public architecture static catalog from `cli/agent-onboard.js` into `cli/agent_onboard/domains/architecture/static-catalog.js`, keeping public CLI outputs unchanged while reducing the entrypoint size.
 
+This release extracts the public target onboarding static catalog from `cli/agent-onboard.js` into `cli/agent_onboard/domains/target/static-catalog.js`, keeping target onboarding plan and fixture outputs unchanged while reducing the entrypoint size.
+
 <!-- ## Star History
 
 [![Star History Chart](https://api.star-history.com/chart?repos=glogos-org/agent-onboard&type=date&legend=top-left)](https://www.star-history.com/?repos=glogos-org%2Fagent-onboard&type=date&legend=top-left) -->
