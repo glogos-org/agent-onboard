@@ -818,6 +818,8 @@ This release extracts the public architecture runtime service batch from `cli/ag
 
 This release splits source-extraction and bridge handlers from the architecture runtime service into `cli/agent_onboard/domains/architecture/services/source-extraction/architecture-source-extraction-service.js`, keeping the runtime service below 1k lines while preserving architecture and release outputs.
 
+This release extracts the work-items and claims source-domain architecture checks from `cli/agent-onboard.js` into packaged `cli/agent_onboard/domains/architecture/services/source-domains/*` services, keeping the entrypoint below 7k lines and preserving architecture and release outputs.
+
 <!-- ## Star History
 
 [![Star History Chart](https://api.star-history.com/chart?repos=glogos-org/agent-onboard&type=date&legend=top-left)](https://www.star-history.com/?repos=glogos-org%2Fagent-onboard&type=date&legend=top-left) -->

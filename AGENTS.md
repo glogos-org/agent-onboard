@@ -366,3 +366,7 @@ The public line extracts architecture runtime/check handlers into `cli/agent_onb
 ## Public architecture source extraction service split
 
 The public line splits source-extraction and bridge handlers into `cli/agent_onboard/domains/architecture/services/source-extraction/architecture-source-extraction-service.js`. Keep the split services packaged, dependency-injected, and output-compatible; do not let either architecture service become a new god file.
+
+## Public architecture source domain service split
+
+The public line splits work-items and claims source-domain architecture handlers into `cli/agent_onboard/domains/architecture/services/source-domains/*` services. Keep the orchestrator thin, keep subservices dependency-injected, and do not move private or source-only context into the npm package surface.
