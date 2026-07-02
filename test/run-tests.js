@@ -196,6 +196,8 @@ function quickTasks() {
     cliTask('work-items validate-template through runtime service', ['work-items', '--validate-template'], expectStatusOk),
     cliTask('work-items list through runtime service', ['work-items', '--list', '.agent-onboard/work-items.json'], expectStatusOk),
     cliTask('work-items validate', ['work-items', '--validate', '.agent-onboard/work-items.json'], expectStatusOk),
+    cliTask('work-items init dry-run through runtime service', ['work-items', '--init', '--dry-run', '--force'], expectStatusOk),
+    cliTask('work-items append dry-run through runtime service', ['work-items', '--append', '--dry-run', '--id', 'P9S9M9W9', '--title', 'Runtime append dry-run smoke'], expectStatusOk),
     nodeTask('public artifact boundary check', [path.join(ROOT, 'scripts', 'check-public-artifact-boundary.js')], expectStatusOk),
     npmTask('npm pack dry run', ['pack', '--dry-run', '--json'], expectPackFiles)
   ];

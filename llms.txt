@@ -140,10 +140,10 @@ Public thin entrypoint router cutover application:
 - node cli/agent-onboard.js architecture --check
 - node cli/agent-onboard.js release --check
 
-Current command adapter state: core, release package, architecture, authority, target, and work-items adapter extraction gates are closed. The router, compatibility command port, port facade, admitted command adapters, and work-items runtime service modules are packaged. The thin entrypoint router cutover is applied, and work-items read-only runtime completion is the active gate.
+Current command adapter state: core, release package, architecture, authority, target, and work-items adapter extraction gates are closed. The router, compatibility command port, port facade, admitted command adapters, and work-items runtime service modules are packaged. The thin entrypoint router cutover is applied, and work-items init/append runtime write-boundary extraction is the active gate.
 
-## Public work-items read-only runtime completion
+## Public work-items init append runtime write boundary
 
-The public line is completing the read-only work-items runtime surface through the packaged work-items command adapter and packaged work-items runtime service modules. `work-items --schema`, `--template`, `--validate-template`, `--list`, and `--validate` route through the runtime service. Write-capable work-items commands remain legacy fallback behavior in this gate.
+The public line is moving `work-items --init` and `--append` into the packaged work-items command adapter and packaged work-items runtime service modules. `work-items --schema`, `--template`, `--validate-template`, `--list`, `--validate`, `--init`, and `--append` route through the runtime service. `work-items --claim` and `--close` remain legacy fallback behavior in this gate.
 
 Current command adapter state: core, release package, architecture, authority, target, and work-items adapters are packaged. The package surface remains intentionally bounded while preserving public CLI output compatibility.

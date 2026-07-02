@@ -312,9 +312,9 @@ node cli/agent-onboard.js release --check
 
 This gate expands runtime delegation through the packaged command adapters after the `process.argv` router cutover. It keeps the 11-file package surface unchanged; future gates should continue extracting command families without growing `cli/agent-onboard.js` again.
 
-## Public work-items read-only runtime completion
+## Public work-items init append runtime write boundary
 
-The public line is now completing the read-only work-items runtime surface in a controlled slice. The packaged work-items command adapter plus packaged runtime domain service modules route `work-items --schema`, `--template`, `--validate-template`, `--list`, and `--validate`; `work-items --init`, `--append`, `--claim`, and `--close` remain legacy fallback commands for this gate.
+The public line is now moving the work-items ledger write boundary into the packaged runtime service in a controlled slice. The packaged work-items command adapter plus packaged runtime domain service modules route `work-items --schema`, `--template`, `--validate-template`, `--list`, `--validate`, `--init`, and `--append`; `work-items --claim` and `--close` remain legacy fallback commands for this gate.
 
 Run these source checks for this gate:
 
@@ -327,6 +327,8 @@ node cli/agent-onboard.js work-items --template
 node cli/agent-onboard.js work-items --validate-template
 node cli/agent-onboard.js work-items --list .agent-onboard/work-items.json
 node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json
+node cli/agent-onboard.js work-items --init --dry-run --force
+node cli/agent-onboard.js work-items --append --dry-run --id P9S9M9W9 --title "Runtime append dry-run smoke"
 node cli/agent-onboard.js architecture --router-adapter-delegation-check
 node cli/agent-onboard.js release --surface-check
 node cli/agent-onboard.js release --check

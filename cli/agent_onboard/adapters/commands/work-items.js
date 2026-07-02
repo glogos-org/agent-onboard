@@ -14,9 +14,11 @@ const WORK_ITEMS_COMMAND_ADAPTER_EXTRACTION = Object.freeze({
     'work-items --list',
     'work-items --validate'
   ]),
-  fallback_commands: Object.freeze([
+  extracted_write_boundary_commands: Object.freeze([
     'work-items --init',
-    'work-items --append',
+    'work-items --append'
+  ]),
+  fallback_commands: Object.freeze([
     'work-items --claim',
     'work-items --close'
   ]),
@@ -27,7 +29,9 @@ const WORK_ITEMS_COMMAND_ADAPTER_EXTRACTION = Object.freeze({
     validate_template: 'work-items --validate-template is served by the packaged work-items runtime service',
     list: 'work-items --list is served by the packaged work-items runtime service',
     validate: 'work-items --validate is served by the packaged work-items runtime service',
-    fallback: 'write-capable work-items commands remain bundled CLI fallback in this gate'
+    init: 'work-items --init is served by the packaged work-items runtime service with explicit --write boundary',
+    append: 'work-items --append is served by the packaged work-items runtime service with explicit --write boundary',
+    fallback: 'claim and close work-items commands remain bundled CLI fallback in this gate'
   }),
   boundary: Object.freeze({
     used_by_runtime_entrypoint_in_this_gate: true,
@@ -38,7 +42,8 @@ const WORK_ITEMS_COMMAND_ADAPTER_EXTRACTION = Object.freeze({
     no_process_exit: true,
     no_dynamic_eval: true,
     no_child_process: true,
-    write_capable_work_items_commands_remain_legacy_fallback: true
+    init_append_commands_use_explicit_write_boundary: true,
+    claim_close_work_items_commands_remain_legacy_fallback: true
   })
 });
 
@@ -55,6 +60,8 @@ function createWorkItemsCommandAdapter(options = Object.freeze({})) {
     commands: WORK_ITEMS_COMMAND_ADAPTER_EXTRACTION.owned_top_level_commands,
     workItems(argv) {
       const args = Array.isArray(argv) ? argv.slice(3) : [];
+      if (args.includes('--init') && service && typeof service.init === 'function') return service.init(args);
+      if (args.includes('--append') && service && typeof service.append === 'function') return service.append(args);
       if (args.includes('--schema') && service && typeof service.schema === 'function') return service.schema(args);
       if (args.includes('--template') && service && typeof service.template === 'function') return service.template(args);
       if (args.includes('--validate-template') && service && typeof service.validateTemplate === 'function') return service.validateTemplate(args);
