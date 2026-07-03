@@ -70,6 +70,14 @@ function expectPackFiles(stdout, taskName) {
   }
 }
 
+function expectTextIncludes(patterns) {
+  return (stdout, taskName) => {
+    for (const pattern of patterns) {
+      if (!stdout.includes(pattern)) throw new Error(`${taskName} did not include ${JSON.stringify(pattern)}`);
+    }
+  };
+}
+
 function commandForDisplay(task) {
   return [path.basename(task.command), ...task.args].join(' ');
 }
@@ -213,15 +221,20 @@ function quickTasks() {
     cliTask('release architecture parity smoke', ['release', '--architecture-parity-smoke'], expectStatusOk),
     cliTask('release check', ['release', '--check'], expectStatusOk),
     cliTask('target doctor', ['target', 'doctor', '--json'], expectStatusOk),
+    cliTask('target doctor text', ['target', 'doctor', '--text'], expectTextIncludes(['agent-onboard target doctor', 'Readiness:', 'Writes performed: false'])),
     cliTask('target profile', ['target', 'profile', '--json'], expectStatusOk),
+    cliTask('target profile text', ['target', 'profile', '--text'], expectTextIncludes(['agent-onboard target profile', 'Package managers:', 'Writes performed: false'])),
     cliTask('target repair plan', ['target', 'repair', '--plan'], expectStatusOk),
     cliTask('work-items schema through runtime service', ['work-items', '--schema'], expectStatusOk),
     cliTask('work-items template through runtime service', ['work-items', '--template'], expectStatusOk),
     cliTask('work-items validate-template through runtime service', ['work-items', '--validate-template'], expectStatusOk),
     cliTask('work-items list through runtime service', ['work-items', '--list', '.agent-onboard/work-items.json'], expectStatusOk),
     cliTask('work-items summary view through runtime service', ['work-items', '--summary', '.agent-onboard/work-items.json'], expectStatusOk),
+    cliTask('work-items summary text view through runtime service', ['work-items', '--summary', '.agent-onboard/work-items.json', '--text'], expectTextIncludes(['agent-onboard work-items summary', 'Items:'])),
     cliTask('work-items next view through runtime service', ['work-items', '--next', '.agent-onboard/work-items.json'], expectStatusOk),
+    cliTask('work-items next text view through runtime service', ['work-items', '--next', '.agent-onboard/work-items.json', '--text'], expectTextIncludes(['agent-onboard next work item', 'Claim dry-run:'])),
     cliTask('work-items mine view through runtime service', ['work-items', '--mine', '.agent-onboard/work-items.json', '--actor', 'codex-gpt-5'], expectStatusOk),
+    cliTask('work-items mine text view through runtime service', ['work-items', '--mine', '.agent-onboard/work-items.json', '--actor', 'codex-gpt-5', '--text'], expectTextIncludes(['agent-onboard work items for codex-gpt-5', 'Claimed:'])),
     cliTask('work-items validate', ['work-items', '--validate', '.agent-onboard/work-items.json'], expectStatusOk),
     cliTask('work-items init dry-run through runtime service', ['work-items', '--init', '--dry-run', '--force'], expectStatusOk),
     cliTask('work-items append dry-run through runtime service', ['work-items', '--append', '--dry-run', '--id', APPEND_SMOKE_WORK_ITEM_ID, '--title', 'Runtime append dry-run smoke'], expectStatusOk),

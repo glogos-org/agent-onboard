@@ -26,9 +26,10 @@ const TARGET_COMMAND = Object.freeze({
   bootstrap: 'bootstrap'
 });
 const TARGET_PROFILE_COMMAND = Object.freeze({
-  help: 'agent-onboard target profile --json [--target <path>]',
+  help: 'agent-onboard target profile --json|--text [--target <path>]',
   flag: Object.freeze({
     json: '--json',
+    text: '--text',
     target: '--target'
   })
 });
@@ -44,14 +45,15 @@ const TARGET_REPAIR_COMMAND = Object.freeze({
   })
 });
 const WORK_ITEMS_USABILITY_HELP_LINES = Object.freeze([
-  'agent-onboard work-items --summary [.agent-onboard/work-items.json]',
-  'agent-onboard work-items --next [.agent-onboard/work-items.json]',
-  'agent-onboard work-items --mine [.agent-onboard/work-items.json] --actor <actor>'
+  'agent-onboard work-items --summary [.agent-onboard/work-items.json] [--text]',
+  'agent-onboard work-items --next [.agent-onboard/work-items.json] [--text]',
+  'agent-onboard work-items --mine [.agent-onboard/work-items.json] --actor <actor> [--text]'
 ]);
 const TARGET_DOCTOR_COMMAND = Object.freeze({
-  help: 'agent-onboard target doctor [--json] [--target <path>]',
+  help: 'agent-onboard target doctor --json|--text [--target <path>]',
   flag: Object.freeze({
     json: '--json',
+    text: '--text',
     target: '--target'
   })
 });
@@ -4861,80 +4863,12 @@ function publicInstalledParityArchitectureSmoke(root = packageRoot()) {
   const metadataErrors = packageJsonReleaseErrors(pkg, root);
   const messagingErrors = publicArtifactMessagingErrors(root, expectedPackFiles);
   const architecture = publicArchitectureCheck(root);
-  const authority = publicAuthorityFirstReadCheck(root);
   const targetRuntime = publicTargetRuntimeNamespaceCheck(root);
   const packageSurface = publicPackageSurfaceCheck(root);
-  const sourcePartition = publicSourceDomainModulePartitionPlanCheck(root);
-  const sourceExtraction = publicSourceDomainExtractionRehearsalCheck(root);
-  const goldenOutputs = publicSourceExtractionGoldenOutputFreezeCheck(root);
-  const adapterBoundary = publicSourceModuleExtractionAdapterBoundaryCheck(root);
-  const firstSlice = publicSourceModuleExtractionFirstSliceCheck(root);
-  const bundleParity = publicSourceModuleExtractionBundleParityCheck(root);
-  const runtimeBridge = publicSourceModuleExtractionRuntimeBridgeCheck(root);
-  const installedFallbackSmoke = publicSourceModuleExtractionInstalledFallbackSmokeCheck(root);
-  const secondSlicePlan = publicSourceModuleExtractionSecondSlicePlanCheck(root);
-  const secondSliceFirstSlice = publicSourceModuleExtractionSecondSliceFirstSliceCheck(root);
-  const workItemsPlan = publicWorkItemsDomainSourceExtractionPlanCheck(root);
-  const workItemsFirstSlice = publicWorkItemsDomainSourceExtractionFirstSliceCheck(root);
-  const workItemsBundleParity = publicWorkItemsDomainSourceExtractionBundleParityCheck(root);
-  const workItemsRuntimeBridge = publicWorkItemsDomainSourceExtractionRuntimeBridgeCheck(root);
-  const workItemsInstalledFallback = publicWorkItemsDomainSourceExtractionInstalledFallbackSmokeCheck(root);
-  const claimsPlan = publicClaimsDomainSourceExtractionPlanCheck(root);
-  const claimsFirstSlice = publicClaimsDomainSourceExtractionFirstSliceCheck(root);
-  const claimsBundleParity = publicClaimsDomainSourceExtractionBundleParityCheck(root);
-  const claimsRuntimeBridge = publicClaimsDomainSourceExtractionRuntimeBridgeCheck(root);
-  const claimsInstalledFallback = publicClaimsDomainSourceExtractionInstalledFallbackSmokeCheck(root);
-  const sourceDomainClosureReview = publicSourceDomainExtractionStabilizationClosureReviewCheck(root);
-  const cliRuntimePlan = publicCliRuntimeDeMonolithPlanningCheck(root);
-  const thinCliRouter = publicThinCliRouterSeedCheck(root);
-  const compatibilityPort = publicCompatibilityCommandPortSeedCheck(root);
-  const coreAdapter = publicCoreCommandAdapterExtractionCheck(root);
-  const packageAdapter = publicPackageCommandAdapterExtractionCheck(root);
-  const architectureAdapter = publicArchitectureCommandAdapterExtractionCheck(root);
-  const authorityAdapter = publicAuthorityCommandAdapterExtractionCheck(root);
-  const moduleInclusionPlan = publicModularRuntimePackageInclusionPlanCheck(root);
-  const packagedRouterPort = publicPackagedRouterPortInclusionCheck(root);
-  const thinEntrypointRehearsal = publicThinEntrypointRouterCutoverRehearsalCheck(root);
-  const thinEntrypointCutover = publicThinEntrypointRouterCutoverApplicationCheck(root);
-  const routerAdapterDelegation = publicRouterCommandAdapterDelegationExpansionCheck(root);
   const componentErrors = [];
   if (architecture.status !== 'ok') componentErrors.push(...architecture.errors.map((error) => `architecture: ${error}`));
-  if (authority.status !== 'ok') componentErrors.push(...authority.errors.map((error) => `authority: ${error}`));
   if (targetRuntime.status !== 'ok') componentErrors.push(...targetRuntime.errors.map((error) => `target runtime: ${error}`));
   if (packageSurface.status !== 'ok') componentErrors.push(...packageSurface.errors.map((error) => `package surface: ${error}`));
-  if (sourcePartition.status !== 'ok') componentErrors.push(...sourcePartition.errors.map((error) => `source partition: ${error}`));
-  if (sourceExtraction.status !== 'ok') componentErrors.push(...sourceExtraction.errors.map((error) => `source extraction: ${error}`));
-  if (goldenOutputs.status !== 'ok') componentErrors.push(...goldenOutputs.errors.map((error) => `golden outputs: ${error}`));
-  if (adapterBoundary.status !== 'ok') componentErrors.push(...adapterBoundary.errors.map((error) => `adapter boundary: ${error}`));
-  if (firstSlice.status !== 'ok') componentErrors.push(...firstSlice.errors.map((error) => `first slice: ${error}`));
-  if (bundleParity.status !== 'ok') componentErrors.push(...bundleParity.errors.map((error) => `bundle parity: ${error}`));
-  if (runtimeBridge.status !== 'ok') componentErrors.push(...runtimeBridge.errors.map((error) => `runtime bridge: ${error}`));
-  if (installedFallbackSmoke.status !== 'ok') componentErrors.push(...installedFallbackSmoke.errors.map((error) => `installed fallback smoke: ${error}`));
-  if (secondSlicePlan.status !== 'ok') componentErrors.push(...secondSlicePlan.errors.map((error) => `second slice plan: ${error}`));
-  if (secondSliceFirstSlice.status !== 'ok') componentErrors.push(...secondSliceFirstSlice.errors.map((error) => `second slice first-slice: ${error}`));
-  if (workItemsPlan.status !== 'ok') componentErrors.push(...workItemsPlan.errors.map((error) => `work-items source extraction plan: ${error}`));
-  if (workItemsFirstSlice.status !== 'ok') componentErrors.push(...workItemsFirstSlice.errors.map((error) => `work-items first-slice: ${error}`));
-  if (workItemsBundleParity.status !== 'ok') componentErrors.push(...workItemsBundleParity.errors.map((error) => `work-items bundle parity: ${error}`));
-  if (workItemsRuntimeBridge.status !== 'ok') componentErrors.push(...workItemsRuntimeBridge.errors.map((error) => `work-items runtime bridge: ${error}`));
-  if (workItemsInstalledFallback.status !== 'ok') componentErrors.push(...workItemsInstalledFallback.errors.map((error) => `work-items installed fallback smoke: ${error}`));
-  if (claimsPlan.status !== 'ok') componentErrors.push(...claimsPlan.errors.map((error) => `claims source extraction plan: ${error}`));
-  if (claimsFirstSlice.status !== 'ok') componentErrors.push(...claimsFirstSlice.errors.map((error) => `claims first-slice: ${error}`));
-  if (claimsBundleParity.status !== 'ok') componentErrors.push(...claimsBundleParity.errors.map((error) => `claims bundle parity: ${error}`));
-  if (claimsRuntimeBridge.status !== 'ok') componentErrors.push(...claimsRuntimeBridge.errors.map((error) => `claims runtime bridge: ${error}`));
-  if (claimsInstalledFallback.status !== 'ok') componentErrors.push(...claimsInstalledFallback.errors.map((error) => `claims installed fallback smoke: ${error}`));
-  if (sourceDomainClosureReview.status !== 'ok') componentErrors.push(...sourceDomainClosureReview.errors.map((error) => `source-domain closure review: ${error}`));
-  if (cliRuntimePlan.status !== 'ok') componentErrors.push(...cliRuntimePlan.errors.map((error) => `cli runtime de-monolith planning: ${error}`));
-  if (thinCliRouter.status !== 'ok') componentErrors.push(...thinCliRouter.errors.map((error) => `thin CLI router seed: ${error}`));
-  if (compatibilityPort.status !== 'ok') componentErrors.push(...compatibilityPort.errors.map((error) => `compatibility command port seed: ${error}`));
-  if (coreAdapter.status !== 'ok') componentErrors.push(...coreAdapter.errors.map((error) => `core command adapter extraction: ${error}`));
-  if (packageAdapter.status !== 'ok') componentErrors.push(...packageAdapter.errors.map((error) => `package command adapter extraction: ${error}`));
-  if (architectureAdapter.status !== 'ok') componentErrors.push(...architectureAdapter.errors.map((error) => `architecture command adapter extraction: ${error}`));
-  if (authorityAdapter.status !== 'ok') componentErrors.push(...authorityAdapter.errors.map((error) => `authority command adapter extraction: ${error}`));
-  if (moduleInclusionPlan.status !== 'ok') componentErrors.push(...moduleInclusionPlan.errors.map((error) => `modular runtime package inclusion plan: ${error}`));
-  if (packagedRouterPort.status !== 'ok') componentErrors.push(...packagedRouterPort.errors.map((error) => `packaged router port inclusion: ${error}`));
-  if (thinEntrypointRehearsal.status !== 'ok') componentErrors.push(...thinEntrypointRehearsal.errors.map((error) => `thin entrypoint rehearsal: ${error}`));
-  if (thinEntrypointCutover.status !== 'ok') componentErrors.push(...thinEntrypointCutover.errors.map((error) => `thin entrypoint cutover: ${error}`));
-  if (routerAdapterDelegation.status !== 'ok') componentErrors.push(...routerAdapterDelegation.errors.map((error) => `router adapter delegation: ${error}`));
 
   const parity = {
     package_metadata: metadataErrors.length === 0,
@@ -4946,42 +4880,10 @@ function publicInstalledParityArchitectureSmoke(root = packageRoot()) {
     architecture_check: architecture.status === 'ok',
     command_router_check: architecture.command_router && architecture.command_router.status === 'ok',
     domain_service_facades_check: architecture.domain_service_facades && architecture.domain_service_facades.status === 'ok',
-    authority_first_read_check: authority.status === 'ok',
     target_runtime_namespace_check: targetRuntime.status === 'ok',
     package_surface_check: packageSurface.status === 'ok',
-    source_domain_module_partition_plan_check: sourcePartition.status === 'ok',
-    source_domain_extraction_rehearsal_check: sourceExtraction.status === 'ok',
-    source_extraction_golden_output_freeze_check: goldenOutputs.status === 'ok',
-    source_module_extraction_adapter_boundary_check: adapterBoundary.status === 'ok',
-    source_module_extraction_first_slice_check: firstSlice.status === 'ok',
-    source_module_extraction_bundle_parity_check: bundleParity.status === 'ok',
-    source_module_extraction_runtime_bridge_check: runtimeBridge.status === 'ok',
-    source_module_extraction_installed_fallback_smoke_check: installedFallbackSmoke.status === 'ok',
-    source_module_extraction_second_slice_plan_check: secondSlicePlan.status === 'ok',
-    source_module_extraction_second_slice_first_slice_check: secondSliceFirstSlice.status === 'ok',
-    work_items_domain_source_extraction_plan_check: workItemsPlan.status === 'ok',
-    work_items_domain_source_extraction_first_slice_check: workItemsFirstSlice.status === 'ok',
-    work_items_domain_source_extraction_bundle_parity_check: workItemsBundleParity.status === 'ok',
-    work_items_domain_source_extraction_runtime_bridge_check: workItemsRuntimeBridge.status === 'ok',
-    work_items_domain_source_extraction_installed_fallback_smoke_check: workItemsInstalledFallback.status === 'ok',
-    claims_domain_source_extraction_plan_check: claimsPlan.status === 'ok',
-    claims_domain_source_extraction_first_slice_check: claimsFirstSlice.status === 'ok',
-    claims_domain_source_extraction_bundle_parity_check: claimsBundleParity.status === 'ok',
-    claims_domain_source_extraction_runtime_bridge_check: claimsRuntimeBridge.status === 'ok',
-    claims_domain_source_extraction_installed_fallback_smoke_check: claimsInstalledFallback.status === 'ok',
-    source_domain_extraction_stabilization_closure_review_check: sourceDomainClosureReview.status === 'ok',
-    cli_runtime_de_monolith_planning_check: cliRuntimePlan.status === 'ok',
-    thin_cli_router_seed_check: thinCliRouter.status === 'ok',
-    compatibility_command_port_seed_check: compatibilityPort.status === 'ok',
-    core_command_adapter_extraction_check: coreAdapter.status === 'ok',
-    package_command_adapter_extraction_check: packageAdapter.status === 'ok',
-    architecture_command_adapter_extraction_check: architectureAdapter.status === 'ok',
-    authority_command_adapter_extraction_check: authorityAdapter.status === 'ok',
-    modular_runtime_package_inclusion_plan_check: moduleInclusionPlan.status === 'ok',
-    packaged_router_port_inclusion_check: packagedRouterPort.status === 'ok',
-    thin_entrypoint_router_cutover_rehearsal_check: thinEntrypointRehearsal.status === 'ok',
-    thin_entrypoint_router_cutover_application_check: thinEntrypointCutover.status === 'ok',
-    router_command_adapter_delegation_expansion_check: routerAdapterDelegation.status === 'ok',
+    packaged_router_port_check: architecture.packaged_router_port && architecture.packaged_router_port.status === 'ok',
+    retired_m3_architecture_checks_skipped: Array.isArray(architecture.retired_checks) && architecture.retired_checks.length > 0,
     runtime_version_matches_package_json: pkg.version === VERSION
   };
 
@@ -5017,84 +4919,18 @@ function publicInstalledParityArchitectureSmoke(root = packageRoot()) {
     },
     observed: {
       architecture_check_status: architecture.status,
-      authority_check_status: authority.status,
       target_runtime_check_status: targetRuntime.status,
       package_surface_check_status: packageSurface.status,
-      source_domain_module_partition_plan_status: sourcePartition.status,
-      source_domain_extraction_rehearsal_status: sourceExtraction.status,
-      source_extraction_golden_output_freeze_status: goldenOutputs.status,
-      source_module_extraction_adapter_boundary_status: adapterBoundary.status,
-      source_module_extraction_first_slice_status: firstSlice.status,
-      source_module_extraction_bundle_parity_status: bundleParity.status,
-      source_module_extraction_runtime_bridge_status: runtimeBridge.status,
-      source_module_extraction_installed_fallback_smoke_status: installedFallbackSmoke.status,
-      source_module_extraction_second_slice_plan_status: secondSlicePlan.status,
-      source_module_extraction_second_slice_first_slice_status: secondSliceFirstSlice.status,
-      work_items_domain_source_extraction_plan_status: workItemsPlan.status,
-      work_items_domain_source_extraction_first_slice_status: workItemsFirstSlice.status,
-      work_items_domain_source_extraction_bundle_parity_status: workItemsBundleParity.status,
-      work_items_domain_source_extraction_runtime_bridge_status: workItemsRuntimeBridge.status,
-      work_items_domain_source_extraction_installed_fallback_smoke_status: workItemsInstalledFallback.status,
-      claims_domain_source_extraction_plan_status: claimsPlan.status,
-      claims_domain_source_extraction_first_slice_status: claimsFirstSlice.status,
-      claims_domain_source_extraction_bundle_parity_status: claimsBundleParity.status,
-      claims_domain_source_extraction_runtime_bridge_status: claimsRuntimeBridge.status,
-      claims_domain_source_extraction_installed_fallback_smoke_status: claimsInstalledFallback.status,
-      source_domain_extraction_stabilization_closure_review_status: sourceDomainClosureReview.status,
-      cli_runtime_de_monolith_planning_status: cliRuntimePlan.status,
-      thin_cli_router_seed_status: thinCliRouter.status,
-      compatibility_command_port_seed_status: compatibilityPort.status,
-      core_command_adapter_extraction_status: coreAdapter.status,
-      package_command_adapter_extraction_status: packageAdapter.status,
-      architecture_command_adapter_extraction_status: architectureAdapter.status,
-      authority_command_adapter_extraction_status: authorityAdapter.status,
-      modular_runtime_package_inclusion_plan_status: moduleInclusionPlan.status,
-      packaged_router_port_inclusion_status: packagedRouterPort.status,
-      thin_entrypoint_router_cutover_rehearsal_status: thinEntrypointRehearsal.status,
-      thin_entrypoint_router_cutover_application_status: thinEntrypointCutover.status,
-      router_command_adapter_delegation_expansion_status: routerAdapterDelegation.status,
+      packaged_router_port_status: architecture.packaged_router_port ? architecture.packaged_router_port.status : 'not_run',
+      retired_checks: architecture.retired_checks || [],
       package_context: context.package_context,
       source_context_files_present: context.source_context_files_present,
       source_context_files_missing: context.source_context_files_missing
     },
     parity,
     architecture,
-    authority_first_read_index: authority,
     target_runtime_namespace: targetRuntime,
     package_surface_preservation: packageSurface,
-    source_domain_module_partition_plan: sourcePartition,
-    source_domain_extraction_rehearsal: sourceExtraction,
-    source_extraction_golden_output_freeze: goldenOutputs,
-    source_module_extraction_adapter_boundary: adapterBoundary,
-    source_module_extraction_first_slice: firstSlice,
-    source_module_extraction_bundle_parity: bundleParity,
-    source_module_extraction_runtime_bridge: runtimeBridge,
-    source_module_extraction_installed_fallback_smoke: installedFallbackSmoke,
-    source_module_extraction_second_slice_plan: secondSlicePlan,
-    source_module_extraction_second_slice_first_slice: secondSliceFirstSlice,
-    work_items_domain_source_extraction_plan: workItemsPlan,
-    work_items_domain_source_extraction_first_slice: workItemsFirstSlice,
-    work_items_domain_source_extraction_bundle_parity: workItemsBundleParity,
-    work_items_domain_source_extraction_runtime_bridge: workItemsRuntimeBridge,
-    work_items_domain_source_extraction_installed_fallback_smoke: workItemsInstalledFallback,
-    claims_domain_source_extraction_plan: claimsPlan,
-    claims_domain_source_extraction_first_slice: claimsFirstSlice,
-    claims_domain_source_extraction_bundle_parity: claimsBundleParity,
-    claims_domain_source_extraction_runtime_bridge: claimsRuntimeBridge,
-    claims_domain_source_extraction_installed_fallback_smoke: claimsInstalledFallback,
-    source_domain_extraction_stabilization_closure_review: sourceDomainClosureReview,
-    cli_runtime_de_monolith_planning: cliRuntimePlan,
-    thin_cli_router_seed: thinCliRouter,
-    compatibility_command_port_seed: compatibilityPort,
-    core_command_adapter_extraction: coreAdapter,
-    package_command_adapter_extraction: packageAdapter,
-    architecture_command_adapter_extraction: architectureAdapter,
-    authority_command_adapter_extraction: authorityAdapter,
-    modular_runtime_package_inclusion_plan: moduleInclusionPlan,
-    packaged_router_port_inclusion: packagedRouterPort,
-    thin_entrypoint_router_cutover_rehearsal: thinEntrypointRehearsal,
-    thin_entrypoint_router_cutover_application: thinEntrypointCutover,
-    router_command_adapter_delegation_expansion: routerAdapterDelegation,
     boundary: {
       writes_files: false,
       writes_package_root: false,
@@ -6371,8 +6207,76 @@ function runTargetOnboarding(args) {
   return ok ? 0 : 1;
 }
 
+function emitText(lines) {
+  process.stdout.write(`${lines.join('\n')}\n`);
+}
+
+function names(items) {
+  return Array.isArray(items) && items.length > 0 ? items.map((item) => item.name || item).join(', ') : 'none';
+}
+
+function formatTargetDoctorText(result) {
+  if (result.status !== 'ok') {
+    return [
+      'agent-onboard target doctor',
+      `Status: ${result.status}`,
+      `Target: ${result.target ? result.target.root : 'unknown'}`,
+      `Errors: ${(result.errors || []).join('; ') || 'none'}`
+    ];
+  }
+  const present = result.canonical_files.filter((item) => item.present).length;
+  const missing = result.readiness.missing_files.length > 0 ? result.readiness.missing_files.join(', ') : 'none';
+  const invalid = result.readiness.invalid_checks.length > 0 ? result.readiness.invalid_checks.join(', ') : 'none';
+  return [
+    'agent-onboard target doctor',
+    `Target: ${result.target.name} (${result.target.kind})`,
+    `Root: ${result.target.root}`,
+    `Readiness: ${result.readiness.status} (${result.readiness.score}%)`,
+    `Canonical files: ${present}/${result.canonical_files.length} present`,
+    `Missing: ${missing}`,
+    `Invalid checks: ${invalid}`,
+    `Package managers: ${names(result.profile.package_managers)}`,
+    `Languages: ${names(result.profile.languages)}`,
+    `Frameworks: ${names(result.profile.frameworks)}`,
+    'Next steps:',
+    ...result.next_steps.map((step) => `  - ${step}`),
+    'Writes performed: false'
+  ];
+}
+
+function formatTargetProfileText(result) {
+  if (result.status !== 'ok') {
+    return [
+      'agent-onboard target profile',
+      `Status: ${result.status}`,
+      `Target: ${result.target ? result.target.root : 'unknown'}`,
+      `Errors: ${(result.errors || []).join('; ') || 'none'}`
+    ];
+  }
+  const scriptLines = result.profile.scripts.length > 0
+    ? result.profile.scripts.map((entry) => `  - ${entry.purpose}: ${entry.scripts.join(', ')}`)
+    : ['  none'];
+  return [
+    'agent-onboard target profile',
+    `Target: ${result.target.name} (${result.target.kind})`,
+    `Root: ${result.target.root}`,
+    `Package managers: ${names(result.profile.package_managers)}`,
+    `Languages: ${names(result.profile.languages)}`,
+    `Frameworks: ${names(result.profile.frameworks)}`,
+    'Scripts:',
+    ...scriptLines,
+    `CI: ${names(result.profile.ci)}`,
+    `Docs: ${result.profile.docs.length > 0 ? result.profile.docs.join(', ') : 'none'}`,
+    `Git: ${result.profile.git_present ? 'present' : 'missing'}`,
+    'Next steps:',
+    ...result.next_steps.map((step) => `  - ${step}`),
+    'Writes performed: false'
+  ];
+}
+
 function runTargetDoctor(args) {
   const jsonFlag = args.includes(TARGET_DOCTOR_COMMAND.flag.json);
+  const textFlag = args.includes(TARGET_DOCTOR_COMMAND.flag.text);
   const targetIndex = args.indexOf(TARGET_DOCTOR_COMMAND.flag.target);
   const targetRoot = targetIndex >= 0 ? args[targetIndex + 1] : process.cwd();
   const known = new Set(Object.values(TARGET_DOCTOR_COMMAND.flag));
@@ -6382,14 +6286,17 @@ function runTargetDoctor(args) {
   });
   if (targetIndex >= 0 && (!targetRoot || targetRoot.startsWith('-'))) throw new Error(`target doctor ${TARGET_DOCTOR_COMMAND.flag.target} requires a path`);
   if (unknown.length > 0) throw new Error(`target doctor does not support: ${unknown.join(', ')}`);
-  if (!jsonFlag && args.length > 0) throw new Error(`target doctor accepts only ${TARGET_DOCTOR_COMMAND.flag.json} and ${TARGET_DOCTOR_COMMAND.flag.target} <path>`);
+  if (jsonFlag && textFlag) throw new Error(`target doctor accepts only one of ${TARGET_DOCTOR_COMMAND.flag.json} or ${TARGET_DOCTOR_COMMAND.flag.text}`);
+  if (!jsonFlag && !textFlag && args.length > 0) throw new Error(`target doctor accepts only ${TARGET_DOCTOR_COMMAND.flag.json}, ${TARGET_DOCTOR_COMMAND.flag.text}, and ${TARGET_DOCTOR_COMMAND.flag.target} <path>`);
   const result = targetDoctor(targetRoot);
-  json(result);
+  if (textFlag) emitText(formatTargetDoctorText(result));
+  else json(result);
   return result.status === 'ok' ? 0 : 1;
 }
 
 function runTargetProfile(args) {
   const jsonFlag = args.includes(TARGET_PROFILE_COMMAND.flag.json);
+  const textFlag = args.includes(TARGET_PROFILE_COMMAND.flag.text);
   const targetIndex = args.indexOf(TARGET_PROFILE_COMMAND.flag.target);
   const targetRoot = targetIndex >= 0 ? args[targetIndex + 1] : process.cwd();
   const known = new Set(Object.values(TARGET_PROFILE_COMMAND.flag));
@@ -6399,9 +6306,11 @@ function runTargetProfile(args) {
   });
   if (targetIndex >= 0 && (!targetRoot || targetRoot.startsWith('-'))) throw new Error(`target profile ${TARGET_PROFILE_COMMAND.flag.target} requires a path`);
   if (unknown.length > 0) throw new Error(`target profile does not support: ${unknown.join(', ')}`);
-  if (!jsonFlag && args.length > 0) throw new Error(`target profile accepts only ${TARGET_PROFILE_COMMAND.flag.json} and ${TARGET_PROFILE_COMMAND.flag.target} <path>`);
+  if (jsonFlag && textFlag) throw new Error(`target profile accepts only one of ${TARGET_PROFILE_COMMAND.flag.json} or ${TARGET_PROFILE_COMMAND.flag.text}`);
+  if (!jsonFlag && !textFlag && args.length > 0) throw new Error(`target profile accepts only ${TARGET_PROFILE_COMMAND.flag.json}, ${TARGET_PROFILE_COMMAND.flag.text}, and ${TARGET_PROFILE_COMMAND.flag.target} <path>`);
   const result = targetProfile(targetRoot);
-  json(result);
+  if (textFlag) emitText(formatTargetProfileText(result));
+  else json(result);
   return result.status === 'ok' ? 0 : 1;
 }
 
@@ -6485,6 +6394,7 @@ function runTargetInstance(args) {
 
 function help() {
   process.stdout.write(`agent-onboard ${VERSION}\n\nagent-onboard status\nagent-onboard init --dry-run|--write [--force]\nagent-onboard agents --preview|--write [--force]\nagent-onboard guard --plan|--check-boundary\nagent-onboard authority --first-read|--check\nagent-onboard architecture --map|--router|--facades|--partition-plan|--partition-check|--extraction-rehearsal|--extraction-check|--golden-outputs|--golden-check|--adapter-boundary|--adapter-check|--first-slice|--first-slice-check|--bundle-parity|--bundle-parity-check|--runtime-bridge|--runtime-bridge-check|--installed-fallback-smoke|--installed-fallback-check|--second-slice-plan|--second-slice-check|--second-slice-first-slice|--second-slice-first-slice-check|--authority-bundle-parity|--authority-bundle-parity-check|--authority-runtime-bridge|--authority-runtime-bridge-check|--m2-seed|--m2-seed-check|--work-items-plan|--work-items-check|--work-items-first-slice|--work-items-first-slice-check|--work-items-bundle-parity|--work-items-bundle-parity-check|--work-items-runtime-bridge|--work-items-runtime-bridge-check|--work-items-installed-fallback-smoke|--work-items-installed-fallback-check|--claims-plan|--claims-check|--claims-first-slice|--claims-first-slice-check|--claims-bundle-parity|--claims-bundle-parity-check|--claims-runtime-bridge|--claims-runtime-bridge-check|--claims-installed-fallback-smoke|--claims-installed-fallback-check|--source-domain-closure-review|--source-domain-closure-check|--cli-runtime-plan|--cli-runtime-check|--thin-router|--thin-router-check|--compatibility-port|--compatibility-port-check|--core-adapter|--core-adapter-check|--package-adapter|--package-adapter-check|--architecture-adapter|--architecture-adapter-check|--authority-adapter|--authority-adapter-check|--module-inclusion-plan|--module-inclusion-check|--packaged-router-port|--packaged-router-port-check|--thin-entrypoint-rehearsal|--thin-entrypoint-rehearsal-check|--thin-entrypoint-cutover|--thin-entrypoint-cutover-check|--router-adapter-delegation|--router-adapter-delegation-check|--check\nagent-onboard release --plan|--contract|--fixture|--surface|--surface-check|--version-sprawl-check|--parity-smoke|--architecture-parity-smoke|--target-onboarding-smoke|--post-publish-handoff|--published-acceptance|--real-target-trial|--check\nagent-onboard target-config --schema\nagent-onboard target-config --template\nagent-onboard target-config --validate-template\nagent-onboard target-config --validate [agent-onboard.target.json]\nagent-onboard work-items --schema\nagent-onboard work-items --template\nagent-onboard work-items --validate-template\nagent-onboard work-items --validate [.agent-onboard/work-items.json]\nagent-onboard work-items --list [.agent-onboard/work-items.json]\n${WORK_ITEMS_USABILITY_HELP_LINES.join('\n')}\nagent-onboard work-items --init --dry-run|--write [--force]\nagent-onboard work-items --append --dry-run|--write --id <public-work-item-id> --title <title>\nagent-onboard work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>\nagent-onboard work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>\nagent-onboard target doctor [--json] [--target <path>]\nagent-onboard target runtime --namespace|--check\nagent-onboard target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]\nagent-onboard target bootstrap --dry-run|--write [--force]\nagent-onboard target-instance takeover --dry-run|--write [--force]\n`);
+  process.stdout.write(`${TARGET_DOCTOR_COMMAND.help}\n`);
   process.stdout.write(`${TARGET_PROFILE_COMMAND.help}\n`);
   process.stdout.write(`${TARGET_REPAIR_COMMAND.help}\n`);
   return 0;

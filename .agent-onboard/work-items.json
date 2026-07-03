@@ -3698,7 +3698,7 @@
           "node cli/agent-onboard.js work-items --summary .agent-onboard/work-items.json",
           "node cli/agent-onboard.js work-items --next .agent-onboard/work-items.json",
           "node cli/agent-onboard.js work-items --mine .agent-onboard/work-items.json --actor codex-gpt-5",
-            "node cli/agent-onboard.js --help | Select-String -Pattern \"work-items --summary|work-items --next|work-items --mine\"",
+          "node cli/agent-onboard.js --help | Select-String -Pattern \"work-items --summary|work-items --next|work-items --mine\"",
           "node cli/agent-onboard.js release --version-sprawl-check",
           "npm test",
           "npm run test:full",
@@ -3719,13 +3719,90 @@
       "id": "P1S3M4W6",
       "milestone_id": "P1S3M4",
       "title": "Public human readable output mode gate",
-      "status": "open"
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-03T13:03:06.381Z"
+      },
+      "closure": {
+        "actor": "codex-gpt-5",
+        "closed_at": "2026-07-03T13:14:54.790Z",
+        "summary": "Closed by adding explicit human-readable text output mode for target-facing inspection commands while preserving JSON automation: target doctor/profile now support --text, work-items summary/next/mine support --text, help/docs/tests were updated, and the package candidate was bumped to 0.0.97.",
+        "changed_files": [
+          ".agent-onboard/work-items.json",
+          "README.md",
+          "package.json",
+          "cli/agent_onboard/domains/work-items/services/work-items-service.js",
+          "cli/agent_onboard/runtime-composer.js",
+          "test/agent-onboard.test.js",
+          "test/run-tests.js"
+        ],
+        "checks_run": [
+          "node -c cli/agent_onboard/domains/work-items/services/work-items-service.js; node -c cli/agent_onboard/runtime-composer.js; node -c test/agent-onboard.test.js; node -c test/run-tests.js",
+          "node cli/agent-onboard.js target doctor --text",
+          "node cli/agent-onboard.js target profile --text",
+          "node cli/agent-onboard.js work-items --summary .agent-onboard/work-items.json --text",
+          "node cli/agent-onboard.js work-items --next .agent-onboard/work-items.json --text",
+          "node cli/agent-onboard.js work-items --mine .agent-onboard/work-items.json --actor codex-gpt-5 --text",
+          "node cli/agent-onboard.js --help inspected for text-mode help lines",
+          "node cli/agent-onboard.js release --version-sprawl-check",
+          "npm test",
+          "node test/agent-onboard.test.js --shard=23/32",
+          "npm run test:full",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node scripts/check-public-artifact-boundary.js",
+          "npm pack --dry-run --json",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "git diff --check"
+        ],
+        "checks_not_run": [
+          "npm publish --access public"
+        ],
+        "known_non_pass": []
+      }
     },
     {
       "id": "P1S3M4W7",
       "milestone_id": "P1S3M4",
       "title": "Public retired architecture checker reduction gate",
-      "status": "open"
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-03T13:16:18.580Z"
+      },
+      "closure": {
+        "actor": "codex-gpt-5",
+        "closed_at": "2026-07-03T13:24:18.200Z",
+        "summary": "Closed by reducing the retired M3 architecture checker surface for M4: architecture --check now reports a lightweight legacy scope focused on package/router/facade/target-runtime invariants, release --architecture-parity-smoke no longer runs the source-extraction checker tree, docs/tests were updated, and the package candidate was bumped to 0.0.98.",
+        "changed_files": [
+          ".agent-onboard/work-items.json",
+          "README.md",
+          "package.json",
+          "cli/agent_onboard/domains/architecture/services/checks/architecture-check-service.js",
+          "cli/agent_onboard/runtime-composer.js",
+          "test/agent-onboard.test.js"
+        ],
+        "checks_run": [
+          "node -c cli/agent_onboard/domains/architecture/services/checks/architecture-check-service.js; node -c cli/agent_onboard/runtime-composer.js; node -c test/agent-onboard.test.js; node -c test/run-tests.js",
+          "node cli/agent-onboard.js architecture --check",
+          "node cli/agent-onboard.js release --architecture-parity-smoke",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js release --version-sprawl-check",
+          "npm test",
+          "node test/agent-onboard.test.js --shard=24/32",
+          "npm run test:full",
+          "node cli/agent-onboard.js release --surface-check",
+          "node scripts/check-public-artifact-boundary.js",
+          "npm pack --dry-run --json",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "git diff --check"
+        ],
+        "checks_not_run": [
+          "npm publish --access public"
+        ],
+        "known_non_pass": []
+      }
     },
     {
       "id": "P1S3M4W8",

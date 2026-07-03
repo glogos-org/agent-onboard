@@ -655,21 +655,22 @@ fullSourceTest('full source block line 622', () => {
   assert.strictEqual(output.schema, 'agent-onboard-public-architecture-check-result-001');
   assert.strictEqual(output.status, 'ok');
   assert.strictEqual(output.version, EXPECTED_VERSION);
+  assert.strictEqual(output.check_scope.mode, 'retired_m3_checker_reduced');
+  assert.strictEqual(output.validated.retired_architecture_checker_reduced, true);
+  assert.strictEqual(output.validated.historical_source_extraction_checks_retired, true);
   assert.strictEqual(output.validated.domain_count, true);
   assert.strictEqual(output.validated.domain_order, true);
   assert.strictEqual(output.validated.compact_package_boundary, true);
   assert.strictEqual(output.validated.architecture_commands_no_write, true);
   assert.strictEqual(output.validated.command_router_boundary, true);
   assert.strictEqual(output.validated.domain_service_facades, true);
-  assert.strictEqual(output.validated.authority_first_read_index, true);
   assert.strictEqual(output.validated.target_runtime_namespace, true);
-  assert.strictEqual(output.validated.source_domain_module_partition_plan, true);
-  assert.strictEqual(output.validated.source_domain_extraction_rehearsal, true);
+  assert.strictEqual(output.validated.packaged_router_port, true);
+  assert.ok(output.retired_checks.includes('source_extraction_rehearsals'));
   assert.strictEqual(output.command_router.status, 'ok');
   assert.strictEqual(output.domain_service_facades.status, 'ok');
   assert.strictEqual(output.target_runtime_namespace.status, 'ok');
-  assert.strictEqual(output.source_domain_module_partition_plan.status, 'ok');
-  assert.strictEqual(output.source_domain_extraction_rehearsal.status, 'ok');
+  assert.strictEqual(output.packaged_router_port.status, 'ok');
   assert.deepStrictEqual(output.errors, []);
 });
 
@@ -698,11 +699,11 @@ fullSourceTest('full source block line 662', () => {
   assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
   assert.strictEqual(output.command, 'agent-onboard release --architecture-parity-smoke');
   assert.strictEqual(output.parity.architecture_check, true);
-  assert.strictEqual(output.parity.authority_first_read_check, true);
   assert.strictEqual(output.parity.target_runtime_namespace_check, true);
   assert.strictEqual(output.parity.package_surface_check, true);
-  assert.strictEqual(output.parity.source_domain_module_partition_plan_check, true);
-  assert.strictEqual(output.parity.source_domain_extraction_rehearsal_check, true);
+  assert.strictEqual(output.parity.packaged_router_port_check, true);
+  assert.strictEqual(output.parity.retired_m3_architecture_checks_skipped, true);
+  assert.strictEqual(output.observed.packaged_router_port_status, 'ok');
   assert.strictEqual(output.boundary.runs_package_manager, false);
   assert.strictEqual(output.boundary.creates_temp_files, false);
 });
@@ -825,15 +826,7 @@ fullSourceTest('full source block line 780', () => {
   assert.ok(output.validated.public_architecture_map);
   assert.ok(output.validated.public_command_router);
   assert.ok(output.validated.public_domain_service_facades);
-  assert.ok(output.validated.public_authority_first_read_index);
   assert.ok(output.validated.public_target_runtime_namespace);
-  assert.ok(output.validated.public_source_domain_module_partition_plan);
-  assert.ok(output.validated.public_source_domain_extraction_rehearsal);
-  assert.ok(output.validated.public_source_extraction_golden_output_freeze);
-  assert.ok(output.validated.public_source_module_extraction_adapter_boundary);
-  assert.ok(output.validated.public_source_module_extraction_first_slice);
-  assert.ok(output.validated.public_source_module_extraction_bundle_parity);
-  assert.ok(output.validated.public_source_module_extraction_runtime_bridge);
   assert.ok(output.validated.public_source_module_extraction_installed_fallback_smoke);
   assert.ok(output.validated.public_source_module_extraction_second_slice_plan);
   assert.ok(output.validated.public_source_module_extraction_second_slice_first_slice);
@@ -853,6 +846,8 @@ fullSourceTest('full source block line 780', () => {
   assert.ok(!output.source_work_items_ledger.open_work_items.some((item) => item.id === ['P', 1, 'S', 3, 'M', 2, 'W', 12].join('')));
   assert.ok(output.validated.public_version_reference_policy);
   assert.strictEqual(output.public_architecture.status, 'ok');
+  assert.strictEqual(output.public_architecture.check_scope.mode, 'retired_m3_checker_reduced');
+  assert.strictEqual(output.public_architecture.validated.historical_source_extraction_checks_retired, true);
   assert.ok(!output.source_work_items_ledger.open_work_items.some((item) => item.title === 'Public installed parity architecture smoke gate'));
   assert.ok(!output.source_work_items_ledger.open_work_items.some((item) => item.title === 'Public target onboarding real target repo trial gate'));
   assert.ok(!output.source_work_items_ledger.open_work_items.some((item) => item.title === 'Public target onboarding published package acceptance gate'));
@@ -926,6 +921,13 @@ fullSourceTest('target doctor reports target repo readiness without writes', () 
   assert.strictEqual(output.boundary.runs_build_test_deploy, false);
   assert.strictEqual(fs.existsSync(path.join(dir, 'agent-onboard.target.json')), false);
   assert.strictEqual(fs.existsSync(path.join(dir, '.agent-onboard')), false);
+
+  const textResult = run(['target', 'doctor', '--text', '--target', dir]);
+  assert.strictEqual(textResult.status, 0, textResult.stderr || textResult.stdout);
+  assert.ok(textResult.stdout.includes('agent-onboard target doctor'));
+  assert.ok(textResult.stdout.includes('Readiness: needs_onboarding'));
+  assert.ok(textResult.stdout.includes('Missing: agent-onboard.target.json'));
+  assert.ok(textResult.stdout.includes('Writes performed: false'));
 });
 
 fullSourceTest('target profile detects stack markers without running target commands', () => {
@@ -981,6 +983,14 @@ fullSourceTest('target profile detects stack markers without running target comm
   assert.strictEqual(output.boundary.runs_build_test_deploy, false);
   assert.strictEqual(output.validated.managed_project_commands_not_run, true);
   assert.strictEqual(fs.existsSync(path.join(dir, '.agent-onboard')), false);
+
+  const textResult = run(['target', 'profile', '--text', '--target', dir]);
+  assert.strictEqual(textResult.status, 0, textResult.stderr || textResult.stdout);
+  assert.ok(textResult.stdout.includes('agent-onboard target profile'));
+  assert.ok(textResult.stdout.includes('Package managers: npm'));
+  assert.ok(textResult.stdout.includes('Frameworks: react, next, vite, vitest'));
+  assert.ok(textResult.stdout.includes('  - test: test'));
+  assert.ok(textResult.stdout.includes('Writes performed: false'));
 });
 
 fullSourceTest('target doctor reports ready after explicit target onboarding write', () => {
@@ -1705,6 +1715,26 @@ fullSourceTest('work-items usability views expose summary, next, and mine as rea
   assert.deepStrictEqual(mine.closed_work_items.map((item) => item.id), [closedId]);
   assert.deepStrictEqual(mine.counts, { claimed: 1, closed: 1, total: 2 });
   assert.strictEqual(mine.writes_performed, false);
+
+  const summaryText = run(['work-items', '--summary', '--text'], { cwd: dir });
+  assert.strictEqual(summaryText.status, 0, summaryText.stderr || summaryText.stdout);
+  assert.ok(summaryText.stdout.includes('agent-onboard work-items summary'));
+  assert.ok(summaryText.stdout.includes('Items: 3 total, 1 open, 1 claimed, 1 closed'));
+  assert.ok(summaryText.stdout.includes(`${openId} [open] Open usability item`));
+
+  const nextText = run(['work-items', '--next', '--text'], { cwd: dir });
+  assert.strictEqual(nextText.status, 0, nextText.stderr || nextText.stdout);
+  assert.ok(nextText.stdout.includes('agent-onboard next work item'));
+  assert.ok(nextText.stdout.includes(`Next: ${openId} [open] Open usability item`));
+  assert.ok(nextText.stdout.includes(`Claim dry-run: agent-onboard work-items --claim --dry-run --id ${openId} --actor <actor>`));
+
+  const mineText = run(['work-items', '--mine', '--actor', 'alice', '--text'], { cwd: dir });
+  assert.strictEqual(mineText.status, 0, mineText.stderr || mineText.stdout);
+  assert.ok(mineText.stdout.includes('agent-onboard work items for alice'));
+  assert.ok(mineText.stdout.includes(`Claimed: 1`));
+  assert.ok(mineText.stdout.includes(`${claimedId} [claimed] Claimed usability item`));
+  assert.ok(mineText.stdout.includes(`Closed: 1`));
+  assert.ok(mineText.stdout.includes(`${closedId} [closed] Closed usability item`));
 });
 
 fullSourceTest('full source block line 1437', () => {
@@ -2458,9 +2488,14 @@ fullSourceTest('full source block line 2233', () => {
   const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
   assert.ok(readme.includes('work-items --claim --write --id <public-work-item-id> --actor <actor>'));
   assert.ok(readme.includes('work-items --close --write --id <public-work-item-id> --actor <actor> --summary <summary>'));
+  assert.ok(readme.includes('npx agent-onboard target doctor --text'));
+  assert.ok(readme.includes('npx agent-onboard target profile --text'));
   assert.ok(readme.includes('npx agent-onboard work-items --summary [.agent-onboard/work-items.json]'));
+  assert.ok(readme.includes('npx agent-onboard work-items --summary [.agent-onboard/work-items.json] --text'));
   assert.ok(readme.includes('npx agent-onboard work-items --next [.agent-onboard/work-items.json]'));
+  assert.ok(readme.includes('npx agent-onboard work-items --next [.agent-onboard/work-items.json] --text'));
   assert.ok(readme.includes('npx agent-onboard work-items --mine [.agent-onboard/work-items.json] --actor <actor>'));
+  assert.ok(readme.includes('npx agent-onboard work-items --mine [.agent-onboard/work-items.json] --actor <actor> --text'));
   assert.ok(!readme.includes('This release does not add claim write'));
   assert.ok(readme.includes('`0.0.11` adds public `work-items --claim --dry-run`'));
   assert.ok(readme.includes('`0.0.13` adds source self-dogfood and agent participation support'));
@@ -2543,7 +2578,7 @@ fullSourceTest('full source block line 2233', () => {
   assert.ok(readme.includes('npx agent-onboard release --check'));
   assert.ok(readme.includes('The check validates package metadata, bin entrypoints, the projected npm pack allowlist'));
   assert.ok(readme.includes('The parity smoke checks that the source candidate release check passes'));
-  assert.ok(readme.includes('The architecture parity smoke validates that architecture, source-partition, source-extraction, authority, target-runtime, and package-surface checks still pass'));
+  assert.ok(readme.includes('The architecture parity smoke now validates the reduced legacy architecture surface'));
   assert.ok(readme.includes('The target onboarding smoke creates and removes a temporary target repo'));
   assert.ok(readme.includes('The post-publish handoff emits the version-pinned npm view and npx commands'));
   assert.ok(readme.includes('The published acceptance command composes release check'));
@@ -2552,23 +2587,29 @@ fullSourceTest('full source block line 2233', () => {
   assert.ok(readme.includes('The claim response also returns `next_steps`'));
   assert.ok(readme.includes('The close command reads the existing ledger'));
   assert.ok(readme.includes('This release adds public work-item usability JSON views'));
+  assert.ok(readme.includes('This release adds public human-readable output mode'));
+  assert.ok(readme.includes('This release reduces the retired M3 architecture checker surface'));
   assert.ok(readme.includes('`work-items --summary` returns total counts'));
   assert.ok(readme.includes('`work-items --next` returns the first open item'));
   assert.ok(readme.includes('`work-items --mine` returns the actor'));
+  assert.ok(readme.includes('Use `--text` on target-facing inspection commands'));
 });
 
 
 fullSourceTest('full source block line 2323', () => {
   const help = run(['--help']);
   assert.ok(help.stdout.includes('work-items --summary [.agent-onboard/work-items.json]'));
+  assert.ok(help.stdout.includes('work-items --summary [.agent-onboard/work-items.json] [--text]'));
   assert.ok(help.stdout.includes('work-items --next [.agent-onboard/work-items.json]'));
+  assert.ok(help.stdout.includes('work-items --next [.agent-onboard/work-items.json] [--text]'));
   assert.ok(help.stdout.includes('work-items --mine [.agent-onboard/work-items.json] --actor <actor>'));
+  assert.ok(help.stdout.includes('work-items --mine [.agent-onboard/work-items.json] --actor <actor> [--text]'));
+  assert.ok(help.stdout.includes('target doctor --json|--text [--target <path>]'));
+  assert.ok(help.stdout.includes('target profile --json|--text [--target <path>]'));
   assert.ok(help.stdout.includes('work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>'));
   assert.ok(help.stdout.includes('work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>'));
   assert.ok(help.stdout.includes('--claims-installed-fallback-smoke|--claims-installed-fallback-check|--source-domain-closure-review|--source-domain-closure-check|--cli-runtime-plan|--cli-runtime-check|--thin-router|--thin-router-check|--compatibility-port|--compatibility-port-check|--core-adapter|--core-adapter-check|--package-adapter|--package-adapter-check|--architecture-adapter|--architecture-adapter-check|--authority-adapter|--authority-adapter-check|--module-inclusion-plan|--module-inclusion-check|--packaged-router-port|--packaged-router-port-check|--thin-entrypoint-rehearsal|--thin-entrypoint-rehearsal-check|--thin-entrypoint-cutover|--thin-entrypoint-cutover-check|--router-adapter-delegation|--router-adapter-delegation-check|--check'));
   assert.ok(help.stdout.includes('release --plan|--contract|--fixture|--surface|--surface-check|--version-sprawl-check|--parity-smoke|--architecture-parity-smoke|--target-onboarding-smoke|--post-publish-handoff|--published-acceptance|--real-target-trial|--check'));
-  assert.ok(help.stdout.includes('target doctor [--json] [--target <path>]'));
-  assert.ok(help.stdout.includes('target profile --json [--target <path>]'));
   assert.ok(help.stdout.includes('target repair --plan|--write [--force] [--target <path>]'));
   assert.ok(help.stdout.includes('target runtime --namespace|--check'));
   assert.ok(help.stdout.includes('target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]'));

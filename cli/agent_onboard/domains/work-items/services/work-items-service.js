@@ -54,6 +54,11 @@ const FLAG = Object.freeze({
   KNOWN_NON_PASS: '--known-non-pass'
 });
 
+const OUTPUT_FLAG = Object.freeze({
+  JSON: '--json',
+  TEXT: '--text'
+});
+
 const WORK_ITEMS_COMMAND = Object.freeze({
   SCHEMA: 'work-items --schema',
   TEMPLATE: 'work-items --template',
@@ -246,9 +251,75 @@ function ledgerIndexes(value) {
   });
 }
 
+function formatWorkItemTitle(item) {
+  return item ? `${item.id} [${item.status}] ${item.title}` : 'none';
+}
+
+function formatScope(item) {
+  if (!item) return 'none';
+  return [item.program, item.stage, item.milestone]
+    .filter(Boolean)
+    .map((entry) => `${entry.id} ${entry.title}`)
+    .join(' > ') || 'none';
+}
+
+function formatWorkItemList(items, limit = 10) {
+  if (!Array.isArray(items) || items.length === 0) return ['  none'];
+  const visible = items.slice(0, limit).map((item) => `  - ${formatWorkItemTitle(item)}`);
+  if (items.length > limit) visible.push(`  ... ${items.length - limit} more`);
+  return visible;
+}
+
+function formatWorkItemsText(payload) {
+  if (!payload || payload.status !== STATUS.OK) {
+    return [
+      'agent-onboard work-items',
+      `Status: ${payload && payload.status ? payload.status : STATUS.ERROR}`,
+      `Reason: ${payload && payload.reason ? payload.reason : 'unknown error'}`
+    ].join('\n');
+  }
+  if (payload.schema === WORK_ITEMS_RESULT_SCHEMA.SUMMARY) {
+    const counts = payload.work_item_status_counts;
+    return [
+      'agent-onboard work-items summary',
+      `File: ${payload.file}`,
+      `Items: ${payload.counts.work_items} total, ${counts.open} open, ${counts.claimed} claimed, ${counts.closed} closed`,
+      `Next: ${formatWorkItemTitle(payload.next_open_work_item)}`,
+      'Open:',
+      ...formatWorkItemList(payload.open_work_items),
+      'Claimed:',
+      ...formatWorkItemList(payload.claimed_work_items)
+    ].join('\n');
+  }
+  if (payload.schema === WORK_ITEMS_RESULT_SCHEMA.NEXT) {
+    return [
+      'agent-onboard next work item',
+      `File: ${payload.file}`,
+      `Found: ${payload.selection.found ? 'yes' : 'no'}`,
+      `Next: ${formatWorkItemTitle(payload.next_work_item)}`,
+      `Scope: ${formatScope(payload.next_work_item)}`,
+      `Claim dry-run: ${payload.claim_command || 'none'}`
+    ].join('\n');
+  }
+  if (payload.schema === WORK_ITEMS_RESULT_SCHEMA.MINE) {
+    return [
+      `agent-onboard work items for ${payload.actor}`,
+      `File: ${payload.file}`,
+      `Claimed: ${payload.counts.claimed}`,
+      ...formatWorkItemList(payload.claimed_work_items),
+      `Closed: ${payload.counts.closed}`,
+      ...formatWorkItemList(payload.closed_work_items),
+      'Next steps:',
+      ...(payload.next_steps || []).map((step) => `  - ${step}`)
+    ].join('\n');
+  }
+  return JSON.stringify(payload, null, 2);
+}
+
 function createWorkItemsService(options = Object.freeze({})) {
   const cwd = typeof options.cwd === 'function' ? options.cwd : () => process.cwd();
   const emit = typeof options.emit === 'function' ? options.emit : defaultJson;
+  const emitText = typeof options.emitText === 'function' ? options.emitText : (text) => process.stdout.write(`${text}\n`);
   const readJson = typeof options.readJson === 'function' ? options.readJson : defaultReadJson;
   const validateWorkItems = typeof options.validateWorkItems === 'function' ? options.validateWorkItems : () => [];
   const workItemCounts = typeof options.workItemCounts === 'function' ? options.workItemCounts : defaultCounts;
@@ -266,11 +337,16 @@ function createWorkItemsService(options = Object.freeze({})) {
   };
   const exists = typeof options.exists === 'function' ? options.exists : fs.existsSync;
 
+  function emitView(args, payload) {
+    if (args.includes(OUTPUT_FLAG.TEXT)) emitText(formatWorkItemsText(payload));
+    else emit(payload);
+  }
+
   function readLedgerForView(args, flag, resultSchema) {
     const file = fileAfterFlag(args, flag, CANONICAL_WORK_ITEMS_FILE);
     const absolutePath = path.resolve(cwd(), file);
     if (!exists(absolutePath)) {
-      emit({
+      emitView(args, {
         schema: resultSchema,
         status: STATUS.ERROR,
         command_family: COMMAND_FAMILY,
@@ -283,7 +359,7 @@ function createWorkItemsService(options = Object.freeze({})) {
     const value = readJson(absolutePath);
     const errors = validateWorkItems(value);
     if (errors.length > 0) {
-      emit({
+      emitView(args, {
         schema: resultSchema,
         status: STATUS.ERROR,
         command_family: COMMAND_FAMILY,
@@ -705,7 +781,7 @@ function createWorkItemsService(options = Object.freeze({})) {
     const workItems = Array.isArray(ledger.value.work_items) ? ledger.value.work_items : [];
     const openItems = workItems.filter((item) => item.status === WORK_ITEM_STATUS.OPEN);
     const claimedItems = workItems.filter((item) => item.status === WORK_ITEM_STATUS.CLAIMED);
-    emit({
+    emitView(args, {
       schema: WORK_ITEMS_RESULT_SCHEMA.SUMMARY,
       status: STATUS.OK,
       command_family: COMMAND_FAMILY,
@@ -736,7 +812,7 @@ function createWorkItemsService(options = Object.freeze({})) {
     const workItems = Array.isArray(ledger.value.work_items) ? ledger.value.work_items : [];
     const nextItem = workItems.find((item) => item.status === WORK_ITEM_STATUS.OPEN) || null;
     const decorated = nextItem ? decorateWorkItem(nextItem, ledger.indexes) : null;
-    emit({
+    emitView(args, {
       schema: WORK_ITEMS_RESULT_SCHEMA.NEXT,
       status: STATUS.OK,
       command_family: COMMAND_FAMILY,
@@ -769,7 +845,7 @@ function createWorkItemsService(options = Object.freeze({})) {
     try {
       actor = optionAfterFlag(args, FLAG.ACTOR);
     } catch (error) {
-      emit({
+      emitView(args, {
         schema: WORK_ITEMS_RESULT_SCHEMA.MINE,
         status: STATUS.ERROR,
         command_family: COMMAND_FAMILY,
@@ -781,7 +857,7 @@ function createWorkItemsService(options = Object.freeze({})) {
       return 1;
     }
     if (!actor) {
-      emit({
+      emitView(args, {
         schema: WORK_ITEMS_RESULT_SCHEMA.MINE,
         status: STATUS.ERROR,
         command_family: COMMAND_FAMILY,
@@ -800,7 +876,7 @@ function createWorkItemsService(options = Object.freeze({})) {
     const closedItems = workItems.filter((item) => item.status === WORK_ITEM_STATUS.CLOSED && (
       (item.claim && item.claim.actor === actor) || (item.closure && item.closure.actor === actor)
     ));
-    emit({
+    emitView(args, {
       schema: WORK_ITEMS_RESULT_SCHEMA.MINE,
       status: STATUS.OK,
       command_family: COMMAND_FAMILY,

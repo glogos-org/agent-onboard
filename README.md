@@ -24,7 +24,9 @@ Inspect target repo readiness without writing files:
 
 ```sh
 npx agent-onboard target doctor --json
+npx agent-onboard target doctor --text
 npx agent-onboard target profile --json
+npx agent-onboard target profile --text
 ```
 
 Plan a repair for missing canonical onboarding files without overwriting existing files:
@@ -109,7 +111,9 @@ npx agent-onboard guard --check-boundary
 npx agent-onboard authority --first-read
 npx agent-onboard authority --check
 npx agent-onboard target doctor --json
+npx agent-onboard target doctor --text
 npx agent-onboard target profile --json
+npx agent-onboard target profile --text
 npx agent-onboard target repair --plan
 npx agent-onboard target repair --write
 npx agent-onboard target runtime --namespace
@@ -154,8 +158,11 @@ npx agent-onboard work-items --init --write
 npx agent-onboard work-items --validate [.agent-onboard/work-items.json]
 npx agent-onboard work-items --list [.agent-onboard/work-items.json]
 npx agent-onboard work-items --summary [.agent-onboard/work-items.json]
+npx agent-onboard work-items --summary [.agent-onboard/work-items.json] --text
 npx agent-onboard work-items --next [.agent-onboard/work-items.json]
+npx agent-onboard work-items --next [.agent-onboard/work-items.json] --text
 npx agent-onboard work-items --mine [.agent-onboard/work-items.json] --actor <actor>
+npx agent-onboard work-items --mine [.agent-onboard/work-items.json] --actor <actor> --text
 npx agent-onboard work-items --append --dry-run --id <public-work-item-id> --title <title>
 npx agent-onboard work-items --append --write --id <public-work-item-id> --title <title>
 npx agent-onboard work-items --claim --dry-run --id <public-work-item-id> --actor <actor>
@@ -371,7 +378,7 @@ Run the installed parity architecture smoke without executing package-manager, r
 npx agent-onboard release --architecture-parity-smoke
 ```
 
-The architecture parity smoke validates that architecture, source-partition, source-extraction, authority, target-runtime, and package-surface checks still pass when the package is evaluated from the compact installed-package context where source-only repository files may be absent.
+The architecture parity smoke now validates the reduced legacy architecture surface: architecture map, command router, domain facades, target runtime namespace, packaged router port, package surface, package metadata, and source-only package exclusion. Historical M3 source-extraction checkers are reported as retired so M4 target-repo product work is not blocked by self-dogfood gates.
 
 Run the target onboarding installed-package smoke to exercise the package runtime against a temporary target repo:
 
@@ -565,9 +572,19 @@ Inspect target repo work in progress without writing the ledger:
 npx agent-onboard work-items --summary
 npx agent-onboard work-items --next
 npx agent-onboard work-items --mine --actor <actor>
+npx agent-onboard work-items --summary --text
+npx agent-onboard work-items --next --text
+npx agent-onboard work-items --mine --actor <actor> --text
 ```
 
 `work-items --summary` returns total counts, status counts, open items, claimed items, and the next open item. `work-items --next` returns the first open item by ledger order plus a dry-run claim command. `work-items --mine` returns the actor's claimed and closed work items with lifecycle next steps.
+
+Use `--text` on target-facing inspection commands when a person is reading the output, and keep JSON output for scripts:
+
+```sh
+npx agent-onboard target doctor --text
+npx agent-onboard target profile --text
+```
 
 Preview a public work-item append without writing the ledger:
 
@@ -859,6 +876,10 @@ This release extracts the work-items and claims source-domain architecture check
 This release extracts the aggregate `architecture --check` coordinator from `cli/agent-onboard.js` into `cli/agent_onboard/domains/architecture/services/checks/architecture-check-service.js`, keeping the entrypoint smaller while preserving the full architecture check contract.
 
 This release adds public work-item usability JSON views: `work-items --summary`, `work-items --next`, and `work-items --mine --actor <actor>` inspect target repo ledger progress without writing files.
+
+This release adds public human-readable output mode for target-facing inspection commands: `target doctor --text`, `target profile --text`, and `work-items --summary|--next|--mine --text` print compact text while JSON remains available for automation.
+
+This release reduces the retired M3 architecture checker surface: `architecture --check` and `release --architecture-parity-smoke` keep the package/router/target-runtime invariants that still protect the public CLI, and retire source-partition/source-extraction parity checks from the active M4 gate.
 
 <!-- ## Star History
 
