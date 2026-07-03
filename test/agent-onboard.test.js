@@ -944,6 +944,67 @@ fullSourceTest('target doctor reports ready after explicit target onboarding wri
   assert.strictEqual(output.validated.no_writes_performed, true);
 });
 
+fullSourceTest('target repair plans missing onboarding files without writes', () => {
+  const dir = tempRepo();
+  const result = run(['target', 'repair', '--plan', '--target', dir]);
+  const output = readJsonOutput(result);
+  assert.strictEqual(output.schema, 'agent-onboard-target-repair-result-001');
+  assert.strictEqual(output.status, 'ok');
+  assert.strictEqual(output.version, EXPECTED_VERSION);
+  assert.strictEqual(output.command, 'agent-onboard target repair --plan');
+  assert.strictEqual(output.command_family, 'target repair');
+  assert.strictEqual(output.mode, 'plan');
+  assert.strictEqual(output.force, false);
+  assert.strictEqual(output.target.name, 'target-fixture');
+  assert.strictEqual(output.writes_performed, false);
+  assert.strictEqual(output.created_files.length, 7);
+  assert.deepStrictEqual(output.skipped_existing_files, []);
+  assert.ok(output.repair_plan.every((item) => item.action === 'create'));
+  assert.ok(output.repair_plan.every((item) => item.will_write === true));
+  assert.strictEqual(output.validated.plan_mode_writes_no_files, true);
+  assert.strictEqual(output.boundary.writes_files, false);
+  assert.strictEqual(fs.existsSync(path.join(dir, 'agent-onboard.target.json')), false);
+  assert.strictEqual(fs.existsSync(path.join(dir, '.agent-onboard')), false);
+});
+
+fullSourceTest('target repair write preserves existing non-identical onboarding files by default', () => {
+  const dir = tempRepo();
+  const existingConfig = '{}\n';
+  fs.writeFileSync(path.join(dir, 'agent-onboard.target.json'), existingConfig);
+
+  const result = run(['target', 'repair', '--write', '--target', dir]);
+  const output = readJsonOutput(result);
+  assert.strictEqual(output.status, 'ok');
+  assert.strictEqual(output.mode, 'write');
+  assert.strictEqual(output.force, false);
+  assert.strictEqual(output.writes_performed, true);
+  assert.strictEqual(output.repair_outcome, 'partial_existing_files_preserved');
+  assert.ok(output.skipped_existing_files.includes('agent-onboard.target.json'));
+  assert.ok(!output.written_files.includes('agent-onboard.target.json'));
+  assert.strictEqual(output.created_files.length, 6);
+  assert.strictEqual(fs.readFileSync(path.join(dir, 'agent-onboard.target.json'), 'utf8'), existingConfig);
+  assert.strictEqual(fs.existsSync(path.join(dir, '.agent-onboard', 'work-items.json')), true);
+  assert.strictEqual(output.boundary.skips_existing_non_identical_files_by_default, true);
+  assert.strictEqual(output.boundary.overwrites_existing_files, false);
+});
+
+fullSourceTest('target repair force overwrites existing non-identical onboarding files only when explicit', () => {
+  const dir = tempRepo();
+  fs.writeFileSync(path.join(dir, 'agent-onboard.target.json'), '{}\n');
+
+  const result = run(['target', 'repair', '--write', '--force', '--target', dir]);
+  const output = readJsonOutput(result);
+  assert.strictEqual(output.status, 'ok');
+  assert.strictEqual(output.mode, 'write');
+  assert.strictEqual(output.force, true);
+  assert.ok(output.overwritten_files.includes('agent-onboard.target.json'));
+  assert.ok(output.written_files.includes('agent-onboard.target.json'));
+  assert.deepStrictEqual(output.skipped_existing_files, []);
+  const config = JSON.parse(fs.readFileSync(path.join(dir, 'agent-onboard.target.json'), 'utf8'));
+  assert.strictEqual(config.schema, 'agent-onboard-target-config-001');
+  assert.strictEqual(output.boundary.overwrites_existing_files, true);
+});
+
 fullSourceTest('full source block line 865', () => {
   const dir = tempRepo();
   const result = run(['target', 'onboarding', '--fixture'], { cwd: dir });
@@ -2292,6 +2353,7 @@ fullSourceTest('full source block line 2233', () => {
   assert.ok(readme.includes('`0.0.34` adds the public installed parity architecture smoke gate'));
   assert.ok(readme.includes('`0.0.35` adds the public source domain module partition planning gate'));
   assert.ok(readme.includes('This release adds the public target repo doctor command'));
+  assert.ok(readme.includes('This release adds the public target onboarding repair command'));
   assert.ok(readme.includes('This release adds the public source module extraction adapter boundary gate'));
   assert.ok(readme.includes('This release adds the public source extraction golden output freeze gate'));
   assert.ok(readme.includes('npx agent-onboard architecture --golden-outputs'));
@@ -2328,6 +2390,8 @@ fullSourceTest('full source block line 2233', () => {
   assert.ok(readme.includes('npx agent-onboard authority --first-read'));
   assert.ok(readme.includes('npx agent-onboard authority --check'));
   assert.ok(readme.includes('npx agent-onboard target doctor --json'));
+  assert.ok(readme.includes('npx agent-onboard target repair --plan'));
+  assert.ok(readme.includes('npx agent-onboard target repair --write'));
   assert.ok(readme.includes('npx agent-onboard target onboarding --write'));
   assert.ok(readme.includes('npx agent-onboard target onboarding --fixture'));
   assert.ok(readme.includes('npx agent-onboard target onboarding --trial'));
@@ -2362,6 +2426,7 @@ fullSourceTest('full source block line 2323', () => {
   assert.ok(help.stdout.includes('--claims-installed-fallback-smoke|--claims-installed-fallback-check|--source-domain-closure-review|--source-domain-closure-check|--cli-runtime-plan|--cli-runtime-check|--thin-router|--thin-router-check|--compatibility-port|--compatibility-port-check|--core-adapter|--core-adapter-check|--package-adapter|--package-adapter-check|--architecture-adapter|--architecture-adapter-check|--authority-adapter|--authority-adapter-check|--module-inclusion-plan|--module-inclusion-check|--packaged-router-port|--packaged-router-port-check|--thin-entrypoint-rehearsal|--thin-entrypoint-rehearsal-check|--thin-entrypoint-cutover|--thin-entrypoint-cutover-check|--router-adapter-delegation|--router-adapter-delegation-check|--check'));
   assert.ok(help.stdout.includes('release --plan|--contract|--fixture|--surface|--surface-check|--version-sprawl-check|--parity-smoke|--architecture-parity-smoke|--target-onboarding-smoke|--post-publish-handoff|--published-acceptance|--real-target-trial|--check'));
   assert.ok(help.stdout.includes('target doctor [--json] [--target <path>]'));
+  assert.ok(help.stdout.includes('target repair --plan|--write [--force] [--target <path>]'));
   assert.ok(help.stdout.includes('target runtime --namespace|--check'));
   assert.ok(help.stdout.includes('target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]'));
 });

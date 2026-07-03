@@ -26,6 +26,12 @@ Inspect target repo readiness without writing files:
 npx agent-onboard target doctor --json
 ```
 
+Plan a repair for missing canonical onboarding files without overwriting existing files:
+
+```sh
+npx agent-onboard target repair --plan
+```
+
 ## Minimal target init
 
 Preview the target onboarding sequence before touching files:
@@ -102,6 +108,8 @@ npx agent-onboard guard --check-boundary
 npx agent-onboard authority --first-read
 npx agent-onboard authority --check
 npx agent-onboard target doctor --json
+npx agent-onboard target repair --plan
+npx agent-onboard target repair --write
 npx agent-onboard target runtime --namespace
 npx agent-onboard target runtime --check
 npx agent-onboard architecture --map
@@ -792,6 +800,8 @@ This version does not:
 `0.0.35` adds the public source domain module partition planning gate: `architecture --partition-plan` reports the future `src/domains/*` module map and `architecture --partition-check` validates that no physical source move is performed while the npm package remains compact.
 
 This release adds the public target repo doctor command: `target doctor --json` reports onboarding readiness, detected stack markers, canonical file status, boundary/work-items health, and next steps without writing files or running managed project commands.
+
+This release adds the public target onboarding repair command: `target repair --plan|--write` creates missing canonical onboarding files, preserves existing non-identical files by default, and requires explicit `--force` before overwriting.
 
 This release adds the public source extraction golden output freeze gate: `architecture --golden-outputs` reports the frozen command-output contract, `architecture --golden-check` validates it, and `release --version-sprawl-check` prevents current patch-version literals from spreading through source docs and tests.
 

@@ -3590,7 +3590,44 @@
       "id": "P1S3M4W3",
       "milestone_id": "P1S3M4",
       "title": "Public target onboarding repair command gate",
-      "status": "open"
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-03T08:13:31.362Z"
+      },
+      "closure": {
+        "actor": "codex-gpt-5",
+        "closed_at": "2026-07-03T08:22:04.580Z",
+        "summary": "Closed by adding a read-only/write-capable target repair command that plans canonical onboarding file repair, creates missing files on explicit write, preserves existing non-identical files by default, supports explicit --force overwrite, bumps the package to 0.0.94, and covers repair behavior in quick/full tests.",
+        "changed_files": [
+          ".agent-onboard/work-items.json",
+          "README.md",
+          "package.json",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/domains/target/services/target-service.js",
+          "test/agent-onboard.test.js",
+          "test/run-tests.js"
+        ],
+        "checks_run": [
+          "node -c cli/agent_onboard/domains/target/services/target-service.js; node -c cli/agent_onboard/runtime-composer.js; node -c test/agent-onboard.test.js; node -c test/run-tests.js",
+          "node cli/agent-onboard.js target repair --plan",
+          "node cli/agent-onboard.js target repair --write --target against a temporary missing-onboarding target repo",
+          "node cli/agent-onboard.js target repair --write --target against a temporary target with divergent target config preserved",
+          "node cli/agent-onboard.js release --version-sprawl-check",
+          "npm test",
+          "npm run test:full",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node scripts/check-public-artifact-boundary.js",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "npm pack --dry-run --json",
+          "git diff --check"
+        ],
+        "checks_not_run": [
+          "npm publish --access public"
+        ],
+        "known_non_pass": []
+      }
     },
     {
       "id": "P1S3M4W4",

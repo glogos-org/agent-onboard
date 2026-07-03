@@ -19,9 +19,21 @@ const TARGET_CONFIG_FILE = 'agent-onboard.target.json';
 const RELEASE_LINE = 'public_core_config_guard_service_extraction_gate';
 const TARGET_COMMAND = Object.freeze({
   doctor: 'doctor',
+  repair: 'repair',
   runtime: 'runtime',
   onboarding: 'onboarding',
   bootstrap: 'bootstrap'
+});
+const TARGET_REPAIR_COMMAND = Object.freeze({
+  help: 'agent-onboard target repair --plan|--write [--force] [--target <path>]',
+  mode: Object.freeze({
+    plan: '--plan',
+    write: '--write'
+  }),
+  flag: Object.freeze({
+    force: '--force',
+    target: '--target'
+  })
 });
 const TARGET_DOCTOR_COMMAND = Object.freeze({
   help: 'agent-onboard target doctor [--json] [--target <path>]',
@@ -416,6 +428,7 @@ const {
   publicTargetOnboardingRealTargetRepoTrial,
   targetOnboardingSurfacePlan,
   targetDoctor,
+  targetRepair,
   agentsMdTemplate,
   firstReadOrder,
   llmsTxtTemplate,
@@ -6361,6 +6374,28 @@ function runTargetDoctor(args) {
   return result.status === 'ok' ? 0 : 1;
 }
 
+function runTargetRepair(args) {
+  const plan = args.includes(TARGET_REPAIR_COMMAND.mode.plan);
+  const write = args.includes(TARGET_REPAIR_COMMAND.mode.write);
+  const force = args.includes(TARGET_REPAIR_COMMAND.flag.force);
+  const targetIndex = args.indexOf(TARGET_REPAIR_COMMAND.flag.target);
+  const targetRoot = targetIndex >= 0 ? args[targetIndex + 1] : process.cwd();
+  const known = new Set([
+    ...Object.values(TARGET_REPAIR_COMMAND.mode),
+    ...Object.values(TARGET_REPAIR_COMMAND.flag)
+  ]);
+  const unknown = args.filter((arg, index) => {
+    if (targetIndex >= 0 && index === targetIndex + 1) return false;
+    return !known.has(arg);
+  });
+  if (targetIndex >= 0 && (!targetRoot || targetRoot.startsWith('-'))) throw new Error(`target repair ${TARGET_REPAIR_COMMAND.flag.target} requires a path`);
+  if (unknown.length > 0) throw new Error(`target repair does not support: ${unknown.join(', ')}`);
+  if ([plan, write].filter(Boolean).length !== 1) throw new Error(`target repair requires exactly one of ${TARGET_REPAIR_COMMAND.mode.plan} or ${TARGET_REPAIR_COMMAND.mode.write}`);
+  const result = targetRepair(targetRoot, { write, force });
+  json(result);
+  return result.status === 'ok' ? 0 : 1;
+}
+
 function runTargetBootstrap(args) {
   const write = args.includes('--write');
   const dry = args.includes('--dry-run');
@@ -6419,6 +6454,7 @@ function runTargetInstance(args) {
 
 function help() {
   process.stdout.write(`agent-onboard ${VERSION}\n\nagent-onboard status\nagent-onboard init --dry-run|--write [--force]\nagent-onboard agents --preview|--write [--force]\nagent-onboard guard --plan|--check-boundary\nagent-onboard authority --first-read|--check\nagent-onboard architecture --map|--router|--facades|--partition-plan|--partition-check|--extraction-rehearsal|--extraction-check|--golden-outputs|--golden-check|--adapter-boundary|--adapter-check|--first-slice|--first-slice-check|--bundle-parity|--bundle-parity-check|--runtime-bridge|--runtime-bridge-check|--installed-fallback-smoke|--installed-fallback-check|--second-slice-plan|--second-slice-check|--second-slice-first-slice|--second-slice-first-slice-check|--authority-bundle-parity|--authority-bundle-parity-check|--authority-runtime-bridge|--authority-runtime-bridge-check|--m2-seed|--m2-seed-check|--work-items-plan|--work-items-check|--work-items-first-slice|--work-items-first-slice-check|--work-items-bundle-parity|--work-items-bundle-parity-check|--work-items-runtime-bridge|--work-items-runtime-bridge-check|--work-items-installed-fallback-smoke|--work-items-installed-fallback-check|--claims-plan|--claims-check|--claims-first-slice|--claims-first-slice-check|--claims-bundle-parity|--claims-bundle-parity-check|--claims-runtime-bridge|--claims-runtime-bridge-check|--claims-installed-fallback-smoke|--claims-installed-fallback-check|--source-domain-closure-review|--source-domain-closure-check|--cli-runtime-plan|--cli-runtime-check|--thin-router|--thin-router-check|--compatibility-port|--compatibility-port-check|--core-adapter|--core-adapter-check|--package-adapter|--package-adapter-check|--architecture-adapter|--architecture-adapter-check|--authority-adapter|--authority-adapter-check|--module-inclusion-plan|--module-inclusion-check|--packaged-router-port|--packaged-router-port-check|--thin-entrypoint-rehearsal|--thin-entrypoint-rehearsal-check|--thin-entrypoint-cutover|--thin-entrypoint-cutover-check|--router-adapter-delegation|--router-adapter-delegation-check|--check\nagent-onboard release --plan|--contract|--fixture|--surface|--surface-check|--version-sprawl-check|--parity-smoke|--architecture-parity-smoke|--target-onboarding-smoke|--post-publish-handoff|--published-acceptance|--real-target-trial|--check\nagent-onboard target-config --schema\nagent-onboard target-config --template\nagent-onboard target-config --validate-template\nagent-onboard target-config --validate [agent-onboard.target.json]\nagent-onboard work-items --schema\nagent-onboard work-items --template\nagent-onboard work-items --validate-template\nagent-onboard work-items --validate [.agent-onboard/work-items.json]\nagent-onboard work-items --list [.agent-onboard/work-items.json]\nagent-onboard work-items --init --dry-run|--write [--force]\nagent-onboard work-items --append --dry-run|--write --id <public-work-item-id> --title <title>\nagent-onboard work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>\nagent-onboard work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>\nagent-onboard target doctor [--json] [--target <path>]\nagent-onboard target runtime --namespace|--check\nagent-onboard target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]\nagent-onboard target bootstrap --dry-run|--write [--force]\nagent-onboard target-instance takeover --dry-run|--write [--force]\n`);
+  process.stdout.write(`${TARGET_REPAIR_COMMAND.help}\n`);
   return 0;
 }
 
@@ -6456,9 +6492,10 @@ function runTargetRuntime(args) {
 
 function runTargetCommand(args) {
   if (args[0] === TARGET_COMMAND.doctor) return runTargetDoctor(args.slice(1));
+  if (args[0] === TARGET_COMMAND.repair) return runTargetRepair(args.slice(1));
   if (args[0] === TARGET_COMMAND.runtime) return runTargetRuntime(args.slice(1));
   if (args[0] === TARGET_COMMAND.onboarding) return runTargetOnboarding(args.slice(1));
-  if (args[0] !== TARGET_COMMAND.bootstrap) throw new Error(`target supports only: ${TARGET_DOCTOR_COMMAND.help.replace('agent-onboard target ', '')}, runtime --namespace|--check, onboarding --plan|--fixture|--trial [--target <path>]|--write [--force], bootstrap`);
+  if (args[0] !== TARGET_COMMAND.bootstrap) throw new Error(`target supports only: ${TARGET_DOCTOR_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_REPAIR_COMMAND.help.replace('agent-onboard target ', '')}, runtime --namespace|--check, onboarding --plan|--fixture|--trial [--target <path>]|--write [--force], bootstrap`);
   return runTargetBootstrap(args.slice(1));
 }
 
@@ -6686,6 +6723,7 @@ module.exports = {
   targetOnboardingRealTargetTrial,
   targetOnboardingWriteSet,
   targetDoctor,
+  targetRepair,
   targetRuntimeNamespaceTemplate,
   planTargetOnboardingWritesForRoot,
   TARGET_ONBOARDING_SURFACE_PLAN,

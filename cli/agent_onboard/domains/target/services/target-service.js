@@ -37,6 +37,28 @@ const TARGET_DOCTOR = Object.freeze({
   })
 });
 
+const TARGET_REPAIR = Object.freeze({
+  schema: 'agent-onboard-target-repair-result-001',
+  commandFamily: 'target repair',
+  mode: Object.freeze({
+    plan: 'plan',
+    write: 'write'
+  }),
+  status: Object.freeze({
+    ok: 'ok',
+    error: 'error'
+  }),
+  action: Object.freeze({
+    create: 'create',
+    keep: 'keep',
+    overwrite: 'overwrite',
+    skipExisting: 'skip_existing'
+  }),
+  skippedReason: Object.freeze({
+    existingNonIdenticalFile: 'existing_non_identical_file'
+  })
+});
+
 const TARGET_DOCTOR_FILE = Object.freeze({
   packageJson: 'package.json',
   runtimeNamespace: '.agent-onboard/runtime-namespace.json',
@@ -793,6 +815,162 @@ function performTargetOnboardingWrites(plannedWrites, root = process.cwd()) {
   }
 }
 
+function targetRepairCommand(mode, force) {
+  const base = `agent-onboard target repair --${mode}`;
+  return force ? `${base} --force` : base;
+}
+
+function targetRepairPlanForRoot(root, options = {}) {
+  return planTargetOnboardingWritesForRoot(root, { force: options.force === true }).map((item) => {
+    if (item.action !== 'conflict') {
+      return {
+        ...item,
+        will_write: item.action === TARGET_REPAIR.action.create || item.action === TARGET_REPAIR.action.overwrite,
+        skipped_reason: null
+      };
+    }
+    return {
+      ...item,
+      action: TARGET_REPAIR.action.skipExisting,
+      safe_to_write: true,
+      will_write: false,
+      skipped_reason: TARGET_REPAIR.skippedReason.existingNonIdenticalFile
+    };
+  });
+}
+
+function targetRepairPlan(options = {}) {
+  return targetRepairPlanForRoot(process.cwd(), options);
+}
+
+function summarizeRepairPlan(plannedWrites) {
+  return plannedWrites.map((item) => ({
+    path: item.path,
+    kind: item.kind,
+    schema: item.schema || null,
+    exists: item.exists,
+    action: item.action,
+    will_write: item.will_write === true,
+    safe_to_write: item.safe_to_write,
+    skipped_reason: item.skipped_reason || null
+  }));
+}
+
+function repairActionFiles(plannedWrites, action) {
+  return plannedWrites.filter((item) => item.action === action).map((item) => item.path);
+}
+
+function performTargetRepairWrites(plannedWrites, root = process.cwd()) {
+  const writable = plannedWrites.filter((item) => item.action === TARGET_REPAIR.action.create || item.action === TARGET_REPAIR.action.overwrite);
+  performTargetOnboardingWrites(writable, root);
+  return writable.map((item) => item.path);
+}
+
+function targetRepair(targetRoot = process.cwd(), options = {}) {
+  const mode = options.write === true ? TARGET_REPAIR.mode.write : TARGET_REPAIR.mode.plan;
+  const force = options.force === true;
+  const absoluteTargetRoot = path.resolve(targetRoot || process.cwd());
+  if (!fs.existsSync(absoluteTargetRoot)) {
+    return {
+      schema: TARGET_REPAIR.schema,
+      status: TARGET_REPAIR.status.error,
+      package_name: PACKAGE_NAME,
+      version: VERSION,
+      release_line: PUBLIC_RELEASE_CONTRACT.release_line,
+      command: targetRepairCommand(mode, force),
+      command_family: TARGET_REPAIR.commandFamily,
+      mode,
+      force,
+      target: { name: path.basename(absoluteTargetRoot) || 'target-repo', kind: 'missing', root: absoluteTargetRoot },
+      writes_performed: false,
+      errors: [`target path does not exist: ${absoluteTargetRoot}`],
+      boundary: noMutationBoundary()
+    };
+  }
+  if (!fs.statSync(absoluteTargetRoot).isDirectory()) {
+    return {
+      schema: TARGET_REPAIR.schema,
+      status: TARGET_REPAIR.status.error,
+      package_name: PACKAGE_NAME,
+      version: VERSION,
+      release_line: PUBLIC_RELEASE_CONTRACT.release_line,
+      command: targetRepairCommand(mode, force),
+      command_family: TARGET_REPAIR.commandFamily,
+      mode,
+      force,
+      target: { name: path.basename(absoluteTargetRoot) || 'target-repo', kind: 'file', root: absoluteTargetRoot },
+      writes_performed: false,
+      errors: [`target path is not a directory: ${absoluteTargetRoot}`],
+      boundary: noMutationBoundary()
+    };
+  }
+
+  const [name, kind] = targetName(absoluteTargetRoot);
+  const repairPlan = targetRepairPlanForRoot(absoluteTargetRoot, { force });
+  const writtenFiles = mode === TARGET_REPAIR.mode.write ? performTargetRepairWrites(repairPlan, absoluteTargetRoot) : [];
+  const createdFiles = repairActionFiles(repairPlan, TARGET_REPAIR.action.create);
+  const overwrittenFiles = repairActionFiles(repairPlan, TARGET_REPAIR.action.overwrite);
+  const skippedExistingFiles = repairActionFiles(repairPlan, TARGET_REPAIR.action.skipExisting);
+  const keptFiles = repairActionFiles(repairPlan, TARGET_REPAIR.action.keep);
+
+  return {
+    schema: TARGET_REPAIR.schema,
+    status: TARGET_REPAIR.status.ok,
+    package_name: PACKAGE_NAME,
+    version: VERSION,
+    release_line: PUBLIC_RELEASE_CONTRACT.release_line,
+    command: targetRepairCommand(mode, force),
+    command_family: TARGET_REPAIR.commandFamily,
+    mode,
+    force,
+    target: { name, kind, root: absoluteTargetRoot },
+    writes_performed: writtenFiles.length > 0,
+    written_files: writtenFiles,
+    created_files: createdFiles,
+    overwritten_files: overwrittenFiles,
+    skipped_existing_files: skippedExistingFiles,
+    kept_files: keptFiles,
+    repair_plan: summarizeRepairPlan(repairPlan),
+    repair_outcome: skippedExistingFiles.length > 0 && !force ? 'partial_existing_files_preserved' : 'canonical_files_repaired',
+    next_steps: [
+      `run ${PACKAGE_NAME} target doctor --json --target ${absoluteTargetRoot}`,
+      `run ${PACKAGE_NAME} guard --check-boundary after ${TARGET_CONFIG_FILE} is valid`,
+      'use --force only with explicit owner authorization to overwrite existing non-identical onboarding files'
+    ],
+    validated: {
+      target_path_readable: true,
+      target_is_directory: true,
+      writes_require_explicit_write_mode: true,
+      plan_mode_writes_no_files: mode === TARGET_REPAIR.mode.plan,
+      writes_only_canonical_target_onboarding_files: true,
+      skipped_existing_non_identical_files_without_force: !force,
+      managed_project_commands_not_run: true,
+      dependency_install_not_run: true,
+      build_test_deploy_not_run: true,
+      publish_push_not_run: true
+    },
+    boundary: {
+      writes_files: mode === TARGET_REPAIR.mode.write,
+      writes_target_repository_state: mode === TARGET_REPAIR.mode.write,
+      creates_agent_onboard_runtime_state: mode === TARGET_REPAIR.mode.write && writtenFiles.some((file) => file.startsWith('.agent-onboard/')),
+      reads_target_repository_state: true,
+      runs_managed_project_commands: false,
+      managed_project_commands_executed: false,
+      installs_dependencies: false,
+      runs_package_manager: false,
+      runs_build_test_deploy: false,
+      publishes_package: false,
+      publishes_or_pushes: false,
+      git_mutation: false,
+      mutates_registry: false,
+      writes_only_canonical_target_onboarding_files: true,
+      overwrites_existing_files: overwrittenFiles.length > 0,
+      skips_existing_non_identical_files_by_default: !force
+    },
+    errors: []
+  };
+}
+
 function planWritesForRoot(root, writeSet, options = {}) {
   const force = options.force === true;
   return writeSet.map(([relativePath, value]) => {
@@ -1195,6 +1373,7 @@ function targetDoctor(targetRoot = process.cwd()) {
     publicTargetOnboardingRealTargetRepoTrial,
     targetOnboardingSurfacePlan,
     targetDoctor,
+    targetRepair,
     agentsMdTemplate,
     firstReadOrder,
     llmsTxtTemplate,
@@ -1206,6 +1385,9 @@ function targetDoctor(targetRoot = process.cwd()) {
     workItemsTemplate,
     initWriteSet,
     targetOnboardingWriteSet,
+    targetRepairPlanForRoot,
+    targetRepairPlan,
+    performTargetRepairWrites,
     planTargetOnboardingWritesForRoot,
     planTargetOnboardingWrites,
     performTargetOnboardingWrites,
