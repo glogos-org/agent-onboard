@@ -213,6 +213,7 @@ function quickTasks() {
     cliTask('release architecture parity smoke', ['release', '--architecture-parity-smoke'], expectStatusOk),
     cliTask('release check', ['release', '--check'], expectStatusOk),
     cliTask('target doctor', ['target', 'doctor', '--json'], expectStatusOk),
+    cliTask('target profile', ['target', 'profile', '--json'], expectStatusOk),
     cliTask('target repair plan', ['target', 'repair', '--plan'], expectStatusOk),
     cliTask('work-items schema through runtime service', ['work-items', '--schema'], expectStatusOk),
     cliTask('work-items template through runtime service', ['work-items', '--template'], expectStatusOk),

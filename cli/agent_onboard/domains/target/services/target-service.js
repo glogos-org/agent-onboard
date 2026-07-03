@@ -59,6 +59,24 @@ const TARGET_REPAIR = Object.freeze({
   })
 });
 
+const TARGET_PROFILE = Object.freeze({
+  schema: 'agent-onboard-target-profile-result-001',
+  command: 'agent-onboard target profile --json',
+  commandFamily: 'target profile',
+  status: Object.freeze({
+    ok: 'ok',
+    error: 'error'
+  }),
+  scriptPurpose: Object.freeze({
+    test: 'test',
+    build: 'build',
+    lint: 'lint',
+    format: 'format',
+    start: 'start',
+    dev: 'dev'
+  })
+});
+
 const TARGET_DOCTOR_FILE = Object.freeze({
   packageJson: 'package.json',
   runtimeNamespace: '.agent-onboard/runtime-namespace.json',
@@ -117,6 +135,15 @@ const TARGET_DOCTOR_CI_FILES = freezeEntries([
 ]);
 
 const TARGET_DOCTOR_DOC_FILES = Object.freeze(['README.md', TARGET_DOCTOR_FILE.agentsMd, TARGET_DOCTOR_FILE.llmsTxt, 'CONTRIBUTING.md']);
+
+const TARGET_PROFILE_SCRIPT_MARKERS = freezeEntries([
+  { purpose: TARGET_PROFILE.scriptPurpose.test, names: Object.freeze(['test', 'test:unit', 'test:ci', 'test:e2e']) },
+  { purpose: TARGET_PROFILE.scriptPurpose.build, names: Object.freeze(['build', 'compile']) },
+  { purpose: TARGET_PROFILE.scriptPurpose.lint, names: Object.freeze(['lint', 'lint:fix']) },
+  { purpose: TARGET_PROFILE.scriptPurpose.format, names: Object.freeze(['format', 'fmt']) },
+  { purpose: TARGET_PROFILE.scriptPurpose.start, names: Object.freeze(['start', 'serve']) },
+  { purpose: TARGET_PROFILE.scriptPurpose.dev, names: Object.freeze(['dev', 'develop']) }
+]);
 
 function createTargetRuntimeService(deps) {
   const {
@@ -1172,16 +1199,114 @@ function detectedCi(root) {
     .map((entry) => ({ name: entry.name, source: entry.file }));
 }
 
-function targetDoctorProfile(root) {
+function detectedScripts(pkgProfile) {
+  const scripts = Array.isArray(pkgProfile.scripts) ? pkgProfile.scripts : [];
+  return TARGET_PROFILE_SCRIPT_MARKERS
+    .map((marker) => ({
+      purpose: marker.purpose,
+      scripts: marker.names.filter((scriptName) => scripts.includes(scriptName))
+    }))
+    .filter((marker) => marker.scripts.length > 0);
+}
+
+function targetProfileData(root) {
   const pkgProfile = packageJsonProfile(root);
   return {
     package_json: pkgProfile,
     package_managers: detectedPackageManagers(root, pkgProfile),
     languages: detectedMarkers(root, TARGET_DOCTOR_LANGUAGE_MARKERS),
     frameworks: detectedFrameworks(pkgProfile),
+    scripts: detectedScripts(pkgProfile),
     ci: detectedCi(root),
     docs: existingRelativeFiles(root, TARGET_DOCTOR_DOC_FILES),
     git_present: fs.existsSync(path.join(root, '.git'))
+  };
+}
+
+function targetDoctorProfile(root) {
+  return targetProfileData(root);
+}
+
+function targetProfileSummary(profile) {
+  return {
+    package_managers: profile.package_managers.length,
+    languages: profile.languages.length,
+    frameworks: profile.frameworks.length,
+    script_purposes: profile.scripts.length,
+    ci: profile.ci.length,
+    docs: profile.docs.length,
+    has_git: profile.git_present === true
+  };
+}
+
+function targetProfile(targetRoot = process.cwd()) {
+  const absoluteTargetRoot = path.resolve(targetRoot || process.cwd());
+  if (!fs.existsSync(absoluteTargetRoot)) {
+    return {
+      schema: TARGET_PROFILE.schema,
+      status: TARGET_PROFILE.status.error,
+      package_name: PACKAGE_NAME,
+      version: VERSION,
+      release_line: PUBLIC_RELEASE_CONTRACT.release_line,
+      command: TARGET_PROFILE.command,
+      command_family: TARGET_PROFILE.commandFamily,
+      target: { name: path.basename(absoluteTargetRoot) || 'target-repo', kind: 'missing', root: absoluteTargetRoot },
+      writes_performed: false,
+      errors: [`target path does not exist: ${absoluteTargetRoot}`],
+      boundary: noMutationBoundary()
+    };
+  }
+  if (!fs.statSync(absoluteTargetRoot).isDirectory()) {
+    return {
+      schema: TARGET_PROFILE.schema,
+      status: TARGET_PROFILE.status.error,
+      package_name: PACKAGE_NAME,
+      version: VERSION,
+      release_line: PUBLIC_RELEASE_CONTRACT.release_line,
+      command: TARGET_PROFILE.command,
+      command_family: TARGET_PROFILE.commandFamily,
+      target: { name: path.basename(absoluteTargetRoot) || 'target-repo', kind: 'file', root: absoluteTargetRoot },
+      writes_performed: false,
+      errors: [`target path is not a directory: ${absoluteTargetRoot}`],
+      boundary: noMutationBoundary()
+    };
+  }
+
+  const [name, kind] = targetName(absoluteTargetRoot);
+  const profile = targetProfileData(absoluteTargetRoot);
+  return {
+    schema: TARGET_PROFILE.schema,
+    status: TARGET_PROFILE.status.ok,
+    package_name: PACKAGE_NAME,
+    version: VERSION,
+    release_line: PUBLIC_RELEASE_CONTRACT.release_line,
+    command: TARGET_PROFILE.command,
+    command_family: TARGET_PROFILE.commandFamily,
+    target: { name, kind, root: absoluteTargetRoot },
+    profile,
+    summary: targetProfileSummary(profile),
+    next_steps: [
+      `run ${PACKAGE_NAME} target doctor --json --target ${absoluteTargetRoot}`,
+      `run ${PACKAGE_NAME} target repair --plan --target ${absoluteTargetRoot}`,
+      'confirm with the repository owner before running detected package scripts'
+    ],
+    writes_performed: false,
+    validated: {
+      target_path_readable: true,
+      target_is_directory: true,
+      no_writes_performed: true,
+      managed_project_commands_not_run: true,
+      dependency_install_not_run: true,
+      build_test_deploy_not_run: true,
+      publish_push_not_run: true
+    },
+    boundary: {
+      ...noMutationBoundary(),
+      reads_target_repository_state: true,
+      runs_package_manager: false,
+      mutates_registry: false
+    },
+    errors: []
   };
 }
 
@@ -1374,6 +1499,8 @@ function targetDoctor(targetRoot = process.cwd()) {
     targetOnboardingSurfacePlan,
     targetDoctor,
     targetRepair,
+    targetProfile,
+    targetProfileData,
     agentsMdTemplate,
     firstReadOrder,
     llmsTxtTemplate,

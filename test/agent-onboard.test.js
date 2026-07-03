@@ -923,6 +923,61 @@ fullSourceTest('target doctor reports target repo readiness without writes', () 
   assert.strictEqual(fs.existsSync(path.join(dir, '.agent-onboard')), false);
 });
 
+fullSourceTest('target profile detects stack markers without running target commands', () => {
+  const dir = tempRepo();
+  fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({
+    name: 'profile-fixture',
+    private: true,
+    packageManager: 'npm@10.0.0',
+    scripts: {
+      test: 'vitest run',
+      build: 'vite build',
+      lint: 'eslint .',
+      dev: 'vite'
+    },
+    dependencies: {
+      react: '^19.0.0',
+      next: '^15.0.0'
+    },
+    devDependencies: {
+      vite: '^7.0.0',
+      vitest: '^3.0.0'
+    }
+  }, null, 2) + '\n');
+  fs.writeFileSync(path.join(dir, 'package-lock.json'), '{}\n');
+  fs.writeFileSync(path.join(dir, 'tsconfig.json'), '{}\n');
+  fs.mkdirSync(path.join(dir, '.github', 'workflows'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'README.md'), '# Profile fixture\n');
+
+  const result = run(['target', 'profile', '--json', '--target', dir]);
+  const output = readJsonOutput(result);
+  assert.strictEqual(output.schema, 'agent-onboard-target-profile-result-001');
+  assert.strictEqual(output.status, 'ok');
+  assert.strictEqual(output.version, EXPECTED_VERSION);
+  assert.strictEqual(output.command, 'agent-onboard target profile --json');
+  assert.strictEqual(output.command_family, 'target profile');
+  assert.strictEqual(output.target.name, 'profile-fixture');
+  assert.ok(output.profile.package_managers.some((manager) => manager.name === 'npm'));
+  assert.ok(output.profile.languages.some((language) => language.name === 'node'));
+  assert.ok(output.profile.languages.some((language) => language.name === 'typescript'));
+  assert.ok(output.profile.frameworks.some((framework) => framework.name === 'react'));
+  assert.ok(output.profile.frameworks.some((framework) => framework.name === 'next'));
+  assert.ok(output.profile.frameworks.some((framework) => framework.name === 'vite'));
+  assert.ok(output.profile.frameworks.some((framework) => framework.name === 'vitest'));
+  assert.ok(output.profile.scripts.some((entry) => entry.purpose === 'test' && entry.scripts.includes('test')));
+  assert.ok(output.profile.scripts.some((entry) => entry.purpose === 'build' && entry.scripts.includes('build')));
+  assert.ok(output.profile.scripts.some((entry) => entry.purpose === 'lint' && entry.scripts.includes('lint')));
+  assert.ok(output.profile.scripts.some((entry) => entry.purpose === 'dev' && entry.scripts.includes('dev')));
+  assert.ok(output.profile.ci.some((entry) => entry.name === 'github_actions'));
+  assert.ok(output.profile.docs.includes('README.md'));
+  assert.strictEqual(output.summary.frameworks, 4);
+  assert.strictEqual(output.writes_performed, false);
+  assert.strictEqual(output.boundary.runs_package_manager, false);
+  assert.strictEqual(output.boundary.runs_build_test_deploy, false);
+  assert.strictEqual(output.validated.managed_project_commands_not_run, true);
+  assert.strictEqual(fs.existsSync(path.join(dir, '.agent-onboard')), false);
+});
+
 fullSourceTest('target doctor reports ready after explicit target onboarding write', () => {
   const dir = tempRepo();
   const write = run(['target', 'onboarding', '--write'], { cwd: dir });
@@ -2354,6 +2409,7 @@ fullSourceTest('full source block line 2233', () => {
   assert.ok(readme.includes('`0.0.35` adds the public source domain module partition planning gate'));
   assert.ok(readme.includes('This release adds the public target repo doctor command'));
   assert.ok(readme.includes('This release adds the public target onboarding repair command'));
+  assert.ok(readme.includes('This release adds the public target repo profile command'));
   assert.ok(readme.includes('This release adds the public source module extraction adapter boundary gate'));
   assert.ok(readme.includes('This release adds the public source extraction golden output freeze gate'));
   assert.ok(readme.includes('npx agent-onboard architecture --golden-outputs'));
@@ -2390,6 +2446,7 @@ fullSourceTest('full source block line 2233', () => {
   assert.ok(readme.includes('npx agent-onboard authority --first-read'));
   assert.ok(readme.includes('npx agent-onboard authority --check'));
   assert.ok(readme.includes('npx agent-onboard target doctor --json'));
+  assert.ok(readme.includes('npx agent-onboard target profile --json'));
   assert.ok(readme.includes('npx agent-onboard target repair --plan'));
   assert.ok(readme.includes('npx agent-onboard target repair --write'));
   assert.ok(readme.includes('npx agent-onboard target onboarding --write'));
@@ -2426,6 +2483,7 @@ fullSourceTest('full source block line 2323', () => {
   assert.ok(help.stdout.includes('--claims-installed-fallback-smoke|--claims-installed-fallback-check|--source-domain-closure-review|--source-domain-closure-check|--cli-runtime-plan|--cli-runtime-check|--thin-router|--thin-router-check|--compatibility-port|--compatibility-port-check|--core-adapter|--core-adapter-check|--package-adapter|--package-adapter-check|--architecture-adapter|--architecture-adapter-check|--authority-adapter|--authority-adapter-check|--module-inclusion-plan|--module-inclusion-check|--packaged-router-port|--packaged-router-port-check|--thin-entrypoint-rehearsal|--thin-entrypoint-rehearsal-check|--thin-entrypoint-cutover|--thin-entrypoint-cutover-check|--router-adapter-delegation|--router-adapter-delegation-check|--check'));
   assert.ok(help.stdout.includes('release --plan|--contract|--fixture|--surface|--surface-check|--version-sprawl-check|--parity-smoke|--architecture-parity-smoke|--target-onboarding-smoke|--post-publish-handoff|--published-acceptance|--real-target-trial|--check'));
   assert.ok(help.stdout.includes('target doctor [--json] [--target <path>]'));
+  assert.ok(help.stdout.includes('target profile --json [--target <path>]'));
   assert.ok(help.stdout.includes('target repair --plan|--write [--force] [--target <path>]'));
   assert.ok(help.stdout.includes('target runtime --namespace|--check'));
   assert.ok(help.stdout.includes('target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]'));

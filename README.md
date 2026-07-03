@@ -24,6 +24,7 @@ Inspect target repo readiness without writing files:
 
 ```sh
 npx agent-onboard target doctor --json
+npx agent-onboard target profile --json
 ```
 
 Plan a repair for missing canonical onboarding files without overwriting existing files:
@@ -108,6 +109,7 @@ npx agent-onboard guard --check-boundary
 npx agent-onboard authority --first-read
 npx agent-onboard authority --check
 npx agent-onboard target doctor --json
+npx agent-onboard target profile --json
 npx agent-onboard target repair --plan
 npx agent-onboard target repair --write
 npx agent-onboard target runtime --namespace
@@ -802,6 +804,8 @@ This version does not:
 This release adds the public target repo doctor command: `target doctor --json` reports onboarding readiness, detected stack markers, canonical file status, boundary/work-items health, and next steps without writing files or running managed project commands.
 
 This release adds the public target onboarding repair command: `target repair --plan|--write` creates missing canonical onboarding files, preserves existing non-identical files by default, and requires explicit `--force` before overwriting.
+
+This release adds the public target repo profile command: `target profile --json` detects package managers, languages, framework dependencies, scripts, CI markers, docs, and Git presence without running managed project commands.
 
 This release adds the public source extraction golden output freeze gate: `architecture --golden-outputs` reports the frozen command-output contract, `architecture --golden-check` validates it, and `release --version-sprawl-check` prevents current patch-version literals from spreading through source docs and tests.
 
