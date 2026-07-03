@@ -48,6 +48,7 @@ const EXPECTED_PACK_FILES = [
   'cli/agent_onboard/domains/work-items/index.js',
   'cli/agent_onboard/domains/work-items/services/work-items-service.js',
   'cli/agent_onboard/ports/compatibility-command-port.js',
+  'cli/agent_onboard/runtime-composer.js',
   'package.json'
 ];
 

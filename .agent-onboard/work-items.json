@@ -3474,7 +3474,32 @@
       "id": "P1S3M3W33",
       "milestone_id": "P1S3M3",
       "title": "Public thin entrypoint runtime composer cutover gate",
-      "status": "open"
+      "status": "closed",
+      "claim": {
+        "actor": "Antigravity",
+        "claimed_at": "2026-07-03T05:57:46.612Z"
+      },
+      "closure": {
+        "actor": "Antigravity",
+        "closed_at": "2026-07-03T06:17:10.751Z",
+        "summary": "Closed by extracting monolith wiring logic from cli/agent-onboard.js into cli/agent_onboard/runtime-composer.js, preserving legacy compatibility assertions, shrinking the entrypoint below the line-count limit, and adding the new service to package.json and test expectations.",
+        "changed_files": [
+          ".agent-onboard/work-items.json",
+          "package.json",
+          "cli/agent-onboard.js",
+          "cli/agent_onboard/runtime-composer.js",
+          "test/agent-onboard.test.js"
+        ],
+        "checks_run": [
+          "node cli/agent-onboard.js architecture --check",
+          "node test/run-tests.js all",
+          "git diff --check"
+        ],
+        "checks_not_run": [
+          "npm publish --access public"
+        ],
+        "known_non_pass": []
+      }
     }
   ]
 }
