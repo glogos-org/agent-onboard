@@ -15,6 +15,7 @@ const { configGuard: coreConfigGuardDomain } = require('./domains/core');
 const { service: packageDomain } = require('./domains/package');
 const { createWorkItemsService } = require('./domains/work-items');
 const {
+  PRODUCT_HELP_LINES,
   PUBLIC_PACKAGED_ROUTER_PORT_MODULE_FILES,
   PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES,
   RELEASE_LINE,
@@ -25,8 +26,7 @@ const {
   TARGET_PROFILE_COMMAND,
   TARGET_REPAIR_COMMAND,
   TOP_LEVEL_COMMAND,
-  TOP_LEVEL_COMMAND_ALIAS,
-  WORK_ITEMS_USABILITY_HELP_LINES
+  TOP_LEVEL_COMMAND_ALIAS
 } = require('./runtime-contracts');
 const VERSION = require('../../package.json').version;
 
@@ -4279,6 +4279,72 @@ function publicPackageSurfaceCheck(root = packageRoot()) {
   };
 }
 
+function publicReleaseTargetRepoProductCheck(root = packageRoot()) {
+  const targetDoctorResult = targetDoctor(root);
+  const targetProfileResult = targetProfile(root);
+  const targetRepairPlan = targetRepair(root, { write: false, force: false });
+  const targetOnboardingPlan = targetOnboardingSurfacePlan(root);
+  const targetOnboardingFixture = targetOnboardingDryRunFixture(root);
+  const errors = [];
+  if (targetDoctorResult.status !== 'ok') errors.push('target doctor must pass');
+  if (targetProfileResult.status !== 'ok') errors.push('target profile must pass');
+  if (targetRepairPlan.status !== 'ok') errors.push('target repair --plan must pass');
+  if (targetRepairPlan.writes_performed !== false) errors.push('target repair --plan must not write files');
+  if (targetOnboardingPlan.status !== 'ok') errors.push('target onboarding --plan must pass');
+  if (targetOnboardingFixture.status !== 'ok') errors.push('target onboarding --fixture must pass');
+  return {
+    schema: 'agent-onboard-public-release-target-repo-product-check-result-001',
+    status: errors.length === 0 ? 'ok' : 'error',
+    package_name: PUBLIC_RELEASE_CONTRACT.package_name,
+    version: VERSION,
+    release_line: PUBLIC_RELEASE_CONTRACT.release_line,
+    command: PUBLIC_RELEASE_CONTRACT.command,
+    package_root: root,
+    validated: {
+      target_doctor: targetDoctorResult.status === 'ok',
+      target_profile: targetProfileResult.status === 'ok',
+      target_repair_plan: targetRepairPlan.status === 'ok' && targetRepairPlan.writes_performed === false,
+      target_onboarding_plan: targetOnboardingPlan.status === 'ok',
+      target_onboarding_fixture: targetOnboardingFixture.status === 'ok'
+    },
+    target_doctor: {
+      status: targetDoctorResult.status,
+      readiness: targetDoctorResult.readiness,
+      canonical_file_count: Array.isArray(targetDoctorResult.canonical_files) ? targetDoctorResult.canonical_files.length : 0
+    },
+    target_profile: {
+      status: targetProfileResult.status,
+      summary: targetProfileResult.summary
+    },
+    target_repair_plan: {
+      status: targetRepairPlan.status,
+      writes_performed: targetRepairPlan.writes_performed,
+      planned_action_count: Array.isArray(targetRepairPlan.plan) ? targetRepairPlan.plan.length : 0,
+      skipped_existing_files: targetRepairPlan.skipped_existing_files || []
+    },
+    target_onboarding_plan: {
+      status: targetOnboardingPlan.status,
+      canonical_files: targetOnboardingPlan.canonical_files
+    },
+    target_onboarding_fixture: {
+      status: targetOnboardingFixture.status,
+      fixture_count: targetOnboardingFixture.fixture_matrix && Array.isArray(targetOnboardingFixture.fixture_matrix.fixtures) ? targetOnboardingFixture.fixture_matrix.fixtures.length : 0
+    },
+    boundary: {
+      writes_files: false,
+      writes_package_root: false,
+      writes_target_repository_state: false,
+      git_mutation: false,
+      installs_dependencies: false,
+      runs_package_manager: false,
+      runs_build_test_deploy: false,
+      publishes_package: false,
+      mutates_registry: false
+    },
+    errors
+  };
+}
+
 function publicReleaseCheck(root = packageRoot()) {
   const pkg = readJson(path.join(root, 'package.json'));
   const metadataErrors = packageJsonReleaseErrors(pkg, root);
@@ -4297,40 +4363,26 @@ function publicReleaseCheck(root = packageRoot()) {
   const versionPolicyErrors = versionPolicy.errors.map((error) => `version reference policy: ${error}`);
   const packageSurfaceErrors = packageSurface.errors.map((error) => `package surface: ${error}`);
   const architectureParity = { status: architecture.status === 'ok' ? 'ok' : 'error', errors: [] };
-  const installedFallbackSmoke = publicSourceModuleExtractionInstalledFallbackSmokeCheck(root);
-  const installedFallbackSmokeErrors = installedFallbackSmoke.errors.map((error) => `installed fallback smoke: ${error}`);
-  const secondSlicePlan = publicSourceModuleExtractionSecondSlicePlanCheck(root);
-  const secondSlicePlanErrors = secondSlicePlan.errors.map((error) => `second slice plan: ${error}`);
-  const secondSliceFirstSlice = publicSourceModuleExtractionSecondSliceFirstSliceCheck(root);
-  const secondSliceFirstSliceErrors = secondSliceFirstSlice.errors.map((error) => `second slice first-slice: ${error}`);
-  const authorityBundleParity = publicSourceModuleExtractionAuthorityBundleParityCheck(root);
-  const authorityBundleParityErrors = authorityBundleParity.errors.map((error) => `authority bundle parity: ${error}`);
-  const authorityRuntimeBridge = publicSourceModuleExtractionAuthorityRuntimeBridgeCheck(root);
-  const authorityRuntimeBridgeErrors = authorityRuntimeBridge.errors.map((error) => `authority runtime bridge: ${error}`);
-  const m2Seed = publicArchitectureM1ClosureM2SeedCheck(root);
-  const m2SeedErrors = m2Seed.errors.map((error) => `m2 seed: ${error}`);
-  const workItemsPlan = publicWorkItemsDomainSourceExtractionPlanCheck(root);
-  const workItemsPlanErrors = workItemsPlan.errors.map((error) => `work-items source extraction plan: ${error}`);
-  const workItemsFirstSlice = publicWorkItemsDomainSourceExtractionFirstSliceCheck(root);
-  const workItemsFirstSliceErrors = workItemsFirstSlice.errors.map((error) => `work-items first-slice: ${error}`);
-  const workItemsBundleParity = publicWorkItemsDomainSourceExtractionBundleParityCheck(root);
-  const workItemsBundleParityErrors = workItemsBundleParity.errors.map((error) => `work-items bundle parity: ${error}`);
-  const workItemsRuntimeBridge = publicWorkItemsDomainSourceExtractionRuntimeBridgeCheck(root);
-  const workItemsRuntimeBridgeErrors = workItemsRuntimeBridge.errors.map((error) => `work-items runtime bridge: ${error}`);
-  const workItemsInstalledFallback = publicWorkItemsDomainSourceExtractionInstalledFallbackSmokeCheck(root);
-  const workItemsInstalledFallbackErrors = workItemsInstalledFallback.errors.map((error) => `work-items installed fallback smoke: ${error}`);
-  const claimsPlan = publicClaimsDomainSourceExtractionPlanCheck(root);
-  const claimsPlanErrors = claimsPlan.errors.map((error) => `claims source extraction plan: ${error}`);
-  const claimsFirstSlice = publicClaimsDomainSourceExtractionFirstSliceCheck(root);
-  const claimsFirstSliceErrors = claimsFirstSlice.errors.map((error) => `claims first-slice: ${error}`);
-  const claimsBundleParity = publicClaimsDomainSourceExtractionBundleParityCheck(root);
-  const claimsBundleParityErrors = claimsBundleParity.errors.map((error) => `claims bundle parity: ${error}`);
-  const claimsRuntimeBridge = publicClaimsDomainSourceExtractionRuntimeBridgeCheck(root);
-  const claimsRuntimeBridgeErrors = claimsRuntimeBridge.errors.map((error) => `claims runtime bridge: ${error}`);
-  const claimsInstalledFallback = publicClaimsDomainSourceExtractionInstalledFallbackSmokeCheck(root);
-  const claimsInstalledFallbackErrors = claimsInstalledFallback.errors.map((error) => `claims installed fallback smoke: ${error}`);
-  const sourceDomainClosureReview = publicSourceDomainExtractionStabilizationClosureReviewCheck(root);
-  const sourceDomainClosureReviewErrors = sourceDomainClosureReview.errors.map((error) => `source-domain closure review: ${error}`);
+  const targetRepoProduct = publicReleaseTargetRepoProductCheck(root);
+  const targetRepoProductErrors = targetRepoProduct.errors.map((error) => `target repo product: ${error}`);
+  const retiredReleaseChecks = Object.freeze([
+    'source_module_extraction_installed_fallback_smoke',
+    'source_module_extraction_second_slice_plan',
+    'source_module_extraction_second_slice_first_slice',
+    'source_module_extraction_authority_bundle_parity',
+    'source_module_extraction_authority_runtime_bridge',
+    'work_items_domain_source_extraction_plan',
+    'work_items_domain_source_extraction_first_slice',
+    'work_items_domain_source_extraction_bundle_parity',
+    'work_items_domain_source_extraction_runtime_bridge',
+    'work_items_domain_source_extraction_installed_fallback_smoke',
+    'claims_domain_source_extraction_plan',
+    'claims_domain_source_extraction_first_slice',
+    'claims_domain_source_extraction_bundle_parity',
+    'claims_domain_source_extraction_runtime_bridge',
+    'claims_domain_source_extraction_installed_fallback_smoke',
+    'source_domain_extraction_stabilization_closure_review'
+  ]);
   const cliRuntimePlan = publicCliRuntimeDeMonolithPlanningCheck(root);
   const cliRuntimePlanErrors = cliRuntimePlan.errors.map((error) => `cli runtime de-monolith planning: ${error}`);
   const thinCliRouter = publicThinCliRouterSeedCheck(root);
@@ -4356,7 +4408,7 @@ function publicReleaseCheck(root = packageRoot()) {
   const routerAdapterDelegation = publicRouterCommandAdapterDelegationExpansionCheck(root);
   const routerAdapterDelegationErrors = routerAdapterDelegation.errors.map((error) => `router adapter delegation: ${error}`);
   const architectureParityErrors = architectureParity.errors.map((error) => `installed architecture parity: ${error}`);
-  const errors = [...metadataErrors, ...packErrors, ...messagingErrors, ...sourceLedgerErrors, ...architectureErrors, ...packageSurfaceErrors, ...architectureParityErrors, ...installedFallbackSmokeErrors, ...secondSlicePlanErrors, ...secondSliceFirstSliceErrors, ...authorityBundleParityErrors, ...authorityRuntimeBridgeErrors, ...m2SeedErrors, ...workItemsFirstSliceErrors, ...workItemsBundleParityErrors, ...workItemsRuntimeBridgeErrors, ...workItemsInstalledFallbackErrors, ...claimsPlanErrors, ...claimsFirstSliceErrors, ...claimsBundleParityErrors, ...claimsRuntimeBridgeErrors, ...claimsInstalledFallbackErrors, ...sourceDomainClosureReviewErrors, ...cliRuntimePlanErrors, ...thinCliRouterErrors, ...compatibilityPortErrors, ...coreAdapterErrors, ...packageAdapterErrors, ...architectureAdapterErrors, ...authorityAdapterErrors, ...moduleInclusionPlanErrors, ...packagedRouterPortErrors, ...thinEntrypointRehearsalErrors, ...thinEntrypointCutoverErrors, ...routerAdapterDelegationErrors, ...versionPolicyErrors];
+  const errors = [...metadataErrors, ...packErrors, ...messagingErrors, ...sourceLedgerErrors, ...architectureErrors, ...packageSurfaceErrors, ...architectureParityErrors, ...targetRepoProductErrors, ...cliRuntimePlanErrors, ...thinCliRouterErrors, ...compatibilityPortErrors, ...coreAdapterErrors, ...packageAdapterErrors, ...architectureAdapterErrors, ...authorityAdapterErrors, ...moduleInclusionPlanErrors, ...packagedRouterPortErrors, ...thinEntrypointRehearsalErrors, ...thinEntrypointCutoverErrors, ...routerAdapterDelegationErrors, ...versionPolicyErrors];
   return {
     schema: 'agent-onboard-public-release-check-result-014',
     status: errors.length === 0 ? 'ok' : 'error',
@@ -4380,31 +4432,13 @@ function publicReleaseCheck(root = packageRoot()) {
       public_domain_service_facades: architecture.domain_service_facades && architecture.domain_service_facades.status === 'ok',
       public_authority_first_read_index: architecture.authority_first_read_index && architecture.authority_first_read_index.status === 'ok',
       public_target_runtime_namespace: architecture.target_runtime_namespace && architecture.target_runtime_namespace.status === 'ok',
-      public_source_domain_module_partition_plan: architecture.source_domain_module_partition_plan && architecture.source_domain_module_partition_plan.status === 'ok',
-      public_source_domain_extraction_rehearsal: architecture.source_domain_extraction_rehearsal && architecture.source_domain_extraction_rehearsal.status === 'ok',
-      public_source_extraction_golden_output_freeze: architecture.source_extraction_golden_output_freeze && architecture.source_extraction_golden_output_freeze.status === 'ok',
-      public_source_module_extraction_adapter_boundary: architecture.source_module_extraction_adapter_boundary && architecture.source_module_extraction_adapter_boundary.status === 'ok',
-      public_source_module_extraction_first_slice: architecture.source_module_extraction_first_slice && architecture.source_module_extraction_first_slice.status === 'ok',
-      public_source_module_extraction_bundle_parity: architecture.source_module_extraction_bundle_parity && architecture.source_module_extraction_bundle_parity.status === 'ok',
-      public_source_module_extraction_runtime_bridge: architecture.source_module_extraction_runtime_bridge && architecture.source_module_extraction_runtime_bridge.status === 'ok',
-      public_source_module_extraction_installed_fallback_smoke: installedFallbackSmoke.status === 'ok',
-      public_source_module_extraction_second_slice_plan: secondSlicePlan.status === 'ok',
-      public_source_module_extraction_second_slice_first_slice: secondSliceFirstSlice.status === 'ok',
-      public_source_module_extraction_authority_bundle_parity: authorityBundleParity.status === 'ok',
-      public_source_module_extraction_authority_runtime_bridge: authorityRuntimeBridge.status === 'ok',
-      source_module_extraction_authority_runtime_bridge: authorityRuntimeBridge.status === 'ok',
-      public_architecture_m1_closure_m2_seed: m2Seed.status === 'ok',
-      work_items_domain_source_extraction_plan: workItemsPlan.status === 'ok',
-      work_items_domain_source_extraction_first_slice: workItemsFirstSlice.status === 'ok',
-      work_items_domain_source_extraction_bundle_parity: workItemsBundleParity.status === 'ok',
-      work_items_domain_source_extraction_runtime_bridge: workItemsRuntimeBridge.status === 'ok',
-      work_items_domain_source_extraction_installed_fallback_smoke: workItemsInstalledFallback.status === 'ok',
-      claims_domain_source_extraction_plan: claimsPlan.status === 'ok',
-      claims_domain_source_extraction_first_slice: claimsFirstSlice.status === 'ok',
-      claims_domain_source_extraction_bundle_parity: claimsBundleParity.status === 'ok',
-      claims_domain_source_extraction_runtime_bridge: claimsRuntimeBridge.status === 'ok',
-      claims_domain_source_extraction_installed_fallback_smoke: claimsInstalledFallback.status === 'ok',
-      source_domain_extraction_stabilization_closure_review: sourceDomainClosureReview.status === 'ok',
+      target_repo_product_surface: targetRepoProduct.status === 'ok',
+      target_doctor: targetRepoProduct.validated.target_doctor,
+      target_profile: targetRepoProduct.validated.target_profile,
+      target_repair_plan: targetRepoProduct.validated.target_repair_plan,
+      target_onboarding_plan: targetRepoProduct.validated.target_onboarding_plan,
+      target_onboarding_fixture: targetRepoProduct.validated.target_onboarding_fixture,
+      historical_source_extraction_release_checks_retired: retiredReleaseChecks.length > 0,
       cli_runtime_de_monolith_planning: cliRuntimePlan.status === 'ok',
       thin_cli_router_seed: thinCliRouter.status === 'ok',
       compatibility_command_port_seed: compatibilityPort.status === 'ok',
@@ -4425,29 +4459,8 @@ function publicReleaseCheck(root = packageRoot()) {
     projected_pack_files: projectedPackFiles,
     source_context_files: PUBLIC_RELEASE_CONTRACT.source_context_files.slice(),
     public_architecture: architecture,
-    public_source_domain_module_partition_plan: architecture.source_domain_module_partition_plan,
-    public_source_domain_extraction_rehearsal: architecture.source_domain_extraction_rehearsal,
-    public_source_extraction_golden_output_freeze: architecture.source_extraction_golden_output_freeze,
-    public_source_module_extraction_adapter_boundary: architecture.source_module_extraction_adapter_boundary,
-    public_source_module_extraction_first_slice: architecture.source_module_extraction_first_slice,
-    public_source_module_extraction_bundle_parity: architecture.source_module_extraction_bundle_parity,
-    public_source_module_extraction_runtime_bridge: architecture.source_module_extraction_runtime_bridge,
-    public_source_module_extraction_installed_fallback_smoke: installedFallbackSmoke,
-    public_source_module_extraction_second_slice_plan: secondSlicePlan,
-    public_source_module_extraction_second_slice_first_slice: secondSliceFirstSlice,
-    public_source_module_extraction_authority_bundle_parity: authorityBundleParity,
-    public_source_module_extraction_authority_runtime_bridge: authorityRuntimeBridge,
-    public_architecture_m1_closure_m2_seed: m2Seed,
-    work_items_domain_source_extraction_first_slice: workItemsFirstSlice,
-    work_items_domain_source_extraction_plan: workItemsPlan,
-    work_items_domain_source_extraction_bundle_parity: workItemsBundleParity,
-    work_items_domain_source_extraction_runtime_bridge: workItemsRuntimeBridge,
-    work_items_domain_source_extraction_installed_fallback_smoke: workItemsInstalledFallback,
-    claims_domain_source_extraction_plan: claimsPlan,
-    claims_domain_source_extraction_first_slice: claimsFirstSlice,
-    claims_domain_source_extraction_bundle_parity: claimsBundleParity,
-    claims_domain_source_extraction_runtime_bridge: claimsRuntimeBridge,
-    claims_domain_source_extraction_stabilization_closure_review: sourceDomainClosureReview,
+    target_repo_product: targetRepoProduct,
+    retired_release_checks: retiredReleaseChecks,
     cli_runtime_de_monolith_planning: cliRuntimePlan,
     thin_cli_router_seed: thinCliRouter,
     compatibility_command_port_seed: compatibilityPort,
@@ -4460,7 +4473,6 @@ function publicReleaseCheck(root = packageRoot()) {
     thin_entrypoint_router_cutover_rehearsal: thinEntrypointRehearsal,
     thin_entrypoint_router_cutover_application: thinEntrypointCutover,
     router_command_adapter_delegation_expansion: routerAdapterDelegation,
-    claims_domain_source_extraction_installed_fallback_smoke: claimsInstalledFallback,
     public_version_reference_policy: versionPolicy,
     public_package_surface_preservation: packageSurface,
     public_installed_parity_architecture_smoke: architectureParity,
@@ -6084,10 +6096,7 @@ function runTargetInstance(args) {
 }
 
 function help() {
-  process.stdout.write(`agent-onboard ${VERSION}\n\nagent-onboard status\nagent-onboard init --dry-run|--write [--force]\nagent-onboard agents --preview|--write [--force]\nagent-onboard guard --plan|--check-boundary\nagent-onboard authority --first-read|--check\nagent-onboard architecture --map|--router|--facades|--partition-plan|--partition-check|--extraction-rehearsal|--extraction-check|--golden-outputs|--golden-check|--adapter-boundary|--adapter-check|--first-slice|--first-slice-check|--bundle-parity|--bundle-parity-check|--runtime-bridge|--runtime-bridge-check|--installed-fallback-smoke|--installed-fallback-check|--second-slice-plan|--second-slice-check|--second-slice-first-slice|--second-slice-first-slice-check|--authority-bundle-parity|--authority-bundle-parity-check|--authority-runtime-bridge|--authority-runtime-bridge-check|--m2-seed|--m2-seed-check|--work-items-plan|--work-items-check|--work-items-first-slice|--work-items-first-slice-check|--work-items-bundle-parity|--work-items-bundle-parity-check|--work-items-runtime-bridge|--work-items-runtime-bridge-check|--work-items-installed-fallback-smoke|--work-items-installed-fallback-check|--claims-plan|--claims-check|--claims-first-slice|--claims-first-slice-check|--claims-bundle-parity|--claims-bundle-parity-check|--claims-runtime-bridge|--claims-runtime-bridge-check|--claims-installed-fallback-smoke|--claims-installed-fallback-check|--source-domain-closure-review|--source-domain-closure-check|--cli-runtime-plan|--cli-runtime-check|--thin-router|--thin-router-check|--compatibility-port|--compatibility-port-check|--core-adapter|--core-adapter-check|--package-adapter|--package-adapter-check|--architecture-adapter|--architecture-adapter-check|--authority-adapter|--authority-adapter-check|--module-inclusion-plan|--module-inclusion-check|--packaged-router-port|--packaged-router-port-check|--thin-entrypoint-rehearsal|--thin-entrypoint-rehearsal-check|--thin-entrypoint-cutover|--thin-entrypoint-cutover-check|--router-adapter-delegation|--router-adapter-delegation-check|--check\nagent-onboard release --plan|--contract|--fixture|--surface|--surface-check|--version-sprawl-check|--parity-smoke|--architecture-parity-smoke|--target-onboarding-smoke|--post-publish-handoff|--published-acceptance|--real-target-trial|--check\nagent-onboard target-config --schema\nagent-onboard target-config --template\nagent-onboard target-config --validate-template\nagent-onboard target-config --validate [agent-onboard.target.json]\nagent-onboard work-items --schema\nagent-onboard work-items --template\nagent-onboard work-items --validate-template\nagent-onboard work-items --validate [.agent-onboard/work-items.json]\nagent-onboard work-items --list [.agent-onboard/work-items.json]\n${WORK_ITEMS_USABILITY_HELP_LINES.join('\n')}\nagent-onboard work-items --init --dry-run|--write [--force]\nagent-onboard work-items --append --dry-run|--write --id <public-work-item-id> --title <title>\nagent-onboard work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>\nagent-onboard work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>\nagent-onboard target doctor [--json] [--target <path>]\nagent-onboard target runtime --namespace|--check\nagent-onboard target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]\nagent-onboard target bootstrap --dry-run|--write [--force]\nagent-onboard target-instance takeover --dry-run|--write [--force]\n`);
-  process.stdout.write(`${TARGET_DOCTOR_COMMAND.help}\n`);
-  process.stdout.write(`${TARGET_PROFILE_COMMAND.help}\n`);
-  process.stdout.write(`${TARGET_REPAIR_COMMAND.help}\n`);
+  process.stdout.write(`agent-onboard ${VERSION}\n\n${PRODUCT_HELP_LINES.join('\n')}\n`);
   return 0;
 }
 

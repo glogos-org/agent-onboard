@@ -3958,13 +3958,88 @@
       "id": "P1S3M4W12",
       "milestone_id": "P1S3M4",
       "title": "Public release check target-repo refocus gate",
-      "status": "open"
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-03T19:28:22.642Z"
+      },
+      "closure": {
+        "actor": "codex-gpt-5",
+        "closed_at": "2026-07-03T19:28:22.642Z",
+        "summary": "Closed by refocusing the public release check on target-repo product readiness, retiring historical source-extraction checks as reported release metadata instead of active publish blockers, updating README/test expectations, and bumping the package patch version to 0.0.103 for publish readiness.",
+        "changed_files": [
+          ".agent-onboard/work-items.json",
+          "README.md",
+          "package.json",
+          "cli/agent_onboard/runtime-composer.js",
+          "test/agent-onboard.test.js"
+        ],
+        "checks_run": [
+          "node -c cli/agent_onboard/runtime-composer.js",
+          "node -c test/agent-onboard.test.js",
+          "node cli/agent-onboard.js status",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node cli/agent-onboard.js architecture --check",
+          "node cli/agent-onboard.js release --version-sprawl-check",
+          "node scripts/check-public-artifact-boundary.js",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "npm test",
+          "npm run test:full",
+          "npm pack --dry-run --json",
+          "git diff --check"
+        ],
+        "checks_not_run": [
+          "npm publish --access public"
+        ],
+        "known_non_pass": []
+      }
     },
     {
       "id": "P1S3M4W13",
       "milestone_id": "P1S3M4",
       "title": "Public CLI docs and help product rewrite gate",
-      "status": "open"
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-03T19:37:11.838Z"
+      },
+      "closure": {
+        "actor": "codex-gpt-5",
+        "closed_at": "2026-07-03T19:41:46.650Z",
+        "summary": "Closed by rewriting CLI help and README command surfaces around target-repo product workflows, reducing architecture --check output to lightweight summaries instead of nested self-dogfood reports, trimming help/test assertions away from historical architecture checker lists, and bumping the package patch version to 0.0.104.",
+        "changed_files": [
+          ".agent-onboard/work-items.json",
+          "README.md",
+          "package.json",
+          "cli/agent_onboard/domains/architecture/services/checks/architecture-check-service.js",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/runtime-contracts.js",
+          "test/agent-onboard.test.js"
+        ],
+        "checks_run": [
+          "node -c cli/agent_onboard/runtime-contracts.js",
+          "node -c cli/agent_onboard/runtime-composer.js",
+          "node -c cli/agent_onboard/domains/architecture/services/checks/architecture-check-service.js",
+          "node -c test/agent-onboard.test.js",
+          "node cli/agent-onboard.js status",
+          "node cli/agent-onboard.js --help",
+          "node cli/agent-onboard.js architecture --check",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node cli/agent-onboard.js release --version-sprawl-check",
+          "node scripts/check-public-artifact-boundary.js",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "npm test",
+          "npm run test:full",
+          "npm pack --dry-run --json",
+          "git diff --check"
+        ],
+        "checks_not_run": [
+          "npm publish --access public"
+        ],
+        "known_non_pass": []
+      }
     },
     {
       "id": "P1S3M4W14",

@@ -151,6 +151,29 @@ const TARGET_DOCTOR_COMMAND = Object.freeze({
   })
 });
 
+const PRODUCT_HELP_LINES = Object.freeze([
+  'agent-onboard status',
+  TARGET_DOCTOR_COMMAND.help,
+  TARGET_PROFILE_COMMAND.help,
+  TARGET_REPAIR_COMMAND.help,
+  'agent-onboard target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]',
+  'agent-onboard target bootstrap --dry-run|--write [--force]',
+  'agent-onboard target-instance takeover --dry-run|--write [--force]',
+  'agent-onboard work-items --list [.agent-onboard/work-items.json]',
+  ...WORK_ITEMS_USABILITY_HELP_LINES,
+  'agent-onboard work-items --init --dry-run|--write [--force]',
+  'agent-onboard work-items --append --dry-run|--write --id <public-work-item-id> --title <title>',
+  'agent-onboard work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>',
+  'agent-onboard work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>',
+  'agent-onboard init --dry-run|--write [--force]',
+  'agent-onboard agents --preview|--write [--force]',
+  'agent-onboard guard --plan|--check-boundary',
+  'agent-onboard authority --first-read|--check',
+  'agent-onboard architecture --map|--router|--facades|--check',
+  'agent-onboard release --plan|--surface|--surface-check|--target-onboarding-smoke|--real-target-trial|--check',
+  'agent-onboard target-config --schema|--template|--validate-template|--validate [agent-onboard.target.json]'
+]);
+
 const PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES = Object.freeze([
   'LICENSE',
   'README.md',
@@ -217,6 +240,7 @@ const RUNTIME_CONTRACTS = Object.freeze({
 module.exports = Object.freeze({
   OUTPUT_FLAG,
   PACKAGE_NAME,
+  PRODUCT_HELP_LINES,
   PUBLIC_PACKAGED_ROUTER_PORT_MODULE_FILES,
   PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES,
   RELEASE_LINE,

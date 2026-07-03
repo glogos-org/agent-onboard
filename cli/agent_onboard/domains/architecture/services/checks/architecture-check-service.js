@@ -43,6 +43,17 @@ function prefixedErrors(label, result) {
   return result && Array.isArray(result.errors) ? result.errors.map((error) => `${label}: ${error}`) : [];
 }
 
+function checkSummary(result, extra = Object.freeze({})) {
+  const errors = result && Array.isArray(result.errors) ? result.errors : [];
+  return Object.freeze({
+    status: result && result.status ? result.status : 'error',
+    validated: result && result.validated && typeof result.validated === 'object' ? result.validated : Object.freeze({}),
+    error_count: errors.length,
+    errors,
+    ...extra
+  });
+}
+
 function createPublicArchitectureAggregateCheckService(deps) {
   for (const name of REQUIRED_DEPENDENCIES) {
     if (deps[name] === undefined || deps[name] === null) {
@@ -109,12 +120,20 @@ function createPublicArchitectureAggregateCheckService(deps) {
         packaged_router_port: packagedRouterPort.status === 'ok'
       },
       domain_ids: domainIds,
-      expected_pack_files: expectedPackFiles,
-      projected_pack_files: projectedPackFiles,
-      command_router: router,
-      domain_service_facades: facades,
-      target_runtime_namespace: targetRuntime,
-      packaged_router_port: packagedRouterPort,
+      pack_file_count: projectedPackFiles.length,
+      command_router: checkSummary(router, {
+        route_count: Array.isArray(router.route_commands) ? router.route_commands.length : 0
+      }),
+      domain_service_facades: checkSummary(facades, {
+        facade_count: Array.isArray(facades.facade_ids) ? facades.facade_ids.length : 0
+      }),
+      target_runtime_namespace: checkSummary(targetRuntime, {
+        runtime_file_count: Array.isArray(targetRuntime.runtime_files) ? targetRuntime.runtime_files.length : 0,
+        canonical_file_count: Array.isArray(targetRuntime.target_onboarding_canonical_files) ? targetRuntime.target_onboarding_canonical_files.length : 0
+      }),
+      packaged_router_port: checkSummary(packagedRouterPort, {
+        module_count: Array.isArray(packagedRouterPort.module_reports) ? packagedRouterPort.module_reports.length : 0
+      }),
       retired_checks: RETIRED_ARCHITECTURE_CHECK_SCOPE.retired_checks,
       boundary: map.boundary,
       errors
