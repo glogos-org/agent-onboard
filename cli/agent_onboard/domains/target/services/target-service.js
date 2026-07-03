@@ -5,6 +5,97 @@ const os = require('os');
 const path = require('path');
 const { createTargetRuntimeUtilities } = require('./target-runtime-utilities');
 
+function freezeEntries(entries) {
+  return Object.freeze(entries.map((entry) => Object.freeze(entry)));
+}
+
+const PACKAGE_NAME = 'agent-onboard';
+
+const TARGET_DOCTOR = Object.freeze({
+  schema: 'agent-onboard-target-doctor-result-001',
+  command: 'agent-onboard target doctor',
+  commandWithJson: 'agent-onboard target doctor --json',
+  commandFamily: 'target doctor',
+  flag: Object.freeze({
+    json: '--json',
+    target: '--target'
+  }),
+  readiness: Object.freeze({
+    ready: 'ready',
+    needsOnboarding: 'needs_onboarding',
+    blocked: 'blocked'
+  }),
+  status: Object.freeze({
+    ok: 'ok',
+    error: 'error',
+    present: 'present',
+    missing: 'missing',
+    valid: 'valid',
+    invalid: 'invalid',
+    notApplicable: 'not_applicable',
+    customized: 'customized'
+  })
+});
+
+const TARGET_DOCTOR_FILE = Object.freeze({
+  packageJson: 'package.json',
+  runtimeNamespace: '.agent-onboard/runtime-namespace.json',
+  runtimeProject: '.agent-onboard/project.json',
+  workItems: '.agent-onboard/work-items.json',
+  agentsMd: 'AGENTS.md',
+  llmsTxt: 'llms.txt',
+  authorityPath: '.agent-onboard/authority-path.json'
+});
+
+const TARGET_DOCTOR_SCHEMA = Object.freeze({
+  runtimeNamespace: 'agent-onboard-target-runtime-namespace-001',
+  runtimeProject: 'agent-onboard-target-runtime-project-001',
+  workItems: 'agent-onboard-target-work-items-001',
+  authorityPath: 'agent-onboard-authority-path-001'
+});
+
+const TARGET_DOCTOR_PACKAGE_MANAGER_FILES = freezeEntries([
+  { name: 'npm', file: 'package-lock.json' },
+  { name: 'pnpm', file: 'pnpm-lock.yaml' },
+  { name: 'yarn', file: 'yarn.lock' },
+  { name: 'bun', file: 'bun.lockb' },
+  { name: 'bun', file: 'bun.lock' }
+]);
+
+const TARGET_DOCTOR_LANGUAGE_MARKERS = freezeEntries([
+  { name: 'node', files: Object.freeze(['package.json']) },
+  { name: 'typescript', files: Object.freeze(['tsconfig.json']) },
+  { name: 'python', files: Object.freeze(['pyproject.toml', 'requirements.txt', 'Pipfile']) },
+  { name: 'go', files: Object.freeze(['go.mod']) },
+  { name: 'rust', files: Object.freeze(['Cargo.toml']) },
+  { name: 'java', files: Object.freeze(['pom.xml', 'build.gradle', 'build.gradle.kts']) },
+  { name: 'dotnet', files: Object.freeze(['global.json']) },
+  { name: 'php', files: Object.freeze(['composer.json']) }
+]);
+
+const TARGET_DOCTOR_FRAMEWORK_PACKAGES = freezeEntries([
+  { name: 'react', packages: Object.freeze(['react']) },
+  { name: 'next', packages: Object.freeze(['next']) },
+  { name: 'vue', packages: Object.freeze(['vue']) },
+  { name: 'svelte', packages: Object.freeze(['svelte']) },
+  { name: 'angular', packages: Object.freeze(['@angular/core']) },
+  { name: 'vite', packages: Object.freeze(['vite']) },
+  { name: 'express', packages: Object.freeze(['express']) },
+  { name: 'fastify', packages: Object.freeze(['fastify']) },
+  { name: 'nestjs', packages: Object.freeze(['@nestjs/core']) },
+  { name: 'jest', packages: Object.freeze(['jest']) },
+  { name: 'vitest', packages: Object.freeze(['vitest']) }
+]);
+
+const TARGET_DOCTOR_CI_FILES = freezeEntries([
+  { name: 'github_actions', file: '.github/workflows' },
+  { name: 'gitlab_ci', file: '.gitlab-ci.yml' },
+  { name: 'circleci', file: '.circleci/config.yml' },
+  { name: 'azure_pipelines', file: 'azure-pipelines.yml' }
+]);
+
+const TARGET_DOCTOR_DOC_FILES = Object.freeze(['README.md', TARGET_DOCTOR_FILE.agentsMd, TARGET_DOCTOR_FILE.llmsTxt, 'CONTRIBUTING.md']);
+
 function createTargetRuntimeService(deps) {
   const {
     version: VERSION,
@@ -125,7 +216,7 @@ function targetOnboardingRealTargetTrial(targetRoot = process.cwd()) {
   return {
     schema: 'agent-onboard-public-target-onboarding-real-target-trial-result-001',
     status: errors.length === 0 ? 'ok' : 'error',
-    package_name: 'agent-onboard',
+    package_name: PACKAGE_NAME,
     version: VERSION,
     release_line: PUBLIC_RELEASE_CONTRACT.release_line,
     command: 'agent-onboard target onboarding --trial',
@@ -292,7 +383,7 @@ Target identity:
 
 - name: \`${name}\`
 - kind: \`${kind}\`
-- control package: \`agent-onboard\`
+- control package: \`${PACKAGE_NAME}\`
 
 ## Read order
 
@@ -305,7 +396,7 @@ Before proposing or making changes, read these files when present:
 5. \`.agent-onboard/project.json\`
 6. \`.agent-onboard/work-items.json\`
 
-If \`node_modules\` is missing, do not assume the package is installed locally. Prefer \`npx agent-onboard@${VERSION} status\` or the package version requested by the repository owner.
+If \`node_modules\` is missing, do not assume the package is installed locally. Prefer \`npx ${PACKAGE_NAME}@${VERSION} status\` or the package version requested by the repository owner.
 
 ## Default boundary
 
@@ -325,7 +416,7 @@ Start in read-only preview mode. Prefer a dry-run plan before writes. Use explic
 Before any dependency install, build, test, deploy, publish, push, or broad write operation, run the boundary check when \`agent-onboard.target.json\` is present:
 
 \`\`\`sh
-npx agent-onboard@${VERSION} guard --check-boundary
+npx ${PACKAGE_NAME}@${VERSION} guard --check-boundary
 \`\`\`
 
 Treat a blocked guard result as a stop condition until the repository owner explicitly changes the boundary.
@@ -333,10 +424,10 @@ Treat a blocked guard result as a stop condition until the repository owner expl
 Inspect the public work-item ledger when present:
 
 \`\`\`sh
-npx agent-onboard@${VERSION} authority --first-read
+npx ${PACKAGE_NAME}@${VERSION} authority --first-read
 
 # then inspect the public work-item ledger
-npx agent-onboard@${VERSION} work-items --list
+npx ${PACKAGE_NAME}@${VERSION} work-items --list
 \`\`\`
 
 Follow the public participation lifecycle:
@@ -365,24 +456,24 @@ Do not claim a check passed unless it was actually executed in the current works
 Preview target initialization:
 
 \`\`\`sh
-npx agent-onboard@${VERSION} init --dry-run
+npx ${PACKAGE_NAME}@${VERSION} init --dry-run
 \`\`\`
 
 Preview this file:
 
 \`\`\`sh
-npx agent-onboard@${VERSION} agents --preview
+npx ${PACKAGE_NAME}@${VERSION} agents --preview
 \`\`\`
 
 Write this file when explicitly requested:
 
 \`\`\`sh
-npx agent-onboard@${VERSION} agents --write
+npx ${PACKAGE_NAME}@${VERSION} agents --write
 \`\`\`
 
 ## Scope note
 
-In the current \`0.0.x\` line, \`agent-onboard\` emits conventions and reference files. It does not sandbox other tools by itself and does not enforce filesystem, network, shell, Git, package-manager, CI, deployment, or publication policy for external tools.
+In the current \`0.0.x\` line, \`${PACKAGE_NAME}\` emits conventions and reference files. It does not sandbox other tools by itself and does not enforce filesystem, network, shell, Git, package-manager, CI, deployment, or publication policy for external tools.
 `;
 }
 
@@ -400,13 +491,13 @@ function llmsTxtTemplate(cwd = process.cwd()) {
   const [name, kind] = targetName(cwd);
   return `# ${name} agent-onboard first-read entrypoint
 
-This repository uses agent-onboard public authority ordering for human and AI-assisted work.
+This repository uses ${PACKAGE_NAME} public authority ordering for human and AI-assisted work.
 
 Target:
 
 - name: ${name}
 - kind: ${kind}
-- control package: agent-onboard@${VERSION}
+- control package: ${PACKAGE_NAME}@${VERSION}
 
 First-read order:
 
@@ -428,7 +519,7 @@ function authorityPathTemplate(cwd = process.cwd()) {
   const [name, kind] = targetName(cwd);
   return {
     schema: 'agent-onboard-authority-path-001',
-    package_name: 'agent-onboard',
+    package_name: PACKAGE_NAME,
     package_version: VERSION,
     release_line: PUBLIC_AUTHORITY_FIRST_READ_INDEX.release_line,
     target: { name, root: '.', kind },
@@ -495,7 +586,7 @@ function targetConfigTemplate(cwd = process.cwd()) {
   return {
     schema: 'agent-onboard-target-config-001',
     control: {
-      package_name: 'agent-onboard',
+      package_name: PACKAGE_NAME,
       requested_mode: 'target_dry_run',
       authority_level: 'L1_read_only_preview'
     },
@@ -528,7 +619,7 @@ function targetRuntimeNamespaceTemplate(cwd = process.cwd()) {
   const [name, kind] = targetName(cwd);
   return {
     schema: 'agent-onboard-target-runtime-namespace-001',
-    package_name: 'agent-onboard',
+    package_name: PACKAGE_NAME,
     package_version: VERSION,
     release_line: PUBLIC_TARGET_RUNTIME_NAMESPACE.release_line,
     target: { name, root: '.', kind },
@@ -564,7 +655,7 @@ function runtimeProjectTemplate(cwd = process.cwd()) {
   const [name, kind] = targetName(cwd);
   return {
     schema: 'agent-onboard-target-runtime-project-001',
-    package_name: 'agent-onboard',
+    package_name: PACKAGE_NAME,
     target: { name, root: '.', kind },
     authority: {
       level: 'L1_read_only_preview',
@@ -576,7 +667,7 @@ function runtimeProjectTemplate(cwd = process.cwd()) {
 function workItemsTemplate() {
   return {
     schema: 'agent-onboard-target-work-items-001',
-    package_name: 'agent-onboard',
+    package_name: PACKAGE_NAME,
     vocabulary: {
       program: {
         prefix: 'P',
@@ -780,6 +871,299 @@ function summarizePlan(plannedWrites) {
     safe_to_write: item.safe_to_write
   }));
 }
+
+function existingRelativeFiles(root, relativeFiles) {
+  return relativeFiles.filter((relativePath) => fs.existsSync(path.join(root, relativePath))).sort();
+}
+
+function readJsonReport(root, relativePath, validate, expectedSchema) {
+  const absolutePath = path.join(root, relativePath);
+  if (!fs.existsSync(absolutePath)) {
+    return {
+      path: relativePath,
+      present: false,
+      status: TARGET_DOCTOR.status.missing,
+      errors: []
+    };
+  }
+  try {
+    const value = readJson(absolutePath);
+    const errors = [];
+    if (expectedSchema && (!value || value.schema !== expectedSchema)) {
+      errors.push(`$.schema: expected ${expectedSchema}`);
+    }
+    if (typeof validate === 'function') errors.push(...validate(value));
+    return {
+      path: relativePath,
+      present: true,
+      status: errors.length === 0 ? TARGET_DOCTOR.status.valid : TARGET_DOCTOR.status.invalid,
+      errors,
+      value
+    };
+  } catch (error) {
+    return {
+      path: relativePath,
+      present: true,
+      status: TARGET_DOCTOR.status.invalid,
+      errors: [error && error.message ? error.message : String(error)]
+    };
+  }
+}
+
+function publicJsonReport(report) {
+  const { value, ...publicReport } = report;
+  return publicReport;
+}
+
+function textFileReport(root, relativePath) {
+  const present = fs.existsSync(path.join(root, relativePath));
+  return {
+    path: relativePath,
+    present,
+    status: present ? TARGET_DOCTOR.status.present : TARGET_DOCTOR.status.missing
+  };
+}
+
+function dependencyNames(pkg) {
+  if (!isPlainObject(pkg)) return [];
+  const buckets = [
+    pkg.dependencies,
+    pkg.devDependencies,
+    pkg.peerDependencies,
+    pkg.optionalDependencies
+  ].filter(isPlainObject);
+  return Array.from(new Set(buckets.flatMap((bucket) => Object.keys(bucket)))).sort();
+}
+
+function packageJsonProfile(root) {
+  const report = readJsonReport(root, TARGET_DOCTOR_FILE.packageJson);
+  if (!report.present || report.status !== TARGET_DOCTOR.status.valid || !isPlainObject(report.value)) {
+    return {
+      present: report.present,
+      valid: report.status === TARGET_DOCTOR.status.valid,
+      status: report.status,
+      errors: report.errors
+    };
+  }
+  return {
+    present: true,
+    valid: true,
+    status: TARGET_DOCTOR.status.valid,
+    name: typeof report.value.name === 'string' ? report.value.name : null,
+    private: report.value.private === true,
+    package_manager: typeof report.value.packageManager === 'string' ? report.value.packageManager : null,
+    scripts: isPlainObject(report.value.scripts) ? Object.keys(report.value.scripts).sort() : [],
+    dependency_names: dependencyNames(report.value)
+  };
+}
+
+function detectedPackageManagers(root, pkgProfile) {
+  const lockfiles = TARGET_DOCTOR_PACKAGE_MANAGER_FILES
+    .filter((entry) => fs.existsSync(path.join(root, entry.file)))
+    .map((entry) => ({ name: entry.name, source: entry.file }));
+  if (pkgProfile.package_manager) {
+    lockfiles.push({ name: pkgProfile.package_manager.split('@')[0], source: 'package.json#packageManager' });
+  }
+  const unique = new Map();
+  for (const entry of lockfiles) unique.set(`${entry.name}:${entry.source}`, entry);
+  return Array.from(unique.values()).sort((left, right) => `${left.name}:${left.source}`.localeCompare(`${right.name}:${right.source}`));
+}
+
+function detectedMarkers(root, markers) {
+  return markers
+    .map((marker) => ({
+      name: marker.name,
+      evidence: marker.files.filter((relativePath) => fs.existsSync(path.join(root, relativePath)))
+    }))
+    .filter((marker) => marker.evidence.length > 0);
+}
+
+function detectedFrameworks(pkgProfile) {
+  const dependencySet = new Set(Array.isArray(pkgProfile.dependency_names) ? pkgProfile.dependency_names : []);
+  return TARGET_DOCTOR_FRAMEWORK_PACKAGES
+    .filter((entry) => entry.packages.some((packageName) => dependencySet.has(packageName)))
+    .map((entry) => ({
+      name: entry.name,
+      evidence: entry.packages.filter((packageName) => dependencySet.has(packageName))
+    }));
+}
+
+function detectedCi(root) {
+  return TARGET_DOCTOR_CI_FILES
+    .filter((entry) => fs.existsSync(path.join(root, entry.file)))
+    .map((entry) => ({ name: entry.name, source: entry.file }));
+}
+
+function targetDoctorProfile(root) {
+  const pkgProfile = packageJsonProfile(root);
+  return {
+    package_json: pkgProfile,
+    package_managers: detectedPackageManagers(root, pkgProfile),
+    languages: detectedMarkers(root, TARGET_DOCTOR_LANGUAGE_MARKERS),
+    frameworks: detectedFrameworks(pkgProfile),
+    ci: detectedCi(root),
+    docs: existingRelativeFiles(root, TARGET_DOCTOR_DOC_FILES),
+    git_present: fs.existsSync(path.join(root, '.git'))
+  };
+}
+
+function targetDoctorChecks(root) {
+  const targetConfig = readJsonReport(root, TARGET_CONFIG_FILE, validateTargetConfig);
+  const runtimeNamespace = readJsonReport(root, TARGET_DOCTOR_FILE.runtimeNamespace, null, TARGET_DOCTOR_SCHEMA.runtimeNamespace);
+  const runtimeProject = readJsonReport(root, TARGET_DOCTOR_FILE.runtimeProject, null, TARGET_DOCTOR_SCHEMA.runtimeProject);
+  const workItems = readJsonReport(root, TARGET_DOCTOR_FILE.workItems, validateWorkItems);
+  const authorityPath = readJsonReport(root, TARGET_DOCTOR_FILE.authorityPath, null, TARGET_DOCTOR_SCHEMA.authorityPath);
+  const boundaryViolations = targetConfig.value ? evaluateTargetBoundaryConfig(targetConfig.value) : [];
+
+  return {
+    target_config: publicJsonReport(targetConfig),
+    runtime_namespace: publicJsonReport(runtimeNamespace),
+    runtime_project: publicJsonReport(runtimeProject),
+    work_items: {
+      ...publicJsonReport(workItems),
+      counts: workItems.value ? workItemCounts(workItems.value) : null
+    },
+    agents_md: textFileReport(root, TARGET_DOCTOR_FILE.agentsMd),
+    llms_txt: textFileReport(root, TARGET_DOCTOR_FILE.llmsTxt),
+    authority_path: publicJsonReport(authorityPath),
+    boundary_config: {
+      path: TARGET_CONFIG_FILE,
+      status: targetConfig.present
+        ? (targetConfig.status === TARGET_DOCTOR.status.valid && boundaryViolations.length === 0 ? TARGET_DOCTOR.status.valid : TARGET_DOCTOR.status.invalid)
+        : TARGET_DOCTOR.status.missing,
+      violations: boundaryViolations
+    }
+  };
+}
+
+function targetDoctorCanonicalFiles(root) {
+  return planTargetOnboardingWritesForRoot(root, { force: false }).map((item) => {
+    const textFile = item.kind === 'text';
+    const status = item.exists
+      ? (item.action === 'keep' || textFile ? TARGET_DOCTOR.status.present : TARGET_DOCTOR.status.customized)
+      : TARGET_DOCTOR.status.missing;
+    return {
+      path: item.path,
+      kind: item.kind,
+      schema: item.schema || null,
+      present: item.exists,
+      action: item.action,
+      status,
+      safe_to_write: item.safe_to_write
+    };
+  });
+}
+
+function targetDoctorReadiness(canonicalFiles, checks) {
+  const missingFiles = canonicalFiles.filter((item) => !item.present).map((item) => item.path);
+  const invalidChecks = Object.entries(checks)
+    .filter(([, check]) => check && check.status === TARGET_DOCTOR.status.invalid)
+    .map(([name]) => name);
+  const readiness = invalidChecks.length > 0
+    ? TARGET_DOCTOR.readiness.blocked
+    : (missingFiles.length > 0 ? TARGET_DOCTOR.readiness.needsOnboarding : TARGET_DOCTOR.readiness.ready);
+  const possible = canonicalFiles.length + Object.keys(checks).length;
+  const passed = Math.max(0, possible - missingFiles.length - invalidChecks.length);
+  return {
+    status: readiness,
+    score: possible === 0 ? 0 : Math.round((passed / possible) * 100),
+    missing_files: missingFiles,
+    invalid_checks: invalidChecks
+  };
+}
+
+function targetDoctorNextSteps(readiness, root) {
+  if (readiness.status === TARGET_DOCTOR.readiness.ready) {
+    return [
+      `run ${PACKAGE_NAME} guard --check-boundary before broad write, build, publish, or push actions`,
+      `run ${PACKAGE_NAME} work-items --list before claiming target repo work`
+    ];
+  }
+  if (readiness.status === TARGET_DOCTOR.readiness.blocked) {
+    return [
+      'inspect invalid target onboarding JSON before writing',
+      `run ${PACKAGE_NAME} target onboarding --trial to preview the canonical repair path`,
+      'write or overwrite target onboarding files only with explicit owner authorization'
+    ];
+  }
+  return [
+    `run ${PACKAGE_NAME} target onboarding --trial --target ${root}`,
+    `run ${PACKAGE_NAME} target onboarding --write only after explicit owner authorization`,
+    `rerun ${PACKAGE_NAME} target doctor --json after onboarding files exist`
+  ];
+}
+
+function targetDoctor(targetRoot = process.cwd()) {
+  const absoluteTargetRoot = path.resolve(targetRoot || process.cwd());
+  if (!fs.existsSync(absoluteTargetRoot)) {
+    return {
+      schema: TARGET_DOCTOR.schema,
+      status: TARGET_DOCTOR.status.error,
+      package_name: PACKAGE_NAME,
+      version: VERSION,
+      release_line: PUBLIC_RELEASE_CONTRACT.release_line,
+      command: TARGET_DOCTOR.commandWithJson,
+      command_family: TARGET_DOCTOR.commandFamily,
+      target: { name: path.basename(absoluteTargetRoot) || 'target-repo', kind: 'missing', root: absoluteTargetRoot },
+      writes_performed: false,
+      errors: [`target path does not exist: ${absoluteTargetRoot}`],
+      boundary: noMutationBoundary()
+    };
+  }
+  if (!fs.statSync(absoluteTargetRoot).isDirectory()) {
+    return {
+      schema: TARGET_DOCTOR.schema,
+      status: TARGET_DOCTOR.status.error,
+      package_name: PACKAGE_NAME,
+      version: VERSION,
+      release_line: PUBLIC_RELEASE_CONTRACT.release_line,
+      command: TARGET_DOCTOR.commandWithJson,
+      command_family: TARGET_DOCTOR.commandFamily,
+      target: { name: path.basename(absoluteTargetRoot) || 'target-repo', kind: 'file', root: absoluteTargetRoot },
+      writes_performed: false,
+      errors: [`target path is not a directory: ${absoluteTargetRoot}`],
+      boundary: noMutationBoundary()
+    };
+  }
+
+  const [name, kind] = targetName(absoluteTargetRoot);
+  const canonicalFiles = targetDoctorCanonicalFiles(absoluteTargetRoot);
+  const checks = targetDoctorChecks(absoluteTargetRoot);
+  const readiness = targetDoctorReadiness(canonicalFiles, checks);
+  return {
+    schema: TARGET_DOCTOR.schema,
+    status: TARGET_DOCTOR.status.ok,
+    package_name: PACKAGE_NAME,
+    version: VERSION,
+    release_line: PUBLIC_RELEASE_CONTRACT.release_line,
+    command: TARGET_DOCTOR.commandWithJson,
+    command_family: TARGET_DOCTOR.commandFamily,
+    target: { name, kind, root: absoluteTargetRoot },
+    readiness,
+    profile: targetDoctorProfile(absoluteTargetRoot),
+    canonical_files: canonicalFiles,
+    checks,
+    next_steps: targetDoctorNextSteps(readiness, absoluteTargetRoot),
+    writes_performed: false,
+    validated: {
+      target_path_readable: true,
+      target_is_directory: true,
+      no_writes_performed: true,
+      canonical_files_checked: canonicalFiles.length === TARGET_ONBOARDING_SURFACE_PLAN.canonical_files.length,
+      managed_project_commands_not_run: true,
+      dependency_install_not_run: true,
+      build_test_deploy_not_run: true,
+      publish_push_not_run: true
+    },
+    boundary: {
+      ...noMutationBoundary(),
+      reads_target_repository_state: true,
+      runs_package_manager: false,
+      mutates_registry: false
+    },
+    errors: []
+  };
+}
   return Object.freeze({
     json,
     readJson,
@@ -810,6 +1194,7 @@ function summarizePlan(plannedWrites) {
     targetOnboardingRealTargetTrial,
     publicTargetOnboardingRealTargetRepoTrial,
     targetOnboardingSurfacePlan,
+    targetDoctor,
     agentsMdTemplate,
     firstReadOrder,
     llmsTxtTemplate,

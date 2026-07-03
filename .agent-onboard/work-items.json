@@ -3548,6 +3548,114 @@
       "id": "P1S3M4W2",
       "milestone_id": "P1S3M4",
       "title": "Public target repo doctor command gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-03T07:51:45.653Z"
+      },
+      "closure": {
+        "actor": "codex-gpt-5",
+        "closed_at": "2026-07-03T08:06:53.753Z",
+        "summary": "Closed by adding a read-only target doctor command that reports target repo onboarding readiness, detected stack markers, canonical file status, boundary/work-items health, and next steps; bumped the package to 0.0.93 and covered the command in quick/full tests.",
+        "changed_files": [
+          ".agent-onboard/work-items.json",
+          "README.md",
+          "package.json",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/domains/target/services/target-service.js",
+          "test/agent-onboard.test.js",
+          "test/run-tests.js"
+        ],
+        "checks_run": [
+          "node -c cli/agent_onboard/domains/target/services/target-service.js; node -c cli/agent_onboard/runtime-composer.js; node -c test/agent-onboard.test.js; node -c test/run-tests.js",
+          "node cli/agent-onboard.js target doctor --json",
+          "node cli/agent-onboard.js target doctor --json --target against a temporary missing-onboarding target repo",
+          "node cli/agent-onboard.js release --version-sprawl-check",
+          "npm test",
+          "npm run test:full",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node scripts/check-public-artifact-boundary.js",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "npm pack --dry-run --json",
+          "git diff --check"
+        ],
+        "checks_not_run": [
+          "npm publish --access public"
+        ],
+        "known_non_pass": []
+      }
+    },
+    {
+      "id": "P1S3M4W3",
+      "milestone_id": "P1S3M4",
+      "title": "Public target onboarding repair command gate",
+      "status": "open"
+    },
+    {
+      "id": "P1S3M4W4",
+      "milestone_id": "P1S3M4",
+      "title": "Public target repo profile detection gate",
+      "status": "open"
+    },
+    {
+      "id": "P1S3M4W5",
+      "milestone_id": "P1S3M4",
+      "title": "Public work item usability views gate",
+      "status": "open"
+    },
+    {
+      "id": "P1S3M4W6",
+      "milestone_id": "P1S3M4",
+      "title": "Public human readable output mode gate",
+      "status": "open"
+    },
+    {
+      "id": "P1S3M4W7",
+      "milestone_id": "P1S3M4",
+      "title": "Public retired architecture checker reduction gate",
+      "status": "open"
+    },
+    {
+      "id": "P1S3M4W8",
+      "milestone_id": "P1S3M4",
+      "title": "Public comprehensive repo architecture refactor gate",
+      "status": "open"
+    },
+    {
+      "id": "P1S3M4W9",
+      "milestone_id": "P1S3M4",
+      "title": "Public package surface diet gate",
+      "status": "open"
+    },
+    {
+      "id": "P1S3M4W10",
+      "milestone_id": "P1S3M4",
+      "title": "Public target service module split gate",
+      "status": "open"
+    },
+    {
+      "id": "P1S3M4W11",
+      "milestone_id": "P1S3M4",
+      "title": "Public command constants and enum cleanup gate",
+      "status": "open"
+    },
+    {
+      "id": "P1S3M4W12",
+      "milestone_id": "P1S3M4",
+      "title": "Public release check target-repo refocus gate",
+      "status": "open"
+    },
+    {
+      "id": "P1S3M4W13",
+      "milestone_id": "P1S3M4",
+      "title": "Public CLI docs and help product rewrite gate",
+      "status": "open"
+    },
+    {
+      "id": "P1S3M4W14",
+      "milestone_id": "P1S3M4",
+      "title": "Public M4 acceptance and publish readiness gate",
       "status": "open"
     }
   ]

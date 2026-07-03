@@ -20,6 +20,12 @@ Run without installing:
 npx agent-onboard status
 ```
 
+Inspect target repo readiness without writing files:
+
+```sh
+npx agent-onboard target doctor --json
+```
+
 ## Minimal target init
 
 Preview the target onboarding sequence before touching files:
@@ -95,6 +101,7 @@ npx agent-onboard guard --plan
 npx agent-onboard guard --check-boundary
 npx agent-onboard authority --first-read
 npx agent-onboard authority --check
+npx agent-onboard target doctor --json
 npx agent-onboard target runtime --namespace
 npx agent-onboard target runtime --check
 npx agent-onboard architecture --map
@@ -783,6 +790,8 @@ This version does not:
 `0.0.34` adds the public installed parity architecture smoke gate: `release --architecture-parity-smoke` validates the admitted architecture, authority, target runtime, and package surface checks in installed-package-compatible context, and `release --check` now includes the architecture parity result.
 
 `0.0.35` adds the public source domain module partition planning gate: `architecture --partition-plan` reports the future `src/domains/*` module map and `architecture --partition-check` validates that no physical source move is performed while the npm package remains compact.
+
+This release adds the public target repo doctor command: `target doctor --json` reports onboarding readiness, detected stack markers, canonical file status, boundary/work-items health, and next steps without writing files or running managed project commands.
 
 This release adds the public source extraction golden output freeze gate: `architecture --golden-outputs` reports the frozen command-output contract, `architecture --golden-check` validates it, and `release --version-sprawl-check` prevents current patch-version literals from spreading through source docs and tests.
 

@@ -212,6 +212,7 @@ function quickTasks() {
     cliTask('release version sprawl check', ['release', '--version-sprawl-check'], expectStatusOk),
     cliTask('release architecture parity smoke', ['release', '--architecture-parity-smoke'], expectStatusOk),
     cliTask('release check', ['release', '--check'], expectStatusOk),
+    cliTask('target doctor', ['target', 'doctor', '--json'], expectStatusOk),
     cliTask('work-items schema through runtime service', ['work-items', '--schema'], expectStatusOk),
     cliTask('work-items template through runtime service', ['work-items', '--template'], expectStatusOk),
     cliTask('work-items validate-template through runtime service', ['work-items', '--validate-template'], expectStatusOk),
