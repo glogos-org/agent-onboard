@@ -14,321 +14,24 @@ const { createWorkItemsCommandAdapter } = require('./adapters/commands/work-item
 const { configGuard: coreConfigGuardDomain } = require('./domains/core');
 const { service: packageDomain } = require('./domains/package');
 const { createWorkItemsService } = require('./domains/work-items');
+const {
+  PUBLIC_PACKAGED_ROUTER_PORT_MODULE_FILES,
+  PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES,
+  RELEASE_LINE,
+  RUNTIME_CONTRACTS,
+  TARGET_COMMAND,
+  TARGET_CONFIG_FILE,
+  TARGET_DOCTOR_COMMAND,
+  TARGET_PROFILE_COMMAND,
+  TARGET_REPAIR_COMMAND,
+  WORK_ITEMS_USABILITY_HELP_LINES
+} = require('./runtime-contracts');
 const VERSION = require('../../package.json').version;
-const TARGET_CONFIG_FILE = 'agent-onboard.target.json';
-const RELEASE_LINE = 'public_core_config_guard_service_extraction_gate';
-const TARGET_COMMAND = Object.freeze({
-  doctor: 'doctor',
-  profile: 'profile',
-  repair: 'repair',
-  runtime: 'runtime',
-  onboarding: 'onboarding',
-  bootstrap: 'bootstrap'
-});
-const TARGET_PROFILE_COMMAND = Object.freeze({
-  help: 'agent-onboard target profile --json|--text [--target <path>]',
-  flag: Object.freeze({
-    json: '--json',
-    text: '--text',
-    target: '--target'
-  })
-});
-const TARGET_REPAIR_COMMAND = Object.freeze({
-  help: 'agent-onboard target repair --plan|--write [--force] [--target <path>]',
-  mode: Object.freeze({
-    plan: '--plan',
-    write: '--write'
-  }),
-  flag: Object.freeze({
-    force: '--force',
-    target: '--target'
-  })
-});
-const WORK_ITEMS_USABILITY_HELP_LINES = Object.freeze([
-  'agent-onboard work-items --summary [.agent-onboard/work-items.json] [--text]',
-  'agent-onboard work-items --next [.agent-onboard/work-items.json] [--text]',
-  'agent-onboard work-items --mine [.agent-onboard/work-items.json] --actor <actor> [--text]'
-]);
-const TARGET_DOCTOR_COMMAND = Object.freeze({
-  help: 'agent-onboard target doctor --json|--text [--target <path>]',
-  flag: Object.freeze({
-    json: '--json',
-    text: '--text',
-    target: '--target'
-  })
-});
-const PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES = Object.freeze([
-  'LICENSE',
-  'README.md',
-  'cli/agent-onboard.js',
-  'cli/agent_onboard/adapters/commands/architecture.js',
-  'cli/agent_onboard/adapters/commands/authority.js',
-  'cli/agent_onboard/adapters/commands/core.js',
-  'cli/agent_onboard/adapters/commands/release-package.js',
-  'cli/agent_onboard/adapters/commands/target.js',
-  'cli/agent_onboard/adapters/commands/work-items.js',
-  'cli/agent_onboard/adapters/compatibility-command-port.js',
-  'cli/agent_onboard/command-router.js',
-  'cli/agent_onboard/domains/architecture/m3-runtime-catalog.js',
-  'cli/agent_onboard/domains/architecture/services/checks/architecture-check-service.js',
-  'cli/agent_onboard/domains/architecture/services/runtime/architecture-runtime-service.js',
-  'cli/agent_onboard/domains/architecture/services/source-domains/architecture-source-domain-service.js',
-  'cli/agent_onboard/domains/architecture/services/source-domains/claims-source-domain-service.js',
-  'cli/agent_onboard/domains/architecture/services/source-domains/source-domain-closure-service.js',
-  'cli/agent_onboard/domains/architecture/services/source-domains/work-items-source-domain-service.js',
-  'cli/agent_onboard/domains/architecture/services/source-extraction/architecture-source-extraction-service.js',
-  'cli/agent_onboard/domains/architecture/static-catalog.js',
-  'cli/agent_onboard/domains/core/index.js',
-  'cli/agent_onboard/domains/core/services/config-guard-service.js',
-  'cli/agent_onboard/domains/package/index.js',
-  'cli/agent_onboard/domains/package/services/installed-first-read-contract.js',
-  'cli/agent_onboard/domains/package/services/package-coordinate-service.js',
-  'cli/agent_onboard/domains/package/services/package-service.js',
-  'cli/agent_onboard/domains/package/services/package-surface-service.js',
-  'cli/agent_onboard/domains/package/services/source-manifest-service.js',
-  'cli/agent_onboard/domains/service-partitions.js',
-  'cli/agent_onboard/domains/target/services/target-runtime-utilities.js',
-  'cli/agent_onboard/domains/target/services/target-service.js',
-  'cli/agent_onboard/domains/target/static-catalog.js',
-  'cli/agent_onboard/domains/work-items/index.js',
-  'cli/agent_onboard/domains/work-items/services/work-items-service.js',
-  'cli/agent_onboard/ports/compatibility-command-port.js',
-  'cli/agent_onboard/runtime-composer.js',
-  'package.json'
-]);
-const PUBLIC_PACKAGED_ROUTER_PORT_MODULE_FILES = Object.freeze(PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES.filter((rel) => rel.startsWith('cli/agent_onboard/')));
 
 process.stdout.on('error', (error) => {
   if (error && error.code === 'EPIPE') process.exit(0);
   throw error;
 });
-
-const TARGET_CONFIG_SCHEMA = {
-  schema: 'https://json-schema.org/draft/2020-12/schema',
-  $id: 'agent-onboard-target-config-001',
-  type: 'object',
-  required: ['schema', 'control', 'project', 'boundaries', 'surfaces'],
-  additionalProperties: false,
-  properties: {
-    schema: { const: 'agent-onboard-target-config-001' },
-    control: {
-      type: 'object',
-      required: ['package_name', 'requested_mode', 'authority_level'],
-      additionalProperties: false,
-      properties: {
-        package_name: { const: 'agent-onboard' },
-        requested_mode: { enum: ['target_dry_run', 'target_write'] },
-        authority_level: { enum: ['L1_read_only_preview', 'L2_explicit_write'] }
-      }
-    },
-    project: {
-      type: 'object',
-      required: ['name', 'kind'],
-      additionalProperties: false,
-      properties: {
-        name: { type: 'string', minLength: 1 },
-        kind: { type: 'string', minLength: 1 }
-      }
-    },
-    boundaries: {
-      type: 'object',
-      required: [
-        'writes_allowed',
-        'managed_project_commands_allowed',
-        'create_agent_onboard_runtime_state',
-        'install_dependencies',
-        'run_build_test_deploy',
-        'publish_or_push'
-      ],
-      additionalProperties: false,
-      properties: {
-        writes_allowed: { type: 'boolean' },
-        managed_project_commands_allowed: { type: 'integer', minimum: 0 },
-        create_agent_onboard_runtime_state: { type: 'boolean' },
-        install_dependencies: { type: 'boolean' },
-        run_build_test_deploy: { type: 'boolean' },
-        publish_or_push: { type: 'boolean' }
-      }
-    },
-    surfaces: {
-      type: 'object',
-      required: ['include', 'exclude'],
-      additionalProperties: false,
-      properties: {
-        include: { type: 'array', items: { type: 'string' } },
-        exclude: { type: 'array', items: { type: 'string' } }
-      }
-    }
-  }
-};
-
-const WORK_ITEMS_SCHEMA = {
-  schema: 'https://json-schema.org/draft/2020-12/schema',
-  $id: 'agent-onboard-target-work-items-001',
-  type: 'object',
-  required: ['schema', 'package_name', 'vocabulary', 'programs', 'stages', 'milestones', 'work_items'],
-  additionalProperties: false,
-  properties: {
-    schema: { const: 'agent-onboard-target-work-items-001' },
-    package_name: { const: 'agent-onboard' },
-    vocabulary: {
-      type: 'object',
-      required: ['program', 'stage', 'milestone', 'work_item'],
-      additionalProperties: false,
-      properties: {
-        program: {
-          type: 'object',
-          required: ['prefix', 'name', 'description'],
-          additionalProperties: false,
-          properties: {
-            prefix: { const: 'P' },
-            name: { const: 'Program' },
-            description: { type: 'string', minLength: 1 }
-          }
-        },
-        stage: {
-          type: 'object',
-          required: ['prefix', 'name', 'description'],
-          additionalProperties: false,
-          properties: {
-            prefix: { const: 'S' },
-            name: { const: 'Stage' },
-            description: { type: 'string', minLength: 1 }
-          }
-        },
-        milestone: {
-          type: 'object',
-          required: ['prefix', 'name', 'description'],
-          additionalProperties: false,
-          properties: {
-            prefix: { const: 'M' },
-            name: { const: 'Milestone' },
-            description: { type: 'string', minLength: 1 }
-          }
-        },
-        work_item: {
-          type: 'object',
-          required: ['prefix', 'name', 'description'],
-          additionalProperties: false,
-          properties: {
-            prefix: { const: 'W' },
-            name: { const: 'Work Item' },
-            description: { type: 'string', minLength: 1 }
-          }
-        }
-      }
-    },
-    programs: {
-      type: 'array',
-      items: {
-        type: 'object',
-        required: ['id', 'title', 'status'],
-        additionalProperties: false,
-        properties: {
-          id: { type: 'string', pattern: '^P[0-9]+$' },
-          title: { type: 'string', minLength: 1 },
-          status: { enum: ['open', 'closed'] }
-        }
-      }
-    },
-    stages: {
-      type: 'array',
-      items: {
-        type: 'object',
-        required: ['id', 'program_id', 'title', 'status'],
-        additionalProperties: false,
-        properties: {
-          id: { type: 'string', pattern: '^P[0-9]+S[0-9]+$' },
-          program_id: { type: 'string', pattern: '^P[0-9]+$' },
-          title: { type: 'string', minLength: 1 },
-          status: { enum: ['open', 'closed'] }
-        }
-      }
-    },
-    milestones: {
-      type: 'array',
-      items: {
-        type: 'object',
-        required: ['id', 'stage_id', 'title', 'status'],
-        additionalProperties: false,
-        properties: {
-          id: { type: 'string', pattern: '^P[0-9]+S[0-9]+M[0-9]+$' },
-          stage_id: { type: 'string', pattern: '^P[0-9]+S[0-9]+$' },
-          title: { type: 'string', minLength: 1 },
-          status: { enum: ['open', 'closed'] }
-        }
-      }
-    },
-    work_items: {
-      type: 'array',
-      items: {
-        type: 'object',
-        required: ['id', 'milestone_id', 'title', 'status'],
-        additionalProperties: false,
-        properties: {
-          id: { type: 'string', pattern: '^P[0-9]+S[0-9]+M[0-9]+W[0-9]+$' },
-          milestone_id: { type: 'string', pattern: '^P[0-9]+S[0-9]+M[0-9]+$' },
-          title: { type: 'string', minLength: 1 },
-          status: { enum: ['open', 'claimed', 'closed'] },
-          claim: {
-            type: 'object',
-            required: ['actor', 'claimed_at'],
-            additionalProperties: false,
-            properties: {
-              actor: { type: 'string', minLength: 1 },
-              claimed_at: { type: 'string', minLength: 1 },
-              note: { type: 'string', minLength: 1 }
-            }
-          },
-          closure: {
-            type: 'object',
-            required: ['actor', 'closed_at', 'summary', 'changed_files', 'checks_run', 'checks_not_run', 'known_non_pass'],
-            additionalProperties: false,
-            properties: {
-              actor: { type: 'string', minLength: 1 },
-              closed_at: { type: 'string', minLength: 1 },
-              summary: { type: 'string', minLength: 1 },
-              changed_files: { type: 'array', items: { type: 'string', minLength: 1 } },
-              checks_run: { type: 'array', items: { type: 'string', minLength: 1 } },
-              checks_not_run: { type: 'array', items: { type: 'string', minLength: 1 } },
-              known_non_pass: { type: 'array', items: { type: 'string', minLength: 1 } }
-            }
-          }
-        }
-      }
-    }
-  }
-};
-
-const BOUNDARY_GUARD_CONTRACT = Object.freeze({
-  schema: 'agent-onboard-public-boundary-guard-enforcement-seed-contract-001',
-  title: 'Agent-Onboard Public Boundary Guard Enforcement Seed Gate',
-  package_name: 'agent-onboard',
-  command: 'agent-onboard guard --check-boundary',
-  canonical_target_config_file: TARGET_CONFIG_FILE,
-  enforcement_mode: 'fail_closed',
-  required_target_config_values: Object.freeze({
-    schema: 'agent-onboard-target-config-001',
-    'control.package_name': 'agent-onboard',
-    'control.requested_mode': 'target_dry_run',
-    'control.authority_level': 'L1_read_only_preview',
-    'boundaries.writes_allowed': false,
-    'boundaries.managed_project_commands_allowed': 0,
-    'boundaries.create_agent_onboard_runtime_state': false,
-    'boundaries.install_dependencies': false,
-    'boundaries.run_build_test_deploy': false,
-    'boundaries.publish_or_push': false
-  }),
-  forbidden_true_boundary_fields: Object.freeze([
-    'boundaries.writes_allowed',
-    'boundaries.create_agent_onboard_runtime_state',
-    'boundaries.install_dependencies',
-    'boundaries.run_build_test_deploy',
-    'boundaries.publish_or_push'
-  ])
-});
-
-
 
 const { createPublicArchitectureCatalog } = require('./domains/architecture/static-catalog');
 const { createPublicTargetStaticCatalog } = require('./domains/target/static-catalog');
@@ -336,6 +39,9 @@ const { createPublicArchitectureRuntimeService } = require('./domains/architectu
 const { createPublicArchitectureAggregateCheckService } = require('./domains/architecture/services/checks/architecture-check-service');
 const { createPublicArchitectureSourceDomainService } = require('./domains/architecture/services/source-domains/architecture-source-domain-service');
 const { createTargetRuntimeService } = require('./domains/target/services/target-service');
+
+const { TARGET_CONFIG_SCHEMA, BOUNDARY_GUARD_CONTRACT } = require('./domains/target/static-catalog');
+const { WORK_ITEMS_SCHEMA } = require('./domains/work-items/static-catalog');
 const {
   PUBLIC_ARCHITECTURE_MAP,
   PUBLIC_COMMAND_ROUTER,
@@ -388,7 +94,6 @@ const {
   publicPackagedRouterPortPackFiles: PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES,
   publicPackagedRouterPortModuleFiles: PUBLIC_PACKAGED_ROUTER_PORT_MODULE_FILES
 });
-
 
 const {
   TARGET_ONBOARDING_SURFACE_PLAN,
@@ -479,7 +184,6 @@ function listRelativeFiles(root) {
   if (fs.existsSync(root)) walk(root);
   return files.sort();
 }
-
 
 function packageRoot() {
   return path.resolve(__dirname, '../..');
@@ -915,7 +619,6 @@ function publicCliRuntimeDeMonolithPlanningCheck(root = packageRoot()) {
   };
 }
 
-
 function publicThinCliRouterSeed(root = packageRoot()) {
   const gate = PUBLIC_THIN_CLI_ROUTER_SEED;
   const pkg = readJson(path.join(root, 'package.json'));
@@ -1097,7 +800,6 @@ function publicThinCliRouterSeedCheck(root = packageRoot()) {
     errors
   };
 }
-
 
 function publicCompatibilityCommandPortSeed(root = packageRoot()) {
   const gate = PUBLIC_COMPATIBILITY_COMMAND_PORT_SEED;
@@ -1327,7 +1029,6 @@ function publicCompatibilityCommandPortSeedCheck(root = packageRoot()) {
     errors
   };
 }
-
 
 function publicCoreCommandAdapterExtraction(root = packageRoot()) {
   const gate = PUBLIC_CORE_COMMAND_ADAPTER_EXTRACTION;
@@ -1573,7 +1274,6 @@ function publicArchitectureMap(root = packageRoot()) {
   };
 }
 
-
 function publicSourceModuleExtractionInstalledFallbackSmoke(root = packageRoot()) {
   const runtimeBridge = publicSourceModuleExtractionRuntimeBridgeCheck(root);
   const packageSurface = publicPackageSurfaceCheck(root);
@@ -1714,7 +1414,6 @@ function publicSourceModuleExtractionInstalledFallbackSmokeCheck(root = packageR
     errors
   };
 }
-
 
 function gitignoreSecondSlicePolicy(root = packageRoot()) {
   const rel = PUBLIC_SOURCE_MODULE_EXTRACTION_SECOND_SLICE_PLAN.gitignore_policy.gitignore_file;
@@ -1877,7 +1576,6 @@ function publicSourceModuleExtractionSecondSlicePlanCheck(root = packageRoot()) 
     errors
   };
 }
-
 
 function loadAuthoritySecondSliceModule(root = packageRoot()) {
   const modulePath = path.join(root, PUBLIC_SOURCE_MODULE_EXTRACTION_SECOND_SLICE_FIRST_SLICE.source_module);
@@ -2048,7 +1746,6 @@ function publicSourceModuleExtractionSecondSliceFirstSliceCheck(root = packageRo
   };
 }
 
-
 function bundledAuthorityDomainForParity(root = packageRoot()) {
   const map = publicArchitectureMap(root);
   const facade = PUBLIC_DOMAIN_SERVICE_FACADES.facades.find((item) => item.id === 'authority');
@@ -2205,7 +1902,6 @@ function publicSourceModuleExtractionAuthorityBundleParityCheck(root = packageRo
     errors
   };
 }
-
 
 function publicPackageCommandAdapterExtraction(root = packageRoot()) {
   const gate = PUBLIC_PACKAGE_COMMAND_ADAPTER_EXTRACTION;
@@ -3806,7 +3502,6 @@ function publicArchitectureMap(root = packageRoot()) {
   };
 }
 
-
 function publicSourceModuleExtractionInstalledFallbackSmoke(root = packageRoot()) {
   const runtimeBridge = publicSourceModuleExtractionRuntimeBridgeCheck(root);
   const packageSurface = publicPackageSurfaceCheck(root);
@@ -3947,7 +3642,6 @@ function publicSourceModuleExtractionInstalledFallbackSmokeCheck(root = packageR
     errors
   };
 }
-
 
 function gitignoreSecondSlicePolicy(root = packageRoot()) {
   const rel = PUBLIC_SOURCE_MODULE_EXTRACTION_SECOND_SLICE_PLAN.gitignore_policy.gitignore_file;
@@ -4110,7 +3804,6 @@ function publicSourceModuleExtractionSecondSlicePlanCheck(root = packageRoot()) 
     errors
   };
 }
-
 
 function loadAuthoritySecondSliceModule(root = packageRoot()) {
   const modulePath = path.join(root, PUBLIC_SOURCE_MODULE_EXTRACTION_SECOND_SLICE_FIRST_SLICE.source_module);
@@ -4281,7 +3974,6 @@ function publicSourceModuleExtractionSecondSliceFirstSliceCheck(root = packageRo
   };
 }
 
-
 function bundledAuthorityDomainForParity(root = packageRoot()) {
   const map = publicArchitectureMap(root);
   const facade = PUBLIC_DOMAIN_SERVICE_FACADES.facades.find((item) => item.id === 'authority');
@@ -4438,7 +4130,6 @@ function publicSourceModuleExtractionAuthorityBundleParityCheck(root = packageRo
     errors
   };
 }
-
 
 const publicArchitectureAggregateCheckService = createPublicArchitectureAggregateCheckService({
   version: VERSION,
@@ -4852,7 +4543,6 @@ function publicInstalledPackageParitySmoke(root = packageRoot()) {
   };
 }
 
-
 function publicInstalledParityArchitectureSmoke(root = packageRoot()) {
   const pkg = readJson(path.join(root, 'package.json'));
   const context = sourceContext(root);
@@ -4947,8 +4637,6 @@ function publicInstalledParityArchitectureSmoke(root = packageRoot()) {
     errors
   };
 }
-
-
 
 function publicTargetOnboardingInstalledPackageSmoke(root = packageRoot()) {
   const packageContext = sourceContext(root);
@@ -5056,7 +4744,6 @@ function publicTargetOnboardingInstalledPackageSmoke(root = packageRoot()) {
     errors
   };
 }
-
 
 function publicTargetOnboardingPostPublishHandoff(root = packageRoot(), version = VERSION) {
   const commands = publicReleasePostPublishCommands(version);
@@ -5300,7 +4987,6 @@ function publicTargetOnboardingPublishedAcceptance(root = packageRoot()) {
     errors
   };
 }
-
 
 function runArchitecture(args) {
   if (args.length === 1 && args[0] === '--map') {
@@ -5655,7 +5341,6 @@ function runArchitecture(args) {
   });
   return 1;
 }
-
 
 function runAuthority(args) {
   if (args.length === 1 && args[0] === '--first-read') {
@@ -6135,7 +5820,6 @@ function runInit(args) {
   return ok ? 0 : 1;
 }
 
-
 function runTargetOnboarding(args) {
   const plan = args.includes('--plan');
   const fixture = args.includes('--fixture');
@@ -6410,7 +6094,6 @@ function runStatus() {
   return 0;
 }
 
-
 function runTargetRuntime(args) {
   if (args.length === 1 && args[0] === '--namespace') {
     json(publicTargetRuntimeNamespace());
@@ -6673,6 +6356,7 @@ module.exports = {
   TARGET_ONBOARDING_SURFACE_PLAN,
   TARGET_ONBOARDING_DRY_RUN_FIXTURE_MATRIX,
   PUBLIC_RELEASE_FIXTURE_MATRIX,
+  RUNTIME_CONTRACTS,
   PUBLIC_ARCHITECTURE_MAP,
   PUBLIC_COMMAND_ROUTER,
   PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL,

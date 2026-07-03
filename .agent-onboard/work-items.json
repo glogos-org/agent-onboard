@@ -3808,7 +3808,33 @@
       "id": "P1S3M4W8",
       "milestone_id": "P1S3M4",
       "title": "Public comprehensive repo architecture refactor gate",
-      "status": "open"
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-03T13:26:08.195Z"
+      },
+      "closure": {
+        "actor": "codex-gpt-5",
+        "closed_at": "2026-07-03T13:53:24.186Z",
+        "summary": "Closed by decomposing runtime-composer.js to extract TARGET_CONFIG_SCHEMA, WORK_ITEMS_SCHEMA, and BOUNDARY_GUARD_CONTRACT into static-catalog.js files for their domains, updating imports, and fixing exact-match test assertions for the production array. The architecture boundary check passes cleanly. The package candidate was bumped to 0.0.99.",
+        "changed_files": [
+          "test/agent-onboard.test.js",
+          "cli/agent_onboard/runtime-contracts.js",
+          "package.json",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/domains/target/static-catalog.js",
+          "cli/agent_onboard/domains/work-items/static-catalog.js",
+          ".agent-onboard/work-items.json"
+        ],
+        "checks_run": [
+          "npm run test:all",
+          "node cli/agent-onboard.js architecture --check"
+        ],
+        "checks_not_run": [
+          "npm publish --access public"
+        ],
+        "known_non_pass": []
+      }
     },
     {
       "id": "P1S3M4W9",

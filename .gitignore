@@ -17,6 +17,8 @@ agent-onboard-*.tgz
 .cache/
 .tmp/
 tmp/
+.scratch/
+scratch/
 .agent-onboard/tmp/
 .agent-onboard/cache/
 .agent-onboard/local/

@@ -172,6 +172,7 @@ function syntaxTasks() {
   return [
     nodeTask('syntax: cli/agent-onboard.js', ['-c', CLI]),
     nodeTask('syntax: command-router', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'command-router.js')]),
+    nodeTask('syntax: runtime contracts', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'runtime-contracts.js')]),
     nodeTask('syntax: compatibility-command-port adapter', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'adapters', 'compatibility-command-port.js')]),
     nodeTask('syntax: compatibility-command-port port', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'ports', 'compatibility-command-port.js')]),
     nodeTask('syntax: core command adapter', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'adapters', 'commands', 'core.js')]),

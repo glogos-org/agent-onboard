@@ -47,8 +47,10 @@ const EXPECTED_PACK_FILES = [
   'cli/agent_onboard/domains/target/static-catalog.js',
   'cli/agent_onboard/domains/work-items/index.js',
   'cli/agent_onboard/domains/work-items/services/work-items-service.js',
+  'cli/agent_onboard/domains/work-items/static-catalog.js',
   'cli/agent_onboard/ports/compatibility-command-port.js',
   'cli/agent_onboard/runtime-composer.js',
+  'cli/agent_onboard/runtime-contracts.js',
   'package.json'
 ];
 
@@ -187,6 +189,22 @@ function runSelectedFullSourceTests() {
   const shardLabel = selection.shardTotal > 1 ? ` shard ${selection.shardIndex}/${selection.shardTotal}` : '';
   console.log(`agent-onboard full source tests passed${shardLabel} (${tests.length}/${FULL_SOURCE_TESTS.length})`);
 }
+
+fullSourceTest('public runtime contracts module centralizes command and package constants', () => {
+  const contracts = require(path.join(ROOT, 'cli', 'agent_onboard', 'runtime-contracts.js'));
+  const composer = require(path.join(ROOT, 'cli', 'agent_onboard', 'runtime-composer.js'));
+  assert.strictEqual(contracts.RUNTIME_CONTRACTS.schema, 'agent-onboard-public-runtime-contracts-001');
+  assert.strictEqual(contracts.RUNTIME_CONTRACTS.package_name, 'agent-onboard');
+  assert.strictEqual(contracts.TARGET_CONFIG_FILE, 'agent-onboard.target.json');
+  assert.strictEqual(contracts.TARGET_COMMAND.doctor, 'doctor');
+  assert.strictEqual(contracts.TARGET_DOCTOR_COMMAND.flag.text, '--text');
+  assert.strictEqual(contracts.TARGET_PROFILE_COMMAND.flag.target, '--target');
+  assert.ok(Object.isFrozen(contracts.TARGET_COMMAND));
+  assert.ok(contracts.RUNTIME_CONTRACTS.top_level_commands.includes('target'));
+  assert.ok(contracts.PUBLIC_PACKAGED_ROUTER_PORT_MODULE_FILES.includes('cli/agent_onboard/runtime-contracts.js'));
+  assert.deepStrictEqual(contracts.PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES.slice().sort(), EXPECTED_PACK_FILES);
+  assert.strictEqual(composer.RUNTIME_CONTRACTS, contracts.RUNTIME_CONTRACTS);
+});
 
 fullSourceTest('full source block line 161', () => {
   const result = run(['status']);
@@ -2589,6 +2607,7 @@ fullSourceTest('full source block line 2233', () => {
   assert.ok(readme.includes('This release adds public work-item usability JSON views'));
   assert.ok(readme.includes('This release adds public human-readable output mode'));
   assert.ok(readme.includes('This release reduces the retired M3 architecture checker surface'));
+  assert.ok(readme.includes('This release extracts public runtime contracts into `cli/agent_onboard/runtime-contracts.js`'));
   assert.ok(readme.includes('`work-items --summary` returns total counts'));
   assert.ok(readme.includes('`work-items --next` returns the first open item'));
   assert.ok(readme.includes('`work-items --mine` returns the actor'));

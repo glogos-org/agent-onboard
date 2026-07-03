@@ -4,6 +4,94 @@ function freezeList(items) {
   return Object.freeze(items.map((item) => Object.freeze(item)));
 }
 
+const TARGET_CONFIG_SCHEMA = {
+  schema: 'https://json-schema.org/draft/2020-12/schema',
+  $id: 'agent-onboard-target-config-001',
+  type: 'object',
+  required: ['schema', 'control', 'project', 'boundaries', 'surfaces'],
+  additionalProperties: false,
+  properties: {
+    schema: { const: 'agent-onboard-target-config-001' },
+    control: {
+      type: 'object',
+      required: ['package_name', 'requested_mode', 'authority_level'],
+      additionalProperties: false,
+      properties: {
+        package_name: { const: 'agent-onboard' },
+        requested_mode: { enum: ['target_dry_run', 'target_write'] },
+        authority_level: { enum: ['L1_read_only_preview', 'L2_explicit_write'] }
+      }
+    },
+    project: {
+      type: 'object',
+      required: ['name', 'kind'],
+      additionalProperties: false,
+      properties: {
+        name: { type: 'string', minLength: 1 },
+        kind: { type: 'string', minLength: 1 }
+      }
+    },
+    boundaries: {
+      type: 'object',
+      required: [
+        'writes_allowed',
+        'managed_project_commands_allowed',
+        'create_agent_onboard_runtime_state',
+        'install_dependencies',
+        'run_build_test_deploy',
+        'publish_or_push'
+      ],
+      additionalProperties: false,
+      properties: {
+        writes_allowed: { type: 'boolean' },
+        managed_project_commands_allowed: { type: 'integer', minimum: 0 },
+        create_agent_onboard_runtime_state: { type: 'boolean' },
+        install_dependencies: { type: 'boolean' },
+        run_build_test_deploy: { type: 'boolean' },
+        publish_or_push: { type: 'boolean' }
+      }
+    },
+    surfaces: {
+      type: 'object',
+      required: ['include', 'exclude'],
+      additionalProperties: false,
+      properties: {
+        include: { type: 'array', items: { type: 'string' } },
+        exclude: { type: 'array', items: { type: 'string' } }
+      }
+    }
+  }
+};
+
+  const BOUNDARY_GUARD_CONTRACT = Object.freeze({
+  schema: 'agent-onboard-public-boundary-guard-enforcement-seed-contract-001',
+  title: 'Agent-Onboard Public Boundary Guard Enforcement Seed Gate',
+  package_name: 'agent-onboard',
+  command: 'agent-onboard guard --check-boundary',
+  canonical_target_config_file: 'agent-onboard.target.json',
+  enforcement_mode: 'fail_closed',
+  required_target_config_values: Object.freeze({
+    schema: 'agent-onboard-target-config-001',
+    'control.package_name': 'agent-onboard',
+    'control.requested_mode': 'target_dry_run',
+    'control.authority_level': 'L1_read_only_preview',
+    'boundaries.writes_allowed': false,
+    'boundaries.managed_project_commands_allowed': 0,
+    'boundaries.create_agent_onboard_runtime_state': false,
+    'boundaries.install_dependencies': false,
+    'boundaries.run_build_test_deploy': false,
+    'boundaries.publish_or_push': false
+  }),
+  forbidden_true_boundary_fields: Object.freeze([
+    'boundaries.writes_allowed',
+    'boundaries.create_agent_onboard_runtime_state',
+    'boundaries.install_dependencies',
+    'boundaries.run_build_test_deploy',
+    'boundaries.publish_or_push'
+  ])
+});
+
+  
 function createPublicTargetStaticCatalog({ publicReleaseContract }) {
   if (!publicReleaseContract || !publicReleaseContract.release_line) {
     throw new Error('publicReleaseContract.release_line is required');
@@ -162,11 +250,15 @@ function createPublicTargetStaticCatalog({ publicReleaseContract }) {
   });
 
   return Object.freeze({
+    TARGET_CONFIG_SCHEMA,
+    BOUNDARY_GUARD_CONTRACT,
     TARGET_ONBOARDING_SURFACE_PLAN,
     TARGET_ONBOARDING_DRY_RUN_FIXTURE_MATRIX
   });
 }
 
 module.exports = {
+  TARGET_CONFIG_SCHEMA,
+  BOUNDARY_GUARD_CONTRACT,
   createPublicTargetStaticCatalog
 };

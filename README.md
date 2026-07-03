@@ -881,6 +881,8 @@ This release adds public human-readable output mode for target-facing inspection
 
 This release reduces the retired M3 architecture checker surface: `architecture --check` and `release --architecture-parity-smoke` keep the package/router/target-runtime invariants that still protect the public CLI, and retire source-partition/source-extraction parity checks from the active M4 gate.
 
+This release extracts public runtime contracts into `cli/agent_onboard/runtime-contracts.js`, making command names, target command flags, package allowlist contracts, and runtime package identity shared constants instead of composer-owned literals.
+
 <!-- ## Star History
 
 [![Star History Chart](https://api.star-history.com/chart?repos=glogos-org/agent-onboard&type=date&legend=top-left)](https://www.star-history.com/?repos=glogos-org%2Fagent-onboard&type=date&legend=top-left) -->
