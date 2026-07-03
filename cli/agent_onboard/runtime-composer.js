@@ -37,7 +37,12 @@ const { createPublicArchitectureCatalog } = require('./domains/architecture/stat
 const { createPublicTargetStaticCatalog } = require('./domains/target/static-catalog');
 const { createPublicArchitectureRuntimeService } = require('./domains/architecture/services/runtime/architecture-runtime-service');
 const { createPublicArchitectureAggregateCheckService } = require('./domains/architecture/services/checks/architecture-check-service');
-const { createPublicArchitectureSourceDomainService } = require('./domains/architecture/services/source-domains/architecture-source-domain-service');
+let createPublicArchitectureSourceDomainService = null;
+try {
+  createPublicArchitectureSourceDomainService = require('./domains/architecture/services/source-domains/architecture-source-domain-service').createPublicArchitectureSourceDomainService;
+} catch (error) {
+  // Source-only domain service is omitted in installed package context
+}
 const { createTargetRuntimeService } = require('./domains/target/services/target-service');
 
 const { TARGET_CONFIG_SCHEMA, BOUNDARY_GUARD_CONTRACT } = require('./domains/target/static-catalog');
@@ -388,7 +393,7 @@ const {
   publicArchitectureM1ClosureM2SeedCheck
 } = publicArchitectureRuntimeService;
 
-const publicArchitectureSourceDomainService = createPublicArchitectureSourceDomainService({
+const publicArchitectureSourceDomainService = typeof createPublicArchitectureSourceDomainService === 'function' ? createPublicArchitectureSourceDomainService({
   version: VERSION,
   publicDomainServiceFacades: PUBLIC_DOMAIN_SERVICE_FACADES,
   publicReleaseContract: PUBLIC_RELEASE_CONTRACT,
@@ -416,7 +421,7 @@ const publicArchitectureSourceDomainService = createPublicArchitectureSourceDoma
   publicSourceModuleExtractionAuthorityRuntimeBridgeCheck,
   publicPackageSurfaceCheck,
   publicVersionReferencePolicyCheck
-});
+}) : {};
 const {
   publicWorkItemsDomainSourceExtractionPlan,
   publicWorkItemsDomainSourceExtractionPlanCheck,

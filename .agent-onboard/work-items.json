@@ -1372,9 +1372,7 @@
           "npm publish",
           "registry post-publish verification"
         ],
-        "known_non_pass": [
-          "npm publish not run by assistant"
-        ]
+        "known_non_pass": ["npm publish not run by assistant"]
       }
     },
     {
@@ -3840,13 +3838,73 @@
       "id": "P1S3M4W9",
       "milestone_id": "P1S3M4",
       "title": "Public package surface diet gate",
-      "status": "open"
+      "status": "closed",
+      "claim": {
+        "actor": "Antigravity",
+        "claimed_at": "2026-07-03T14:00:12.893Z"
+      },
+      "closure": {
+        "actor": "Antigravity",
+        "closed_at": "2026-07-03T14:08:45.600Z",
+        "summary": "Removed source-domains and source-extraction modules from the npm pack. Updated package.json, runtime-contracts, and tests to match. Refactored runtime-composer to conditionally load source modules only when in source repository context. The package candidate was bumped to 0.0.100.",
+        "changed_files": [
+          "package.json",
+          "cli/agent_onboard/runtime-contracts.js",
+          "test/agent-onboard.test.js",
+          "cli/agent_onboard/runtime-composer.js",
+          ".agent-onboard/work-items.json"
+        ],
+        "checks_run": [
+          "npm test",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js release --parity-smoke"
+        ],
+        "checks_not_run": [
+          "npm publish --access public"
+        ],
+        "known_non_pass": []
+      }
     },
     {
       "id": "P1S3M4W10",
       "milestone_id": "P1S3M4",
       "title": "Public target service module split gate",
-      "status": "open"
+      "status": "closed",
+      "claim": {
+        "actor": "Antigravity",
+        "claimed_at": "2026-07-03T14:10:00.000Z"
+      },
+      "closure": {
+        "actor": "Antigravity",
+        "closed_at": "2026-07-03T14:39:58.952Z",
+        "summary": "Successfully modularized target-service.js into discrete modules: target-constants, target-onboarding-service, target-profile-service, target-doctor-service, target-repair-service, target-templates-service, and target-write-service. Extracted shared logic into target-runtime-utilities. Updated runtime-contracts and package.json to include the new package surface. Resolved all test failures and achieved full parity. The package candidate was bumped to 0.0.102.",
+        "changed_files": [
+          "cli/agent_onboard/domains/target/services/target-service.js",
+          "cli/agent_onboard/domains/target/services/target-constants.js",
+          "cli/agent_onboard/domains/target/services/target-onboarding-service.js",
+          "cli/agent_onboard/domains/target/services/target-profile-service.js",
+          "cli/agent_onboard/domains/target/services/target-doctor-service.js",
+          "cli/agent_onboard/domains/target/services/target-repair-service.js",
+          "cli/agent_onboard/domains/target/services/target-templates-service.js",
+          "cli/agent_onboard/domains/target/services/target-write-service.js",
+          "cli/agent_onboard/domains/target/services/target-runtime-utilities.js",
+          "cli/agent_onboard/runtime-contracts.js",
+          "package.json"
+        ],
+        "checks_run": [
+          "npm test",
+          "npm run test:all",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node cli/agent-onboard.js release --parity-smoke",
+          "node cli/agent-onboard.js release --architecture-parity-smoke",
+          "node cli/agent-onboard.js architecture --check"
+        ],
+        "checks_not_run": [
+          "npm publish --access public"
+        ],
+        "known_non_pass": []
+      }
     },
     {
       "id": "P1S3M4W11",

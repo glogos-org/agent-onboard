@@ -2,7 +2,12 @@
 
 const fs = require('fs');
 const path = require('path');
-const { createPublicArchitectureSourceExtractionService } = require('../source-extraction/architecture-source-extraction-service');
+let createPublicArchitectureSourceExtractionService = null;
+try {
+  createPublicArchitectureSourceExtractionService = require('../source-extraction/architecture-source-extraction-service').createPublicArchitectureSourceExtractionService;
+} catch (error) {
+  // Source-only extraction service is omitted in installed package context
+}
 
 function createPublicArchitectureRuntimeService(deps) {
   const {
@@ -706,7 +711,7 @@ function publicSourceDomainExtractionRehearsalCheck(root = packageRoot()) {
   };
 }
 
-const publicArchitectureSourceExtractionService = createPublicArchitectureSourceExtractionService({
+const publicArchitectureSourceExtractionService = typeof createPublicArchitectureSourceExtractionService === 'function' ? createPublicArchitectureSourceExtractionService({
   version: VERSION,
   publicArchitectureMapContract: PUBLIC_ARCHITECTURE_MAP,
   publicDomainServiceFacades: PUBLIC_DOMAIN_SERVICE_FACADES,
@@ -729,7 +734,7 @@ const publicArchitectureSourceExtractionService = createPublicArchitectureSource
   publicSourceDomainExtractionRehearsalCheck,
   bundledAuthorityDomainForParity,
   publicSourceModuleExtractionAuthorityBundleParityCheck
-});
+}) : {};
 const {
   publicSourceExtractionGoldenOutputs,
   scanCurrentVersionLiterals,
