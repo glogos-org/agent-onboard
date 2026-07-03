@@ -1,0 +1,106 @@
+{
+  "schema": "agent-onboard-public-target-repo-product-refactor-plan-001",
+  "package_name": "agent-onboard",
+  "milestone_id": "P1S3M4",
+  "work_item_id": "P1S3M4W1",
+  "title": "M4 Target-Repo Product Refactor Plan",
+  "status": "admitted",
+  "purpose": "Recenter the public package on practical target-repository onboarding and remove architecture self-check surfaces that only preserve historical self-dogfood gates.",
+  "principles": [
+    "Target repo owner value comes before source self-dogfood evidence.",
+    "Public CLI commands should be small, explainable, and useful without knowing this repository's history.",
+    "Historical architecture gates may remain as internal checks, but should not block target-repo product work.",
+    "Runtime code should prefer explicit constants and frozen enum-like maps over repeated string literals.",
+    "Release checks should protect package safety, command compatibility, and target-repo behavior rather than every retired architecture gate."
+  ],
+  "public_cli_keep": [
+    "status",
+    "target onboarding --plan|--fixture|--trial|--write",
+    "target bootstrap --dry-run|--write",
+    "target-instance takeover --dry-run|--write",
+    "target-config --schema|--template|--validate-template|--validate",
+    "guard --plan|--check-boundary",
+    "authority --first-read|--check",
+    "work-items --schema|--template|--validate-template|--validate|--list|--init|--append|--claim|--close",
+    "release --surface|--surface-check|--version-sprawl-check|--target-onboarding-smoke|--check"
+  ],
+  "public_cli_reduce_or_internalize": [
+    "architecture --golden-outputs",
+    "architecture --golden-check",
+    "architecture --adapter-boundary",
+    "architecture --adapter-check",
+    "architecture --first-slice",
+    "architecture --first-slice-check",
+    "architecture --bundle-parity",
+    "architecture --bundle-parity-check",
+    "architecture --runtime-bridge",
+    "architecture --runtime-bridge-check",
+    "architecture --installed-fallback-smoke",
+    "architecture --installed-fallback-check",
+    "architecture --second-slice-plan",
+    "architecture --second-slice-check",
+    "architecture --authority-bundle-parity",
+    "architecture --authority-runtime-bridge",
+    "architecture --work-items-*",
+    "architecture --claims-*",
+    "architecture --source-domain-closure-*",
+    "architecture --cli-runtime-*",
+    "architecture --thin-*",
+    "architecture --compatibility-port-*",
+    "architecture --*-adapter-*",
+    "architecture --module-inclusion-*",
+    "architecture --packaged-router-port-*",
+    "architecture --router-adapter-delegation-*",
+    "release --architecture-parity-smoke"
+  ],
+  "target_repo_feature_priorities": [
+    {
+      "id": "doctor",
+      "title": "Target repo doctor",
+      "intent": "Report onboarding readiness, detected stack, missing authority files, work item health, and boundary risks in one command."
+    },
+    {
+      "id": "repair",
+      "title": "Target onboarding repair",
+      "intent": "Plan and optionally write missing canonical onboarding files without overwriting divergent user files by default."
+    },
+    {
+      "id": "profile",
+      "title": "Target repo profile detection",
+      "intent": "Detect package managers, languages, docs surfaces, likely test commands, and CI files without running managed project commands."
+    },
+    {
+      "id": "work_item_usability",
+      "title": "Practical work item UX",
+      "intent": "Add concise next/mine/summary views for humans and agents while preserving JSON output for automation."
+    },
+    {
+      "id": "text_output",
+      "title": "Human-readable output mode",
+      "intent": "Add explicit text output for target repo operators while keeping JSON as the stable automation contract."
+    }
+  ],
+  "architecture_refactor_priorities": [
+    "Replace scattered command, status, schema, mode, and path literals with local frozen enum-like constants.",
+    "Split target-repo behavior out of runtime-composer into focused target, authority, guard, work-items, and release services.",
+    "Shrink or delete static architecture catalog sections that only validate retired gates.",
+    "Keep package allowlist and artifact boundary checks, but remove retired architecture gates from release --check.",
+    "Move any remaining historical self-dogfood assertions to agent-onboard-internal checks instead of the public package."
+  ],
+  "acceptance_criteria": [
+    "P1S3M3 remains closed and P1S3M4 remains open without architecture --check failing solely because M3 is no longer open.",
+    "M4 work starts from target-repo product commands rather than new architecture gate commands.",
+    "Public release checks no longer require retired architecture parity smoke to pass.",
+    "Work-items runtime service uses constants for command family, paths, flags, modes, statuses, and result schemas.",
+    "The next implementation work item is a target-repo feature, not another self-dogfood architecture checker."
+  ],
+  "boundary": {
+    "writes_target_repository_state": false,
+    "runs_managed_project_commands": false,
+    "installs_dependencies": false,
+    "runs_build_test_deploy": false,
+    "publishes_package": false,
+    "mutates_registry": false,
+    "git_mutation": false
+  }
+}

@@ -3,23 +3,95 @@
 const fs = require('fs');
 const path = require('path');
 
+const COMMAND_FAMILY = 'work-items';
+const CANONICAL_WORK_ITEMS_FILE = '.agent-onboard/work-items.json';
+
+const STATUS = Object.freeze({
+  OK: 'ok',
+  ERROR: 'error'
+});
+
+const MODE = Object.freeze({
+  DRY_RUN: 'dry-run',
+  WRITE: 'write'
+});
+
+const FLAG = Object.freeze({
+  INIT: '--init',
+  APPEND: '--append',
+  CLAIM: '--claim',
+  CLOSE: '--close',
+  SCHEMA: '--schema',
+  TEMPLATE: '--template',
+  VALIDATE_TEMPLATE: '--validate-template',
+  LIST: '--list',
+  VALIDATE: '--validate',
+  DRY_RUN: '--dry-run',
+  WRITE: '--write',
+  FORCE: '--force',
+  FILE: '--file',
+  ID: '--id',
+  TITLE: '--title',
+  PROGRAM_TITLE: '--program-title',
+  STAGE_TITLE: '--stage-title',
+  MILESTONE_TITLE: '--milestone-title',
+  ACTOR: '--actor',
+  CLAIMED_AT: '--claimed-at',
+  CLOSED_AT: '--closed-at',
+  NOTE: '--note',
+  SUMMARY: '--summary',
+  CHANGED_FILE: '--changed-file',
+  CHECK: '--check',
+  CHECK_NOT_RUN: '--check-not-run',
+  KNOWN_NON_PASS: '--known-non-pass'
+});
+
+const WORK_ITEMS_COMMAND = Object.freeze({
+  SCHEMA: 'work-items --schema',
+  TEMPLATE: 'work-items --template',
+  VALIDATE_TEMPLATE: 'work-items --validate-template',
+  LIST: 'work-items --list',
+  VALIDATE: 'work-items --validate',
+  INIT: 'work-items --init',
+  APPEND: 'work-items --append',
+  CLAIM: 'work-items --claim',
+  CLOSE: 'work-items --close'
+});
+
+const WORK_ITEMS_RESULT_SCHEMA = Object.freeze({
+  APPEND: 'agent-onboard-work-items-append-result-001',
+  INIT: 'agent-onboard-work-items-init-result-001',
+  CLAIM: 'agent-onboard-work-items-claim-result-001',
+  CLOSE: 'agent-onboard-work-items-close-result-001',
+  SCHEMA: 'agent-onboard-work-items-schema-response-001',
+  TEMPLATE: 'agent-onboard-work-items-template-response-001',
+  TEMPLATE_VALIDATION: 'agent-onboard-work-items-template-validation-001',
+  FILE_VALIDATION: 'agent-onboard-work-items-file-validation-001',
+  LIST: 'agent-onboard-work-items-list-response-001'
+});
+
+const WORK_ITEMS_REASON = Object.freeze({
+  MISSING_LEDGER: 'missing .agent-onboard/work-items.json in current target repo root',
+  INVALID_LEDGER: 'current work-item ledger is invalid'
+});
+
 const WORK_ITEMS_SERVICE_SEED = Object.freeze({
   schema: 'agent-onboard-public-work-items-runtime-service-seed-001',
   package_name: 'agent-onboard',
   role: 'packaged_runtime_work_items_domain_service_seed',
   service_path: 'cli/agent_onboard/domains/work-items/services/work-items-service.js',
   owned_read_only_commands: Object.freeze([
-    'work-items --schema',
-    'work-items --template',
-    'work-items --validate-template',
-    'work-items --list',
-    'work-items --validate'
+    WORK_ITEMS_COMMAND.SCHEMA,
+    WORK_ITEMS_COMMAND.TEMPLATE,
+    WORK_ITEMS_COMMAND.VALIDATE_TEMPLATE,
+    WORK_ITEMS_COMMAND.LIST,
+    WORK_ITEMS_COMMAND.VALIDATE
   ]),
   owned_write_boundary_commands: Object.freeze([
-    'work-items --init',
-    'work-items --append',
-    'work-items --claim',
-    'work-items --close'
+    WORK_ITEMS_COMMAND.INIT,
+    WORK_ITEMS_COMMAND.APPEND,
+    WORK_ITEMS_COMMAND.CLAIM,
+    WORK_ITEMS_COMMAND.CLOSE
   ]),
   fallback_commands: Object.freeze([]),
   boundary: Object.freeze({
@@ -66,15 +138,15 @@ function defaultWorkItemsTemplate() {
 }
 
 function defaultAppendWorkItemDryRun() {
-  throw new Error('work-items --append requires an append planner');
+  throw new Error(`${WORK_ITEMS_COMMAND.APPEND} requires an append planner`);
 }
 
 function defaultClaimWorkItemDryRun() {
-  throw new Error('work-items --claim requires a claim planner');
+  throw new Error(`${WORK_ITEMS_COMMAND.CLAIM} requires a claim planner`);
 }
 
 function defaultCloseWorkItemDryRun() {
-  throw new Error('work-items --close requires a close planner');
+  throw new Error(`${WORK_ITEMS_COMMAND.CLOSE} requires a close planner`);
 }
 
 function fileAfterFlag(args, flag, fallback) {
@@ -103,6 +175,22 @@ function repeatedOptionsAfterFlag(args, flag) {
   return values;
 }
 
+function resultStatus(ok) {
+  return ok ? STATUS.OK : STATUS.ERROR;
+}
+
+function modeFromWrite(write) {
+  return write ? MODE.WRITE : MODE.DRY_RUN;
+}
+
+function commandWithMode(command, mode) {
+  return `agent-onboard ${command} --${mode}`;
+}
+
+function workItemsFileFromArgs(args) {
+  return optionAfterFlag(args, FLAG.FILE) || CANONICAL_WORK_ITEMS_FILE;
+}
+
 function createWorkItemsService(options = Object.freeze({})) {
   const cwd = typeof options.cwd === 'function' ? options.cwd : () => process.cwd();
   const emit = typeof options.emit === 'function' ? options.emit : defaultJson;
@@ -124,24 +212,24 @@ function createWorkItemsService(options = Object.freeze({})) {
   const exists = typeof options.exists === 'function' ? options.exists : fs.existsSync;
 
   function append(args) {
-    const dry = args.includes('--dry-run');
-    const write = args.includes('--write');
-    if (!write && !dry) throw new Error('work-items --append requires --dry-run or --write');
-    if (write && dry) throw new Error('work-items --append accepts only one of --dry-run or --write');
+    const dry = args.includes(FLAG.DRY_RUN);
+    const write = args.includes(FLAG.WRITE);
+    if (!write && !dry) throw new Error(`${WORK_ITEMS_COMMAND.APPEND} requires ${FLAG.DRY_RUN} or ${FLAG.WRITE}`);
+    if (write && dry) throw new Error(`${WORK_ITEMS_COMMAND.APPEND} accepts only one of ${FLAG.DRY_RUN} or ${FLAG.WRITE}`);
 
-    const mode = write ? 'write' : 'dry-run';
-    const command = `agent-onboard work-items --append --${mode}`;
-    const file = optionAfterFlag(args, '--file') || '.agent-onboard/work-items.json';
+    const mode = modeFromWrite(write);
+    const command = commandWithMode(WORK_ITEMS_COMMAND.APPEND, mode);
+    const file = workItemsFileFromArgs(args);
     const absolutePath = path.resolve(cwd(), file);
     if (!exists(absolutePath)) {
       emit({
-        schema: 'agent-onboard-work-items-append-result-001',
-        status: 'error',
-        command_family: 'work-items',
+        schema: WORK_ITEMS_RESULT_SCHEMA.APPEND,
+        status: STATUS.ERROR,
+        command_family: COMMAND_FAMILY,
         command,
         file,
         mode,
-        reason: 'missing .agent-onboard/work-items.json in current target repo root',
+        reason: WORK_ITEMS_REASON.MISSING_LEDGER,
         writes_performed: false
       });
       return 1;
@@ -151,13 +239,13 @@ function createWorkItemsService(options = Object.freeze({})) {
     const currentErrors = validateWorkItems(current);
     if (currentErrors.length > 0) {
       emit({
-        schema: 'agent-onboard-work-items-append-result-001',
-        status: 'error',
-        command_family: 'work-items',
+        schema: WORK_ITEMS_RESULT_SCHEMA.APPEND,
+        status: STATUS.ERROR,
+        command_family: COMMAND_FAMILY,
         command,
         file,
         mode,
-        reason: 'current work-item ledger is invalid',
+        reason: WORK_ITEMS_REASON.INVALID_LEDGER,
         writes_performed: false,
         errors: currentErrors
       });
@@ -167,17 +255,17 @@ function createWorkItemsService(options = Object.freeze({})) {
     let proposal;
     try {
       proposal = appendWorkItemDryRun(current, {
-        id: optionAfterFlag(args, '--id'),
-        title: optionAfterFlag(args, '--title'),
-        program_title: optionAfterFlag(args, '--program-title'),
-        stage_title: optionAfterFlag(args, '--stage-title'),
-        milestone_title: optionAfterFlag(args, '--milestone-title')
+        id: optionAfterFlag(args, FLAG.ID),
+        title: optionAfterFlag(args, FLAG.TITLE),
+        program_title: optionAfterFlag(args, FLAG.PROGRAM_TITLE),
+        stage_title: optionAfterFlag(args, FLAG.STAGE_TITLE),
+        milestone_title: optionAfterFlag(args, FLAG.MILESTONE_TITLE)
       });
     } catch (error) {
       emit({
-        schema: 'agent-onboard-work-items-append-result-001',
-        status: 'error',
-        command_family: 'work-items',
+        schema: WORK_ITEMS_RESULT_SCHEMA.APPEND,
+        status: STATUS.ERROR,
+        command_family: COMMAND_FAMILY,
         command,
         file,
         mode,
@@ -191,9 +279,9 @@ function createWorkItemsService(options = Object.freeze({})) {
     const ok = proposalErrors.length === 0;
     if (write && ok) writeJson(absolutePath, proposal.proposed_ledger);
     emit({
-      schema: 'agent-onboard-work-items-append-result-001',
-      status: ok ? 'ok' : 'error',
-      command_family: 'work-items',
+      schema: WORK_ITEMS_RESULT_SCHEMA.APPEND,
+      status: resultStatus(ok),
+      command_family: COMMAND_FAMILY,
       command,
       file,
       mode,
@@ -216,14 +304,14 @@ function createWorkItemsService(options = Object.freeze({})) {
   }
 
   function init(args) {
-    const write = args.includes('--write');
-    const dry = args.includes('--dry-run');
-    const force = args.includes('--force');
-    if (!write && !dry) throw new Error('work-items --init requires --dry-run or --write');
-    if (write && dry) throw new Error('work-items --init accepts only one of --dry-run or --write');
+    const write = args.includes(FLAG.WRITE);
+    const dry = args.includes(FLAG.DRY_RUN);
+    const force = args.includes(FLAG.FORCE);
+    if (!write && !dry) throw new Error(`${WORK_ITEMS_COMMAND.INIT} requires ${FLAG.DRY_RUN} or ${FLAG.WRITE}`);
+    if (write && dry) throw new Error(`${WORK_ITEMS_COMMAND.INIT} accepts only one of ${FLAG.DRY_RUN} or ${FLAG.WRITE}`);
 
     const templateValue = workItemsTemplate();
-    const plannedWrites = planWrites([['.agent-onboard/work-items.json', templateValue]], { force });
+    const plannedWrites = planWrites([[CANONICAL_WORK_ITEMS_FILE, templateValue]], { force });
     const conflicts = plannedWrites.filter((item) => item.action === 'conflict');
     const errors = validateWorkItems(templateValue);
     const ok = conflicts.length === 0 && errors.length === 0;
@@ -231,12 +319,12 @@ function createWorkItemsService(options = Object.freeze({})) {
     if (write && ok) performPlannedWrites(plannedWrites);
 
     emit({
-      schema: 'agent-onboard-work-items-init-result-001',
-      status: ok ? 'ok' : 'error',
-      command_family: 'work-items',
-      command: `agent-onboard work-items --init --${write ? 'write' : 'dry-run'}`,
-      canonical_file: '.agent-onboard/work-items.json',
-      mode: write ? 'write' : 'dry-run',
+      schema: WORK_ITEMS_RESULT_SCHEMA.INIT,
+      status: resultStatus(ok),
+      command_family: COMMAND_FAMILY,
+      command: commandWithMode(WORK_ITEMS_COMMAND.INIT, modeFromWrite(write)),
+      canonical_file: CANONICAL_WORK_ITEMS_FILE,
+      mode: modeFromWrite(write),
       force,
       writes_performed: write && ok,
       planned_writes: summarizePlan(plannedWrites),
@@ -256,24 +344,24 @@ function createWorkItemsService(options = Object.freeze({})) {
   }
 
   function claim(args) {
-    const dry = args.includes('--dry-run');
-    const write = args.includes('--write');
-    if (!write && !dry) throw new Error('work-items --claim requires --dry-run or --write');
-    if (write && dry) throw new Error('work-items --claim accepts only one of --dry-run or --write');
+    const dry = args.includes(FLAG.DRY_RUN);
+    const write = args.includes(FLAG.WRITE);
+    if (!write && !dry) throw new Error(`${WORK_ITEMS_COMMAND.CLAIM} requires ${FLAG.DRY_RUN} or ${FLAG.WRITE}`);
+    if (write && dry) throw new Error(`${WORK_ITEMS_COMMAND.CLAIM} accepts only one of ${FLAG.DRY_RUN} or ${FLAG.WRITE}`);
 
-    const mode = write ? 'write' : 'dry-run';
-    const command = `agent-onboard work-items --claim --${mode}`;
-    const file = optionAfterFlag(args, '--file') || '.agent-onboard/work-items.json';
+    const mode = modeFromWrite(write);
+    const command = commandWithMode(WORK_ITEMS_COMMAND.CLAIM, mode);
+    const file = workItemsFileFromArgs(args);
     const absolutePath = path.resolve(cwd(), file);
     if (!exists(absolutePath)) {
       emit({
-        schema: 'agent-onboard-work-items-claim-result-001',
-        status: 'error',
-        command_family: 'work-items',
+        schema: WORK_ITEMS_RESULT_SCHEMA.CLAIM,
+        status: STATUS.ERROR,
+        command_family: COMMAND_FAMILY,
         command,
         file,
         mode,
-        reason: 'missing .agent-onboard/work-items.json in current target repo root',
+        reason: WORK_ITEMS_REASON.MISSING_LEDGER,
         writes_performed: false
       });
       return 1;
@@ -283,13 +371,13 @@ function createWorkItemsService(options = Object.freeze({})) {
     const currentErrors = validateWorkItems(current);
     if (currentErrors.length > 0) {
       emit({
-        schema: 'agent-onboard-work-items-claim-result-001',
-        status: 'error',
-        command_family: 'work-items',
+        schema: WORK_ITEMS_RESULT_SCHEMA.CLAIM,
+        status: STATUS.ERROR,
+        command_family: COMMAND_FAMILY,
         command,
         file,
         mode,
-        reason: 'current work-item ledger is invalid',
+        reason: WORK_ITEMS_REASON.INVALID_LEDGER,
         writes_performed: false,
         errors: currentErrors
       });
@@ -299,16 +387,16 @@ function createWorkItemsService(options = Object.freeze({})) {
     let proposal;
     try {
       proposal = claimWorkItemDryRun(current, {
-        id: optionAfterFlag(args, '--id'),
-        actor: optionAfterFlag(args, '--actor'),
-        claimed_at: optionAfterFlag(args, '--claimed-at'),
-        note: optionAfterFlag(args, '--note')
+        id: optionAfterFlag(args, FLAG.ID),
+        actor: optionAfterFlag(args, FLAG.ACTOR),
+        claimed_at: optionAfterFlag(args, FLAG.CLAIMED_AT),
+        note: optionAfterFlag(args, FLAG.NOTE)
       });
     } catch (error) {
       emit({
-        schema: 'agent-onboard-work-items-claim-result-001',
-        status: 'error',
-        command_family: 'work-items',
+        schema: WORK_ITEMS_RESULT_SCHEMA.CLAIM,
+        status: STATUS.ERROR,
+        command_family: COMMAND_FAMILY,
         command,
         file,
         mode,
@@ -322,9 +410,9 @@ function createWorkItemsService(options = Object.freeze({})) {
     const ok = proposalErrors.length === 0;
     if (write && ok) writeJson(absolutePath, proposal.proposed_ledger);
     emit({
-      schema: 'agent-onboard-work-items-claim-result-001',
-      status: ok ? 'ok' : 'error',
-      command_family: 'work-items',
+      schema: WORK_ITEMS_RESULT_SCHEMA.CLAIM,
+      status: resultStatus(ok),
+      command_family: COMMAND_FAMILY,
       command,
       file,
       mode,
@@ -348,24 +436,24 @@ function createWorkItemsService(options = Object.freeze({})) {
   }
 
   function close(args) {
-    const dry = args.includes('--dry-run');
-    const write = args.includes('--write');
-    if (!write && !dry) throw new Error('work-items --close requires --dry-run or --write');
-    if (write && dry) throw new Error('work-items --close accepts only one of --dry-run or --write');
+    const dry = args.includes(FLAG.DRY_RUN);
+    const write = args.includes(FLAG.WRITE);
+    if (!write && !dry) throw new Error(`${WORK_ITEMS_COMMAND.CLOSE} requires ${FLAG.DRY_RUN} or ${FLAG.WRITE}`);
+    if (write && dry) throw new Error(`${WORK_ITEMS_COMMAND.CLOSE} accepts only one of ${FLAG.DRY_RUN} or ${FLAG.WRITE}`);
 
-    const mode = write ? 'write' : 'dry-run';
-    const command = `agent-onboard work-items --close --${mode}`;
-    const file = optionAfterFlag(args, '--file') || '.agent-onboard/work-items.json';
+    const mode = modeFromWrite(write);
+    const command = commandWithMode(WORK_ITEMS_COMMAND.CLOSE, mode);
+    const file = workItemsFileFromArgs(args);
     const absolutePath = path.resolve(cwd(), file);
     if (!exists(absolutePath)) {
       emit({
-        schema: 'agent-onboard-work-items-close-result-001',
-        status: 'error',
-        command_family: 'work-items',
+        schema: WORK_ITEMS_RESULT_SCHEMA.CLOSE,
+        status: STATUS.ERROR,
+        command_family: COMMAND_FAMILY,
         command,
         file,
         mode,
-        reason: 'missing .agent-onboard/work-items.json in current target repo root',
+        reason: WORK_ITEMS_REASON.MISSING_LEDGER,
         writes_performed: false
       });
       return 1;
@@ -375,13 +463,13 @@ function createWorkItemsService(options = Object.freeze({})) {
     const currentErrors = validateWorkItems(current);
     if (currentErrors.length > 0) {
       emit({
-        schema: 'agent-onboard-work-items-close-result-001',
-        status: 'error',
-        command_family: 'work-items',
+        schema: WORK_ITEMS_RESULT_SCHEMA.CLOSE,
+        status: STATUS.ERROR,
+        command_family: COMMAND_FAMILY,
         command,
         file,
         mode,
-        reason: 'current work-item ledger is invalid',
+        reason: WORK_ITEMS_REASON.INVALID_LEDGER,
         writes_performed: false,
         errors: currentErrors
       });
@@ -391,20 +479,20 @@ function createWorkItemsService(options = Object.freeze({})) {
     let proposal;
     try {
       proposal = closeWorkItemDryRun(current, {
-        id: optionAfterFlag(args, '--id'),
-        actor: optionAfterFlag(args, '--actor'),
-        closed_at: optionAfterFlag(args, '--closed-at'),
-        summary: optionAfterFlag(args, '--summary'),
-        changed_files: repeatedOptionsAfterFlag(args, '--changed-file'),
-        checks_run: repeatedOptionsAfterFlag(args, '--check'),
-        checks_not_run: repeatedOptionsAfterFlag(args, '--check-not-run'),
-        known_non_pass: repeatedOptionsAfterFlag(args, '--known-non-pass')
+        id: optionAfterFlag(args, FLAG.ID),
+        actor: optionAfterFlag(args, FLAG.ACTOR),
+        closed_at: optionAfterFlag(args, FLAG.CLOSED_AT),
+        summary: optionAfterFlag(args, FLAG.SUMMARY),
+        changed_files: repeatedOptionsAfterFlag(args, FLAG.CHANGED_FILE),
+        checks_run: repeatedOptionsAfterFlag(args, FLAG.CHECK),
+        checks_not_run: repeatedOptionsAfterFlag(args, FLAG.CHECK_NOT_RUN),
+        known_non_pass: repeatedOptionsAfterFlag(args, FLAG.KNOWN_NON_PASS)
       });
     } catch (error) {
       emit({
-        schema: 'agent-onboard-work-items-close-result-001',
-        status: 'error',
-        command_family: 'work-items',
+        schema: WORK_ITEMS_RESULT_SCHEMA.CLOSE,
+        status: STATUS.ERROR,
+        command_family: COMMAND_FAMILY,
         command,
         file,
         mode,
@@ -418,9 +506,9 @@ function createWorkItemsService(options = Object.freeze({})) {
     const ok = proposalErrors.length === 0;
     if (write && ok) writeJson(absolutePath, proposal.proposed_ledger);
     emit({
-      schema: 'agent-onboard-work-items-close-result-001',
-      status: ok ? 'ok' : 'error',
-      command_family: 'work-items',
+      schema: WORK_ITEMS_RESULT_SCHEMA.CLOSE,
+      status: resultStatus(ok),
+      command_family: COMMAND_FAMILY,
       command,
       file,
       mode,
@@ -445,8 +533,8 @@ function createWorkItemsService(options = Object.freeze({})) {
 
   function schema() {
     emit({
-      schema: 'agent-onboard-work-items-schema-response-001',
-      status: 'ok',
+      schema: WORK_ITEMS_RESULT_SCHEMA.SCHEMA,
+      status: STATUS.OK,
       work_items_schema: workItemsSchema()
     });
     return 0;
@@ -454,9 +542,9 @@ function createWorkItemsService(options = Object.freeze({})) {
 
   function template() {
     emit({
-      schema: 'agent-onboard-work-items-template-response-001',
-      status: 'ok',
-      canonical_file: '.agent-onboard/work-items.json',
+      schema: WORK_ITEMS_RESULT_SCHEMA.TEMPLATE,
+      status: STATUS.OK,
+      canonical_file: CANONICAL_WORK_ITEMS_FILE,
       work_items: workItemsTemplate()
     });
     return 0;
@@ -466,10 +554,10 @@ function createWorkItemsService(options = Object.freeze({})) {
     const errors = validateWorkItems(workItemsTemplate());
     const ok = errors.length === 0;
     emit({
-      schema: 'agent-onboard-work-items-template-validation-001',
-      status: ok ? 'ok' : 'error',
+      schema: WORK_ITEMS_RESULT_SCHEMA.TEMPLATE_VALIDATION,
+      status: resultStatus(ok),
       template_source: 'embedded',
-      canonical_file: '.agent-onboard/work-items.json',
+      canonical_file: CANONICAL_WORK_ITEMS_FILE,
       validated: true,
       errors
     });
@@ -477,13 +565,13 @@ function createWorkItemsService(options = Object.freeze({})) {
   }
 
   function validate(args) {
-    const file = fileAfterFlag(args, '--validate', '.agent-onboard/work-items.json');
+    const file = fileAfterFlag(args, FLAG.VALIDATE, CANONICAL_WORK_ITEMS_FILE);
     const value = readJson(path.resolve(cwd(), file));
     const errors = validateWorkItems(value);
     const ok = errors.length === 0;
     emit({
-      schema: 'agent-onboard-work-items-file-validation-001',
-      status: ok ? 'ok' : 'error',
+      schema: WORK_ITEMS_RESULT_SCHEMA.FILE_VALIDATION,
+      status: resultStatus(ok),
       file,
       validated: true,
       counts: workItemCounts(value),
@@ -493,14 +581,14 @@ function createWorkItemsService(options = Object.freeze({})) {
   }
 
   function list(args) {
-    const file = fileAfterFlag(args, '--list', '.agent-onboard/work-items.json');
+    const file = fileAfterFlag(args, FLAG.LIST, CANONICAL_WORK_ITEMS_FILE);
     const absolutePath = path.resolve(cwd(), file);
     if (!exists(absolutePath)) {
       emit({
-        schema: 'agent-onboard-work-items-list-response-001',
-        status: 'error',
+        schema: WORK_ITEMS_RESULT_SCHEMA.LIST,
+        status: STATUS.ERROR,
         file,
-        reason: 'missing .agent-onboard/work-items.json in current target repo root',
+        reason: WORK_ITEMS_REASON.MISSING_LEDGER,
         writes_performed: false
       });
       return 1;
@@ -509,8 +597,8 @@ function createWorkItemsService(options = Object.freeze({})) {
     const errors = validateWorkItems(value);
     const ok = errors.length === 0;
     emit({
-      schema: 'agent-onboard-work-items-list-response-001',
-      status: ok ? 'ok' : 'error',
+      schema: WORK_ITEMS_RESULT_SCHEMA.LIST,
+      status: resultStatus(ok),
       file,
       validated: true,
       counts: workItemCounts(value),

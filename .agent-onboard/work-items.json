@@ -85,6 +85,12 @@
       "id": "P1S3M3",
       "stage_id": "P1S3",
       "title": "Public CLI runtime de-monolith milestone",
+      "status": "closed"
+    },
+    {
+      "id": "P1S3M4",
+      "stage_id": "P1S3",
+      "title": "Public target-repo product refactor milestone",
       "status": "open"
     }
   ],
@@ -3500,6 +3506,49 @@
         ],
         "known_non_pass": []
       }
+    },
+    {
+      "id": "P1S3M4W1",
+      "milestone_id": "P1S3M4",
+      "title": "Public target-repo product refactor kickoff gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-03T07:42:04.844Z",
+        "note": "Plan M4 target-repo product refactor and reduce self-dogfood architecture checker surface"
+      },
+      "closure": {
+        "actor": "codex-gpt-5",
+        "closed_at": "2026-07-03T07:45:40.868Z",
+        "summary": "Closed by opening the M4 target-repo product refactor plan, relaxing retired M3 self-dogfood checks that blocked a closed M3/open M4 transition, and starting the constants cleanup in the work-items runtime service.",
+        "changed_files": [
+          ".agent-onboard/work-items.json",
+          ".agent-onboard/target-repo-product-refactor-plan.json",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/domains/architecture/services/source-domains/source-domain-closure-service.js",
+          "cli/agent_onboard/domains/work-items/services/work-items-service.js"
+        ],
+        "checks_run": [
+          "node -c cli/agent_onboard/runtime-composer.js; node -c cli/agent_onboard/domains/architecture/services/source-domains/source-domain-closure-service.js; node -c cli/agent_onboard/domains/work-items/services/work-items-service.js",
+          "node cli/agent-onboard.js architecture --check",
+          "node cli/agent-onboard.js release --architecture-parity-smoke",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "node scripts/check-public-artifact-boundary.js",
+          "npm test",
+          "git diff --check"
+        ],
+        "checks_not_run": [
+          "npm publish --access public"
+        ],
+        "known_non_pass": []
+      }
+    },
+    {
+      "id": "P1S3M4W2",
+      "milestone_id": "P1S3M4",
+      "title": "Public target repo doctor command gate",
+      "status": "open"
     }
   ]
 }

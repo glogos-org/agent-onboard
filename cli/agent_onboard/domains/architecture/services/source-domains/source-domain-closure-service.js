@@ -180,7 +180,7 @@ function createPublicArchitectureSourceDomainClosureService(deps) {
       if (!closedMilestone) errors.push(`${gate.closed_milestone_id} milestone must exist`);
       else if (closedMilestone.status !== 'closed') errors.push(`${gate.closed_milestone_id} milestone must be closed`);
       if (!openedMilestone) errors.push(`${gate.opened_milestone_id} milestone must exist`);
-      else if (openedMilestone.status !== 'open') errors.push(`${gate.opened_milestone_id} milestone must be open`);
+      else if (!['open', 'closed'].includes(openedMilestone.status)) errors.push(`${gate.opened_milestone_id} milestone must be open or closed`);
       if (!closureWorkItem) errors.push(`${gate.closure_work_item_id} work item must exist`);
       else if (closureWorkItem.status !== 'closed') errors.push(`${gate.closure_work_item_id} work item must be closed`);
       if (!seedWorkItem) errors.push(`${gate.seed_work_item_id} work item must exist`);
@@ -203,7 +203,7 @@ function createPublicArchitectureSourceDomainClosureService(deps) {
         claims_domain_closed: result.component_checks.claims_installed_fallback.status === 'ok',
         m2_milestone_closed_or_installed_context_allowed: !sourceLedgerRequired || (closedMilestone && closedMilestone.status === 'closed'),
         m2_work_items_all_closed_or_installed_context_allowed: !sourceLedgerRequired || result.source_ledger.non_closed_m2_work_items.length === 0,
-        m3_milestone_seeded_open_or_installed_context_allowed: !sourceLedgerRequired || (openedMilestone && openedMilestone.status === 'open'),
+        m3_milestone_seeded_open_or_installed_context_allowed: !sourceLedgerRequired || (openedMilestone && ['open', 'closed'].includes(openedMilestone.status)),
         m3_seed_work_item_open_or_installed_context_allowed: !sourceLedgerRequired || (seedWorkItem && ['open', 'closed'].includes(seedWorkItem.status)),
         closure_review_file_present_or_installed_context_allowed: fileStatus === 'present_validated' || fileStatus === 'not_present_installed_context_allowed',
         package_allowlist_unchanged: arrayEquals(result.projected_pack_files, expectedPackFiles),

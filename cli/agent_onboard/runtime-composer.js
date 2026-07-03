@@ -824,7 +824,7 @@ function publicCliRuntimeDeMonolithPlanningCheck(root = packageRoot()) {
   const nextWorkItem = result.milestone_state.next_work_item;
   if (sourceLedgerRequired) {
     if (!milestone) errors.push(`${gate.milestone_id} milestone must exist`);
-    else if (milestone.status !== 'open') errors.push(`${gate.milestone_id} milestone must remain open`);
+    else if (!['open', 'closed'].includes(milestone.status)) errors.push(`${gate.milestone_id} milestone must be open or closed`);
     if (!workItem) errors.push(`${gate.work_item_id} work item must exist`);
     else if (workItem.status !== 'closed') errors.push(`${gate.work_item_id} work item must be closed`);
     if (!nextWorkItem) errors.push(`${gate.next_work_item_id} work item must exist`);
