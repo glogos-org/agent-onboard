@@ -11,6 +11,12 @@ const STATUS = Object.freeze({
   ERROR: 'error'
 });
 
+const WORK_ITEM_STATUS = Object.freeze({
+  OPEN: 'open',
+  CLAIMED: 'claimed',
+  CLOSED: 'closed'
+});
+
 const MODE = Object.freeze({
   DRY_RUN: 'dry-run',
   WRITE: 'write'
@@ -25,6 +31,9 @@ const FLAG = Object.freeze({
   TEMPLATE: '--template',
   VALIDATE_TEMPLATE: '--validate-template',
   LIST: '--list',
+  SUMMARY: '--summary',
+  NEXT: '--next',
+  MINE: '--mine',
   VALIDATE: '--validate',
   DRY_RUN: '--dry-run',
   WRITE: '--write',
@@ -39,7 +48,6 @@ const FLAG = Object.freeze({
   CLAIMED_AT: '--claimed-at',
   CLOSED_AT: '--closed-at',
   NOTE: '--note',
-  SUMMARY: '--summary',
   CHANGED_FILE: '--changed-file',
   CHECK: '--check',
   CHECK_NOT_RUN: '--check-not-run',
@@ -51,6 +59,9 @@ const WORK_ITEMS_COMMAND = Object.freeze({
   TEMPLATE: 'work-items --template',
   VALIDATE_TEMPLATE: 'work-items --validate-template',
   LIST: 'work-items --list',
+  SUMMARY: 'work-items --summary',
+  NEXT: 'work-items --next',
+  MINE: 'work-items --mine',
   VALIDATE: 'work-items --validate',
   INIT: 'work-items --init',
   APPEND: 'work-items --append',
@@ -67,7 +78,10 @@ const WORK_ITEMS_RESULT_SCHEMA = Object.freeze({
   TEMPLATE: 'agent-onboard-work-items-template-response-001',
   TEMPLATE_VALIDATION: 'agent-onboard-work-items-template-validation-001',
   FILE_VALIDATION: 'agent-onboard-work-items-file-validation-001',
-  LIST: 'agent-onboard-work-items-list-response-001'
+  LIST: 'agent-onboard-work-items-list-response-001',
+  SUMMARY: 'agent-onboard-work-items-summary-response-001',
+  NEXT: 'agent-onboard-work-items-next-response-001',
+  MINE: 'agent-onboard-work-items-mine-response-001'
 });
 
 const WORK_ITEMS_REASON = Object.freeze({
@@ -85,6 +99,9 @@ const WORK_ITEMS_SERVICE_SEED = Object.freeze({
     WORK_ITEMS_COMMAND.TEMPLATE,
     WORK_ITEMS_COMMAND.VALIDATE_TEMPLATE,
     WORK_ITEMS_COMMAND.LIST,
+    WORK_ITEMS_COMMAND.SUMMARY,
+    WORK_ITEMS_COMMAND.NEXT,
+    WORK_ITEMS_COMMAND.MINE,
     WORK_ITEMS_COMMAND.VALIDATE
   ]),
   owned_write_boundary_commands: Object.freeze([
@@ -191,6 +208,44 @@ function workItemsFileFromArgs(args) {
   return optionAfterFlag(args, FLAG.FILE) || CANONICAL_WORK_ITEMS_FILE;
 }
 
+function countByStatus(workItems) {
+  return Object.freeze({
+    open: workItems.filter((item) => item.status === WORK_ITEM_STATUS.OPEN).length,
+    claimed: workItems.filter((item) => item.status === WORK_ITEM_STATUS.CLAIMED).length,
+    closed: workItems.filter((item) => item.status === WORK_ITEM_STATUS.CLOSED).length
+  });
+}
+
+function indexById(items) {
+  const map = new Map();
+  for (const item of Array.isArray(items) ? items : []) map.set(item.id, item);
+  return map;
+}
+
+function decorateWorkItem(item, indexes) {
+  const milestone = indexes.milestones.get(item.milestone_id) || null;
+  const stage = milestone ? indexes.stages.get(milestone.stage_id) || null : null;
+  const program = stage ? indexes.programs.get(stage.program_id) || null : null;
+  return {
+    id: item.id,
+    title: item.title,
+    status: item.status,
+    milestone: milestone ? { id: milestone.id, title: milestone.title, status: milestone.status } : null,
+    stage: stage ? { id: stage.id, title: stage.title, status: stage.status } : null,
+    program: program ? { id: program.id, title: program.title, status: program.status } : null,
+    claim: item.claim || null,
+    closure: item.closure || null
+  };
+}
+
+function ledgerIndexes(value) {
+  return Object.freeze({
+    programs: indexById(value.programs),
+    stages: indexById(value.stages),
+    milestones: indexById(value.milestones)
+  });
+}
+
 function createWorkItemsService(options = Object.freeze({})) {
   const cwd = typeof options.cwd === 'function' ? options.cwd : () => process.cwd();
   const emit = typeof options.emit === 'function' ? options.emit : defaultJson;
@@ -210,6 +265,38 @@ function createWorkItemsService(options = Object.freeze({})) {
     fs.writeFileSync(file, `${JSON.stringify(value, null, 2)}\n`);
   };
   const exists = typeof options.exists === 'function' ? options.exists : fs.existsSync;
+
+  function readLedgerForView(args, flag, resultSchema) {
+    const file = fileAfterFlag(args, flag, CANONICAL_WORK_ITEMS_FILE);
+    const absolutePath = path.resolve(cwd(), file);
+    if (!exists(absolutePath)) {
+      emit({
+        schema: resultSchema,
+        status: STATUS.ERROR,
+        command_family: COMMAND_FAMILY,
+        file,
+        reason: WORK_ITEMS_REASON.MISSING_LEDGER,
+        writes_performed: false
+      });
+      return null;
+    }
+    const value = readJson(absolutePath);
+    const errors = validateWorkItems(value);
+    if (errors.length > 0) {
+      emit({
+        schema: resultSchema,
+        status: STATUS.ERROR,
+        command_family: COMMAND_FAMILY,
+        file,
+        reason: WORK_ITEMS_REASON.INVALID_LEDGER,
+        validated: false,
+        errors,
+        writes_performed: false
+      });
+      return null;
+    }
+    return { file, value, indexes: ledgerIndexes(value) };
+  }
 
   function append(args) {
     const dry = args.includes(FLAG.DRY_RUN);
@@ -612,6 +699,142 @@ function createWorkItemsService(options = Object.freeze({})) {
     return ok ? 0 : 1;
   }
 
+  function summary(args) {
+    const ledger = readLedgerForView(args, FLAG.SUMMARY, WORK_ITEMS_RESULT_SCHEMA.SUMMARY);
+    if (!ledger) return 1;
+    const workItems = Array.isArray(ledger.value.work_items) ? ledger.value.work_items : [];
+    const openItems = workItems.filter((item) => item.status === WORK_ITEM_STATUS.OPEN);
+    const claimedItems = workItems.filter((item) => item.status === WORK_ITEM_STATUS.CLAIMED);
+    emit({
+      schema: WORK_ITEMS_RESULT_SCHEMA.SUMMARY,
+      status: STATUS.OK,
+      command_family: COMMAND_FAMILY,
+      command: `agent-onboard ${WORK_ITEMS_COMMAND.SUMMARY}`,
+      file: ledger.file,
+      validated: true,
+      counts: workItemCounts(ledger.value),
+      work_item_status_counts: countByStatus(workItems),
+      open_work_items: openItems.map((item) => decorateWorkItem(item, ledger.indexes)),
+      claimed_work_items: claimedItems.map((item) => decorateWorkItem(item, ledger.indexes)),
+      next_open_work_item: openItems.length > 0 ? decorateWorkItem(openItems[0], ledger.indexes) : null,
+      writes_performed: false,
+      boundary: {
+        reads_work_items_file: true,
+        modifies_work_items_file: false,
+        installs_dependencies: false,
+        runs_build_test_deploy: false,
+        publishes_or_pushes: false
+      },
+      errors: []
+    });
+    return 0;
+  }
+
+  function next(args) {
+    const ledger = readLedgerForView(args, FLAG.NEXT, WORK_ITEMS_RESULT_SCHEMA.NEXT);
+    if (!ledger) return 1;
+    const workItems = Array.isArray(ledger.value.work_items) ? ledger.value.work_items : [];
+    const nextItem = workItems.find((item) => item.status === WORK_ITEM_STATUS.OPEN) || null;
+    const decorated = nextItem ? decorateWorkItem(nextItem, ledger.indexes) : null;
+    emit({
+      schema: WORK_ITEMS_RESULT_SCHEMA.NEXT,
+      status: STATUS.OK,
+      command_family: COMMAND_FAMILY,
+      command: `agent-onboard ${WORK_ITEMS_COMMAND.NEXT}`,
+      file: ledger.file,
+      validated: true,
+      selection: {
+        strategy: 'first_open_work_item_by_ledger_order',
+        found: decorated !== null
+      },
+      next_work_item: decorated,
+      claim_command: decorated ? `agent-onboard work-items --claim --dry-run --id ${decorated.id} --actor <actor>` : null,
+      counts: workItemCounts(ledger.value),
+      work_item_status_counts: countByStatus(workItems),
+      writes_performed: false,
+      boundary: {
+        reads_work_items_file: true,
+        modifies_work_items_file: false,
+        installs_dependencies: false,
+        runs_build_test_deploy: false,
+        publishes_or_pushes: false
+      },
+      errors: []
+    });
+    return 0;
+  }
+
+  function mine(args) {
+    let actor;
+    try {
+      actor = optionAfterFlag(args, FLAG.ACTOR);
+    } catch (error) {
+      emit({
+        schema: WORK_ITEMS_RESULT_SCHEMA.MINE,
+        status: STATUS.ERROR,
+        command_family: COMMAND_FAMILY,
+        command: `agent-onboard ${WORK_ITEMS_COMMAND.MINE}`,
+        file: fileAfterFlag(args, FLAG.MINE, CANONICAL_WORK_ITEMS_FILE),
+        reason: error.message || String(error),
+        writes_performed: false
+      });
+      return 1;
+    }
+    if (!actor) {
+      emit({
+        schema: WORK_ITEMS_RESULT_SCHEMA.MINE,
+        status: STATUS.ERROR,
+        command_family: COMMAND_FAMILY,
+        command: `agent-onboard ${WORK_ITEMS_COMMAND.MINE}`,
+        file: fileAfterFlag(args, FLAG.MINE, CANONICAL_WORK_ITEMS_FILE),
+        reason: `${WORK_ITEMS_COMMAND.MINE} requires ${FLAG.ACTOR} <actor>`,
+        writes_performed: false
+      });
+      return 1;
+    }
+
+    const ledger = readLedgerForView(args, FLAG.MINE, WORK_ITEMS_RESULT_SCHEMA.MINE);
+    if (!ledger) return 1;
+    const workItems = Array.isArray(ledger.value.work_items) ? ledger.value.work_items : [];
+    const claimedItems = workItems.filter((item) => item.status === WORK_ITEM_STATUS.CLAIMED && item.claim && item.claim.actor === actor);
+    const closedItems = workItems.filter((item) => item.status === WORK_ITEM_STATUS.CLOSED && (
+      (item.claim && item.claim.actor === actor) || (item.closure && item.closure.actor === actor)
+    ));
+    emit({
+      schema: WORK_ITEMS_RESULT_SCHEMA.MINE,
+      status: STATUS.OK,
+      command_family: COMMAND_FAMILY,
+      command: `agent-onboard ${WORK_ITEMS_COMMAND.MINE}`,
+      file: ledger.file,
+      actor,
+      validated: true,
+      claimed_work_items: claimedItems.map((item) => decorateWorkItem(item, ledger.indexes)),
+      closed_work_items: closedItems.map((item) => decorateWorkItem(item, ledger.indexes)),
+      counts: {
+        claimed: claimedItems.length,
+        closed: closedItems.length,
+        total: claimedItems.length + closedItems.length
+      },
+      next_steps: claimedItems.length > 0 ? [
+        'inspect the claimed work item scope before editing',
+        'record changed files and checks before closing the work item'
+      ] : [
+        `run agent-onboard ${WORK_ITEMS_COMMAND.NEXT}`,
+        `claim an open item with agent-onboard ${WORK_ITEMS_COMMAND.CLAIM} ${FLAG.DRY_RUN} ${FLAG.ID} <public-work-item-id> ${FLAG.ACTOR} ${actor}`
+      ],
+      writes_performed: false,
+      boundary: {
+        reads_work_items_file: true,
+        modifies_work_items_file: false,
+        installs_dependencies: false,
+        runs_build_test_deploy: false,
+        publishes_or_pushes: false
+      },
+      errors: []
+    });
+    return 0;
+  }
+
   return Object.freeze({
     instance_schema: 'agent-onboard-public-work-items-runtime-service-instance-001',
     seed: WORK_ITEMS_SERVICE_SEED,
@@ -623,7 +846,10 @@ function createWorkItemsService(options = Object.freeze({})) {
     template,
     validateTemplate,
     validate,
-    list
+    list,
+    summary,
+    next,
+    mine
   });
 }
 

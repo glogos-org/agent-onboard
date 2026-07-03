@@ -3674,7 +3674,46 @@
       "id": "P1S3M4W5",
       "milestone_id": "P1S3M4",
       "title": "Public work item usability views gate",
-      "status": "open"
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-03T12:48:53.279Z"
+      },
+      "closure": {
+        "actor": "codex-gpt-5",
+        "closed_at": "2026-07-03T12:59:04.333Z",
+        "summary": "Closed by adding public work-item usability JSON views for target repos: summary, next, and mine now route through the packaged work-items adapter and runtime service as read-only commands; docs/help/tests were updated and the package candidate was bumped to 0.0.96.",
+        "changed_files": [
+          ".agent-onboard/work-items.json",
+          "README.md",
+          "package.json",
+          "cli/agent_onboard/adapters/commands/work-items.js",
+          "cli/agent_onboard/domains/work-items/services/work-items-service.js",
+          "cli/agent_onboard/runtime-composer.js",
+          "test/agent-onboard.test.js",
+          "test/run-tests.js"
+        ],
+        "checks_run": [
+          "node -c cli/agent_onboard/domains/work-items/services/work-items-service.js; node -c cli/agent_onboard/adapters/commands/work-items.js; node -c cli/agent_onboard/runtime-composer.js; node -c test/agent-onboard.test.js; node -c test/run-tests.js",
+          "node cli/agent-onboard.js work-items --summary .agent-onboard/work-items.json",
+          "node cli/agent-onboard.js work-items --next .agent-onboard/work-items.json",
+          "node cli/agent-onboard.js work-items --mine .agent-onboard/work-items.json --actor codex-gpt-5",
+            "node cli/agent-onboard.js --help | Select-String -Pattern \"work-items --summary|work-items --next|work-items --mine\"",
+          "node cli/agent-onboard.js release --version-sprawl-check",
+          "npm test",
+          "npm run test:full",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node scripts/check-public-artifact-boundary.js",
+          "npm pack --dry-run --json",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "git diff --check"
+        ],
+        "checks_not_run": [
+          "npm publish --access public"
+        ],
+        "known_non_pass": []
+      }
     },
     {
       "id": "P1S3M4W6",

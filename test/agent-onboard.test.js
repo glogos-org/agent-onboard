@@ -144,6 +144,11 @@ function cliTargetConfigForTest(dir) {
   return readJsonOutput(result).target_config;
 }
 
+function writeWorkItemsLedger(dir, ledger) {
+  fs.mkdirSync(path.join(dir, '.agent-onboard'), { recursive: true });
+  fs.writeFileSync(path.join(dir, '.agent-onboard', 'work-items.json'), JSON.stringify(ledger, null, 2) + '\n');
+}
+
 const FULL_SOURCE_TESTS = [];
 
 function fullSourceTest(name, fn) {
@@ -1632,6 +1637,76 @@ fullSourceTest('full source block line 1418', () => {
   assert.strictEqual(output.counts.work_items, 1);
 });
 
+fullSourceTest('work-items usability views expose summary, next, and mine as read-only JSON', () => {
+  const dir = tempRepo();
+  const ledger = require('../cli/agent-onboard.js').workItemsTemplate();
+  const programId = ['P', 1].join('');
+  const stageId = [programId, 'S', 1].join('');
+  const milestoneId = [stageId, 'M', 1].join('');
+  const openId = [milestoneId, 'W', 1].join('');
+  const claimedId = [milestoneId, 'W', 2].join('');
+  const closedId = [milestoneId, 'W', 3].join('');
+  ledger.programs.push({ id: programId, title: 'Usability program', status: 'open' });
+  ledger.stages.push({ id: stageId, program_id: programId, title: 'Usability stage', status: 'open' });
+  ledger.milestones.push({ id: milestoneId, stage_id: stageId, title: 'Usability milestone', status: 'open' });
+  ledger.work_items.push(
+    { id: openId, milestone_id: milestoneId, title: 'Open usability item', status: 'open' },
+    {
+      id: claimedId,
+      milestone_id: milestoneId,
+      title: 'Claimed usability item',
+      status: 'claimed',
+      claim: { actor: 'alice', claimed_at: '2026-07-03T00:00:00.000Z' }
+    },
+    {
+      id: closedId,
+      milestone_id: milestoneId,
+      title: 'Closed usability item',
+      status: 'closed',
+      claim: { actor: 'alice', claimed_at: '2026-07-03T00:10:00.000Z' },
+      closure: {
+        actor: 'alice',
+        closed_at: '2026-07-03T00:20:00.000Z',
+        summary: 'Closed the usability item',
+        changed_files: ['README.md'],
+        checks_run: ['npm test'],
+        checks_not_run: [],
+        known_non_pass: []
+      }
+    }
+  );
+  writeWorkItemsLedger(dir, ledger);
+
+  const summary = readJsonOutput(run(['work-items', '--summary'], { cwd: dir }));
+  assert.strictEqual(summary.schema, 'agent-onboard-work-items-summary-response-001');
+  assert.strictEqual(summary.status, 'ok');
+  assert.strictEqual(summary.writes_performed, false);
+  assert.deepStrictEqual(summary.work_item_status_counts, { open: 1, claimed: 1, closed: 1 });
+  assert.strictEqual(summary.counts.work_items, 3);
+  assert.strictEqual(summary.open_work_items[0].id, openId);
+  assert.strictEqual(summary.claimed_work_items[0].id, claimedId);
+  assert.strictEqual(summary.next_open_work_item.id, openId);
+  assert.strictEqual(summary.next_open_work_item.program.title, 'Usability program');
+
+  const next = readJsonOutput(run(['work-items', '--next'], { cwd: dir }));
+  assert.strictEqual(next.schema, 'agent-onboard-work-items-next-response-001');
+  assert.strictEqual(next.status, 'ok');
+  assert.strictEqual(next.selection.strategy, 'first_open_work_item_by_ledger_order');
+  assert.strictEqual(next.selection.found, true);
+  assert.strictEqual(next.next_work_item.id, openId);
+  assert.strictEqual(next.claim_command, `agent-onboard work-items --claim --dry-run --id ${openId} --actor <actor>`);
+  assert.strictEqual(next.writes_performed, false);
+
+  const mine = readJsonOutput(run(['work-items', '--mine', '--actor', 'alice'], { cwd: dir }));
+  assert.strictEqual(mine.schema, 'agent-onboard-work-items-mine-response-001');
+  assert.strictEqual(mine.status, 'ok');
+  assert.strictEqual(mine.actor, 'alice');
+  assert.deepStrictEqual(mine.claimed_work_items.map((item) => item.id), [claimedId]);
+  assert.deepStrictEqual(mine.closed_work_items.map((item) => item.id), [closedId]);
+  assert.deepStrictEqual(mine.counts, { claimed: 1, closed: 1, total: 2 });
+  assert.strictEqual(mine.writes_performed, false);
+});
+
 fullSourceTest('full source block line 1437', () => {
   const dir = tempRepo();
   const ledger = require('../cli/agent-onboard.js').workItemsTemplate();
@@ -2383,6 +2458,9 @@ fullSourceTest('full source block line 2233', () => {
   const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
   assert.ok(readme.includes('work-items --claim --write --id <public-work-item-id> --actor <actor>'));
   assert.ok(readme.includes('work-items --close --write --id <public-work-item-id> --actor <actor> --summary <summary>'));
+  assert.ok(readme.includes('npx agent-onboard work-items --summary [.agent-onboard/work-items.json]'));
+  assert.ok(readme.includes('npx agent-onboard work-items --next [.agent-onboard/work-items.json]'));
+  assert.ok(readme.includes('npx agent-onboard work-items --mine [.agent-onboard/work-items.json] --actor <actor>'));
   assert.ok(!readme.includes('This release does not add claim write'));
   assert.ok(readme.includes('`0.0.11` adds public `work-items --claim --dry-run`'));
   assert.ok(readme.includes('`0.0.13` adds source self-dogfood and agent participation support'));
@@ -2473,11 +2551,18 @@ fullSourceTest('full source block line 2233', () => {
   assert.ok(readme.includes('source work-item ledger when that ledger is present'));
   assert.ok(readme.includes('The claim response also returns `next_steps`'));
   assert.ok(readme.includes('The close command reads the existing ledger'));
+  assert.ok(readme.includes('This release adds public work-item usability JSON views'));
+  assert.ok(readme.includes('`work-items --summary` returns total counts'));
+  assert.ok(readme.includes('`work-items --next` returns the first open item'));
+  assert.ok(readme.includes('`work-items --mine` returns the actor'));
 });
 
 
 fullSourceTest('full source block line 2323', () => {
   const help = run(['--help']);
+  assert.ok(help.stdout.includes('work-items --summary [.agent-onboard/work-items.json]'));
+  assert.ok(help.stdout.includes('work-items --next [.agent-onboard/work-items.json]'));
+  assert.ok(help.stdout.includes('work-items --mine [.agent-onboard/work-items.json] --actor <actor>'));
   assert.ok(help.stdout.includes('work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>'));
   assert.ok(help.stdout.includes('work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>'));
   assert.ok(help.stdout.includes('--claims-installed-fallback-smoke|--claims-installed-fallback-check|--source-domain-closure-review|--source-domain-closure-check|--cli-runtime-plan|--cli-runtime-check|--thin-router|--thin-router-check|--compatibility-port|--compatibility-port-check|--core-adapter|--core-adapter-check|--package-adapter|--package-adapter-check|--architecture-adapter|--architecture-adapter-check|--authority-adapter|--authority-adapter-check|--module-inclusion-plan|--module-inclusion-check|--packaged-router-port|--packaged-router-port-check|--thin-entrypoint-rehearsal|--thin-entrypoint-rehearsal-check|--thin-entrypoint-cutover|--thin-entrypoint-cutover-check|--router-adapter-delegation|--router-adapter-delegation-check|--check'));

@@ -153,6 +153,9 @@ npx agent-onboard work-items --init --dry-run
 npx agent-onboard work-items --init --write
 npx agent-onboard work-items --validate [.agent-onboard/work-items.json]
 npx agent-onboard work-items --list [.agent-onboard/work-items.json]
+npx agent-onboard work-items --summary [.agent-onboard/work-items.json]
+npx agent-onboard work-items --next [.agent-onboard/work-items.json]
+npx agent-onboard work-items --mine [.agent-onboard/work-items.json] --actor <actor>
 npx agent-onboard work-items --append --dry-run --id <public-work-item-id> --title <title>
 npx agent-onboard work-items --append --write --id <public-work-item-id> --title <title>
 npx agent-onboard work-items --claim --dry-run --id <public-work-item-id> --actor <actor>
@@ -556,6 +559,16 @@ npx agent-onboard work-items --validate
 npx agent-onboard work-items --list
 ```
 
+Inspect target repo work in progress without writing the ledger:
+
+```sh
+npx agent-onboard work-items --summary
+npx agent-onboard work-items --next
+npx agent-onboard work-items --mine --actor <actor>
+```
+
+`work-items --summary` returns total counts, status counts, open items, claimed items, and the next open item. `work-items --next` returns the first open item by ledger order plus a dry-run claim command. `work-items --mine` returns the actor's claimed and closed work items with lifecycle next steps.
+
 Preview a public work-item append without writing the ledger:
 
 ```sh
@@ -844,6 +857,8 @@ This release splits source-extraction and bridge handlers from the architecture 
 This release extracts the work-items and claims source-domain architecture checks from `cli/agent-onboard.js` into packaged `cli/agent_onboard/domains/architecture/services/source-domains/*` services, keeping the entrypoint below 7k lines and preserving architecture and release outputs.
 
 This release extracts the aggregate `architecture --check` coordinator from `cli/agent-onboard.js` into `cli/agent_onboard/domains/architecture/services/checks/architecture-check-service.js`, keeping the entrypoint smaller while preserving the full architecture check contract.
+
+This release adds public work-item usability JSON views: `work-items --summary`, `work-items --next`, and `work-items --mine --actor <actor>` inspect target repo ledger progress without writing files.
 
 <!-- ## Star History
 

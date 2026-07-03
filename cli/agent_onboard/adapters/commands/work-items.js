@@ -12,6 +12,9 @@ const WORK_ITEMS_COMMAND_ADAPTER_EXTRACTION = Object.freeze({
     'work-items --template',
     'work-items --validate-template',
     'work-items --list',
+    'work-items --summary',
+    'work-items --next',
+    'work-items --mine',
     'work-items --validate'
   ]),
   extracted_write_boundary_commands: Object.freeze([
@@ -27,6 +30,9 @@ const WORK_ITEMS_COMMAND_ADAPTER_EXTRACTION = Object.freeze({
     template: 'work-items --template is served by the packaged work-items runtime service',
     validate_template: 'work-items --validate-template is served by the packaged work-items runtime service',
     list: 'work-items --list is served by the packaged work-items runtime service',
+    summary: 'work-items --summary is served by the packaged work-items runtime service',
+    next: 'work-items --next is served by the packaged work-items runtime service',
+    mine: 'work-items --mine is served by the packaged work-items runtime service',
     validate: 'work-items --validate is served by the packaged work-items runtime service',
     init: 'work-items --init is served by the packaged work-items runtime service with explicit --write boundary',
     append: 'work-items --append is served by the packaged work-items runtime service with explicit --write boundary',
@@ -69,8 +75,11 @@ function createWorkItemsCommandAdapter(options = Object.freeze({})) {
       if (args.includes('--template') && service && typeof service.template === 'function') return service.template(args);
       if (args.includes('--validate-template') && service && typeof service.validateTemplate === 'function') return service.validateTemplate(args);
       if (args.includes('--list') && service && typeof service.list === 'function') return service.list(args);
+      if (args.includes('--summary') && service && typeof service.summary === 'function') return service.summary(args);
+      if (args.includes('--next') && service && typeof service.next === 'function') return service.next(args);
+      if (args.includes('--mine') && service && typeof service.mine === 'function') return service.mine(args);
       if (args.includes('--validate') && service && typeof service.validate === 'function') return service.validate(args);
-      throw new Error('work-items requires --schema, --template, --validate-template, --init --dry-run|--write [--force], --validate [file], or --list [file], or --append --dry-run|--write --id <public-work-item-id> --title <title>, or --claim --dry-run|--write --id <public-work-item-id> --actor <actor>, or --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>');
+      throw new Error('work-items requires --schema, --template, --validate-template, --init --dry-run|--write [--force], --validate [file], --list [file], --summary [file], --next [file], --mine [file] --actor <actor>, or --append --dry-run|--write --id <public-work-item-id> --title <title>, or --claim --dry-run|--write --id <public-work-item-id> --actor <actor>, or --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>');
     },
     run(argv) {
       const command = Array.isArray(argv) ? (argv[2] || 'help') : 'help';
