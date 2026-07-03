@@ -208,6 +208,10 @@ fullSourceTest('public runtime contracts module centralizes command and package 
   assert.strictEqual(contracts.TARGET_PROFILE_COMMAND.flag.target, '--target');
   assert.ok(Object.isFrozen(contracts.TARGET_COMMAND));
   assert.ok(contracts.RUNTIME_CONTRACTS.top_level_commands.includes('target'));
+  assert.deepStrictEqual(contracts.ROUTER_COMMAND_ORDER, ['help', 'version', 'status', 'init', 'agents', 'guard', 'authority', 'architecture', 'release', 'target-config', 'work-items', 'target', 'target-instance']);
+  assert.strictEqual(contracts.TOP_LEVEL_COMMAND_ALIAS.helpLong, '--help');
+  assert.deepStrictEqual(contracts.RUNTIME_COMMAND_GROUP.target, ['init', 'target-config', 'target', 'target-instance']);
+  assert.deepStrictEqual(contracts.RUNTIME_ADAPTER_GROUP.core, ['help', '--help', '-h', 'version', '--version', '-v', 'status']);
   assert.ok(contracts.PUBLIC_PACKAGED_ROUTER_PORT_MODULE_FILES.includes('cli/agent_onboard/runtime-contracts.js'));
   assert.deepStrictEqual(contracts.PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES.slice().sort(), EXPECTED_PACK_FILES);
   assert.strictEqual(composer.RUNTIME_CONTRACTS, contracts.RUNTIME_CONTRACTS);
@@ -2615,6 +2619,7 @@ fullSourceTest('full source block line 2233', () => {
   assert.ok(readme.includes('This release adds public human-readable output mode'));
   assert.ok(readme.includes('This release reduces the retired M3 architecture checker surface'));
   assert.ok(readme.includes('This release extracts public runtime contracts into `cli/agent_onboard/runtime-contracts.js`'));
+  assert.ok(readme.includes('This release expands the public runtime contracts with shared top-level command aliases'));
   assert.ok(readme.includes('`work-items --summary` returns total counts'));
   assert.ok(readme.includes('`work-items --next` returns the first open item'));
   assert.ok(readme.includes('`work-items --mine` returns the actor'));

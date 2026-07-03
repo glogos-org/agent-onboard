@@ -20,6 +20,82 @@ const TOP_LEVEL_COMMAND = Object.freeze({
   workItems: 'work-items'
 });
 
+const TOP_LEVEL_COMMAND_ALIAS = Object.freeze({
+  helpLong: '--help',
+  helpShort: '-h',
+  versionLong: '--version',
+  versionShort: '-v'
+});
+
+const ROUTER_COMMAND_ORDER = Object.freeze([
+  TOP_LEVEL_COMMAND.help,
+  TOP_LEVEL_COMMAND.version,
+  TOP_LEVEL_COMMAND.status,
+  TOP_LEVEL_COMMAND.init,
+  TOP_LEVEL_COMMAND.agents,
+  TOP_LEVEL_COMMAND.guard,
+  TOP_LEVEL_COMMAND.authority,
+  TOP_LEVEL_COMMAND.architecture,
+  TOP_LEVEL_COMMAND.release,
+  TOP_LEVEL_COMMAND.targetConfig,
+  TOP_LEVEL_COMMAND.workItems,
+  TOP_LEVEL_COMMAND.target,
+  TOP_LEVEL_COMMAND.targetInstance
+]);
+
+const RUNTIME_COMMAND_GROUP = Object.freeze({
+  core: Object.freeze([
+    TOP_LEVEL_COMMAND.help,
+    TOP_LEVEL_COMMAND.version,
+    TOP_LEVEL_COMMAND.status
+  ]),
+  architecture: Object.freeze([
+    TOP_LEVEL_COMMAND.architecture
+  ]),
+  releasePackage: Object.freeze([
+    TOP_LEVEL_COMMAND.release
+  ]),
+  authority: Object.freeze([
+    TOP_LEVEL_COMMAND.authority,
+    TOP_LEVEL_COMMAND.agents,
+    TOP_LEVEL_COMMAND.guard
+  ]),
+  onboarding: Object.freeze([
+    TOP_LEVEL_COMMAND.agents,
+    TOP_LEVEL_COMMAND.guard
+  ]),
+  target: Object.freeze([
+    TOP_LEVEL_COMMAND.init,
+    TOP_LEVEL_COMMAND.targetConfig,
+    TOP_LEVEL_COMMAND.target,
+    TOP_LEVEL_COMMAND.targetInstance
+  ]),
+  workItems: Object.freeze([
+    TOP_LEVEL_COMMAND.workItems
+  ]),
+  coordination: Object.freeze([
+    TOP_LEVEL_COMMAND.authority,
+    TOP_LEVEL_COMMAND.workItems
+  ])
+});
+
+const RUNTIME_ADAPTER_GROUP = Object.freeze({
+  core: Object.freeze([
+    TOP_LEVEL_COMMAND.help,
+    TOP_LEVEL_COMMAND_ALIAS.helpLong,
+    TOP_LEVEL_COMMAND_ALIAS.helpShort,
+    TOP_LEVEL_COMMAND.version,
+    TOP_LEVEL_COMMAND_ALIAS.versionLong,
+    TOP_LEVEL_COMMAND_ALIAS.versionShort,
+    TOP_LEVEL_COMMAND.status
+  ]),
+  architecture: RUNTIME_COMMAND_GROUP.architecture,
+  releasePackage: RUNTIME_COMMAND_GROUP.releasePackage,
+  authority: RUNTIME_COMMAND_GROUP.authority,
+  target: RUNTIME_COMMAND_GROUP.target,
+  workItems: RUNTIME_COMMAND_GROUP.workItems
+});
+
 const TARGET_COMMAND = Object.freeze({
   doctor: 'doctor',
   profile: 'profile',
@@ -133,7 +209,9 @@ const RUNTIME_CONTRACTS = Object.freeze({
   package_name: PACKAGE_NAME,
   role: 'shared_packaged_runtime_contracts',
   package_files: PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES,
-  top_level_commands: Object.freeze(Object.values(TOP_LEVEL_COMMAND))
+  top_level_commands: ROUTER_COMMAND_ORDER,
+  top_level_aliases: TOP_LEVEL_COMMAND_ALIAS,
+  runtime_command_groups: RUNTIME_COMMAND_GROUP
 });
 
 module.exports = Object.freeze({
@@ -149,6 +227,10 @@ module.exports = Object.freeze({
   TARGET_OPTION,
   TARGET_PROFILE_COMMAND,
   TARGET_REPAIR_COMMAND,
+  ROUTER_COMMAND_ORDER,
+  RUNTIME_ADAPTER_GROUP,
+  RUNTIME_COMMAND_GROUP,
   TOP_LEVEL_COMMAND,
+  TOP_LEVEL_COMMAND_ALIAS,
   WORK_ITEMS_USABILITY_HELP_LINES
 });

@@ -883,6 +883,8 @@ This release reduces the retired M3 architecture checker surface: `architecture 
 
 This release extracts public runtime contracts into `cli/agent_onboard/runtime-contracts.js`, making command names, target command flags, package allowlist contracts, and runtime package identity shared constants instead of composer-owned literals.
 
+This release expands the public runtime contracts with shared top-level command aliases, router command order, and runtime command groups so the router, compatibility command port, and runtime composer use the same frozen command constants.
+
 <!-- ## Star History
 
 [![Star History Chart](https://api.star-history.com/chart?repos=glogos-org/agent-onboard&type=date&legend=top-left)](https://www.star-history.com/?repos=glogos-org%2Fagent-onboard&type=date&legend=top-left) -->

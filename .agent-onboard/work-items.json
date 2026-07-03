@@ -1372,7 +1372,9 @@
           "npm publish",
           "registry post-publish verification"
         ],
-        "known_non_pass": ["npm publish not run by assistant"]
+        "known_non_pass": [
+          "npm publish not run by assistant"
+        ]
       }
     },
     {
@@ -3910,7 +3912,47 @@
       "id": "P1S3M4W11",
       "milestone_id": "P1S3M4",
       "title": "Public command constants and enum cleanup gate",
-      "status": "open"
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-03T19:22:05.530Z"
+      },
+      "closure": {
+        "actor": "codex-gpt-5",
+        "closed_at": "2026-07-03T19:26:15.544Z",
+        "summary": "Closed by expanding the shared public runtime contracts with frozen top-level command aliases, router command order, runtime command groups, and adapter groups, then wiring the command router, compatibility command port, and runtime composer through those constants while preserving CLI routing behavior. Bumped the package candidate to 0.0.102.",
+        "changed_files": [
+          ".agent-onboard/work-items.json",
+          "README.md",
+          "package.json",
+          "cli/agent_onboard/runtime-contracts.js",
+          "cli/agent_onboard/command-router.js",
+          "cli/agent_onboard/adapters/compatibility-command-port.js",
+          "cli/agent_onboard/runtime-composer.js",
+          "test/agent-onboard.test.js"
+        ],
+        "checks_run": [
+          "node -c cli/agent_onboard/runtime-contracts.js; node -c cli/agent_onboard/command-router.js; node -c cli/agent_onboard/adapters/compatibility-command-port.js; node -c cli/agent_onboard/runtime-composer.js; node -c test/agent-onboard.test.js",
+          "node cli/agent-onboard.js status",
+          "node cli/agent-onboard.js --version",
+          "node cli/agent-onboard.js -v",
+          "node cli/agent-onboard.js architecture --router-adapter-delegation-check",
+          "node cli/agent-onboard.js release --version-sprawl-check",
+          "npm test",
+          "node cli/agent-onboard.js release --surface-check",
+          "node cli/agent-onboard.js architecture --check",
+          "node cli/agent-onboard.js release --check",
+          "npm run test:full",
+          "npm pack --dry-run --json",
+          "scripts\\\\check-public-artifact-boundary.js",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "git diff --check"
+        ],
+        "checks_not_run": [
+          "npm publish --access public"
+        ],
+        "known_non_pass": []
+      }
     },
     {
       "id": "P1S3M4W12",

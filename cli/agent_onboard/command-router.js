@@ -1,27 +1,18 @@
 'use strict';
 
+const {
+  PACKAGE_NAME,
+  ROUTER_COMMAND_ORDER
+} = require('./runtime-contracts');
+
 const ROUTER_SEED = Object.freeze({
   schema: 'agent-onboard-public-thin-cli-router-seed-module-001',
-  package_name: 'agent-onboard',
+  package_name: PACKAGE_NAME,
   role: 'packaged_thin_cli_router_seed',
   entrypoint_target: 'cli/agent-onboard.js',
   planned_router_path: 'cli/agent_onboard/command-router.js',
   dispatch_contract: 'argv_array_to_compatibility_port',
-  supported_top_level_commands: Object.freeze([
-    'help',
-    'version',
-    'status',
-    'init',
-    'agents',
-    'guard',
-    'authority',
-    'architecture',
-    'release',
-    'target-config',
-    'work-items',
-    'target',
-    'target-instance'
-  ]),
+  supported_top_level_commands: ROUTER_COMMAND_ORDER,
   boundary: Object.freeze({
     used_by_runtime_entrypoint_in_this_gate: true,
     packaged_in_npm_tarball_in_this_gate: true,

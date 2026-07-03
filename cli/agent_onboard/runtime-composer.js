@@ -24,6 +24,8 @@ const {
   TARGET_DOCTOR_COMMAND,
   TARGET_PROFILE_COMMAND,
   TARGET_REPAIR_COMMAND,
+  TOP_LEVEL_COMMAND,
+  TOP_LEVEL_COMMAND_ALIAS,
   WORK_ITEMS_USABILITY_HELP_LINES
 } = require('./runtime-contracts');
 const VERSION = require('../../package.json').version;
@@ -6161,24 +6163,24 @@ const DOMAIN_SERVICE_FACADES = Object.freeze({
 });
 
 const COMMAND_ROUTE_HANDLERS = Object.freeze({
-  help: DOMAIN_SERVICE_FACADES.coreService.help,
-  version: DOMAIN_SERVICE_FACADES.coreService.printVersion,
-  status: DOMAIN_SERVICE_FACADES.coreService.runStatus,
-  init: DOMAIN_SERVICE_FACADES.targetService.runInit,
-  agents: DOMAIN_SERVICE_FACADES.authorityService.runAgents,
-  guard: DOMAIN_SERVICE_FACADES.authorityService.runGuard,
-  authority: DOMAIN_SERVICE_FACADES.authorityService.runAuthority,
-  architecture: DOMAIN_SERVICE_FACADES.coreService.runArchitecture,
-  release: DOMAIN_SERVICE_FACADES.releasePackageService.runRelease,
-  'target-config': DOMAIN_SERVICE_FACADES.targetService.runTargetConfig,
-  'work-items': DOMAIN_SERVICE_FACADES.workItemsService.runWorkItems,
-  target: DOMAIN_SERVICE_FACADES.targetService.runTargetCommand,
-  'target-instance': DOMAIN_SERVICE_FACADES.targetService.runTargetInstance
+  [TOP_LEVEL_COMMAND.help]: DOMAIN_SERVICE_FACADES.coreService.help,
+  [TOP_LEVEL_COMMAND.version]: DOMAIN_SERVICE_FACADES.coreService.printVersion,
+  [TOP_LEVEL_COMMAND.status]: DOMAIN_SERVICE_FACADES.coreService.runStatus,
+  [TOP_LEVEL_COMMAND.init]: DOMAIN_SERVICE_FACADES.targetService.runInit,
+  [TOP_LEVEL_COMMAND.agents]: DOMAIN_SERVICE_FACADES.authorityService.runAgents,
+  [TOP_LEVEL_COMMAND.guard]: DOMAIN_SERVICE_FACADES.authorityService.runGuard,
+  [TOP_LEVEL_COMMAND.authority]: DOMAIN_SERVICE_FACADES.authorityService.runAuthority,
+  [TOP_LEVEL_COMMAND.architecture]: DOMAIN_SERVICE_FACADES.coreService.runArchitecture,
+  [TOP_LEVEL_COMMAND.release]: DOMAIN_SERVICE_FACADES.releasePackageService.runRelease,
+  [TOP_LEVEL_COMMAND.targetConfig]: DOMAIN_SERVICE_FACADES.targetService.runTargetConfig,
+  [TOP_LEVEL_COMMAND.workItems]: DOMAIN_SERVICE_FACADES.workItemsService.runWorkItems,
+  [TOP_LEVEL_COMMAND.target]: DOMAIN_SERVICE_FACADES.targetService.runTargetCommand,
+  [TOP_LEVEL_COMMAND.targetInstance]: DOMAIN_SERVICE_FACADES.targetService.runTargetInstance
 });
 
 function normalizeCommand(cmd) {
-  if (!cmd || ['help', '--help', '-h'].includes(cmd)) return 'help';
-  if (['version', '--version', '-v'].includes(cmd)) return 'version';
+  if (!cmd || [TOP_LEVEL_COMMAND.help, TOP_LEVEL_COMMAND_ALIAS.helpLong, TOP_LEVEL_COMMAND_ALIAS.helpShort].includes(cmd)) return TOP_LEVEL_COMMAND.help;
+  if ([TOP_LEVEL_COMMAND.version, TOP_LEVEL_COMMAND_ALIAS.versionLong, TOP_LEVEL_COMMAND_ALIAS.versionShort].includes(cmd)) return TOP_LEVEL_COMMAND.version;
   return cmd;
 }
 
@@ -6195,9 +6197,9 @@ function createRuntimeCompatibilityPort() {
     version: VERSION,
     releaseLine: RELEASE_LINE,
     handlers: Object.freeze({
-      help: DOMAIN_SERVICE_FACADES.coreService.help,
-      version: DOMAIN_SERVICE_FACADES.coreService.printVersion,
-      status: DOMAIN_SERVICE_FACADES.coreService.runStatus
+      [TOP_LEVEL_COMMAND.help]: DOMAIN_SERVICE_FACADES.coreService.help,
+      [TOP_LEVEL_COMMAND.version]: DOMAIN_SERVICE_FACADES.coreService.printVersion,
+      [TOP_LEVEL_COMMAND.status]: DOMAIN_SERVICE_FACADES.coreService.runStatus
     })
   });
   const packageService = packageDomain.createPackageService({
@@ -6208,22 +6210,22 @@ function createRuntimeCompatibilityPort() {
   });
   const architectureAdapter = createArchitectureCommandAdapter({
     handlers: Object.freeze({
-      architecture: DOMAIN_SERVICE_FACADES.coreService.runArchitecture
+      [TOP_LEVEL_COMMAND.architecture]: DOMAIN_SERVICE_FACADES.coreService.runArchitecture
     })
   });
   const authorityAdapter = createAuthorityCommandAdapter({
     handlers: Object.freeze({
-      agents: DOMAIN_SERVICE_FACADES.authorityService.runAgents,
-      guard: DOMAIN_SERVICE_FACADES.authorityService.runGuard,
-      authority: DOMAIN_SERVICE_FACADES.authorityService.runAuthority
+      [TOP_LEVEL_COMMAND.agents]: DOMAIN_SERVICE_FACADES.authorityService.runAgents,
+      [TOP_LEVEL_COMMAND.guard]: DOMAIN_SERVICE_FACADES.authorityService.runGuard,
+      [TOP_LEVEL_COMMAND.authority]: DOMAIN_SERVICE_FACADES.authorityService.runAuthority
     })
   });
   const targetAdapter = createTargetCommandAdapter({
     handlers: Object.freeze({
-      init: DOMAIN_SERVICE_FACADES.targetService.runInit,
-      'target-config': DOMAIN_SERVICE_FACADES.targetService.runTargetConfig,
-      target: DOMAIN_SERVICE_FACADES.targetService.runTargetCommand,
-      'target-instance': DOMAIN_SERVICE_FACADES.targetService.runTargetInstance
+      [TOP_LEVEL_COMMAND.init]: DOMAIN_SERVICE_FACADES.targetService.runInit,
+      [TOP_LEVEL_COMMAND.targetConfig]: DOMAIN_SERVICE_FACADES.targetService.runTargetConfig,
+      [TOP_LEVEL_COMMAND.target]: DOMAIN_SERVICE_FACADES.targetService.runTargetCommand,
+      [TOP_LEVEL_COMMAND.targetInstance]: DOMAIN_SERVICE_FACADES.targetService.runTargetInstance
     })
   });
   const workItemsService = createWorkItemsService({
@@ -6247,23 +6249,23 @@ function createRuntimeCompatibilityPort() {
     service: workItemsService
   });
   const adapters = Object.freeze({
-    help: coreAdapter,
-    '--help': coreAdapter,
-    '-h': coreAdapter,
-    version: coreAdapter,
-    '--version': coreAdapter,
-    '-v': coreAdapter,
-    status: coreAdapter,
-    release: packageAdapter,
-    architecture: architectureAdapter,
-    authority: authorityAdapter,
-    agents: authorityAdapter,
-    guard: authorityAdapter,
-    init: targetAdapter,
-    'target-config': targetAdapter,
-    target: targetAdapter,
-    'target-instance': targetAdapter,
-    'work-items': workItemsAdapter
+    [TOP_LEVEL_COMMAND.help]: coreAdapter,
+    [TOP_LEVEL_COMMAND_ALIAS.helpLong]: coreAdapter,
+    [TOP_LEVEL_COMMAND_ALIAS.helpShort]: coreAdapter,
+    [TOP_LEVEL_COMMAND.version]: coreAdapter,
+    [TOP_LEVEL_COMMAND_ALIAS.versionLong]: coreAdapter,
+    [TOP_LEVEL_COMMAND_ALIAS.versionShort]: coreAdapter,
+    [TOP_LEVEL_COMMAND.status]: coreAdapter,
+    [TOP_LEVEL_COMMAND.release]: packageAdapter,
+    [TOP_LEVEL_COMMAND.architecture]: architectureAdapter,
+    [TOP_LEVEL_COMMAND.authority]: authorityAdapter,
+    [TOP_LEVEL_COMMAND.agents]: authorityAdapter,
+    [TOP_LEVEL_COMMAND.guard]: authorityAdapter,
+    [TOP_LEVEL_COMMAND.init]: targetAdapter,
+    [TOP_LEVEL_COMMAND.targetConfig]: targetAdapter,
+    [TOP_LEVEL_COMMAND.target]: targetAdapter,
+    [TOP_LEVEL_COMMAND.targetInstance]: targetAdapter,
+    [TOP_LEVEL_COMMAND.workItems]: workItemsAdapter
   });
   const handlers = {};
   for (const command of Object.keys(COMMAND_ROUTE_HANDLERS)) {
@@ -6272,12 +6274,12 @@ function createRuntimeCompatibilityPort() {
       return COMMAND_ROUTE_HANDLERS[normalized](argv.slice(3));
     };
   }
-  handlers['--help'] = handlers.help;
-  handlers['-h'] = handlers.help;
-  handlers['--version'] = handlers.version;
-  handlers['-v'] = handlers.version;
+  handlers[TOP_LEVEL_COMMAND_ALIAS.helpLong] = handlers[TOP_LEVEL_COMMAND.help];
+  handlers[TOP_LEVEL_COMMAND_ALIAS.helpShort] = handlers[TOP_LEVEL_COMMAND.help];
+  handlers[TOP_LEVEL_COMMAND_ALIAS.versionLong] = handlers[TOP_LEVEL_COMMAND.version];
+  handlers[TOP_LEVEL_COMMAND_ALIAS.versionShort] = handlers[TOP_LEVEL_COMMAND.version];
   handlers.default = (argv = []) => {
-    const command = argv[2] || 'help';
+    const command = argv[2] || TOP_LEVEL_COMMAND.help;
     throw new Error(`unsupported command: ${command}`);
   };
   return createCompatibilityCommandPort(Object.freeze(handlers), Object.freeze({ adapters }));

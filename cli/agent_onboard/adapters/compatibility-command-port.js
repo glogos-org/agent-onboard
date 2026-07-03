@@ -1,21 +1,27 @@
 'use strict';
 
+const {
+  PACKAGE_NAME,
+  RUNTIME_ADAPTER_GROUP,
+  RUNTIME_COMMAND_GROUP
+} = require('../runtime-contracts');
+
 const COMPATIBILITY_COMMAND_PORT_SEED = Object.freeze({
   schema: 'agent-onboard-public-compatibility-command-port-seed-module-001',
-  package_name: 'agent-onboard',
+  package_name: PACKAGE_NAME,
   role: 'packaged_compatibility_command_port_seed',
   planned_adapter_path: 'cli/agent_onboard/adapters/compatibility-command-port.js',
   planned_port_path: 'cli/agent_onboard/ports/compatibility-command-port.js',
   dispatch_contract: 'router_calls_port_run_with_argv',
   group_contract: 'lazy_command_group_boundary_without_runtime_cutover',
   command_groups: Object.freeze({
-    core: Object.freeze(['help', 'version', 'status']),
-    architecture: Object.freeze(['architecture']),
-    release_package: Object.freeze(['release']),
-    onboarding: Object.freeze(['agents', 'guard']),
-    target: Object.freeze(['init', 'target-config', 'target', 'target-instance']),
-    work_items: Object.freeze(['work-items']),
-    coordination: Object.freeze(['authority', 'work-items'])
+    core: RUNTIME_COMMAND_GROUP.core,
+    architecture: RUNTIME_COMMAND_GROUP.architecture,
+    release_package: RUNTIME_COMMAND_GROUP.releasePackage,
+    onboarding: RUNTIME_COMMAND_GROUP.onboarding,
+    target: RUNTIME_COMMAND_GROUP.target,
+    work_items: RUNTIME_COMMAND_GROUP.workItems,
+    coordination: RUNTIME_COMMAND_GROUP.coordination
   }),
   boundary: Object.freeze({
     used_by_runtime_entrypoint_in_this_gate: true,
@@ -46,12 +52,12 @@ function createCompatibilityCommandPort(handlers = Object.freeze({}), options = 
     schema: 'agent-onboard-public-compatibility-command-port-instance-001',
     seed: COMPATIBILITY_COMMAND_PORT_SEED,
     adapter_groups: Object.freeze({
-      core: Object.freeze(['help', '--help', '-h', 'version', '--version', '-v', 'status']),
-      architecture: Object.freeze(['architecture']),
-      release_package: Object.freeze(['release']),
-      authority: Object.freeze(['authority', 'agents', 'guard']),
-      target: Object.freeze(['init', 'target-config', 'target', 'target-instance']),
-      work_items: Object.freeze(['work-items'])
+      core: RUNTIME_ADAPTER_GROUP.core,
+      architecture: RUNTIME_ADAPTER_GROUP.architecture,
+      release_package: RUNTIME_ADAPTER_GROUP.releasePackage,
+      authority: RUNTIME_ADAPTER_GROUP.authority,
+      target: RUNTIME_ADAPTER_GROUP.target,
+      work_items: RUNTIME_ADAPTER_GROUP.workItems
     }),
     delegated_commands: Object.freeze(Object.keys(adapters).sort()),
     run(argv) {
