@@ -4044,6 +4044,59 @@
     {
       "id": "P1S3M4W14",
       "milestone_id": "P1S3M4",
+      "title": "Public target metadata manifest authority gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-03T19:49:59.657Z"
+      },
+      "closure": {
+        "actor": "codex-gpt-5",
+        "closed_at": "2026-07-03T20:03:43.513Z",
+        "summary": "Closed by adding target metadata manifest authority plan/check/write support, implementing a safe generator for SOURCE_OF_TRUTH.md, authority-map.json, and manifest.json, dogfooding the generator into the AOB source repo, validating Forge-style metadata, keeping metadata source-only outside the npm package, and preserving reduced M4 architecture checks.",
+        "changed_files": [
+          ".agent-onboard/work-items.json",
+          "README.md",
+          "SOURCE_OF_TRUTH.md",
+          "authority-map.json",
+          "manifest.json",
+          "package.json",
+          "cli/agent_onboard/domains/architecture/static-catalog.js",
+          "cli/agent_onboard/domains/architecture/services/runtime/architecture-runtime-service.js",
+          "cli/agent_onboard/domains/target/services/target-constants.js",
+          "cli/agent_onboard/domains/target/services/target-metadata-service.js",
+          "cli/agent_onboard/domains/target/services/target-service.js",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/runtime-contracts.js",
+          "test/agent-onboard.test.js"
+        ],
+        "checks_run": [
+          "node -c cli/agent_onboard/domains/target/services/target-metadata-service.js; node -c cli/agent_onboard/domains/target/services/target-constants.js; node -c cli/agent_onboard/runtime-composer.js; node -c cli/agent_onboard/runtime-contracts.js; node -c test/agent-onboard.test.js",
+          "node cli/agent-onboard.js target metadata --plan --target .",
+          "node cli/agent-onboard.js target metadata --write --target .",
+          "node cli/agent-onboard.js target metadata --write --force --target .",
+          "node cli/agent-onboard.js target metadata --check --target .",
+          "node cli/agent-onboard.js target metadata --check --target C:\\Users\\manhthanh\\STD\\forge",
+          "node cli/agent-onboard.js --help",
+          "node cli/agent-onboard.js architecture --check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node cli/agent-onboard.js release --check",
+          "node scripts/check-public-artifact-boundary.js",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "npm test",
+          "npm run test:full",
+          "cmd.exe /d /s /c npm pack --dry-run --json",
+          "git diff --check"
+        ],
+        "checks_not_run": [
+          "npm publish --access public"
+        ],
+        "known_non_pass": []
+      }
+    },
+    {
+      "id": "P1S3M4W15",
+      "milestone_id": "P1S3M4",
       "title": "Public M4 acceptance and publish readiness gate",
       "status": "open"
     }

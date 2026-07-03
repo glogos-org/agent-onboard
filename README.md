@@ -27,6 +27,9 @@ npx agent-onboard target doctor --json
 npx agent-onboard target doctor --text
 npx agent-onboard target profile --json
 npx agent-onboard target profile --text
+npx agent-onboard target metadata --plan
+npx agent-onboard target metadata --check
+npx agent-onboard target metadata --write
 ```
 
 Plan a repair for missing canonical onboarding files without overwriting existing files:
@@ -116,6 +119,9 @@ npx agent-onboard target profile --json
 npx agent-onboard target profile --text
 npx agent-onboard target repair --plan
 npx agent-onboard target repair --write
+npx agent-onboard target metadata --plan
+npx agent-onboard target metadata --check
+npx agent-onboard target metadata --write
 npx agent-onboard target runtime --namespace
 npx agent-onboard target runtime --check
 npx agent-onboard architecture --map
@@ -312,6 +318,28 @@ npx agent-onboard target runtime --check
 ```
 
 The canonical runtime namespace root is `.agent-onboard/`. The admitted runtime files are `.agent-onboard/runtime-namespace.json`, `.agent-onboard/project.json`, `.agent-onboard/work-items.json`, and `.agent-onboard/authority-path.json`. Reserved future files such as `.agent-onboard/claims.jsonl` and `.agent-onboard/events.jsonl` are declared but not written by this gate.
+
+## Public target metadata manifest authority
+
+Plan the target metadata manifest and authority-map contract without writing files:
+
+```sh
+npx agent-onboard target metadata --plan
+```
+
+Validate a target-owned `manifest.json`, `authority-map.json`, and markdown metadata placement without writing files:
+
+```sh
+npx agent-onboard target metadata --check
+```
+
+Generate `SOURCE_OF_TRUTH.md`, `authority-map.json`, and `manifest.json` for a target repo:
+
+```sh
+npx agent-onboard target metadata --write
+```
+
+`target metadata --write` refuses to overwrite existing non-identical metadata files unless `--force` is supplied. The metadata check accepts a Forge-style `manifest.json` v2 shape: `files` is an object keyed by `file_urn`, each entry carries `file_urn`, `file_path`, and `file_id`, and raw `sha256`, legacy `path`, and legacy `urn` fields are rejected. `authority-map.json` owns stable `urn:*` authority entries and file URNs. Markdown administrative metadata belongs in leading HTML comment headers or registry metadata, not visible YAML front matter. Work-item semantics remain delegated to `agent-onboard`; target repos do not need to grow their own workflow engine.
 
 ## Public release verification
 
@@ -860,6 +888,8 @@ This release extracts the aggregate `architecture --check` coordinator from `cli
 This release adds public work-item usability JSON views: `work-items --summary`, `work-items --next`, and `work-items --mine --actor <actor>` inspect target repo ledger progress without writing files.
 
 This release adds public human-readable output mode for target-facing inspection commands: `target doctor --text`, `target profile --text`, and `work-items --summary|--next|--mine --text` print compact text while JSON remains available for automation.
+
+This release adds the public target metadata manifest authority command: `target metadata --plan|--check|--write` generates and validates target-owned `SOURCE_OF_TRUTH.md`, `manifest.json`, `authority-map.json`, and markdown metadata placement, while keeping work-item semantics delegated to `agent-onboard`.
 
 This release reduces the retired M3 architecture checker surface: `architecture --check` and `release --architecture-parity-smoke` keep the package/router/target-runtime invariants that still protect the public CLI, and retire source-partition/source-extraction parity checks from the active M4 gate.
 

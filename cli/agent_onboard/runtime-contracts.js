@@ -98,6 +98,7 @@ const RUNTIME_ADAPTER_GROUP = Object.freeze({
 
 const TARGET_COMMAND = Object.freeze({
   doctor: 'doctor',
+  metadata: 'metadata',
   profile: 'profile',
   repair: 'repair',
   runtime: 'runtime',
@@ -136,6 +137,19 @@ const TARGET_REPAIR_COMMAND = Object.freeze({
   })
 });
 
+const TARGET_METADATA_COMMAND = Object.freeze({
+  help: 'agent-onboard target metadata --plan|--check|--write [--force] [--target <path>]',
+  mode: Object.freeze({
+    plan: '--plan',
+    check: '--check',
+    write: '--write'
+  }),
+  flag: Object.freeze({
+    force: TARGET_OPTION.force,
+    target: TARGET_OPTION.target
+  })
+});
+
 const WORK_ITEMS_USABILITY_HELP_LINES = Object.freeze([
   'agent-onboard work-items --summary [.agent-onboard/work-items.json] [--text]',
   'agent-onboard work-items --next [.agent-onboard/work-items.json] [--text]',
@@ -156,6 +170,7 @@ const PRODUCT_HELP_LINES = Object.freeze([
   TARGET_DOCTOR_COMMAND.help,
   TARGET_PROFILE_COMMAND.help,
   TARGET_REPAIR_COMMAND.help,
+  TARGET_METADATA_COMMAND.help,
   'agent-onboard target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]',
   'agent-onboard target bootstrap --dry-run|--write [--force]',
   'agent-onboard target-instance takeover --dry-run|--write [--force]',
@@ -206,6 +221,7 @@ const PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES = Object.freeze([
   'cli/agent_onboard/domains/service-partitions.js',
   'cli/agent_onboard/domains/target/services/target-constants.js',
   'cli/agent_onboard/domains/target/services/target-doctor-service.js',
+  'cli/agent_onboard/domains/target/services/target-metadata-service.js',
   'cli/agent_onboard/domains/target/services/target-onboarding-service.js',
   'cli/agent_onboard/domains/target/services/target-profile-service.js',
   'cli/agent_onboard/domains/target/services/target-repair-service.js',
@@ -248,6 +264,7 @@ module.exports = Object.freeze({
   TARGET_COMMAND,
   TARGET_CONFIG_FILE,
   TARGET_DOCTOR_COMMAND,
+  TARGET_METADATA_COMMAND,
   TARGET_OPTION,
   TARGET_PROFILE_COMMAND,
   TARGET_REPAIR_COMMAND,

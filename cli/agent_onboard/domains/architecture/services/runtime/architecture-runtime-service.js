@@ -127,7 +127,8 @@ function publicCommandRouterCheck(root = packageRoot()) {
   if (router.router.boundary.router_command_writes_files !== false) errors.push('architecture router command must remain no-write');
   if (router.router.boundary.unsupported_commands_fail_closed !== true) errors.push('unsupported commands must fail closed');
   const targetRoute = router.router.routes.find((route) => route.command === 'target');
-  if (!targetRoute || !arrayEquals(targetRoute.nested_commands.slice(), ['runtime', 'onboarding', 'bootstrap'])) errors.push('target nested route boundary must declare runtime, onboarding, and bootstrap');
+  const expectedTargetNestedCommands = ['runtime', 'metadata', 'onboarding', 'bootstrap'];
+  if (!targetRoute || !arrayEquals(targetRoute.nested_commands.slice(), expectedTargetNestedCommands)) errors.push(`target nested route boundary must declare ${expectedTargetNestedCommands.join(', ')}`);
   return {
     schema: 'agent-onboard-public-command-router-check-result-001',
     status: errors.length === 0 ? 'ok' : 'error',
@@ -146,7 +147,7 @@ function publicCommandRouterCheck(root = packageRoot()) {
       dispatcher_boundary: router.router.dispatcher === 'dispatchCommand',
       router_command_no_write: router.router.boundary.router_command_writes_files === false,
       unsupported_commands_fail_closed: router.router.boundary.unsupported_commands_fail_closed === true,
-      nested_target_routes_explicit: !!targetRoute && arrayEquals(targetRoute.nested_commands.slice(), ['runtime', 'onboarding', 'bootstrap'])
+      nested_target_routes_explicit: !!targetRoute && arrayEquals(targetRoute.nested_commands.slice(), expectedTargetNestedCommands)
     },
     expected_route_commands: expectedCommands,
     route_commands: routeCommands,

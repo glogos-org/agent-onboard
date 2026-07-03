@@ -8,6 +8,7 @@ const { createTargetOnboardingService } = require('./target-onboarding-service')
 const { createTargetProfileService } = require('./target-profile-service');
 const { createTargetDoctorService } = require('./target-doctor-service');
 const { createTargetRepairService } = require('./target-repair-service');
+const { createTargetMetadataService } = require('./target-metadata-service');
 const { createTargetTemplatesService } = require('./target-templates-service');
 const { createTargetWriteService } = require('./target-write-service');
 const targetConstants = require('./target-constants');
@@ -82,6 +83,9 @@ function createTargetRuntimeService(deps) {
   const repairService = createTargetRepairService(context);
   Object.assign(context, repairService);
 
+  const metadataService = createTargetMetadataService(context);
+  Object.assign(context, metadataService);
+
   const onboardingService = createTargetOnboardingService(context);
   Object.assign(context, onboardingService);
 
@@ -92,6 +96,7 @@ function createTargetRuntimeService(deps) {
     ...profileService,
     ...doctorService,
     ...repairService,
+    ...metadataService,
     ...onboardingService
   });
 }

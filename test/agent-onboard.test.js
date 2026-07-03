@@ -44,6 +44,7 @@ const EXPECTED_PACK_FILES = [
   'cli/agent_onboard/domains/service-partitions.js',
   'cli/agent_onboard/domains/target/services/target-constants.js',
   'cli/agent_onboard/domains/target/services/target-doctor-service.js',
+  'cli/agent_onboard/domains/target/services/target-metadata-service.js',
   'cli/agent_onboard/domains/target/services/target-onboarding-service.js',
   'cli/agent_onboard/domains/target/services/target-profile-service.js',
   'cli/agent_onboard/domains/target/services/target-repair-service.js',
@@ -204,7 +205,10 @@ fullSourceTest('public runtime contracts module centralizes command and package 
   assert.strictEqual(contracts.RUNTIME_CONTRACTS.package_name, 'agent-onboard');
   assert.strictEqual(contracts.TARGET_CONFIG_FILE, 'agent-onboard.target.json');
   assert.strictEqual(contracts.TARGET_COMMAND.doctor, 'doctor');
+  assert.strictEqual(contracts.TARGET_COMMAND.metadata, 'metadata');
   assert.strictEqual(contracts.TARGET_DOCTOR_COMMAND.flag.text, '--text');
+  assert.strictEqual(contracts.TARGET_METADATA_COMMAND.flag.target, '--target');
+  assert.strictEqual(contracts.TARGET_METADATA_COMMAND.mode.write, '--write');
   assert.strictEqual(contracts.TARGET_PROFILE_COMMAND.flag.target, '--target');
   assert.ok(Object.isFrozen(contracts.TARGET_COMMAND));
   assert.ok(contracts.RUNTIME_CONTRACTS.top_level_commands.includes('target'));
@@ -1022,6 +1026,155 @@ fullSourceTest('target profile detects stack markers without running target comm
   assert.ok(textResult.stdout.includes('Frameworks: react, next, vite, vitest'));
   assert.ok(textResult.stdout.includes('  - test: test'));
   assert.ok(textResult.stdout.includes('Writes performed: false'));
+});
+
+fullSourceTest('target metadata validates forge-style manifest and comment-header metadata without writes', () => {
+  const dir = tempRepo();
+  fs.writeFileSync(path.join(dir, 'README.md'), [
+    '<!--',
+    'file_urn: urn:forge:file:readme-md-test',
+    'metadata:',
+    '  role: root navigation portal',
+    '-->',
+    '# Target fixture',
+    ''
+  ].join('\n'));
+  fs.writeFileSync(path.join(dir, 'SOURCE_OF_TRUTH.md'), [
+    '<!--',
+    'file_urn: urn:forge:source-of-truth-test',
+    'metadata:',
+    '  current_work_item: none',
+    '-->',
+    '# Source of Truth',
+    ''
+  ].join('\n'));
+  fs.writeFileSync(path.join(dir, 'llms.txt'), 'Target metadata fixture\n');
+  fs.writeFileSync(path.join(dir, 'authority-map.json'), JSON.stringify({
+    authorities: {
+      'urn:forge:file:readme-md-test': { file_path: 'README.md' },
+      'urn:forge:source-of-truth-test': { file_path: 'SOURCE_OF_TRUTH.md' }
+    }
+  }, null, 2) + '\n');
+  fs.writeFileSync(path.join(dir, 'manifest.json'), JSON.stringify({
+    schema: 'forge-repo-content-manifest-002',
+    files: {
+      'urn:forge:file:readme-md-test': {
+        file_urn: 'urn:forge:file:readme-md-test',
+        file_path: 'README.md',
+        file_id: 'ni:///sha-256;abc'
+      },
+      'urn:forge:source-of-truth-test': {
+        file_urn: 'urn:forge:source-of-truth-test',
+        file_path: 'SOURCE_OF_TRUTH.md',
+        file_id: 'ni:///sha-256;def'
+      }
+    },
+    exclusions: [
+      { file_path: 'manifest.json', reason: 'generated manifest' }
+    ]
+  }, null, 2) + '\n');
+
+  const plan = readJsonOutput(run(['target', 'metadata', '--plan', '--target', dir]));
+  assert.strictEqual(plan.schema, 'agent-onboard-target-metadata-plan-result-001');
+  assert.strictEqual(plan.status, 'ok');
+  assert.strictEqual(plan.manifest_contract.files_shape, 'object_keyed_by_file_urn');
+  assert.ok(plan.next_steps.some((step) => step.includes('target metadata --check')));
+
+  const result = run(['target', 'metadata', '--check', '--target', dir]);
+  const output = readJsonOutput(result);
+  assert.strictEqual(output.schema, 'agent-onboard-target-metadata-check-result-001');
+  assert.strictEqual(output.status, 'ok');
+  assert.strictEqual(output.version, EXPECTED_VERSION);
+  assert.strictEqual(output.command, 'agent-onboard target metadata --check');
+  assert.strictEqual(output.command_family, 'target metadata');
+  assert.strictEqual(output.validated.manifest_absent_or_v2_shape, true);
+  assert.strictEqual(output.validated.authority_map_absent_or_valid, true);
+  assert.strictEqual(output.validated.markdown_admin_metadata_not_visible, true);
+  assert.strictEqual(output.validated.work_item_semantics_delegated_to_agent_onboard, true);
+  assert.strictEqual(output.manifest.file_count, 2);
+  assert.strictEqual(output.manifest.keyed_by_file_urn, true);
+  assert.strictEqual(output.authority_map.authority_count, 2);
+  assert.strictEqual(output.writes_performed, false);
+  assert.strictEqual(output.boundary.writes_files, false);
+});
+
+fullSourceTest('target metadata flags legacy manifest fields and visible markdown admin metadata', () => {
+  const dir = tempRepo();
+  fs.writeFileSync(path.join(dir, 'README.md'), [
+    '---',
+    'file_urn: urn:forge:file:readme-md-test',
+    'status: draft',
+    '---',
+    '# Target fixture',
+    ''
+  ].join('\n'));
+  fs.writeFileSync(path.join(dir, 'manifest.json'), JSON.stringify({
+    schema: 'forge-repo-content-manifest-001',
+    files: [
+      {
+        urn: 'urn:forge:file:readme-md-test',
+        path: 'README.md',
+        file_id: 'ni:///sha-256;abc',
+        sha256: 'abc'
+      }
+    ],
+    exclusions: [
+      { path: 'manifest.json', reason: 'generated manifest' }
+    ]
+  }, null, 2) + '\n');
+
+  const result = run(['target', 'metadata', '--check', '--target', dir]);
+  const output = readJsonFailure(result);
+  assert.strictEqual(result.status, 1);
+  assert.strictEqual(output.status, 'error');
+  assert.ok(output.errors.some((error) => error.includes('files must not be a legacy array')));
+  assert.ok(output.errors.some((error) => error.includes('README.md must keep file_urn')));
+  assert.strictEqual(output.writes_performed, false);
+  assert.strictEqual(fs.existsSync(path.join(dir, '.agent-onboard')), false);
+});
+
+fullSourceTest('target metadata write generates manifest authority files and refuses conflicts', () => {
+  const dir = tempRepo();
+  fs.writeFileSync(path.join(dir, 'README.md'), '# Target fixture\n');
+  const write = run(['target', 'metadata', '--write', '--target', dir]);
+  const output = readJsonOutput(write);
+  assert.strictEqual(output.schema, 'agent-onboard-target-metadata-write-result-001');
+  assert.strictEqual(output.status, 'ok');
+  assert.strictEqual(output.command, 'agent-onboard target metadata --write');
+  assert.strictEqual(output.writes_performed, true);
+  assert.deepStrictEqual(output.conflicts, []);
+  assert.ok(fs.existsSync(path.join(dir, 'SOURCE_OF_TRUTH.md')));
+  assert.ok(fs.existsSync(path.join(dir, 'authority-map.json')));
+  assert.ok(fs.existsSync(path.join(dir, 'manifest.json')));
+
+  const check = readJsonOutput(run(['target', 'metadata', '--check', '--target', dir]));
+  assert.strictEqual(check.status, 'ok');
+  assert.strictEqual(check.metadata_surface_present, true);
+  assert.ok(check.manifest.file_count >= 4);
+
+  fs.writeFileSync(path.join(dir, 'manifest.json'), '{}\n');
+  const conflict = readJsonFailure(run(['target', 'metadata', '--write', '--target', dir]));
+  assert.strictEqual(conflict.status, 'error');
+  assert.deepStrictEqual(conflict.conflicts, ['manifest.json']);
+  assert.strictEqual(conflict.writes_performed, false);
+
+  const force = readJsonOutput(run(['target', 'metadata', '--write', '--force', '--target', dir]));
+  assert.strictEqual(force.status, 'ok');
+  assert.strictEqual(force.force, true);
+});
+
+fullSourceTest('source repo target metadata surface validates without package expansion', () => {
+  const result = run(['target', 'metadata', '--check', '--target', ROOT]);
+  const output = readJsonOutput(result);
+  assert.strictEqual(output.status, 'ok');
+  assert.strictEqual(output.target.name, 'agent-onboard');
+  assert.strictEqual(output.metadata_surface_present, true);
+  assert.strictEqual(output.manifest.path, 'manifest.json');
+  assert.ok(output.manifest.file_count >= 7);
+  assert.strictEqual(output.authority_map.path, 'authority-map.json');
+  assert.ok(output.authority_map.authority_count >= 5);
+  assert.strictEqual(output.validated.no_writes_performed, true);
+  assert.strictEqual(output.validated.work_item_semantics_delegated_to_agent_onboard, true);
 });
 
 fullSourceTest('target doctor reports ready after explicit target onboarding write', () => {
@@ -2593,6 +2746,11 @@ fullSourceTest('full source block line 2233', () => {
   assert.ok(readme.includes('npx agent-onboard target profile --json'));
   assert.ok(readme.includes('npx agent-onboard target repair --plan'));
   assert.ok(readme.includes('npx agent-onboard target repair --write'));
+  assert.ok(readme.includes('npx agent-onboard target metadata --plan'));
+  assert.ok(readme.includes('npx agent-onboard target metadata --check'));
+  assert.ok(readme.includes('npx agent-onboard target metadata --write'));
+  assert.ok(readme.includes('Generate `SOURCE_OF_TRUTH.md`, `authority-map.json`, and `manifest.json`'));
+  assert.ok(readme.includes('The metadata check accepts a Forge-style `manifest.json` v2 shape'));
   assert.ok(readme.includes('npx agent-onboard target onboarding --write'));
   assert.ok(readme.includes('npx agent-onboard target onboarding --fixture'));
   assert.ok(readme.includes('npx agent-onboard target onboarding --trial'));
@@ -2620,6 +2778,7 @@ fullSourceTest('full source block line 2233', () => {
   assert.ok(readme.includes('The close command reads the existing ledger'));
   assert.ok(readme.includes('This release adds public work-item usability JSON views'));
   assert.ok(readme.includes('This release adds public human-readable output mode'));
+  assert.ok(readme.includes('This release adds the public target metadata manifest authority command'));
   assert.ok(readme.includes('This release reduces the retired M3 architecture checker surface'));
   assert.ok(readme.includes('This release extracts public runtime contracts into `cli/agent_onboard/runtime-contracts.js`'));
   assert.ok(readme.includes('This release expands the public runtime contracts with shared top-level command aliases'));
@@ -2640,6 +2799,7 @@ fullSourceTest('full source block line 2323', () => {
   assert.ok(help.stdout.includes('work-items --mine [.agent-onboard/work-items.json] --actor <actor> [--text]'));
   assert.ok(help.stdout.includes('target doctor --json|--text [--target <path>]'));
   assert.ok(help.stdout.includes('target profile --json|--text [--target <path>]'));
+  assert.ok(help.stdout.includes('target metadata --plan|--check|--write [--force] [--target <path>]'));
   assert.ok(help.stdout.includes('work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>'));
   assert.ok(help.stdout.includes('work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>'));
   assert.ok(help.stdout.includes('architecture --map|--router|--facades|--check'));

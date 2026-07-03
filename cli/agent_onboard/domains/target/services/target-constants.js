@@ -72,6 +72,31 @@ const TARGET_PROFILE = Object.freeze({
   })
 });
 
+const TARGET_METADATA = Object.freeze({
+  planSchema: 'agent-onboard-target-metadata-plan-result-001',
+  checkSchema: 'agent-onboard-target-metadata-check-result-001',
+  writeSchema: 'agent-onboard-target-metadata-write-result-001',
+  planCommand: 'agent-onboard target metadata --plan',
+  checkCommand: 'agent-onboard target metadata --check',
+  writeCommand: 'agent-onboard target metadata --write',
+  commandFamily: 'target metadata',
+  mode: Object.freeze({
+    plan: 'plan',
+    check: 'check',
+    write: 'write'
+  }),
+  status: Object.freeze({
+    ok: 'ok',
+    error: 'error'
+  }),
+  action: Object.freeze({
+    create: 'create',
+    keep: 'keep',
+    overwrite: 'overwrite',
+    conflict: 'conflict'
+  })
+});
+
 const TARGET_DOCTOR_FILE = Object.freeze({
   packageJson: 'package.json',
   runtimeNamespace: '.agent-onboard/runtime-namespace.json',
@@ -146,6 +171,7 @@ module.exports = Object.freeze({
   TARGET_DOCTOR,
   TARGET_REPAIR,
   TARGET_PROFILE,
+  TARGET_METADATA,
   TARGET_DOCTOR_FILE,
   TARGET_DOCTOR_SCHEMA,
   TARGET_DOCTOR_PACKAGE_MANAGER_FILES,

@@ -23,6 +23,7 @@ const {
   TARGET_COMMAND,
   TARGET_CONFIG_FILE,
   TARGET_DOCTOR_COMMAND,
+  TARGET_METADATA_COMMAND,
   TARGET_PROFILE_COMMAND,
   TARGET_REPAIR_COMMAND,
   TOP_LEVEL_COMMAND,
@@ -155,6 +156,9 @@ const {
   publicTargetOnboardingRealTargetRepoTrial,
   targetOnboardingSurfacePlan,
   targetDoctor,
+  metadataPlan,
+  metadataCheck,
+  metadataWrite,
   targetRepair,
   targetProfile,
   agentsMdTemplate,
@@ -6039,6 +6043,29 @@ function runTargetRepair(args) {
   return result.status === 'ok' ? 0 : 1;
 }
 
+function runTargetMetadata(args) {
+  const plan = args.includes(TARGET_METADATA_COMMAND.mode.plan);
+  const check = args.includes(TARGET_METADATA_COMMAND.mode.check);
+  const write = args.includes(TARGET_METADATA_COMMAND.mode.write);
+  const force = args.includes(TARGET_METADATA_COMMAND.flag.force);
+  const targetIndex = args.indexOf(TARGET_METADATA_COMMAND.flag.target);
+  const targetRoot = targetIndex >= 0 ? args[targetIndex + 1] : process.cwd();
+  const known = new Set([
+    ...Object.values(TARGET_METADATA_COMMAND.mode),
+    ...Object.values(TARGET_METADATA_COMMAND.flag)
+  ]);
+  const unknown = args.filter((arg, index) => {
+    if (targetIndex >= 0 && index === targetIndex + 1) return false;
+    return !known.has(arg);
+  });
+  if (targetIndex >= 0 && (!targetRoot || targetRoot.startsWith('-'))) throw new Error(`target metadata ${TARGET_METADATA_COMMAND.flag.target} requires a path`);
+  if (unknown.length > 0) throw new Error(`target metadata does not support: ${unknown.join(', ')}`);
+  if ([plan, check, write].filter(Boolean).length !== 1) throw new Error(`target metadata requires exactly one of ${TARGET_METADATA_COMMAND.mode.plan}, ${TARGET_METADATA_COMMAND.mode.check}, or ${TARGET_METADATA_COMMAND.mode.write}`);
+  const result = plan ? metadataPlan(targetRoot) : (check ? metadataCheck(targetRoot) : metadataWrite(targetRoot, { force }));
+  json(result);
+  return result.status === 'ok' ? 0 : 1;
+}
+
 function runTargetBootstrap(args) {
   const write = args.includes('--write');
   const dry = args.includes('--dry-run');
@@ -6133,11 +6160,12 @@ function runTargetRuntime(args) {
 
 function runTargetCommand(args) {
   if (args[0] === TARGET_COMMAND.doctor) return runTargetDoctor(args.slice(1));
+  if (args[0] === TARGET_COMMAND.metadata) return runTargetMetadata(args.slice(1));
   if (args[0] === TARGET_COMMAND.profile) return runTargetProfile(args.slice(1));
   if (args[0] === TARGET_COMMAND.repair) return runTargetRepair(args.slice(1));
   if (args[0] === TARGET_COMMAND.runtime) return runTargetRuntime(args.slice(1));
   if (args[0] === TARGET_COMMAND.onboarding) return runTargetOnboarding(args.slice(1));
-  if (args[0] !== TARGET_COMMAND.bootstrap) throw new Error(`target supports only: ${TARGET_DOCTOR_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_PROFILE_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_REPAIR_COMMAND.help.replace('agent-onboard target ', '')}, runtime --namespace|--check, onboarding --plan|--fixture|--trial [--target <path>]|--write [--force], bootstrap`);
+  if (args[0] !== TARGET_COMMAND.bootstrap) throw new Error(`target supports only: ${TARGET_DOCTOR_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_PROFILE_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_REPAIR_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_METADATA_COMMAND.help.replace('agent-onboard target ', '')}, runtime --namespace|--check, onboarding --plan|--fixture|--trial [--target <path>]|--write [--force], bootstrap`);
   return runTargetBootstrap(args.slice(1));
 }
 

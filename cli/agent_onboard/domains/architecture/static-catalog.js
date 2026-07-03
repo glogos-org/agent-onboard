@@ -48,7 +48,7 @@ const PUBLIC_ARCHITECTURE_MAP = Object.freeze({
       id: 'target',
       title: 'Target repository onboarding domain',
       owns: Object.freeze(['target config schema', 'target runtime namespace', 'target runtime project file', 'target onboarding plan', 'target write boundary', 'real target trial']),
-      public_surface: Object.freeze(['target-config', 'target runtime --namespace', 'target runtime --check', 'target onboarding', 'target bootstrap', 'target-instance takeover', 'guard --check-boundary']),
+      public_surface: Object.freeze(['target-config', 'target runtime --namespace', 'target runtime --check', 'target metadata', 'target onboarding', 'target bootstrap', 'target-instance takeover', 'guard --check-boundary']),
       state_files: Object.freeze(['agent-onboard.target.json', '.agent-onboard/runtime-namespace.json', '.agent-onboard/project.json', '.agent-onboard/work-items.json', 'AGENTS.md', 'llms.txt', '.agent-onboard/authority-path.json'])
     }),
     Object.freeze({
@@ -280,7 +280,7 @@ const PUBLIC_COMMAND_ROUTER = Object.freeze({
     Object.freeze({ command: 'release', domain: 'release_package', facade: 'releasePackageService', handler: 'runRelease', aliases: Object.freeze([]), nested: false, writes_files: false }),
     Object.freeze({ command: 'target-config', domain: 'target', facade: 'targetService', handler: 'runTargetConfig', aliases: Object.freeze([]), nested: false, writes_files: false }),
     Object.freeze({ command: 'work-items', domain: 'work_items', facade: 'workItemsService', handler: 'runWorkItems', aliases: Object.freeze([]), nested: false, writes_files: true }),
-    Object.freeze({ command: 'target', domain: 'target', facade: 'targetService', handler: 'runTargetCommand', aliases: Object.freeze([]), nested: true, nested_commands: Object.freeze(['runtime', 'onboarding', 'bootstrap']), writes_files: true }),
+    Object.freeze({ command: 'target', domain: 'target', facade: 'targetService', handler: 'runTargetCommand', aliases: Object.freeze([]), nested: true, nested_commands: Object.freeze(['runtime', 'metadata', 'onboarding', 'bootstrap']), writes_files: true }),
     Object.freeze({ command: 'target-instance', domain: 'target', facade: 'targetService', handler: 'runTargetInstance', aliases: Object.freeze([]), nested: true, nested_commands: Object.freeze(['takeover']), writes_files: true })
   ]),
   boundary: Object.freeze({
@@ -318,7 +318,7 @@ const PUBLIC_DOMAIN_SERVICE_FACADES = Object.freeze({
     Object.freeze({ id: 'authority', service: 'authorityService', owns_commands: Object.freeze(['agents', 'guard', 'authority --first-read', 'authority --check']), writes_files: true, state_writer: true }),
     Object.freeze({ id: 'work_items', service: 'workItemsService', owns_commands: Object.freeze(['work-items']), writes_files: true, state_writer: true }),
     Object.freeze({ id: 'claims', service: 'claimsService', owns_commands: Object.freeze(['work-items --claim', 'work-items --close']), writes_files: true, state_writer: true, shares_ledger_with: 'work_items' }),
-    Object.freeze({ id: 'target', service: 'targetService', owns_commands: Object.freeze(['init', 'target-config', 'target runtime --namespace', 'target runtime --check', 'target onboarding', 'target bootstrap', 'target-instance takeover']), writes_files: true, state_writer: true }),
+    Object.freeze({ id: 'target', service: 'targetService', owns_commands: Object.freeze(['init', 'target-config', 'target runtime --namespace', 'target runtime --check', 'target metadata --plan', 'target metadata --check', 'target metadata --write', 'target onboarding', 'target bootstrap', 'target-instance takeover']), writes_files: true, state_writer: true }),
     Object.freeze({ id: 'release_package', service: 'releasePackageService', owns_commands: Object.freeze(['release']), writes_files: false, state_writer: false })
   ]),
   boundary: Object.freeze({
