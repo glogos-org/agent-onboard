@@ -87,12 +87,12 @@
       "title": "Public CLI runtime de-monolith milestone",
       "status": "closed"
     },
-    {
-      "id": "P1S3M4",
-      "stage_id": "P1S3",
-      "title": "Public target-repo product refactor milestone",
-      "status": "open"
-    }
+      {
+        "id": "P1S3M4",
+        "stage_id": "P1S3",
+        "title": "Public target-repo product refactor milestone",
+        "status": "closed"
+      }
   ],
   "work_items": [
     {
@@ -4098,7 +4098,37 @@
       "id": "P1S3M4W15",
       "milestone_id": "P1S3M4",
       "title": "Public M4 acceptance and publish readiness gate",
-      "status": "open"
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-03T20:05:56.641Z"
+      },
+      "closure": {
+        "actor": "codex-gpt-5",
+        "closed_at": "2026-07-03T20:06:43.019Z",
+        "summary": "Closed by running the M4 acceptance and publish-readiness gate for agent-onboard@0.0.105: quick and full test suites passed, release and package-surface checks passed, npm pack dry-run produced the expected 47-file package, metadata checks passed for both AOB and Forge targets, architecture checks remain reduced for M4, and publish remains the only operator action not run.",
+        "changed_files": [
+          ".agent-onboard/work-items.json"
+        ],
+        "checks_run": [
+          "npm test",
+          "npm run test:full",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js release --surface-check",
+          "cmd.exe /d /s /c npm pack --dry-run --json",
+          "node scripts/check-public-artifact-boundary.js",
+          "node cli/agent-onboard.js architecture --check",
+          "node cli/agent-onboard.js target metadata --check --target .",
+          "node cli/agent-onboard.js target metadata --check --target C:\\Users\\manhthanh\\STD\\forge",
+          "node cli/agent-onboard.js release --version-sprawl-check",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "git diff --check"
+        ],
+        "checks_not_run": [
+          "npm publish --access public"
+        ],
+        "known_non_pass": []
+      }
     }
   ]
 }
