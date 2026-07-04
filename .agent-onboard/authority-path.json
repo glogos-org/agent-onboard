@@ -30,7 +30,7 @@
     },
     {
       "order": 4,
-      "path": "agent-onboard.target.json",
+      "path": ".agent-onboard/target.json",
       "role": "target_boundary_declaration",
       "required_when_present": true
     },

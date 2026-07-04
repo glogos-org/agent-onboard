@@ -111,7 +111,7 @@ function createTargetTemplatesService(deps) {
   
   ## Agent-Onboard target repository rules
   
-  This is a target repository for agent-assisted work. Agents should treat this file as the first human-readable operating guide and treat \`agent-onboard.target.json\` as the machine-readable boundary declaration when it exists.
+  This is a target repository for agent-assisted work. Agents should treat this file as the first human-readable operating guide and treat \`${TARGET_CONFIG_FILE}\` as the machine-readable boundary declaration when it exists.
   
   Target identity:
   
@@ -126,7 +126,7 @@ function createTargetTemplatesService(deps) {
   1. \`AGENTS.md\`
   2. \`llms.txt\`
   3. \`.agent-onboard/authority-path.json\`
-  4. \`agent-onboard.target.json\`
+  4. \`${TARGET_CONFIG_FILE}\`
   5. \`.agent-onboard/project.json\`
   6. \`.agent-onboard/work-items.json\`
   
@@ -147,7 +147,7 @@ function createTargetTemplatesService(deps) {
   
   Start in read-only preview mode. Prefer a dry-run plan before writes. Use explicit write commands only when the owner requests them.
   
-  Before any dependency install, build, test, deploy, publish, push, or broad write operation, run the boundary check when \`agent-onboard.target.json\` is present:
+  Before any dependency install, build, test, deploy, publish, push, or broad write operation, run the boundary check when \`${TARGET_CONFIG_FILE}\` is present:
   
   \`\`\`sh
   npx ${PACKAGE_NAME}@${VERSION} guard --check-boundary
@@ -237,7 +237,7 @@ function createTargetTemplatesService(deps) {
   1. AGENTS.md ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â human and agent operating rules.
   2. llms.txt ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â AI-readable public entrypoint.
   3. .agent-onboard/authority-path.json ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â machine-readable authority path index.
-  4. agent-onboard.target.json ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â target boundary declaration.
+  4. ${TARGET_CONFIG_FILE} ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â target boundary declaration.
   5. .agent-onboard/runtime-namespace.json ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â target runtime namespace declaration.
   6. .agent-onboard/project.json ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â target runtime identity.
   7. .agent-onboard/work-items.json ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â public work item ledger.
@@ -301,7 +301,7 @@ function createTargetTemplatesService(deps) {
       surfaces: {
         include: [
           'package.json',
-          'agent-onboard.target.json',
+          TARGET_CONFIG_FILE,
           '.agent-onboard/runtime-namespace.json',
           '.agent-onboard/project.json',
           '.agent-onboard/work-items.json',

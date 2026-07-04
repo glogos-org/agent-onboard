@@ -92,6 +92,12 @@
         "stage_id": "P1S3",
         "title": "Public target-repo product refactor milestone",
         "status": "closed"
+      },
+      {
+        "id": "P1S3M5",
+        "stage_id": "P1S3",
+        "title": "Public target policy adapter milestone",
+        "status": "open"
       }
   ],
   "work_items": [
@@ -4122,6 +4128,72 @@
           "node cli/agent-onboard.js target metadata --check --target C:\\Users\\manhthanh\\STD\\forge",
           "node cli/agent-onboard.js release --version-sprawl-check",
           "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "git diff --check"
+        ],
+        "checks_not_run": [
+          "npm publish --access public"
+        ],
+        "known_non_pass": []
+      }
+    },
+    {
+      "id": "P1S3M5W1",
+      "milestone_id": "P1S3M5",
+      "title": "Public target metadata policy adapter gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-03T20:23:45.183Z"
+      },
+      "closure": {
+        "actor": "codex-gpt-5",
+        "closed_at": "2026-07-04T06:59:48.187Z",
+        "summary": "Closed by converting target metadata generation into a universal policy-driven engine, adding --profile/--policy/--adopt-existing support, preserving target-owned SOURCE_OF_TRUTH.md content by default, moving the canonical target config into .agent-onboard/target.json, syncing target/runtime/docs/tests/source metadata with the new canonical path, bumping the package patch version to 0.0.107, and regenerating AOB metadata with the new mechanics-owned file identity registry.",
+        "changed_files": [
+          ".agent-onboard/authority-path.json",
+          ".agent-onboard/runtime-namespace.json",
+          ".agent-onboard/target.json",
+          ".agent-onboard/work-items.json",
+          "README.md",
+          "SOURCE_OF_TRUTH.md",
+          "agent-onboard.target.json",
+          "authority-map.json",
+          "manifest.json",
+          "package.json",
+          "cli/agent_onboard/domains/architecture/services/runtime/architecture-runtime-service.js",
+          "cli/agent_onboard/domains/architecture/static-catalog.js",
+          "cli/agent_onboard/domains/core/services/config-guard-service.js",
+          "cli/agent_onboard/domains/target/services/target-constants.js",
+          "cli/agent_onboard/domains/target/services/target-metadata-service.js",
+          "cli/agent_onboard/domains/target/services/target-onboarding-service.js",
+          "cli/agent_onboard/domains/target/services/target-runtime-utilities.js",
+          "cli/agent_onboard/domains/target/services/target-templates-service.js",
+          "cli/agent_onboard/domains/target/services/target-write-service.js",
+          "cli/agent_onboard/domains/target/static-catalog.js",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/runtime-contracts.js",
+          "src/domains/authority.js",
+          "test/agent-onboard.test.js"
+        ],
+        "checks_run": [
+          "node -c cli/agent_onboard/domains/target/services/target-metadata-service.js; node -c cli/agent_onboard/domains/target/services/target-constants.js; node -c cli/agent_onboard/runtime-composer.js; node -c cli/agent_onboard/runtime-contracts.js",
+          "node -c cli/agent_onboard/domains/core/services/config-guard-service.js; node -c cli/agent_onboard/domains/target/services/target-write-service.js; node -c cli/agent_onboard/domains/target/services/target-onboarding-service.js; node -c cli/agent_onboard/domains/target/services/target-templates-service.js; node -c test/agent-onboard.test.js",
+          "node cli/agent-onboard.js target metadata --plan --target .",
+          "node cli/agent-onboard.js target metadata --write --force --target .",
+          "node cli/agent-onboard.js target metadata --check --target .",
+          "node cli/agent-onboard.js target metadata --check --target C:\\Users\\manhthanh\\STD\\forge",
+          "node cli/agent-onboard.js target-config --template",
+          "node cli/agent-onboard.js target-config --validate",
+          "node cli/agent-onboard.js guard --plan",
+          "node cli/agent-onboard.js guard --check-boundary",
+          "node cli/agent-onboard.js architecture --m2-seed-check",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node scripts/check-public-artifact-boundary.js",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "npm test",
+          "npm run test:full",
+          "cmd.exe /d /s /c npm pack --dry-run --json",
           "git diff --check"
         ],
         "checks_not_run": [

@@ -11,7 +11,7 @@ Authority order:
 1. `AGENTS.md`
 2. `llms.txt`
 3. `.agent-onboard/authority-path.json`
-4. `agent-onboard.target.json`
+4. `.agent-onboard/target.json`
 5. `.agent-onboard/runtime-namespace.json`
 6. `.agent-onboard/project.json`
 7. `.agent-onboard/work-items.json`

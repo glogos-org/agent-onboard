@@ -277,7 +277,7 @@ function appendWorkItemDryRun(currentLedger, options) {
 
 function participationLifecycleNextSteps() {
   return [
-    'discover: read AGENTS.md, agent-onboard.target.json, .agent-onboard/project.json, and .agent-onboard/work-items.json when present',
+    'discover: read AGENTS.md, .agent-onboard/target.json, .agent-onboard/project.json, and .agent-onboard/work-items.json when present',
     'inspect: read the assigned work-item scope and relevant files before editing',
     'claim: use --dry-run first and --write only with explicit authorization',
     'work: modify only files needed for the claimed work item',

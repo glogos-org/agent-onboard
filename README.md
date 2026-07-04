@@ -137,7 +137,7 @@ npx agent-onboard release --check
 npx agent-onboard target-config --schema
 npx agent-onboard target-config --template
 npx agent-onboard target-config --validate-template
-npx agent-onboard target-config --validate [agent-onboard.target.json]
+npx agent-onboard target-config --validate [.agent-onboard/target.json]
 npx agent-onboard work-items --schema
 npx agent-onboard work-items --template
 npx agent-onboard work-items --validate-template
@@ -301,7 +301,7 @@ Validate the source authority files when running from a source repo, or validate
 npx agent-onboard authority --check
 ```
 
-The canonical read order is `AGENTS.md`, `llms.txt`, `.agent-onboard/authority-path.json`, `agent-onboard.target.json`, `.agent-onboard/runtime-namespace.json`, `.agent-onboard/project.json`, `.agent-onboard/work-items.json`, then `README.md`; raw evidence/source files are on-demand only after those authority files.
+The canonical read order is `AGENTS.md`, `llms.txt`, `.agent-onboard/authority-path.json`, `.agent-onboard/target.json`, `.agent-onboard/runtime-namespace.json`, `.agent-onboard/project.json`, `.agent-onboard/work-items.json`, then `README.md`; raw evidence/source files are on-demand only after those authority files.
 
 ## Public target runtime namespace
 
@@ -339,7 +339,25 @@ Generate `SOURCE_OF_TRUTH.md`, `authority-map.json`, and `manifest.json` for a t
 npx agent-onboard target metadata --write
 ```
 
-`target metadata --write` refuses to overwrite existing non-identical metadata files unless `--force` is supplied. The metadata check accepts a Forge-style `manifest.json` v2 shape: `files` is an object keyed by `file_urn`, each entry carries `file_urn`, `file_path`, and `file_id`, and raw `sha256`, legacy `path`, and legacy `urn` fields are rejected. `authority-map.json` owns stable `urn:*` authority entries and file URNs. Markdown administrative metadata belongs in leading HTML comment headers or registry metadata, not visible YAML front matter. Work-item semantics remain delegated to `agent-onboard`; target repos do not need to grow their own workflow engine.
+Use the default universal profile explicitly:
+
+```sh
+npx agent-onboard target metadata --write --profile default
+```
+
+Use a target-owned metadata policy:
+
+```sh
+npx agent-onboard target metadata --write --policy .agent-onboard/metadata-policy.json
+```
+
+Adopt existing target metadata while preserving target-owned schema IDs and authority sections:
+
+```sh
+npx agent-onboard target metadata --write --adopt-existing
+```
+
+`target metadata` keeps a strict boundary: agent-onboard owns mechanics, while the target repo owns semantics. The universal engine computes stable `file_id` values with `ni:///sha-256;...`, generates stable `file_urn` values, scans the file tree, and validates portable manifest/authority invariants. A target policy can override `manifest_schema`, `authority_map_schema`, `urn_namespace`, include/exclude rules, whether control state is included, and whether `manifest.json` appears in `authority-map.json`. `target metadata --write` refuses to overwrite existing non-identical generated metadata files unless `--force` or `--adopt-existing` is supplied. Existing `SOURCE_OF_TRUTH.md` files are non-destructive by default: agent-onboard only creates a missing file or updates its own `<!-- BEGIN AOB METADATA -->` block; target-owned prose is not rewritten. Markdown administrative metadata belongs in leading HTML comment headers or registry metadata, not visible YAML front matter. Work-item semantics remain delegated to `agent-onboard`; target repos do not need to grow their own workflow engine.
 
 ## Public release verification
 
@@ -478,7 +496,7 @@ Dry-run and preview commands write nothing.
 `target onboarding --write` writes the full canonical onboarding surface:
 
 ```text
-agent-onboard.target.json
+.agent-onboard/target.json
 .agent-onboard/project.json
 .agent-onboard/work-items.json
 AGENTS.md
@@ -487,7 +505,7 @@ AGENTS.md
 `init --write` writes the complete minimal public target state:
 
 ```text
-agent-onboard.target.json
+.agent-onboard/target.json
 .agent-onboard/project.json
 .agent-onboard/work-items.json
 ```
@@ -509,7 +527,7 @@ The older explicit subcommands remain available:
 `target bootstrap --write` writes:
 
 ```text
-agent-onboard.target.json
+.agent-onboard/target.json
 ```
 
 `target-instance takeover --write` writes:
@@ -688,7 +706,7 @@ discover -> inspect -> claim -> work -> validate -> handoff -> close
 
 The lifecycle is intentionally conservative:
 
-- `discover`: read `AGENTS.md`, `agent-onboard.target.json`, `.agent-onboard/project.json`, and `.agent-onboard/work-items.json` when present.
+- `discover`: read `AGENTS.md`, `.agent-onboard/target.json`, `.agent-onboard/project.json`, and `.agent-onboard/work-items.json` when present.
 - `inspect`: understand the assigned public work item before editing.
 - `claim`: use `work-items --claim --dry-run` first, then `--write` only when explicitly authorized.
 - `work`: edit only files needed for the claimed work item.
@@ -704,7 +722,7 @@ The current release surface keeps work-item closing narrow and adds a release co
 
 ## Boundary guard seed
 
-`agent-onboard guard --check-boundary` is the first narrow public enforcement seed. It reads `agent-onboard.target.json` from the current target repo root and exits non-zero when that declaration is not the default read-only dry-run boundary.
+`agent-onboard guard --check-boundary` is the first narrow public enforcement seed. It reads `.agent-onboard/target.json` from the current target repo root and exits non-zero when that declaration is not the default read-only dry-run boundary.
 
 It passes only when the target config keeps:
 
@@ -729,7 +747,7 @@ This guard does not sandbox other tools and does not wrap shell commands. It onl
 
 ## What the boundary files mean
 
-`agent-onboard.target.json` declares the target repo's intended operating boundaries, including write policy, dependency-install policy, build/test/deploy policy, publish/push policy, and managed surfaces.
+`.agent-onboard/target.json` declares the target repo's intended operating boundaries, including write policy, dependency-install policy, build/test/deploy policy, publish/push policy, and managed surfaces.
 
 `AGENTS.md` gives agents a human-readable read order, default forbidden actions, dry-run-first operating mode, and reporting discipline.
 
@@ -753,7 +771,7 @@ Passing `--write` to this CLI only allows this CLI to write the requested public
 
 `target-config --validate-template` validates the embedded target config template against that schema and returns non-zero if the template is invalid.
 
-`target-config --validate [file]` validates an existing target config file. When no file is provided, it validates `agent-onboard.target.json` in the current directory.
+`target-config --validate [file]` validates an existing target config file. When no file is provided, it validates `.agent-onboard/target.json` in the current directory.
 
 ## Safety boundaries of this CLI
 
@@ -768,7 +786,7 @@ This version does not:
 
 ## File meanings
 
-`agent-onboard.target.json` is the target repo config and boundary declaration.
+`.agent-onboard/target.json` is the target repo config and boundary declaration.
 
 `.agent-onboard/project.json` is the runtime identity of the target repo.
 
@@ -800,7 +818,7 @@ This version does not:
 
 `0.0.12` keeps the npm artifact compact while documenting the source-repository/public-package boundary more explicitly.
 
-`0.0.13` adds source self-dogfood and agent participation support: the source repository can carry `AGENTS.md`, `agent-onboard.target.json`, `.agent-onboard/project.json`, `.agent-onboard/work-items.json`, and public `work-items --claim --write` for explicit participation claims.
+`0.0.13` adds source self-dogfood and agent participation support: the source repository can carry `AGENTS.md`, `.agent-onboard/target.json`, `.agent-onboard/project.json`, `.agent-onboard/work-items.json`, and public `work-items --claim --write` for explicit participation claims.
 
 `0.0.14` adds the public source participation lifecycle gate: claim responses include `next_steps`, generated `AGENTS.md` documents the discover/inspect/claim/work/validate/handoff loop, and README documents expected `AGENTS.md` conflict handling for target repos.
 
@@ -889,7 +907,7 @@ This release adds public work-item usability JSON views: `work-items --summary`,
 
 This release adds public human-readable output mode for target-facing inspection commands: `target doctor --text`, `target profile --text`, and `work-items --summary|--next|--mine --text` print compact text while JSON remains available for automation.
 
-This release adds the public target metadata manifest authority command: `target metadata --plan|--check|--write` generates and validates target-owned `SOURCE_OF_TRUTH.md`, `manifest.json`, `authority-map.json`, and markdown metadata placement, while keeping work-item semantics delegated to `agent-onboard`.
+This release expands the public target metadata engine with policy-driven output: `target metadata --plan|--check|--write` computes universal file identity and URNs, supports target-owned metadata policy overrides, preserves existing schema and authority sections with `--adopt-existing`, and updates `SOURCE_OF_TRUTH.md` non-destructively.
 
 This release reduces the retired M3 architecture checker surface: `architecture --check` and `release --architecture-parity-smoke` keep the package/router/target-runtime invariants that still protect the public CLI, and retire source-partition/source-extraction parity checks from the active M4 gate.
 
@@ -909,7 +927,7 @@ This release adds the public work-items domain source extraction bundle parity g
 The source repository can carry its own public Agent-Onboard operating surface:
 
 - `AGENTS.md` gives human-readable rules for agents.
-- `agent-onboard.target.json` declares the target-repo boundary.
+- `.agent-onboard/target.json` declares the target-repo boundary.
 - `llms.txt` gives the AI-readable first-read entrypoint.
 - `.agent-onboard/authority-path.json` records the first-read order.
 - `.agent-onboard/runtime-namespace.json` declares the target runtime namespace.

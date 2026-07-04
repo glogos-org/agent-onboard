@@ -109,8 +109,8 @@ function createTargetOnboardingService(deps) {
 
   function targetOnboardingDryRunFixture(cwd = process.cwd()) {
     const [name, kind] = targetName(cwd);
-    const bootstrapPlan = planWritesForRoot(cwd, [['agent-onboard.target.json', targetConfigTemplate(cwd)]], { force: false });
-    const bootstrapForcePlan = planWritesForRoot(cwd, [['agent-onboard.target.json', targetConfigTemplate(cwd)]], { force: true });
+    const bootstrapPlan = planWritesForRoot(cwd, [[TARGET_CONFIG_FILE, targetConfigTemplate(cwd)]], { force: false });
+    const bootstrapForcePlan = planWritesForRoot(cwd, [[TARGET_CONFIG_FILE, targetConfigTemplate(cwd)]], { force: true });
     const instancePlan = planWritesForRoot(cwd, [
       ['.agent-onboard/runtime-namespace.json', targetRuntimeNamespaceTemplate(cwd)],
       ['.agent-onboard/project.json', runtimeProjectTemplate(cwd)],

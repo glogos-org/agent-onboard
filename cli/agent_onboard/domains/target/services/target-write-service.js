@@ -103,7 +103,7 @@ function createTargetWriteService(deps) {
 
   function initWriteSet(cwd = process.cwd()) {
     return [
-      ['agent-onboard.target.json', targetConfigTemplate(cwd)],
+      [TARGET_CONFIG_FILE, targetConfigTemplate(cwd)],
       ['.agent-onboard/runtime-namespace.json', targetRuntimeNamespaceTemplate(cwd)],
       ['.agent-onboard/project.json', runtimeProjectTemplate(cwd)],
       ['.agent-onboard/work-items.json', workItemsTemplate()]
@@ -113,9 +113,9 @@ function createTargetWriteService(deps) {
   function targetOnboardingWriteSet(cwd = process.cwd()) {
     return [
       {
-        path: 'agent-onboard.target.json',
+        path: TARGET_CONFIG_FILE,
         kind: 'json',
-        schema: 'agent-onboard-target-config-001',
+        schema: TARGET_CONFIG_SCHEMA,
         value: targetConfigTemplate(cwd)
       },
       {

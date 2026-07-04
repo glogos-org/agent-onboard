@@ -5737,7 +5737,7 @@ function runTargetConfig(args) {
     json({
       schema: 'agent-onboard-target-config-template-response-001',
       status: 'ok',
-      canonical_config_file: 'agent-onboard.target.json',
+      canonical_config_file: TARGET_CONFIG_FILE,
       target_config: targetConfigTemplate()
     });
     return 0;
@@ -5749,7 +5749,7 @@ function runTargetConfig(args) {
       schema: 'agent-onboard-target-config-template-validation-001',
       status: ok ? 'ok' : 'error',
       template_source: 'embedded',
-      canonical_config_file: 'agent-onboard.target.json',
+      canonical_config_file: TARGET_CONFIG_FILE,
       validated: true,
       errors
     });
@@ -5757,7 +5757,7 @@ function runTargetConfig(args) {
   }
   if (args.includes('--validate')) {
     const index = args.indexOf('--validate');
-    const file = args[index + 1] && !args[index + 1].startsWith('-') ? args[index + 1] : 'agent-onboard.target.json';
+    const file = args[index + 1] && !args[index + 1].startsWith('-') ? args[index + 1] : TARGET_CONFIG_FILE;
     const errors = validateTargetConfig(readJson(path.resolve(process.cwd(), file)));
     const ok = errors.length === 0;
     json({
@@ -5907,7 +5907,7 @@ function runTargetOnboarding(args) {
     },
     next_steps: ok ? [
       'read AGENTS.md before continuing agent-assisted work',
-      'run agent-onboard guard --check-boundary after agent-onboard.target.json exists',
+      `run agent-onboard guard --check-boundary after ${TARGET_CONFIG_FILE} exists`,
       'use work-items --append/--claim only after the target owner assigns public work-item scope'
     ] : []
   });
@@ -6047,7 +6047,12 @@ function runTargetMetadata(args) {
   const plan = args.includes(TARGET_METADATA_COMMAND.mode.plan);
   const check = args.includes(TARGET_METADATA_COMMAND.mode.check);
   const write = args.includes(TARGET_METADATA_COMMAND.mode.write);
+  const adoptExisting = args.includes(TARGET_METADATA_COMMAND.flag.adoptExisting);
   const force = args.includes(TARGET_METADATA_COMMAND.flag.force);
+  const policyIndex = args.indexOf(TARGET_METADATA_COMMAND.flag.policy);
+  const policyPath = policyIndex >= 0 ? args[policyIndex + 1] : null;
+  const profileIndex = args.indexOf(TARGET_METADATA_COMMAND.flag.profile);
+  const profile = profileIndex >= 0 ? args[profileIndex + 1] : null;
   const targetIndex = args.indexOf(TARGET_METADATA_COMMAND.flag.target);
   const targetRoot = targetIndex >= 0 ? args[targetIndex + 1] : process.cwd();
   const known = new Set([
@@ -6055,13 +6060,18 @@ function runTargetMetadata(args) {
     ...Object.values(TARGET_METADATA_COMMAND.flag)
   ]);
   const unknown = args.filter((arg, index) => {
+    if (policyIndex >= 0 && index === policyIndex + 1) return false;
+    if (profileIndex >= 0 && index === profileIndex + 1) return false;
     if (targetIndex >= 0 && index === targetIndex + 1) return false;
     return !known.has(arg);
   });
+  if (policyIndex >= 0 && (!policyPath || policyPath.startsWith('-'))) throw new Error(`target metadata ${TARGET_METADATA_COMMAND.flag.policy} requires a path`);
+  if (profileIndex >= 0 && (!profile || profile.startsWith('-'))) throw new Error(`target metadata ${TARGET_METADATA_COMMAND.flag.profile} requires a profile`);
   if (targetIndex >= 0 && (!targetRoot || targetRoot.startsWith('-'))) throw new Error(`target metadata ${TARGET_METADATA_COMMAND.flag.target} requires a path`);
   if (unknown.length > 0) throw new Error(`target metadata does not support: ${unknown.join(', ')}`);
   if ([plan, check, write].filter(Boolean).length !== 1) throw new Error(`target metadata requires exactly one of ${TARGET_METADATA_COMMAND.mode.plan}, ${TARGET_METADATA_COMMAND.mode.check}, or ${TARGET_METADATA_COMMAND.mode.write}`);
-  const result = plan ? metadataPlan(targetRoot) : (check ? metadataCheck(targetRoot) : metadataWrite(targetRoot, { force }));
+  const options = { adoptExisting, force, policyPath, profile };
+  const result = plan ? metadataPlan(targetRoot, options) : (check ? metadataCheck(targetRoot, options) : metadataWrite(targetRoot, options));
   json(result);
   return result.status === 'ok' ? 0 : 1;
 }
@@ -6073,7 +6083,7 @@ function runTargetBootstrap(args) {
   if (!write && !dry) throw new Error('target bootstrap requires --dry-run or --write');
   if (write && dry) throw new Error('target bootstrap accepts only one of --dry-run or --write');
 
-  const plannedWrites = planWrites([['agent-onboard.target.json', targetConfigTemplate()]], { force });
+  const plannedWrites = planWrites([[TARGET_CONFIG_FILE, targetConfigTemplate()]], { force });
   const conflicts = plannedWrites.filter((item) => item.action === 'conflict');
   const ok = conflicts.length === 0;
   if (write && ok) performPlannedWrites(plannedWrites);

@@ -398,7 +398,7 @@ function publicAuthorityFirstRead(root = packageRoot()) {
 
 function publicAuthorityFirstReadCheck(root = packageRoot()) {
   const result = publicAuthorityFirstRead(root);
-  const expectedOrder = ['AGENTS.md', 'llms.txt', '.agent-onboard/authority-path.json', 'agent-onboard.target.json', '.agent-onboard/runtime-namespace.json', '.agent-onboard/project.json', '.agent-onboard/work-items.json', 'README.md', 'raw evidence/source files'];
+  const expectedOrder = ['AGENTS.md', 'llms.txt', '.agent-onboard/authority-path.json', '.agent-onboard/target.json', '.agent-onboard/runtime-namespace.json', '.agent-onboard/project.json', '.agent-onboard/work-items.json', 'README.md', 'raw evidence/source files'];
   const actualOrder = result.read_order.map((entry) => entry.path);
   const expectedPackFiles = PUBLIC_RELEASE_CONTRACT.expected_pack_files.slice().sort();
   const projectedPackFiles = packageJsonProjectedPackFiles(readJson(path.join(root, 'package.json')));

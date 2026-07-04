@@ -1,7 +1,7 @@
 'use strict';
 
 const PACKAGE_NAME = 'agent-onboard';
-const TARGET_CONFIG_FILE = 'agent-onboard.target.json';
+const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const RELEASE_LINE = 'public_core_config_guard_service_extraction_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
@@ -112,7 +112,10 @@ const OUTPUT_FLAG = Object.freeze({
 });
 
 const TARGET_OPTION = Object.freeze({
+  adoptExisting: '--adopt-existing',
   force: '--force',
+  policy: '--policy',
+  profile: '--profile',
   target: '--target'
 });
 
@@ -138,14 +141,17 @@ const TARGET_REPAIR_COMMAND = Object.freeze({
 });
 
 const TARGET_METADATA_COMMAND = Object.freeze({
-  help: 'agent-onboard target metadata --plan|--check|--write [--force] [--target <path>]',
+  help: 'agent-onboard target metadata --plan|--check|--write [--profile default] [--policy <path>] [--adopt-existing] [--force] [--target <path>]',
   mode: Object.freeze({
     plan: '--plan',
     check: '--check',
     write: '--write'
   }),
   flag: Object.freeze({
+    adoptExisting: TARGET_OPTION.adoptExisting,
     force: TARGET_OPTION.force,
+    policy: TARGET_OPTION.policy,
+    profile: TARGET_OPTION.profile,
     target: TARGET_OPTION.target
   })
 });
@@ -186,7 +192,7 @@ const PRODUCT_HELP_LINES = Object.freeze([
   'agent-onboard authority --first-read|--check',
   'agent-onboard architecture --map|--router|--facades|--check',
   'agent-onboard release --plan|--surface|--surface-check|--target-onboarding-smoke|--real-target-trial|--check',
-  'agent-onboard target-config --schema|--template|--validate-template|--validate [agent-onboard.target.json]'
+  'agent-onboard target-config --schema|--template|--validate-template|--validate [.agent-onboard/target.json]'
 ]);
 
 const PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES = Object.freeze([

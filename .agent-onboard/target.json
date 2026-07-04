@@ -25,7 +25,7 @@
       "cli/agent-onboard.js",
       "test/agent-onboard.test.js",
       "AGENTS.md",
-      "agent-onboard.target.json",
+      ".agent-onboard/target.json",
       ".agent-onboard/project.json",
       ".agent-onboard/work-items.json",
       "llms.txt",

@@ -27,8 +27,8 @@ const PUBLIC_ARCHITECTURE_MAP = Object.freeze({
       id: 'authority',
       title: 'Authority and first-read domain',
       owns: Object.freeze(['read order', 'operator boundary language', 'first-read authority index', 'AI-readable repository entrypoint']),
-      public_surface: Object.freeze(['authority --first-read', 'authority --check', 'AGENTS.md read order', 'llms.txt', '.agent-onboard/authority-path.json', 'agent-onboard.target.json authority level']),
-      state_files: Object.freeze(['AGENTS.md', 'llms.txt', '.agent-onboard/authority-path.json', 'agent-onboard.target.json', '.agent-onboard/runtime-namespace.json'])
+      public_surface: Object.freeze(['authority --first-read', 'authority --check', 'AGENTS.md read order', 'llms.txt', '.agent-onboard/authority-path.json', '.agent-onboard/target.json authority level']),
+      state_files: Object.freeze(['AGENTS.md', 'llms.txt', '.agent-onboard/authority-path.json', '.agent-onboard/target.json', '.agent-onboard/runtime-namespace.json'])
     }),
     Object.freeze({
       id: 'work_items',
@@ -49,7 +49,7 @@ const PUBLIC_ARCHITECTURE_MAP = Object.freeze({
       title: 'Target repository onboarding domain',
       owns: Object.freeze(['target config schema', 'target runtime namespace', 'target runtime project file', 'target onboarding plan', 'target write boundary', 'real target trial']),
       public_surface: Object.freeze(['target-config', 'target runtime --namespace', 'target runtime --check', 'target metadata', 'target onboarding', 'target bootstrap', 'target-instance takeover', 'guard --check-boundary']),
-      state_files: Object.freeze(['agent-onboard.target.json', '.agent-onboard/runtime-namespace.json', '.agent-onboard/project.json', '.agent-onboard/work-items.json', 'AGENTS.md', 'llms.txt', '.agent-onboard/authority-path.json'])
+      state_files: Object.freeze(['.agent-onboard/target.json', '.agent-onboard/runtime-namespace.json', '.agent-onboard/project.json', '.agent-onboard/work-items.json', 'AGENTS.md', 'llms.txt', '.agent-onboard/authority-path.json'])
     }),
     Object.freeze({
       id: 'release_package',
@@ -351,7 +351,7 @@ const PUBLIC_AUTHORITY_FIRST_READ_INDEX = Object.freeze({
     Object.freeze({ order: 1, path: 'AGENTS.md', role: 'human_and_agent_operating_rules', required_when_present: true }),
     Object.freeze({ order: 2, path: 'llms.txt', role: 'ai_readable_public_entrypoint', required_when_present: true }),
     Object.freeze({ order: 3, path: '.agent-onboard/authority-path.json', role: 'machine_readable_authority_index', required_when_present: true }),
-    Object.freeze({ order: 4, path: 'agent-onboard.target.json', role: 'target_boundary_declaration', required_when_present: true }),
+    Object.freeze({ order: 4, path: '.agent-onboard/target.json', role: 'target_boundary_declaration', required_when_present: true }),
     Object.freeze({ order: 5, path: '.agent-onboard/runtime-namespace.json', role: 'target_runtime_namespace_declaration', required_when_present: true }),
     Object.freeze({ order: 6, path: '.agent-onboard/project.json', role: 'target_runtime_project_identity', required_when_present: true }),
     Object.freeze({ order: 7, path: '.agent-onboard/work-items.json', role: 'public_work_item_ledger', required_when_present: true }),
@@ -393,7 +393,7 @@ const PUBLIC_TARGET_RUNTIME_NAMESPACE = Object.freeze({
   top_level_authority_files: Object.freeze([
     'AGENTS.md',
     'llms.txt',
-    'agent-onboard.target.json'
+    '.agent-onboard/target.json'
   ]),
   reserved_future_files: Object.freeze([
     Object.freeze({ path: '.agent-onboard/claims.jsonl', domain: 'claims', status: 'reserved_not_written_by_this_gate' }),
@@ -434,7 +434,7 @@ const PUBLIC_PACKAGE_SURFACE_PRESERVATION = Object.freeze({
   source_only_files: Object.freeze([
     'AGENTS.md',
     'llms.txt',
-    'agent-onboard.target.json',
+    '.agent-onboard/target.json',
     '.agent-onboard/project.json',
     '.agent-onboard/work-items.json',
     '.agent-onboard/authority-path.json',
@@ -1886,7 +1886,7 @@ const PUBLIC_VERSION_REFERENCE_POLICY = Object.freeze({
     'README.md',
     'AGENTS.md',
     'llms.txt',
-    'agent-onboard.target.json',
+    '.agent-onboard/target.json',
     '.agent-onboard/project.json',
     '.agent-onboard/authority-path.json',
     '.agent-onboard/runtime-namespace.json',
@@ -2045,7 +2045,7 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
   source_context_files: Object.freeze([
     '.agent-onboard/project.json',
     '.agent-onboard/work-items.json',
-    'agent-onboard.target.json',
+    '.agent-onboard/target.json',
     'AGENTS.md',
     'llms.txt',
     '.agent-onboard/authority-path.json',

@@ -9,7 +9,7 @@ const CONFIG_GUARD_SERVICE_SEED = Object.freeze({
   planned_service_path: 'cli/agent_onboard/domains/core/services/config-guard-service.js',
   owned_commands: Object.freeze(['guard --plan', 'guard --check-boundary']),
   consumed_target_contracts: Object.freeze([
-    'agent-onboard.target.json',
+    '.agent-onboard/target.json',
     'agent-onboard-target-config-001',
     'agent-onboard-public-boundary-guard-enforcement-seed-contract-001'
   ]),
@@ -41,7 +41,7 @@ function createCoreConfigGuardService(options = Object.freeze({})) {
   const evaluateTargetBoundaryConfig = typeof options.evaluateTargetBoundaryConfig === 'function' ? options.evaluateTargetBoundaryConfig : () => [];
   const noMutationBoundary = typeof options.noMutationBoundary === 'function' ? options.noMutationBoundary : () => Object.freeze({ writes_files: false });
   const guardResultBase = typeof options.guardResultBase === 'function' ? options.guardResultBase : () => Object.freeze({});
-  const targetConfigFile = typeof options.targetConfigFile === 'string' && options.targetConfigFile ? options.targetConfigFile : 'agent-onboard.target.json';
+  const targetConfigFile = typeof options.targetConfigFile === 'string' && options.targetConfigFile ? options.targetConfigFile : '.agent-onboard/target.json';
   const boundaryGuardContract = options.boundaryGuardContract && typeof options.boundaryGuardContract === 'object'
     ? options.boundaryGuardContract
     : Object.freeze({ enforcement_mode: 'read_only_dry_run', required_target_config_values: Object.freeze({}), forbidden_true_boundary_fields: Object.freeze([]) });
@@ -79,7 +79,7 @@ function createCoreConfigGuardService(options = Object.freeze({})) {
       emit({
         ...guardResultBase(),
         status: 'blocked',
-        reason: 'missing agent-onboard.target.json in current target repo root',
+        reason: `missing ${targetConfigFile} in current target repo`,
         reads_target_config: false,
         blocked_violation_count: 1,
         violations: [{ path: targetConfigFile, expected: 'present', actual: 'missing' }],
@@ -95,7 +95,7 @@ function createCoreConfigGuardService(options = Object.freeze({})) {
       emit({
         ...guardResultBase(),
         status: 'blocked',
-        reason: 'invalid JSON in agent-onboard.target.json',
+        reason: `invalid JSON in ${targetConfigFile}`,
         detail: error && error.message ? error.message : String(error),
         reads_target_config: true,
         blocked_violation_count: 1,

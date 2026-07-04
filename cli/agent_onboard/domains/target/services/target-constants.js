@@ -76,10 +76,16 @@ const TARGET_METADATA = Object.freeze({
   planSchema: 'agent-onboard-target-metadata-plan-result-001',
   checkSchema: 'agent-onboard-target-metadata-check-result-001',
   writeSchema: 'agent-onboard-target-metadata-write-result-001',
+  defaultManifestSchema: 'agent-onboard-target-content-manifest-002',
+  defaultAuthorityMapSchema: 'agent-onboard-target-authority-map-001',
+  defaultPolicyFile: '.agent-onboard/metadata-policy.json',
   planCommand: 'agent-onboard target metadata --plan',
   checkCommand: 'agent-onboard target metadata --check',
   writeCommand: 'agent-onboard target metadata --write',
   commandFamily: 'target metadata',
+  profile: Object.freeze({
+    default: 'default'
+  }),
   mode: Object.freeze({
     plan: 'plan',
     check: 'check',

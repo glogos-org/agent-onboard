@@ -48,7 +48,7 @@
   "top_level_authority_files": [
     "AGENTS.md",
     "llms.txt",
-    "agent-onboard.target.json"
+    ".agent-onboard/target.json"
   ],
   "reserved_future_files": [
     {

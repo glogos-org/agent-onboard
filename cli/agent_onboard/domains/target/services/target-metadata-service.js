@@ -13,7 +13,13 @@ const {
 const METADATA_FILES = Object.freeze({
   manifest: 'manifest.json',
   authorityMap: 'authority-map.json',
+  policy: TARGET_METADATA.defaultPolicyFile,
   sourceOfTruth: 'SOURCE_OF_TRUTH.md'
+});
+
+const AOB_METADATA_MARKER = Object.freeze({
+  begin: '<!-- BEGIN AOB METADATA -->',
+  end: '<!-- END AOB METADATA -->'
 });
 
 const MARKDOWN_METADATA_FILES = Object.freeze([
@@ -42,6 +48,20 @@ const DEFAULT_EXCLUDED_PATHS = Object.freeze([
   METADATA_FILES.manifest,
   '.agent-onboard/work-items.json'
 ]);
+
+const DEFAULT_METADATA_POLICY = Object.freeze({
+  profile: TARGET_METADATA.profile.default,
+  manifest_schema: TARGET_METADATA.defaultManifestSchema,
+  authority_map_schema: TARGET_METADATA.defaultAuthorityMapSchema,
+  urn_namespace: null,
+  include_control_state: true,
+  include_manifest_in_authority_map: true,
+  preserve_source_of_truth: true,
+  write_source_of_truth: true,
+  exclude_paths: DEFAULT_EXCLUDED_PATHS,
+  exclude_path_prefixes: Object.freeze([]),
+  include_paths: Object.freeze([])
+});
 
 const SKIPPED_DIRECTORIES = Object.freeze([
   '.git',
@@ -97,7 +117,7 @@ function createTargetMetadataService(deps) {
 
   function fileUrn(namespace, relativePath) {
     const normalized = relativePath.replace(/\\/g, '/');
-    return `urn:${namespace}:file:${slugify(normalized)}-${hexPrefix(hashText(normalized))}`;
+    return `${namespace}:${slugify(normalized)}-${hexPrefix(hashText(normalized))}`;
   }
 
   function walkFiles(root, current = '') {
@@ -120,93 +140,248 @@ function createTargetMetadataService(deps) {
     return slugify(name).replace(/-/g, '_') === 'agent_onboard' ? 'agent-onboard' : slugify(name);
   }
 
-  function sourceOfTruthTemplate(name) {
-    const namespace = targetNamespace(name);
+  function normalizeUrnNamespace(value, name) {
+    const namespace = typeof value === 'string' && value.trim().length > 0
+      ? value.trim()
+      : `urn:${targetNamespace(name)}:file`;
+    const withoutTrailingColon = namespace.replace(/:+$/g, '');
+    if (withoutTrailingColon.startsWith('urn:')) return withoutTrailingColon;
+    return `urn:${slugify(withoutTrailingColon)}:file`;
+  }
+
+  function namespaceFromFileUrn(fileUrnValue) {
+    if (typeof fileUrnValue !== 'string' || !fileUrnValue.startsWith('urn:')) return null;
+    const parts = fileUrnValue.split(':');
+    if (parts.length < 4) return null;
+    return parts.slice(0, -1).join(':');
+  }
+
+  function normalizeStringArray(value) {
+    if (!Array.isArray(value)) return [];
+    return value.filter((item) => typeof item === 'string' && item.trim().length > 0).map((item) => toPosix(item.trim()));
+  }
+
+  function readPolicyDocument(root, options) {
+    const explicitPolicyPath = typeof options.policyPath === 'string' && options.policyPath.length > 0
+      ? path.resolve(root, options.policyPath)
+      : null;
+    const implicitPolicyPath = path.join(root, METADATA_FILES.policy);
+    const policyPath = explicitPolicyPath || (fs.existsSync(implicitPolicyPath) ? implicitPolicyPath : null);
+    if (!policyPath) return { path: null, source: 'default_profile', settings: {}, errors: [] };
+    if (!fs.existsSync(policyPath)) {
+      return {
+        path: policyPath,
+        source: explicitPolicyPath ? 'explicit_policy_file' : 'implicit_policy_file',
+        settings: {},
+        errors: [`metadata policy file is missing: ${policyPath}`]
+      };
+    }
+    try {
+      const value = readJson(policyPath);
+      const settings = isPlainObject(value) && isPlainObject(value.metadata) ? value.metadata : value;
+      return {
+        path: policyPath,
+        source: explicitPolicyPath ? 'explicit_policy_file' : 'implicit_policy_file',
+        settings: isPlainObject(settings) ? settings : {},
+        errors: isPlainObject(settings) ? [] : ['metadata policy must be an object or expose an object metadata field']
+      };
+    } catch (error) {
+      return {
+        path: policyPath,
+        source: explicitPolicyPath ? 'explicit_policy_file' : 'implicit_policy_file',
+        settings: {},
+        errors: [`metadata policy is not valid JSON: ${error && error.message ? error.message : String(error)}`]
+      };
+    }
+  }
+
+  function firstFileUrnFromAuthorityMap(value) {
+    if (!isPlainObject(value)) return null;
+    if (Array.isArray(value.file_urns)) {
+      const entry = value.file_urns.find((item) => isPlainObject(item) && typeof item.file_urn === 'string');
+      return entry ? entry.file_urn : null;
+    }
+    if (isPlainObject(value.file_urns)) {
+      return Object.keys(value.file_urns).find((item) => item.startsWith('urn:')) || null;
+    }
+    return null;
+  }
+
+  function resolveMetadataPolicy(root, name, options = {}) {
+    const profile = options.profile || DEFAULT_METADATA_POLICY.profile;
+    const policyDocument = readPolicyDocument(root, options);
+    const settings = policyDocument.settings;
+    const errors = [...policyDocument.errors];
+    if (profile !== TARGET_METADATA.profile.default) errors.push(`unsupported target metadata profile: ${profile}`);
+
+    const policy = {
+      ...DEFAULT_METADATA_POLICY,
+      exclude_paths: [...DEFAULT_METADATA_POLICY.exclude_paths],
+      exclude_path_prefixes: [...DEFAULT_METADATA_POLICY.exclude_path_prefixes],
+      include_paths: [...DEFAULT_METADATA_POLICY.include_paths],
+      profile
+    };
+    const hasSetting = (field) => Object.prototype.hasOwnProperty.call(settings, field);
+    if (hasSetting('manifest_schema') && typeof settings.manifest_schema === 'string') policy.manifest_schema = settings.manifest_schema;
+    if (hasSetting('authority_map_schema') && typeof settings.authority_map_schema === 'string') policy.authority_map_schema = settings.authority_map_schema;
+    if (hasSetting('urn_namespace') && typeof settings.urn_namespace === 'string') policy.urn_namespace = settings.urn_namespace;
+    if (hasSetting('include_control_state')) policy.include_control_state = settings.include_control_state === true;
+    if (hasSetting('include_manifest_in_authority_map')) policy.include_manifest_in_authority_map = settings.include_manifest_in_authority_map === true;
+    if (hasSetting('preserve_source_of_truth')) policy.preserve_source_of_truth = settings.preserve_source_of_truth !== false;
+    if (hasSetting('write_source_of_truth')) policy.write_source_of_truth = settings.write_source_of_truth !== false;
+    if (hasSetting('exclude_paths')) policy.exclude_paths = [...policy.exclude_paths, ...normalizeStringArray(settings.exclude_paths)];
+    if (hasSetting('exclude_path_prefixes')) policy.exclude_path_prefixes = [...policy.exclude_path_prefixes, ...normalizeStringArray(settings.exclude_path_prefixes)];
+    if (hasSetting('include_paths')) policy.include_paths = normalizeStringArray(settings.include_paths);
+
+    const existingManifest = readJsonIfPresent(root, METADATA_FILES.manifest);
+    const existingAuthorityMap = readJsonIfPresent(root, METADATA_FILES.authorityMap);
+    const adoptExisting = options.adoptExisting === true;
+    if (adoptExisting && existingManifest.status === 'valid' && isPlainObject(existingManifest.value) && !hasSetting('manifest_schema')) {
+      if (typeof existingManifest.value.schema === 'string') policy.manifest_schema = existingManifest.value.schema;
+    }
+    if (adoptExisting && existingAuthorityMap.status === 'valid' && isPlainObject(existingAuthorityMap.value)) {
+      if (typeof existingAuthorityMap.value.schema === 'string' && !hasSetting('authority_map_schema')) {
+        policy.authority_map_schema = existingAuthorityMap.value.schema;
+      }
+      if (!hasSetting('urn_namespace')) {
+        const namespace = typeof existingAuthorityMap.value.namespace === 'string'
+          ? existingAuthorityMap.value.namespace
+          : namespaceFromFileUrn(firstFileUrnFromAuthorityMap(existingAuthorityMap.value));
+        if (namespace) policy.urn_namespace = namespace;
+      }
+    }
+
+    policy.urn_namespace = normalizeUrnNamespace(policy.urn_namespace, name);
+    policy.exclude_paths = [...new Set(policy.exclude_paths.map(toPosix))].sort();
+    policy.exclude_path_prefixes = [...new Set(policy.exclude_path_prefixes.map((item) => toPosix(item).replace(/\/+$/g, '')))].sort();
+    policy.include_paths = [...new Set(policy.include_paths.map(toPosix))].sort();
+
+    return {
+      policy: Object.freeze(policy),
+      source: policyDocument.source,
+      path: policyDocument.path,
+      adopt_existing: adoptExisting,
+      existing_manifest: existingManifest,
+      existing_authority_map: existingAuthorityMap,
+      errors
+    };
+  }
+
+  function policySummary(context) {
+    const policy = context.policy;
+    return {
+      source: context.source,
+      path: context.path,
+      profile: policy.profile,
+      adopt_existing: context.adopt_existing,
+      manifest_schema: policy.manifest_schema,
+      authority_map_schema: policy.authority_map_schema,
+      urn_namespace: policy.urn_namespace,
+      include_control_state: policy.include_control_state,
+      include_manifest_in_authority_map: policy.include_manifest_in_authority_map,
+      preserve_source_of_truth: policy.preserve_source_of_truth,
+      write_source_of_truth: policy.write_source_of_truth,
+      exclude_paths: policy.exclude_paths,
+      exclude_path_prefixes: policy.exclude_path_prefixes,
+      include_paths: policy.include_paths
+    };
+  }
+
+  function sourceOfTruthBlock(name, policy) {
     return [
-      '<!--',
-      `file_urn: urn:${namespace}:file:source-of-truth-md-${hexPrefix(hashText('SOURCE_OF_TRUTH.md'))}`,
-      'metadata_role: target_authority_summary',
-      '-->',
+      AOB_METADATA_MARKER.begin,
+      `file_urn: ${fileUrn(policy.urn_namespace, METADATA_FILES.sourceOfTruth)}`,
+      'metadata_role: target_metadata_identity',
+      `target_name: ${name}`,
+      `urn_namespace: ${policy.urn_namespace}`,
+      AOB_METADATA_MARKER.end
+    ].join('\n');
+  }
+
+  function sourceOfTruthTemplate(name, policy) {
+    return [
       '# Source of Truth',
       '',
-      `This repository is tracked as the \`${name}\` target for agent-onboard metadata.`,
-      '',
-      'Authority order:',
-      '',
-      '1. `AGENTS.md`',
-      '2. `llms.txt`',
-      '3. `.agent-onboard/authority-path.json`',
-      '4. `agent-onboard.target.json`',
-      '5. `.agent-onboard/runtime-namespace.json`',
-      '6. `.agent-onboard/project.json`',
-      '7. `.agent-onboard/work-items.json`',
-      '8. `README.md`',
-      '9. `authority-map.json`',
-      '10. `manifest.json`',
-      '',
-      '`authority-map.json` owns stable authority and file URNs. `manifest.json` records content identity with `file_urn`, `file_path`, and `file_id` fields. Administrative markdown metadata belongs in leading HTML comment headers or registry metadata, not visible front matter.',
-      '',
-      'Work-item semantics remain delegated to `agent-onboard`.',
+      sourceOfTruthBlock(name, policy),
       ''
     ].join('\n');
   }
 
-  function authorityMapTemplate(root, name) {
-    const namespace = targetNamespace(name);
-    const authorityCandidates = [
-      { class: 'source-of-truth', path: METADATA_FILES.sourceOfTruth, slug: 'source-of-truth', status: 'canonical' },
-      { class: 'agent-instructions', path: 'AGENTS.md', slug: 'agents', status: 'canonical' },
-      { class: 'machine-context', path: 'llms.txt', slug: 'llms', status: 'canonical' },
-      { class: 'package-docs', path: 'README.md', slug: 'readme', status: 'canonical' },
-      { class: 'target-config', path: 'agent-onboard.target.json', slug: 'target-config', status: 'active' },
-      { class: 'work-items', path: '.agent-onboard/work-items.json', slug: 'work-items', status: 'active' }
-    ];
-    const authorities = authorityCandidates
-      .filter((entry) => entry.path === METADATA_FILES.sourceOfTruth || existingFile(root, entry.path))
-      .map((entry, index) => ({
-        class: entry.class,
-        numeric_id: String(index + 1).padStart(4, '0'),
-        path: entry.path,
-        slug: entry.slug,
-        status: entry.status,
-        urn: `urn:${namespace}:${entry.slug}-${String(index + 1).padStart(4, '0')}`
-      }));
-    const filePaths = walkFiles(root)
-      .filter((relativePath) => !DEFAULT_EXCLUDED_PATHS.includes(relativePath))
-      .concat([METADATA_FILES.sourceOfTruth, METADATA_FILES.authorityMap])
+  function sourceOfTruthContent(root, name, policy) {
+    const absolutePath = path.join(root, METADATA_FILES.sourceOfTruth);
+    const block = sourceOfTruthBlock(name, policy);
+    if (!fs.existsSync(absolutePath)) return policy.write_source_of_truth ? sourceOfTruthTemplate(name, policy) : null;
+    const current = fs.readFileSync(absolutePath, 'utf8');
+    const begin = current.indexOf(AOB_METADATA_MARKER.begin);
+    const end = current.indexOf(AOB_METADATA_MARKER.end);
+    if (begin >= 0 && end > begin) return `${current.slice(0, begin)}${block}${current.slice(end + AOB_METADATA_MARKER.end.length)}`;
+    if (policy.preserve_source_of_truth) return null;
+    return sourceOfTruthTemplate(name, policy);
+  }
+
+  function isPolicyExcluded(relativePath, policy) {
+    if (policy.exclude_paths.includes(relativePath)) return true;
+    if (!policy.include_control_state && (relativePath === '.agent-onboard' || relativePath.startsWith('.agent-onboard/'))) return true;
+    return policy.exclude_path_prefixes.some((prefix) => relativePath === prefix || relativePath.startsWith(`${prefix}/`));
+  }
+
+  function policyFilePaths(root, policy, generatedContentByPath = {}, options = {}) {
+    const allowManifest = options.allowManifest === true;
+    const explicitIncludePaths = policy.include_paths.filter((relativePath) => existingFile(root, relativePath) || generatedContentByPath[relativePath] !== undefined);
+    return walkFiles(root)
+      .concat(Object.keys(generatedContentByPath))
+      .concat(allowManifest ? [METADATA_FILES.manifest] : [])
+      .concat(explicitIncludePaths)
+      .filter((relativePath) => allowManifest || relativePath !== METADATA_FILES.manifest)
+      .filter((relativePath) => (allowManifest && relativePath === METADATA_FILES.manifest) || !isPolicyExcluded(relativePath, policy))
+      .filter((relativePath, index, values) => values.indexOf(relativePath) === index)
+      .sort();
+  }
+
+  function authorityMapTemplate(root, name, context, generatedContentByPath) {
+    const { policy, existing_authority_map: existingAuthorityMap } = context;
+    const existing = context.adopt_existing && existingAuthorityMap.status === 'valid' && isPlainObject(existingAuthorityMap.value)
+      ? existingAuthorityMap.value
+      : {};
+    const filePaths = policyFilePaths(root, policy, generatedContentByPath, {
+      allowManifest: policy.include_manifest_in_authority_map
+    }).concat([METADATA_FILES.authorityMap])
+      .filter((relativePath) => policy.include_manifest_in_authority_map || relativePath !== METADATA_FILES.manifest)
       .filter((relativePath, index, values) => values.indexOf(relativePath) === index)
       .sort();
     const file_urns = filePaths.map((relativePath) => ({
       file_path: relativePath,
-      file_urn: fileUrn(namespace, relativePath)
+      file_urn: fileUrn(policy.urn_namespace, relativePath)
     }));
     return {
-      authorities,
+      ...existing,
+      authorities: Object.prototype.hasOwnProperty.call(existing, 'authorities') ? existing.authorities : [],
       file_urns,
       metadata_policy: {
+        ...(isPlainObject(existing.metadata_policy) ? existing.metadata_policy : {}),
+        mechanics_owner: PACKAGE_NAME,
+        semantics_owner: 'target_repository',
         markdown_admin_metadata: 'leading_html_comment_or_registry',
-        visible_front_matter_admin_metadata: false,
-        work_item_semantics: 'delegated_to_agent_onboard'
+        visible_front_matter_admin_metadata: false
       },
-      namespace: `urn:${namespace}:`,
-      schema: 'agent-onboard-target-authority-map-001'
+      namespace: policy.urn_namespace,
+      schema: policy.authority_map_schema,
+      target: {
+        ...(isPlainObject(existing.target) ? existing.target : {}),
+        name
+      }
     };
   }
 
-  function manifestTemplate(root, name, generatedContentByPath) {
-    const namespace = targetNamespace(name);
+  function manifestTemplate(root, name, generatedContentByPath, policy) {
     const files = {};
-    const filePaths = walkFiles(root)
-      .filter((relativePath) => !DEFAULT_EXCLUDED_PATHS.includes(relativePath))
-      .concat(Object.keys(generatedContentByPath))
-      .filter((relativePath, index, values) => values.indexOf(relativePath) === index)
-      .sort();
+    const filePaths = policyFilePaths(root, policy, generatedContentByPath);
     for (const relativePath of filePaths) {
       const generatedContent = generatedContentByPath[relativePath];
       const digest = generatedContent === undefined
         ? hashFile(path.join(root, relativePath))
         : hashText(generatedContent);
-      const urn = fileUrn(namespace, relativePath);
+      const urn = fileUrn(policy.urn_namespace, relativePath);
       files[urn] = {
         file_id: fileId(digest),
         file_path: relativePath,
@@ -215,12 +390,17 @@ function createTargetMetadataService(deps) {
     }
     return {
       algorithm: 'sha-256',
-      exclusions: DEFAULT_EXCLUDED_PATHS.map((relativePath) => ({
+      exclusions: policy.exclude_paths.map((relativePath) => ({
         file_path: relativePath,
-        reason: relativePath === METADATA_FILES.manifest ? 'self_referential_manifest' : 'mutable_agent_onboard_state'
+        reason: relativePath === METADATA_FILES.manifest ? 'self_referential_manifest' : 'target_metadata_policy'
       })),
       files,
-      schema: 'agent-onboard-target-content-manifest-002',
+      metadata_policy: {
+        mechanics_owner: PACKAGE_NAME,
+        semantics_owner: 'target_repository',
+        source: 'target_policy_driven'
+      },
+      schema: policy.manifest_schema,
       target: {
         kind: 'target-repo',
         name
@@ -228,21 +408,26 @@ function createTargetMetadataService(deps) {
     };
   }
 
-  function metadataWriteSet(root) {
+  function metadataWriteSet(root, options = {}) {
     const [name] = targetName(root);
-    const sourceOfTruth = sourceOfTruthTemplate(name);
-    const authorityMap = authorityMapTemplate(root, name);
+    const context = resolveMetadataPolicy(root, name, options);
+    if (context.errors.length > 0) return { context, writes: [] };
+    const sourceOfTruth = sourceOfTruthContent(root, name, context.policy);
+    const generatedContentByPath = {};
+    if (sourceOfTruth !== null) generatedContentByPath[METADATA_FILES.sourceOfTruth] = sourceOfTruth;
+    const authorityMap = authorityMapTemplate(root, name, context, generatedContentByPath);
     const authorityMapText = stableJson(authorityMap);
-    const manifest = manifestTemplate(root, name, {
-      [METADATA_FILES.sourceOfTruth]: sourceOfTruth,
-      [METADATA_FILES.authorityMap]: authorityMapText
-    });
-    return [
-      {
+    generatedContentByPath[METADATA_FILES.authorityMap] = authorityMapText;
+    const manifest = manifestTemplate(root, name, generatedContentByPath, context.policy);
+    const writes = [];
+    if (sourceOfTruth !== null) {
+      writes.push({
         path: METADATA_FILES.sourceOfTruth,
         kind: 'text',
         content: sourceOfTruth
-      },
+      });
+    }
+    writes.push(
       {
         path: METADATA_FILES.authorityMap,
         kind: 'json',
@@ -253,7 +438,8 @@ function createTargetMetadataService(deps) {
         kind: 'json',
         value: manifest
       }
-    ];
+    );
+    return { context, writes };
   }
 
   function desiredWriteContent(item) {
@@ -262,16 +448,18 @@ function createTargetMetadataService(deps) {
 
   function planMetadataWrites(root, options = {}) {
     const force = options.force === true;
-    return metadataWriteSet(root).map((item) => {
+    const writeSet = metadataWriteSet(root, options);
+    const allowAdoptOverwrite = options.adoptExisting === true;
+    const plannedWrites = writeSet.writes.map((item) => {
       const absolutePath = path.join(root, item.path);
       const desired = desiredWriteContent(item);
       const exists = fs.existsSync(absolutePath);
       const current = exists ? fs.readFileSync(absolutePath, 'utf8') : null;
       const identical = exists && current === desired;
-      const conflict = exists && !identical && !force;
+      const conflict = exists && !identical && !force && !allowAdoptOverwrite;
       let action = TARGET_METADATA.action.create;
       if (identical) action = TARGET_METADATA.action.keep;
-      else if (exists && force) action = TARGET_METADATA.action.overwrite;
+      else if (exists && (force || allowAdoptOverwrite)) action = TARGET_METADATA.action.overwrite;
       else if (conflict) action = TARGET_METADATA.action.conflict;
       return {
         path: item.path,
@@ -282,6 +470,7 @@ function createTargetMetadataService(deps) {
         content: desired
       };
     });
+    return { context: writeSet.context, plannedWrites };
   }
 
   function performMetadataWrites(root, plannedWrites) {
@@ -441,18 +630,23 @@ function createTargetMetadataService(deps) {
     };
   }
 
-  function metadataPlan(targetRoot = process.cwd()) {
+  function metadataPlan(targetRoot = process.cwd(), options = {}) {
     const absoluteTargetRoot = path.resolve(targetRoot || process.cwd());
     const [name, kind] = targetName(absoluteTargetRoot);
+    const context = fs.existsSync(absoluteTargetRoot) && fs.statSync(absoluteTargetRoot).isDirectory()
+      ? resolveMetadataPolicy(absoluteTargetRoot, name, options)
+      : null;
+    const errors = context ? context.errors : [`target path is not a directory: ${absoluteTargetRoot}`];
     return {
       schema: TARGET_METADATA.planSchema,
-      status: TARGET_METADATA.status.ok,
+      status: errors.length === 0 ? TARGET_METADATA.status.ok : TARGET_METADATA.status.error,
       package_name: PACKAGE_NAME,
       version: VERSION,
       release_line: PUBLIC_RELEASE_CONTRACT.release_line,
       command: TARGET_METADATA.planCommand,
       command_family: TARGET_METADATA.commandFamily,
       target: { name, kind, root: absoluteTargetRoot },
+      metadata_policy: context ? policySummary(context) : null,
       manifest_contract: {
         path: METADATA_FILES.manifest,
         files_shape: 'object_keyed_by_file_urn',
@@ -480,11 +674,11 @@ function createTargetMetadataService(deps) {
       },
       next_steps: [
         `run ${PACKAGE_NAME} target metadata --check --target ${absoluteTargetRoot}`,
-        `run ${PACKAGE_NAME} target metadata --write --target ${absoluteTargetRoot} to generate missing target metadata`,
-        'keep work-item semantics in agent-onboard instead of repo-owned tools',
-        'regenerate target-owned manifests with the target repo tooling when files change'
+        `run ${PACKAGE_NAME} target metadata --write --target ${absoluteTargetRoot} to generate target metadata with the effective policy`,
+        `run ${PACKAGE_NAME} target metadata --write --policy ${METADATA_FILES.policy} --target ${absoluteTargetRoot} when the target repo owns custom metadata semantics`,
+        `run ${PACKAGE_NAME} target metadata --write --adopt-existing --target ${absoluteTargetRoot} to preserve existing target-owned schema and authority sections`
       ],
-      errors: []
+      errors
     };
   }
 
@@ -509,12 +703,34 @@ function createTargetMetadataService(deps) {
     }
 
     const [name, kind] = targetName(absoluteTargetRoot);
-    const plannedWrites = planMetadataWrites(absoluteTargetRoot, options);
+    const { context, plannedWrites } = planMetadataWrites(absoluteTargetRoot, options);
+    if (context.errors.length > 0) {
+      return {
+        schema: TARGET_METADATA.writeSchema,
+        status: TARGET_METADATA.status.error,
+        package_name: PACKAGE_NAME,
+        version: VERSION,
+        release_line: PUBLIC_RELEASE_CONTRACT.release_line,
+        command: TARGET_METADATA.writeCommand,
+        command_family: TARGET_METADATA.commandFamily,
+        target: { name, kind, root: absoluteTargetRoot },
+        metadata_policy: policySummary(context),
+        force: options.force === true,
+        adopt_existing: options.adoptExisting === true,
+        writes_performed: false,
+        planned_writes: [],
+        conflicts: [],
+        generated_files: [],
+        post_write_check: null,
+        boundary: noMutationBoundary(),
+        errors: context.errors
+      };
+    }
     const conflicts = plannedWrites.filter((item) => item.action === TARGET_METADATA.action.conflict);
     const ok = conflicts.length === 0;
     if (ok) performMetadataWrites(absoluteTargetRoot, plannedWrites);
-    const check = ok ? metadataCheck(absoluteTargetRoot) : null;
-    const errors = conflicts.map((item) => `${item.path} exists with different content; rerun with --force to overwrite`);
+    const check = ok ? metadataCheck(absoluteTargetRoot, options) : null;
+    const errors = conflicts.map((item) => `${item.path} exists with different content; rerun with --force or --adopt-existing to overwrite generated metadata safely`);
     if (check && check.errors.length > 0) errors.push(...check.errors.map((error) => `post-write check: ${error}`));
     const wroteFiles = ok && plannedWrites.some((item) => item.action === TARGET_METADATA.action.create || item.action === TARGET_METADATA.action.overwrite);
 
@@ -527,7 +743,9 @@ function createTargetMetadataService(deps) {
       command: TARGET_METADATA.writeCommand,
       command_family: TARGET_METADATA.commandFamily,
       target: { name, kind, root: absoluteTargetRoot },
+      metadata_policy: policySummary(context),
       force: options.force === true,
+      adopt_existing: options.adoptExisting === true,
       writes_performed: wroteFiles,
       planned_writes: summarizeWrites(plannedWrites),
       conflicts: conflicts.map((item) => item.path),
@@ -553,7 +771,7 @@ function createTargetMetadataService(deps) {
     };
   }
 
-  function metadataCheck(targetRoot = process.cwd()) {
+  function metadataCheck(targetRoot = process.cwd(), options = {}) {
     const absoluteTargetRoot = path.resolve(targetRoot || process.cwd());
     if (!fs.existsSync(absoluteTargetRoot) || !fs.statSync(absoluteTargetRoot).isDirectory()) {
       return {
@@ -572,10 +790,12 @@ function createTargetMetadataService(deps) {
     }
 
     const [name, kind] = targetName(absoluteTargetRoot);
+    const context = resolveMetadataPolicy(absoluteTargetRoot, name, options);
     const manifest = manifestReport(absoluteTargetRoot);
     const authorityMap = authorityMapReport(absoluteTargetRoot);
     const markdown_metadata = MARKDOWN_METADATA_FILES.map((relativePath) => markdownMetadataReport(absoluteTargetRoot, relativePath));
     const errors = [
+      ...context.errors,
       ...manifest.errors,
       ...authorityMap.errors,
       ...markdown_metadata.flatMap((report) => report.errors)
@@ -591,6 +811,7 @@ function createTargetMetadataService(deps) {
       command: TARGET_METADATA.checkCommand,
       command_family: TARGET_METADATA.commandFamily,
       target: { name, kind, root: absoluteTargetRoot },
+      metadata_policy: policySummary(context),
       validated: {
         target_path_readable: true,
         no_writes_performed: true,

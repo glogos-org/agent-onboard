@@ -12,6 +12,7 @@ const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
 const EXPECTED_RELEASE_LINE = 'public_core_config_guard_service_extraction_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
+const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
   'LICENSE',
   'README.md',
@@ -77,6 +78,16 @@ function run(args, opts = {}) {
     timeout: 60000,
     maxBuffer: 50 * 1024 * 1024
   });
+}
+
+function targetConfigPath(root) {
+  return path.join(root, TARGET_CONFIG_FILE);
+}
+
+function writeTargetConfig(root, content) {
+  const file = targetConfigPath(root);
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  fs.writeFileSync(file, content);
 }
 
 function readJsonOutput(result) {
@@ -203,7 +214,7 @@ fullSourceTest('public runtime contracts module centralizes command and package 
   const composer = require(path.join(ROOT, 'cli', 'agent_onboard', 'runtime-composer.js'));
   assert.strictEqual(contracts.RUNTIME_CONTRACTS.schema, 'agent-onboard-public-runtime-contracts-001');
   assert.strictEqual(contracts.RUNTIME_CONTRACTS.package_name, 'agent-onboard');
-  assert.strictEqual(contracts.TARGET_CONFIG_FILE, 'agent-onboard.target.json');
+  assert.strictEqual(contracts.TARGET_CONFIG_FILE, '.agent-onboard/target.json');
   assert.strictEqual(contracts.TARGET_COMMAND.doctor, 'doctor');
   assert.strictEqual(contracts.TARGET_COMMAND.metadata, 'metadata');
   assert.strictEqual(contracts.TARGET_DOCTOR_COMMAND.flag.text, '--text');
@@ -603,7 +614,7 @@ fullSourceTest('full source block line 535', () => {
   assert.strictEqual(output.version, EXPECTED_VERSION);
   assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
   assert.strictEqual(output.command, 'agent-onboard authority --first-read');
-  assert.deepStrictEqual(output.read_order.map((entry) => entry.path), ['AGENTS.md', 'llms.txt', '.agent-onboard/authority-path.json', 'agent-onboard.target.json', '.agent-onboard/runtime-namespace.json', '.agent-onboard/project.json', '.agent-onboard/work-items.json', 'README.md', 'raw evidence/source files']);
+  assert.deepStrictEqual(output.read_order.map((entry) => entry.path), ['AGENTS.md', 'llms.txt', '.agent-onboard/authority-path.json', '.agent-onboard/target.json', '.agent-onboard/runtime-namespace.json', '.agent-onboard/project.json', '.agent-onboard/work-items.json', 'README.md', 'raw evidence/source files']);
   assert.strictEqual(output.boundary.writes_files, false);
 });
 
@@ -907,7 +918,7 @@ fullSourceTest('full source block line 840', () => {
   assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
   assert.strictEqual(output.command, 'agent-onboard target onboarding --plan');
   assert.strictEqual(output.target.name, 'target-fixture');
-  assert.ok(output.canonical_files.includes('agent-onboard.target.json'));
+  assert.ok(output.canonical_files.includes('.agent-onboard/target.json'));
   assert.ok(output.canonical_files.includes('.agent-onboard/runtime-namespace.json'));
   assert.ok(output.canonical_files.includes('.agent-onboard/project.json'));
   assert.ok(output.canonical_files.includes('.agent-onboard/work-items.json'));
@@ -919,7 +930,7 @@ fullSourceTest('full source block line 840', () => {
   assert.strictEqual(output.boundary.write_commands_require_explicit_write_flag, true);
   assert.ok(output.phases.some((phase) => phase.command === 'agent-onboard target onboarding --write'));
   assert.strictEqual(output.planned_files.length, 7);
-  assert.deepStrictEqual(output.planned_files.map((item) => item.path), ['agent-onboard.target.json', '.agent-onboard/runtime-namespace.json', '.agent-onboard/project.json', '.agent-onboard/work-items.json', 'AGENTS.md', 'llms.txt', '.agent-onboard/authority-path.json']);
+  assert.deepStrictEqual(output.planned_files.map((item) => item.path), ['.agent-onboard/target.json', '.agent-onboard/runtime-namespace.json', '.agent-onboard/project.json', '.agent-onboard/work-items.json', 'AGENTS.md', 'llms.txt', '.agent-onboard/authority-path.json']);
 });
 
 fullSourceTest('target doctor reports target repo readiness without writes', () => {
@@ -944,7 +955,7 @@ fullSourceTest('target doctor reports target repo readiness without writes', () 
   assert.strictEqual(output.command_family, 'target doctor');
   assert.strictEqual(output.target.name, 'target-fixture');
   assert.strictEqual(output.readiness.status, 'needs_onboarding');
-  assert.ok(output.readiness.missing_files.includes('agent-onboard.target.json'));
+  assert.ok(output.readiness.missing_files.includes('.agent-onboard/target.json'));
   assert.ok(output.readiness.missing_files.includes('.agent-onboard/work-items.json'));
   assert.ok(output.profile.package_managers.some((manager) => manager.name === 'npm'));
   assert.ok(output.profile.languages.some((language) => language.name === 'node'));
@@ -954,14 +965,14 @@ fullSourceTest('target doctor reports target repo readiness without writes', () 
   assert.strictEqual(output.writes_performed, false);
   assert.strictEqual(output.boundary.runs_package_manager, false);
   assert.strictEqual(output.boundary.runs_build_test_deploy, false);
-  assert.strictEqual(fs.existsSync(path.join(dir, 'agent-onboard.target.json')), false);
+  assert.strictEqual(fs.existsSync(path.join(dir, '.agent-onboard/target.json')), false);
   assert.strictEqual(fs.existsSync(path.join(dir, '.agent-onboard')), false);
 
   const textResult = run(['target', 'doctor', '--text', '--target', dir]);
   assert.strictEqual(textResult.status, 0, textResult.stderr || textResult.stdout);
   assert.ok(textResult.stdout.includes('agent-onboard target doctor'));
   assert.ok(textResult.stdout.includes('Readiness: needs_onboarding'));
-  assert.ok(textResult.stdout.includes('Missing: agent-onboard.target.json'));
+  assert.ok(textResult.stdout.includes('Missing: .agent-onboard/target.json'));
   assert.ok(textResult.stdout.includes('Writes performed: false'));
 });
 
@@ -1078,6 +1089,8 @@ fullSourceTest('target metadata validates forge-style manifest and comment-heade
   assert.strictEqual(plan.schema, 'agent-onboard-target-metadata-plan-result-001');
   assert.strictEqual(plan.status, 'ok');
   assert.strictEqual(plan.manifest_contract.files_shape, 'object_keyed_by_file_urn');
+  assert.strictEqual(plan.metadata_policy.profile, 'default');
+  assert.strictEqual(plan.metadata_policy.adopt_existing, false);
   assert.ok(plan.next_steps.some((step) => step.includes('target metadata --check')));
 
   const result = run(['target', 'metadata', '--check', '--target', dir]);
@@ -1163,6 +1176,68 @@ fullSourceTest('target metadata write generates manifest authority files and ref
   assert.strictEqual(force.force, true);
 });
 
+fullSourceTest('target metadata write respects target policy and preserves target-owned source authority', () => {
+  const dir = tempRepo();
+  fs.mkdirSync(path.join(dir, '.agent-onboard'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'README.md'), '# Target fixture\n');
+  const sourceOfTruthPath = path.join(dir, 'SOURCE_OF_TRUTH.md');
+  const sourceOfTruth = [
+    '# Forge Source',
+    '',
+    'Target-owned authority semantics stay here.',
+    ''
+  ].join('\n');
+  fs.writeFileSync(sourceOfTruthPath, sourceOfTruth);
+  fs.writeFileSync(path.join(dir, '.agent-onboard', 'metadata-policy.json'), JSON.stringify({
+    metadata: {
+      manifest_schema: 'forge-repo-content-manifest-002',
+      authority_map_schema: 'forge-authority-and-file-urn-map-002',
+      urn_namespace: 'urn:forge:file',
+      include_control_state: true,
+      include_manifest_in_authority_map: true,
+      preserve_source_of_truth: true
+    }
+  }, null, 2) + '\n');
+  fs.writeFileSync(path.join(dir, 'authority-map.json'), JSON.stringify({
+    schema: 'legacy-forge-authority-map',
+    authorities: [
+      {
+        class: 'source-of-truth',
+        path: 'SOURCE_OF_TRUTH.md',
+        urn: 'urn:forge:source-of-truth'
+      }
+    ],
+    metadata_policy: {
+      authority_semantics: 'target_owned'
+    }
+  }, null, 2) + '\n');
+  fs.writeFileSync(path.join(dir, 'manifest.json'), JSON.stringify({
+    schema: 'legacy-forge-manifest',
+    files: {}
+  }, null, 2) + '\n');
+
+  const result = run(['target', 'metadata', '--write', '--policy', '.agent-onboard/metadata-policy.json', '--adopt-existing', '--target', dir]);
+  const output = readJsonOutput(result);
+  assert.strictEqual(output.status, 'ok');
+  assert.strictEqual(output.metadata_policy.source, 'explicit_policy_file');
+  assert.strictEqual(output.metadata_policy.urn_namespace, 'urn:forge:file');
+  assert.strictEqual(output.metadata_policy.manifest_schema, 'forge-repo-content-manifest-002');
+  assert.strictEqual(output.metadata_policy.authority_map_schema, 'forge-authority-and-file-urn-map-002');
+  assert.strictEqual(output.adopt_existing, true);
+  assert.strictEqual(fs.readFileSync(sourceOfTruthPath, 'utf8'), sourceOfTruth);
+
+  const manifest = JSON.parse(fs.readFileSync(path.join(dir, 'manifest.json'), 'utf8'));
+  assert.strictEqual(manifest.schema, 'forge-repo-content-manifest-002');
+  assert.ok(Object.keys(manifest.files).some((urn) => urn.startsWith('urn:forge:file:readme-md-')));
+  assert.ok(Object.values(manifest.files).every((entry) => entry.file_id.startsWith('ni:///sha-256;')));
+
+  const authorityMap = JSON.parse(fs.readFileSync(path.join(dir, 'authority-map.json'), 'utf8'));
+  assert.strictEqual(authorityMap.schema, 'forge-authority-and-file-urn-map-002');
+  assert.strictEqual(authorityMap.authorities[0].urn, 'urn:forge:source-of-truth');
+  assert.strictEqual(authorityMap.metadata_policy.authority_semantics, 'target_owned');
+  assert.ok(authorityMap.file_urns.some((entry) => entry.file_path === 'manifest.json' && entry.file_urn.startsWith('urn:forge:file:manifest-json-')));
+});
+
 fullSourceTest('source repo target metadata surface validates without package expansion', () => {
   const result = run(['target', 'metadata', '--check', '--target', ROOT]);
   const output = readJsonOutput(result);
@@ -1172,7 +1247,8 @@ fullSourceTest('source repo target metadata surface validates without package ex
   assert.strictEqual(output.manifest.path, 'manifest.json');
   assert.ok(output.manifest.file_count >= 7);
   assert.strictEqual(output.authority_map.path, 'authority-map.json');
-  assert.ok(output.authority_map.authority_count >= 5);
+  assert.ok(Number.isInteger(output.authority_map.authority_count));
+  assert.ok(output.authority_map.file_urn_count >= 7);
   assert.strictEqual(output.validated.no_writes_performed, true);
   assert.strictEqual(output.validated.work_item_semantics_delegated_to_agent_onboard, true);
 });
@@ -1217,14 +1293,14 @@ fullSourceTest('target repair plans missing onboarding files without writes', ()
   assert.ok(output.repair_plan.every((item) => item.will_write === true));
   assert.strictEqual(output.validated.plan_mode_writes_no_files, true);
   assert.strictEqual(output.boundary.writes_files, false);
-  assert.strictEqual(fs.existsSync(path.join(dir, 'agent-onboard.target.json')), false);
+  assert.strictEqual(fs.existsSync(path.join(dir, '.agent-onboard/target.json')), false);
   assert.strictEqual(fs.existsSync(path.join(dir, '.agent-onboard')), false);
 });
 
 fullSourceTest('target repair write preserves existing non-identical onboarding files by default', () => {
   const dir = tempRepo();
   const existingConfig = '{}\n';
-  fs.writeFileSync(path.join(dir, 'agent-onboard.target.json'), existingConfig);
+  writeTargetConfig(dir, existingConfig);
 
   const result = run(['target', 'repair', '--write', '--target', dir]);
   const output = readJsonOutput(result);
@@ -1233,10 +1309,10 @@ fullSourceTest('target repair write preserves existing non-identical onboarding 
   assert.strictEqual(output.force, false);
   assert.strictEqual(output.writes_performed, true);
   assert.strictEqual(output.repair_outcome, 'partial_existing_files_preserved');
-  assert.ok(output.skipped_existing_files.includes('agent-onboard.target.json'));
-  assert.ok(!output.written_files.includes('agent-onboard.target.json'));
+  assert.ok(output.skipped_existing_files.includes('.agent-onboard/target.json'));
+  assert.ok(!output.written_files.includes('.agent-onboard/target.json'));
   assert.strictEqual(output.created_files.length, 6);
-  assert.strictEqual(fs.readFileSync(path.join(dir, 'agent-onboard.target.json'), 'utf8'), existingConfig);
+  assert.strictEqual(fs.readFileSync(path.join(dir, '.agent-onboard/target.json'), 'utf8'), existingConfig);
   assert.strictEqual(fs.existsSync(path.join(dir, '.agent-onboard', 'work-items.json')), true);
   assert.strictEqual(output.boundary.skips_existing_non_identical_files_by_default, true);
   assert.strictEqual(output.boundary.overwrites_existing_files, false);
@@ -1244,17 +1320,17 @@ fullSourceTest('target repair write preserves existing non-identical onboarding 
 
 fullSourceTest('target repair force overwrites existing non-identical onboarding files only when explicit', () => {
   const dir = tempRepo();
-  fs.writeFileSync(path.join(dir, 'agent-onboard.target.json'), '{}\n');
+  writeTargetConfig(dir, '{}\n');
 
   const result = run(['target', 'repair', '--write', '--force', '--target', dir]);
   const output = readJsonOutput(result);
   assert.strictEqual(output.status, 'ok');
   assert.strictEqual(output.mode, 'write');
   assert.strictEqual(output.force, true);
-  assert.ok(output.overwritten_files.includes('agent-onboard.target.json'));
-  assert.ok(output.written_files.includes('agent-onboard.target.json'));
+  assert.ok(output.overwritten_files.includes('.agent-onboard/target.json'));
+  assert.ok(output.written_files.includes('.agent-onboard/target.json'));
   assert.deepStrictEqual(output.skipped_existing_files, []);
-  const config = JSON.parse(fs.readFileSync(path.join(dir, 'agent-onboard.target.json'), 'utf8'));
+  const config = JSON.parse(fs.readFileSync(path.join(dir, '.agent-onboard/target.json'), 'utf8'));
   assert.strictEqual(config.schema, 'agent-onboard-target-config-001');
   assert.strictEqual(output.boundary.overwrites_existing_files, true);
 });
@@ -1280,27 +1356,27 @@ fullSourceTest('full source block line 865', () => {
   assert.deepStrictEqual(output.observed_target_projection.target_onboarding_explicit_write_projection.planned_writes.map((item) => item.action), ['create', 'create', 'create', 'create', 'create', 'create', 'create']);
   assert.strictEqual(output.observed_target_projection.target_onboarding_explicit_write_projection.writes_performed, false);
   assert.deepStrictEqual(output.observed_target_projection.target_bootstrap_force_dry_run.planned_writes.map((item) => item.action), ['create']);
-  assert.strictEqual(fs.existsSync(path.join(dir, 'agent-onboard.target.json')), false);
+  assert.strictEqual(fs.existsSync(path.join(dir, '.agent-onboard/target.json')), false);
   assert.strictEqual(fs.existsSync(path.join(dir, '.agent-onboard', 'project.json')), false);
   assert.strictEqual(fs.existsSync(path.join(dir, 'AGENTS.md')), false);
 });
 
 fullSourceTest('full source block line 891', () => {
   const dir = tempRepo();
-  fs.writeFileSync(path.join(dir, 'agent-onboard.target.json'), '{}\n');
+  writeTargetConfig(dir, '{}\n');
   const conflict = run(['target', 'bootstrap', '--dry-run'], { cwd: dir, expectFailure: true });
   const conflictOutput = readJsonFailure(conflict);
   assert.strictEqual(conflictOutput.status, 'error');
   assert.strictEqual(conflictOutput.writes_performed, false);
-  assert.deepStrictEqual(conflictOutput.conflicts, ['agent-onboard.target.json']);
-  assert.strictEqual(fs.readFileSync(path.join(dir, 'agent-onboard.target.json'), 'utf8'), '{}\n');
+  assert.deepStrictEqual(conflictOutput.conflicts, ['.agent-onboard/target.json']);
+  assert.strictEqual(fs.readFileSync(path.join(dir, '.agent-onboard/target.json'), 'utf8'), '{}\n');
 
   const force = run(['target', 'bootstrap', '--dry-run', '--force'], { cwd: dir });
   const forceOutput = readJsonOutput(force);
   assert.strictEqual(forceOutput.status, 'ok');
   assert.strictEqual(forceOutput.writes_performed, false);
   assert.deepStrictEqual(forceOutput.planned_writes.map((item) => item.action), ['overwrite']);
-  assert.strictEqual(fs.readFileSync(path.join(dir, 'agent-onboard.target.json'), 'utf8'), '{}\n');
+  assert.strictEqual(fs.readFileSync(path.join(dir, '.agent-onboard/target.json'), 'utf8'), '{}\n');
 });
 
 fullSourceTest('full source block line 909', () => {
@@ -1309,8 +1385,8 @@ fullSourceTest('full source block line 909', () => {
   const bootstrapOutput = readJsonOutput(bootstrap);
   assert.strictEqual(bootstrapOutput.status, 'ok');
   assert.strictEqual(bootstrapOutput.writes_performed, false);
-  assert.deepStrictEqual(bootstrapOutput.planned_writes.map((item) => item.path), ['agent-onboard.target.json']);
-  assert.strictEqual(fs.existsSync(path.join(dir, 'agent-onboard.target.json')), false);
+  assert.deepStrictEqual(bootstrapOutput.planned_writes.map((item) => item.path), ['.agent-onboard/target.json']);
+  assert.strictEqual(fs.existsSync(path.join(dir, '.agent-onboard/target.json')), false);
 
   const takeover = run(['target-instance', 'takeover', '--dry-run'], { cwd: dir });
   const takeoverOutput = readJsonOutput(takeover);
@@ -1336,7 +1412,7 @@ fullSourceTest('full source block line 933', () => {
   assert.strictEqual(output.writes_performed, false);
   assert.strictEqual(output.ready_for_explicit_write, true);
   assert.deepStrictEqual(output.conflicts, []);
-  assert.deepStrictEqual(output.planned_writes.map((item) => item.path), ['agent-onboard.target.json', '.agent-onboard/runtime-namespace.json', '.agent-onboard/project.json', '.agent-onboard/work-items.json', 'AGENTS.md', 'llms.txt', '.agent-onboard/authority-path.json']);
+  assert.deepStrictEqual(output.planned_writes.map((item) => item.path), ['.agent-onboard/target.json', '.agent-onboard/runtime-namespace.json', '.agent-onboard/project.json', '.agent-onboard/work-items.json', 'AGENTS.md', 'llms.txt', '.agent-onboard/authority-path.json']);
   assert.strictEqual(fs.existsSync(path.join(dir, 'AGENTS.md')), false);
 });
 
@@ -1362,12 +1438,12 @@ fullSourceTest('full source block line 958', () => {
   assert.strictEqual(output.mode, 'write');
   assert.strictEqual(output.force, false);
   assert.strictEqual(output.writes_performed, true);
-  assert.deepStrictEqual(output.written_files, ['agent-onboard.target.json', '.agent-onboard/runtime-namespace.json', '.agent-onboard/project.json', '.agent-onboard/work-items.json', 'AGENTS.md', 'llms.txt', '.agent-onboard/authority-path.json']);
+  assert.deepStrictEqual(output.written_files, ['.agent-onboard/target.json', '.agent-onboard/runtime-namespace.json', '.agent-onboard/project.json', '.agent-onboard/work-items.json', 'AGENTS.md', 'llms.txt', '.agent-onboard/authority-path.json']);
   assert.deepStrictEqual(output.planned_writes.map((item) => item.action), ['create', 'create', 'create', 'create', 'create', 'create', 'create']);
   assert.strictEqual(output.boundary.explicit_write_flag_required, true);
   assert.strictEqual(output.boundary.writes_only_canonical_target_onboarding_files, true);
   assert.strictEqual(output.boundary.git_mutation, false);
-  assert.strictEqual(fs.existsSync(path.join(dir, 'agent-onboard.target.json')), true);
+  assert.strictEqual(fs.existsSync(path.join(dir, '.agent-onboard/target.json')), true);
   assert.strictEqual(fs.existsSync(path.join(dir, '.agent-onboard', 'runtime-namespace.json')), true);
   assert.strictEqual(fs.existsSync(path.join(dir, '.agent-onboard', 'project.json')), true);
   assert.strictEqual(fs.existsSync(path.join(dir, '.agent-onboard', 'work-items.json')), true);
@@ -1384,7 +1460,7 @@ fullSourceTest('full source block line 982', () => {
   assert.strictEqual(conflictOutput.status, 'error');
   assert.deepStrictEqual(conflictOutput.conflicts, ['AGENTS.md']);
   assert.strictEqual(conflictOutput.writes_performed, false);
-  assert.strictEqual(fs.existsSync(path.join(dir, 'agent-onboard.target.json')), false);
+  assert.strictEqual(fs.existsSync(path.join(dir, '.agent-onboard/target.json')), false);
   assert.strictEqual(fs.readFileSync(path.join(dir, 'AGENTS.md'), 'utf8'), '# custom instructions\n');
 
   const force = run(['target', 'onboarding', '--write', '--force'], { cwd: dir });
@@ -1713,7 +1789,7 @@ fullSourceTest('full source block line 1313', () => {
   const output = readJsonOutput(result);
   assert.strictEqual(output.writes_performed, false);
   assert.strictEqual(output.planned_writes.length, 4);
-  assert.ok(!fs.existsSync(path.join(dir, 'agent-onboard.target.json')));
+  assert.ok(!fs.existsSync(path.join(dir, '.agent-onboard/target.json')));
   assert.ok(!fs.existsSync(path.join(dir, '.agent-onboard', 'runtime-namespace.json')));
   assert.ok(!fs.existsSync(path.join(dir, '.agent-onboard', 'project.json')));
 });
@@ -1724,7 +1800,7 @@ fullSourceTest('full source block line 1324', () => {
   const output = readJsonOutput(result);
   assert.strictEqual(output.writes_performed, true);
   assert.deepStrictEqual(output.conflicts, []);
-  assert.ok(fs.existsSync(path.join(dir, 'agent-onboard.target.json')));
+  assert.ok(fs.existsSync(path.join(dir, '.agent-onboard/target.json')));
   assert.ok(fs.existsSync(path.join(dir, '.agent-onboard', 'runtime-namespace.json')));
   assert.ok(fs.existsSync(path.join(dir, '.agent-onboard', 'project.json')));
   assert.ok(fs.existsSync(path.join(dir, '.agent-onboard', 'work-items.json')));
@@ -1735,7 +1811,7 @@ fullSourceTest('full source block line 1324', () => {
   assert.deepStrictEqual(workItems.stages, []);
   assert.deepStrictEqual(workItems.milestones, []);
   assert.deepStrictEqual(workItems.work_items, []);
-  const targetConfig = JSON.parse(fs.readFileSync(path.join(dir, 'agent-onboard.target.json'), 'utf8'));
+  const targetConfig = JSON.parse(fs.readFileSync(path.join(dir, '.agent-onboard/target.json'), 'utf8'));
   assert.strictEqual(targetConfig.project.name, 'target-fixture');
   assert.strictEqual(targetConfig.control.requested_mode, 'target_dry_run');
   assert.strictEqual(targetConfig.control.authority_level, 'L1_read_only_preview');
@@ -1757,22 +1833,22 @@ fullSourceTest('full source block line 1324', () => {
 
 fullSourceTest('full source block line 1361', () => {
   const dir = tempRepo();
-  fs.writeFileSync(path.join(dir, 'agent-onboard.target.json'), '{"foreign":true}\n');
+  writeTargetConfig(dir, '{"foreign":true}\n');
   const result = run(['init', '--write'], { cwd: dir });
   const output = readJsonFailure(result);
   assert.strictEqual(output.status, 'error');
-  assert.deepStrictEqual(output.conflicts, ['agent-onboard.target.json']);
-  assert.strictEqual(JSON.parse(fs.readFileSync(path.join(dir, 'agent-onboard.target.json'), 'utf8')).foreign, true);
+  assert.deepStrictEqual(output.conflicts, ['.agent-onboard/target.json']);
+  assert.strictEqual(JSON.parse(fs.readFileSync(path.join(dir, '.agent-onboard/target.json'), 'utf8')).foreign, true);
 });
 
 fullSourceTest('full source block line 1371', () => {
   const dir = tempRepo();
-  fs.writeFileSync(path.join(dir, 'agent-onboard.target.json'), '{"foreign":true}\n');
+  writeTargetConfig(dir, '{"foreign":true}\n');
   const result = run(['init', '--write', '--force'], { cwd: dir });
   const output = readJsonOutput(result);
   assert.strictEqual(output.writes_performed, true);
   assert.deepStrictEqual(output.conflicts, []);
-  const targetConfig = JSON.parse(fs.readFileSync(path.join(dir, 'agent-onboard.target.json'), 'utf8'));
+  const targetConfig = JSON.parse(fs.readFileSync(path.join(dir, '.agent-onboard/target.json'), 'utf8'));
   assert.strictEqual(targetConfig.schema, 'agent-onboard-target-config-001');
 });
 
@@ -1788,7 +1864,7 @@ fullSourceTest('full source block line 1389', () => {
   const result = run(['target', 'bootstrap', '--write'], { cwd: dir });
   const output = readJsonOutput(result);
   assert.strictEqual(output.writes_performed, true);
-  const targetConfig = JSON.parse(fs.readFileSync(path.join(dir, 'agent-onboard.target.json'), 'utf8'));
+  const targetConfig = JSON.parse(fs.readFileSync(path.join(dir, '.agent-onboard/target.json'), 'utf8'));
   assert.strictEqual(targetConfig.project.name, 'target-fixture');
   assert.strictEqual(targetConfig.control.requested_mode, 'target_dry_run');
   assert.strictEqual(targetConfig.control.authority_level, 'L1_read_only_preview');
@@ -2382,7 +2458,7 @@ fullSourceTest('full source block line 1508', () => {
 
   assert.ok(fs.existsSync(path.join(ROOT, 'AGENTS.md')));
 
-  assert.ok(fs.existsSync(path.join(ROOT, 'agent-onboard.target.json')));
+  assert.ok(fs.existsSync(path.join(ROOT, '.agent-onboard/target.json')));
 
   assert.ok(fs.existsSync(path.join(ROOT, '.agent-onboard', 'project.json')));
 
@@ -2462,7 +2538,7 @@ fullSourceTest('full source block line 1972', () => {
   const output = readJsonFailure(result);
   assert.strictEqual(result.status, 2);
   assert.strictEqual(output.status, 'blocked');
-  assert.strictEqual(output.reason, 'missing agent-onboard.target.json in current target repo root');
+  assert.strictEqual(output.reason, `missing ${TARGET_CONFIG_FILE} in current target repo`);
   assert.strictEqual(output.writes_files, false);
 });
 
@@ -2471,7 +2547,7 @@ fullSourceTest('full source block line 1982', () => {
   const config = cliTargetConfigForTest(dir);
   config.control.requested_mode = 'target_write';
   config.boundaries.writes_allowed = true;
-  fs.writeFileSync(path.join(dir, 'agent-onboard.target.json'), JSON.stringify(config, null, 2) + '\n');
+  writeTargetConfig(dir, JSON.stringify(config, null, 2) + '\n');
   const result = run(['guard', '--check-boundary'], { cwd: dir });
   const output = readJsonFailure(result);
   assert.strictEqual(result.status, 2);
@@ -2484,7 +2560,7 @@ fullSourceTest('full source block line 1982', () => {
 
 fullSourceTest('full source block line 1998', () => {
   const dir = tempRepo();
-  fs.writeFileSync(path.join(dir, 'agent-onboard.target.json'), '{not-json}\n');
+  writeTargetConfig(dir, '{not-json}\n');
   const result = run(['guard', '--check-boundary'], { cwd: dir });
   const output = readJsonFailure(result);
   assert.strictEqual(result.status, 2);
@@ -2526,7 +2602,7 @@ fullSourceTest('full source block line 2008', () => {
   assert.strictEqual(trialResult.ready_for_explicit_write, true);
   assert.strictEqual(trialResult.writes_performed, false);
   assert.strictEqual(cli.publicTargetOnboardingRealTargetRepoTrial().status, 'ok');
-  assert.deepStrictEqual(cli.planTargetOnboardingWritesForRoot(tempRepo()).map((item) => item.path), ['agent-onboard.target.json', '.agent-onboard/runtime-namespace.json', '.agent-onboard/project.json', '.agent-onboard/work-items.json', 'AGENTS.md', 'llms.txt', '.agent-onboard/authority-path.json']);
+  assert.deepStrictEqual(cli.planTargetOnboardingWritesForRoot(tempRepo()).map((item) => item.path), ['.agent-onboard/target.json', '.agent-onboard/runtime-namespace.json', '.agent-onboard/project.json', '.agent-onboard/work-items.json', 'AGENTS.md', 'llms.txt', '.agent-onboard/authority-path.json']);
 });
 
 
@@ -2602,8 +2678,8 @@ fullSourceTest('full source block line 2095', () => {
   const write = runNodeScript(installedCli, ['target', 'onboarding', '--write'], targetRoot);
   const writeOutput = readJsonOutput(write);
   assert.strictEqual(writeOutput.status, 'ok');
-  assert.deepStrictEqual(writeOutput.written_files, ['agent-onboard.target.json', '.agent-onboard/runtime-namespace.json', '.agent-onboard/project.json', '.agent-onboard/work-items.json', 'AGENTS.md', 'llms.txt', '.agent-onboard/authority-path.json']);
-  assert.strictEqual(fs.existsSync(path.join(targetRoot, 'agent-onboard.target.json')), true);
+  assert.deepStrictEqual(writeOutput.written_files, ['.agent-onboard/target.json', '.agent-onboard/runtime-namespace.json', '.agent-onboard/project.json', '.agent-onboard/work-items.json', 'AGENTS.md', 'llms.txt', '.agent-onboard/authority-path.json']);
+  assert.strictEqual(fs.existsSync(path.join(targetRoot, '.agent-onboard/target.json')), true);
   assert.strictEqual(fs.existsSync(path.join(targetRoot, '.agent-onboard', 'project.json')), true);
   assert.strictEqual(fs.existsSync(path.join(targetRoot, '.agent-onboard', 'work-items.json')), true);
   assert.strictEqual(fs.existsSync(path.join(targetRoot, 'AGENTS.md')), true);
@@ -2750,7 +2826,7 @@ fullSourceTest('full source block line 2233', () => {
   assert.ok(readme.includes('npx agent-onboard target metadata --check'));
   assert.ok(readme.includes('npx agent-onboard target metadata --write'));
   assert.ok(readme.includes('Generate `SOURCE_OF_TRUTH.md`, `authority-map.json`, and `manifest.json`'));
-  assert.ok(readme.includes('The metadata check accepts a Forge-style `manifest.json` v2 shape'));
+  assert.ok(readme.includes('A target policy can override `manifest_schema`, `authority_map_schema`, `urn_namespace`'));
   assert.ok(readme.includes('npx agent-onboard target onboarding --write'));
   assert.ok(readme.includes('npx agent-onboard target onboarding --fixture'));
   assert.ok(readme.includes('npx agent-onboard target onboarding --trial'));
@@ -2778,7 +2854,7 @@ fullSourceTest('full source block line 2233', () => {
   assert.ok(readme.includes('The close command reads the existing ledger'));
   assert.ok(readme.includes('This release adds public work-item usability JSON views'));
   assert.ok(readme.includes('This release adds public human-readable output mode'));
-  assert.ok(readme.includes('This release adds the public target metadata manifest authority command'));
+  assert.ok(readme.includes('This release expands the public target metadata engine with policy-driven output'));
   assert.ok(readme.includes('This release reduces the retired M3 architecture checker surface'));
   assert.ok(readme.includes('This release extracts public runtime contracts into `cli/agent_onboard/runtime-contracts.js`'));
   assert.ok(readme.includes('This release expands the public runtime contracts with shared top-level command aliases'));
@@ -2799,7 +2875,7 @@ fullSourceTest('full source block line 2323', () => {
   assert.ok(help.stdout.includes('work-items --mine [.agent-onboard/work-items.json] --actor <actor> [--text]'));
   assert.ok(help.stdout.includes('target doctor --json|--text [--target <path>]'));
   assert.ok(help.stdout.includes('target profile --json|--text [--target <path>]'));
-  assert.ok(help.stdout.includes('target metadata --plan|--check|--write [--force] [--target <path>]'));
+  assert.ok(help.stdout.includes('target metadata --plan|--check|--write [--profile default] [--policy <path>] [--adopt-existing] [--force] [--target <path>]'));
   assert.ok(help.stdout.includes('work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>'));
   assert.ok(help.stdout.includes('work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>'));
   assert.ok(help.stdout.includes('architecture --map|--router|--facades|--check'));

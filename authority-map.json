@@ -1,54 +1,5 @@
 {
-  "authorities": [
-    {
-      "class": "source-of-truth",
-      "numeric_id": "0001",
-      "path": "SOURCE_OF_TRUTH.md",
-      "slug": "source-of-truth",
-      "status": "canonical",
-      "urn": "urn:agent-onboard:source-of-truth-0001"
-    },
-    {
-      "class": "agent-instructions",
-      "numeric_id": "0002",
-      "path": "AGENTS.md",
-      "slug": "agents",
-      "status": "canonical",
-      "urn": "urn:agent-onboard:agents-0002"
-    },
-    {
-      "class": "machine-context",
-      "numeric_id": "0003",
-      "path": "llms.txt",
-      "slug": "llms",
-      "status": "canonical",
-      "urn": "urn:agent-onboard:llms-0003"
-    },
-    {
-      "class": "package-docs",
-      "numeric_id": "0004",
-      "path": "README.md",
-      "slug": "readme",
-      "status": "canonical",
-      "urn": "urn:agent-onboard:readme-0004"
-    },
-    {
-      "class": "target-config",
-      "numeric_id": "0005",
-      "path": "agent-onboard.target.json",
-      "slug": "target-config",
-      "status": "active",
-      "urn": "urn:agent-onboard:target-config-0005"
-    },
-    {
-      "class": "work-items",
-      "numeric_id": "0006",
-      "path": ".agent-onboard/work-items.json",
-      "slug": "work-items",
-      "status": "active",
-      "urn": "urn:agent-onboard:work-items-0006"
-    }
-  ],
+  "authorities": [],
   "file_urns": [
     {
       "file_path": ".agent-onboard/architecture-command-adapter-extraction.json",
@@ -203,6 +154,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-target-repo-product-refactor-plan-json-0bcc1b6c"
     },
     {
+      "file_path": ".agent-onboard/target.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-target-json-38c70815"
+    },
+    {
       "file_path": ".agent-onboard/thin-cli-router-seed.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-thin-cli-router-seed-json-40125140"
     },
@@ -241,10 +196,6 @@
     {
       "file_path": "SOURCE_OF_TRUTH.md",
       "file_urn": "urn:agent-onboard:file:source-of-truth-md-2e8b8fb6"
-    },
-    {
-      "file_path": "agent-onboard.target.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-target-json-5a2d007f"
     },
     {
       "file_path": "authority-map.json",
@@ -431,6 +382,10 @@
       "file_urn": "urn:agent-onboard:file:llms-txt-f43a9e2f"
     },
     {
+      "file_path": "manifest.json",
+      "file_urn": "urn:agent-onboard:file:manifest-json-ffa5b716"
+    },
+    {
       "file_path": "package.json",
       "file_urn": "urn:agent-onboard:file:package-json-7ae45ad1"
     },
@@ -464,10 +419,14 @@
     }
   ],
   "metadata_policy": {
+    "mechanics_owner": "agent-onboard",
+    "semantics_owner": "target_repository",
     "markdown_admin_metadata": "leading_html_comment_or_registry",
-    "visible_front_matter_admin_metadata": false,
-    "work_item_semantics": "delegated_to_agent_onboard"
+    "visible_front_matter_admin_metadata": false
   },
-  "namespace": "urn:agent-onboard:",
-  "schema": "agent-onboard-target-authority-map-001"
+  "namespace": "urn:agent-onboard:file",
+  "schema": "agent-onboard-target-authority-map-001",
+  "target": {
+    "name": "agent-onboard"
+  }
 }

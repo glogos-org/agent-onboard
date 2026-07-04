@@ -68,7 +68,7 @@ const TARGET_CONFIG_SCHEMA = {
   title: 'Agent-Onboard Public Boundary Guard Enforcement Seed Gate',
   package_name: 'agent-onboard',
   command: 'agent-onboard guard --check-boundary',
-  canonical_target_config_file: 'agent-onboard.target.json',
+  canonical_target_config_file: '.agent-onboard/target.json',
   enforcement_mode: 'fail_closed',
   required_target_config_values: Object.freeze({
     schema: 'agent-onboard-target-config-001',
@@ -106,7 +106,7 @@ function createPublicTargetStaticCatalog({ publicReleaseContract }) {
     fixture_command: 'agent-onboard target onboarding --fixture',
     purpose: 'Declare the public, read-only onboarding sequence for a target repository before write-capable onboarding commands are used.',
     canonical_files: Object.freeze([
-      'agent-onboard.target.json',
+      '.agent-onboard/target.json',
       '.agent-onboard/runtime-namespace.json',
       '.agent-onboard/project.json',
       '.agent-onboard/work-items.json',
@@ -142,13 +142,13 @@ function createPublicTargetStaticCatalog({ publicReleaseContract }) {
       {
         id: 'write_explicit_full_onboarding',
         command: 'agent-onboard target onboarding --write',
-        output: 'agent-onboard.target.json, .agent-onboard/runtime-namespace.json, .agent-onboard/project.json, .agent-onboard/work-items.json, AGENTS.md, llms.txt, and .agent-onboard/authority-path.json when explicitly authorized',
+        output: '.agent-onboard/target.json, .agent-onboard/runtime-namespace.json, .agent-onboard/project.json, .agent-onboard/work-items.json, AGENTS.md, llms.txt, and .agent-onboard/authority-path.json when explicitly authorized',
         writes_files: true
       },
       {
         id: 'write_explicit_boundary_config',
         command: 'agent-onboard target bootstrap --write',
-        output: 'agent-onboard.target.json when explicitly authorized',
+        output: '.agent-onboard/target.json when explicitly authorized',
         writes_files: true,
         lower_level_command: true
       },
@@ -199,7 +199,7 @@ function createPublicTargetStaticCatalog({ publicReleaseContract }) {
         id: 'target_bootstrap_dry_run_empty_target',
         command: 'agent-onboard target bootstrap --dry-run',
         expected_status: 'ok',
-        validates: Object.freeze(['agent-onboard.target.json create plan', 'writes_performed false', 'no dependency install'])
+        validates: Object.freeze(['.agent-onboard/target.json create plan', 'writes_performed false', 'no dependency install'])
       },
       {
         id: 'target_instance_takeover_dry_run_empty_target',
