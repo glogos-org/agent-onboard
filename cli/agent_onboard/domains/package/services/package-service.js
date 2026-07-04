@@ -13,6 +13,8 @@ const PACKAGE_SERVICE_SEED = Object.freeze({
     'release --fixture',
     'release --surface',
     'release --surface-check',
+    'release --source-manifest',
+    'release --source-manifest-check',
     'release --version-sprawl-check',
     'release --parity-smoke',
     'release --architecture-parity-smoke',

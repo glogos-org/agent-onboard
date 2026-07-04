@@ -1,6 +1,6 @@
 {
   "name": "agent-onboard",
-  "version": "0.0.110",
+  "version": "0.0.113",
   "description": "CLI for onboarding and managing target repositories.",
   "license": "Apache-2.0",
   "author": "Thanh Le <vnlemanhthanh@gmail.com>",
@@ -304,7 +304,19 @@
     "package-source-manifest",
     "content-addressed-package-manifest",
     "source-manifest",
-    "ni-file-id"
+    "ni-file-id",
+    "package-source-manifest-command",
+    "source-manifest-command",
+    "source-manifest-check",
+    "content-addressed-release-manifest",
+    "command-surface-catalog",
+    "command-discovery",
+    "cli-command-catalog",
+    "agent-command-discovery",
+    "operator-guide",
+    "workflow-guide",
+    "agent-orientation",
+    "first-read-guide"
   ],
   "type": "commonjs",
   "engines": {

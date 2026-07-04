@@ -39,6 +39,15 @@ Use this source-repository lifecycle for public human/agent participation:
 
 For source validation, `npm test` runs the parallel quick gate. Use `npm run test:full` for the parallel full exhaustive fixture matrix, and `npm run test:all` when both the quick gate and the full fixture matrix are needed before release handoff.
 
+Inspect the public command surface before choosing a workflow:
+
+```sh
+node cli/agent-onboard.js guide --text
+node cli/agent-onboard.js guide --json
+node cli/agent-onboard.js commands --text
+node cli/agent-onboard.js commands --json
+```
+
 Run the target onboarding plan before expanding target-surface behavior:
 
 ```sh
@@ -123,6 +132,8 @@ Inspect the release fixture matrix:
 node cli/agent-onboard.js release --fixture
 node cli/agent-onboard.js release --surface
 node cli/agent-onboard.js release --surface-check
+node cli/agent-onboard.js release --source-manifest
+node cli/agent-onboard.js release --source-manifest-check
 node cli/agent-onboard.js release --version-sprawl-check
 ```
 
@@ -271,6 +282,7 @@ node cli/agent-onboard.js architecture --source-domain-closure-review
 node cli/agent-onboard.js architecture --source-domain-closure-check
 node cli/agent-onboard.js architecture --check
 node cli/agent-onboard.js release --surface-check
+node cli/agent-onboard.js release --source-manifest-check
 node cli/agent-onboard.js release --check
 ```
 
@@ -331,6 +343,7 @@ node cli/agent-onboard.js work-items --init --dry-run --force
 node cli/agent-onboard.js work-items --append --dry-run --id <public-work-item-id> --title "Runtime append dry-run smoke"
 node cli/agent-onboard.js architecture --router-adapter-delegation-check
 node cli/agent-onboard.js release --surface-check
+node cli/agent-onboard.js release --source-manifest-check
 node cli/agent-onboard.js release --check
 npm test
 ```
@@ -379,8 +392,12 @@ The public line extracts the aggregate `architecture --check` coordinator into `
 
 The public line admits `release_package` as a packaged domain service partition under `cli/agent_onboard/domains/package/`. Keep `package-service.js` as a thin release command coordinator, keep package surface, source manifest, package coordinate, and installed first-read responsibilities in separate service modules, and do not grow `cli/agent-onboard.js` with new release/package logic.
 
-The package source manifest service is now an active read-only package surface guard, not only a seed. Keep it side-effect-free: it may hash projected package files and report `file_id` values, but it must not write cache files, expose raw `sha256`, run npm, or pull source-only state into `package.json#files`.
+The package source manifest service is now an active read-only package surface guard and explicit release command surface. Keep `release --source-manifest` and `release --source-manifest-check` side-effect-free: they may hash projected package files and report `file_id` values, but they must not write cache files, expose raw `sha256`, run npm, or pull source-only state into `package.json#files`.
 
 ## Public core config guard service extraction
 
 The public line extracts `guard --plan` and `guard --check-boundary` into `cli/agent_onboard/domains/core/services/config-guard-service.js`. Keep this service packaged, dependency-injected, read-only, and output-compatible with the existing guard boundary contract.
+
+## Public operator guide product surface
+
+Use `node cli/agent-onboard.js guide --text` or `node cli/agent-onboard.js guide --json` when a new agent or operator needs workflow selection before choosing a command family. The guide is read-only and must stay compact: first-read order, workflow command groups, escalation points, and no package publish, network, dependency install, Git mutation, or file writes.

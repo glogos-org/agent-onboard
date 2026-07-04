@@ -18,6 +18,8 @@ Run without installing:
 
 ```sh
 npx agent-onboard status
+npx agent-onboard guide --text
+npx agent-onboard commands --text
 ```
 
 Inspect target repo readiness without writing files:
@@ -105,8 +107,23 @@ npx agent-onboard agents --write --force
 
 ## Commands
 
+Print the compact operator guide and discoverable command catalog for humans or scripts:
+
+```sh
+npx agent-onboard guide --text
+npx agent-onboard guide --json
+npx agent-onboard commands --text
+npx agent-onboard commands --json
+```
+
+The guide turns the public CLI into a first-read workflow selector: new-agent orientation, target repo triage, target onboarding preview, and source release handoff. The command catalog exposes top-level commands, aliases, runtime groups, help lines, recommended first commands, and the no-mutation boundary for command discovery. Together they are the fastest way for a new agent or operator to orient itself before choosing a workflow.
+
 ```sh
 npx agent-onboard status
+npx agent-onboard guide --text
+npx agent-onboard guide --json
+npx agent-onboard commands --text
+npx agent-onboard commands --json
 npx agent-onboard init --dry-run
 npx agent-onboard init --write
 npx agent-onboard agents --preview
@@ -136,6 +153,8 @@ npx agent-onboard architecture --check
 npx agent-onboard release --plan
 npx agent-onboard release --surface
 npx agent-onboard release --surface-check
+npx agent-onboard release --source-manifest
+npx agent-onboard release --source-manifest-check
 npx agent-onboard release --target-onboarding-smoke
 npx agent-onboard release --real-target-trial
 npx agent-onboard release --check
@@ -421,6 +440,15 @@ Print the release fixture matrix without mutating files, package state, or regis
 ```sh
 npx agent-onboard release --fixture
 ```
+
+Print or validate the content-addressed package source manifest without writing files or running npm:
+
+```sh
+npx agent-onboard release --source-manifest
+npx agent-onboard release --source-manifest-check
+```
+
+The source manifest command reports every projected npm package file with `file_path`, byte count, and `file_id` using `ni:///sha-256;...`. It does not expose raw `sha256`, write hash-cache state, publish, install dependencies, or mutate the package root.
 
 The fixture matrix documents the contract regression cases used by the source tests: valid source context, valid installed-package context, stale package version, npm pack allowlist drift, missing bin entrypoint, reserved public artifact messaging tokens, projected installed-package parity smoke, target onboarding installed-package smoke, target onboarding post-publish handoff, published package acceptance rehearsal, real target repo trial, public architecture map, public command router boundary, public domain service facade boundary, public authority first-read index boundary, public target runtime namespace boundary, public source domain module partition planning boundary, public source domain extraction rehearsal boundary, public package surface preservation boundary, and public installed parity architecture smoke boundary.
 
@@ -1091,4 +1119,6 @@ The public line extracts `guard --plan` and `guard --check-boundary` into the pa
 
 The current release adds the public target manifest drift guard: `target manifest --init|--check-drift|--refresh` creates and validates `.agent-onboard/target-manifest.json` with content-addressed `file_id` entries.
 
-The current release also upgrades the package-domain source manifest service from a seed into a read-only content-addressed package manifest checker. `release --surface-check` now validates that every projected npm package file has a `file_id` using `ni:///sha-256;...`, that raw `sha256` values are not exposed, and that source-only hash-cache state remains outside the npm package projection.
+The current release also exposes the package-domain source manifest as explicit read-only release commands: `release --source-manifest` prints every projected npm package file with a `file_id` using `ni:///sha-256;...`, and `release --source-manifest-check` validates the content-addressed manifest shape. `release --surface-check` continues to validate that raw `sha256` values are not exposed and that source-only hash-cache state remains outside the npm package projection.
+
+The current command surface includes `guide --json|--text` and `commands --json|--text`. The guide provides a compact workflow selector for new-agent orientation, target repo triage, target onboarding preview, and source release handoff. The command catalog remains the machine-readable inventory of top-level commands, runtime groups, help lines, and recommended first commands.

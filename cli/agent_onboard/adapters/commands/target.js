@@ -7,7 +7,7 @@ const TARGET_COMMAND_ADAPTER_EXTRACTION = Object.freeze({
   planned_adapter_path: 'cli/agent_onboard/adapters/commands/target.js',
   compatibility_port_group: 'target',
   owned_top_level_commands: Object.freeze(['init', 'target-config', 'target', 'target-instance']),
-  excluded_top_level_commands: Object.freeze(['help', 'version', 'status', 'architecture', 'release', 'authority', 'work-items', 'agents', 'guard']),
+  excluded_top_level_commands: Object.freeze(['help', 'version', 'status', 'commands', 'architecture', 'release', 'authority', 'work-items', 'agents', 'guard']),
   output_contract: Object.freeze({
     init: 'delegates to packaged CLI init command through injected bundled handler',
     target_config: 'delegates to packaged CLI target-config command through injected bundled handler',

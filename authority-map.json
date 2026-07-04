@@ -18,6 +18,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-cli-runtime-de-monolith-planning-json-4876c2d0"
     },
     {
+      "file_path": ".agent-onboard/command-surface-catalog-product-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-command-surface-catalog-product-gate-json-72811734"
+    },
+    {
       "file_path": ".agent-onboard/compatibility-command-port-seed.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-compatibility-command-port-seed-json-e63f5635"
     },
@@ -34,8 +38,16 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-modular-runtime-package-inclusion-plan-json-f5289e97"
     },
     {
+      "file_path": ".agent-onboard/operator-guide-product-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-operator-guide-product-gate-json-9956764b"
+    },
+    {
       "file_path": ".agent-onboard/package-command-adapter-extraction.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-package-command-adapter-extraction-json-d64d35fb"
+    },
+    {
+      "file_path": ".agent-onboard/package-source-manifest-command-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-package-source-manifest-command-gate-json-316093dc"
     },
     {
       "file_path": ".agent-onboard/package-source-manifest-service-gate.json",

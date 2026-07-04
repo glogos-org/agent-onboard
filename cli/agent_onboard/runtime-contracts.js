@@ -2,7 +2,7 @@
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
-const RELEASE_LINE = 'public_package_source_manifest_service_gate';
+const RELEASE_LINE = 'public_operator_guide_product_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
   agents: 'agents',
@@ -189,6 +189,8 @@ const TARGET_DOCTOR_COMMAND = Object.freeze({
 
 const PRODUCT_HELP_LINES = Object.freeze([
   'agent-onboard status',
+  'agent-onboard commands --json|--text',
+  'agent-onboard guide --json|--text',
   TARGET_DOCTOR_COMMAND.help,
   TARGET_PROFILE_COMMAND.help,
   TARGET_REPAIR_COMMAND.help,
@@ -208,7 +210,7 @@ const PRODUCT_HELP_LINES = Object.freeze([
   'agent-onboard guard --plan|--check-boundary',
   'agent-onboard authority --first-read|--check',
   'agent-onboard architecture --map|--router|--facades|--check',
-  'agent-onboard release --plan|--surface|--surface-check|--target-onboarding-smoke|--real-target-trial|--check',
+  'agent-onboard release --plan|--surface|--surface-check|--source-manifest|--source-manifest-check|--target-onboarding-smoke|--real-target-trial|--check',
   'agent-onboard target-config --schema|--template|--validate-template|--validate [.agent-onboard/target.json]'
 ]);
 

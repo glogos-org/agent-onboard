@@ -5,7 +5,7 @@ const PACKAGE_SURFACE_SERVICE_SEED = Object.freeze({
   package_name: 'agent-onboard',
   role: 'packaged_runtime_package_surface_service_seed',
   service_path: 'cli/agent_onboard/domains/package/services/package-surface-service.js',
-  owned_release_commands: Object.freeze(['release --surface', 'release --surface-check']),
+  owned_release_commands: Object.freeze(['release --surface', 'release --surface-check', 'release --source-manifest', 'release --source-manifest-check']),
   boundary: Object.freeze({
     packaged_in_npm_tarball_in_this_gate: true,
     no_side_effect_on_require: true,

@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_package_source_manifest_service_gate';
+const EXPECTED_RELEASE_LINE = 'public_operator_guide_product_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -232,6 +232,51 @@ fullSourceTest('public runtime contracts module centralizes command and package 
   assert.ok(contracts.PUBLIC_PACKAGED_ROUTER_PORT_MODULE_FILES.includes('cli/agent_onboard/runtime-contracts.js'));
   assert.deepStrictEqual(contracts.PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES.slice().sort(), EXPECTED_PACK_FILES);
   assert.strictEqual(composer.RUNTIME_CONTRACTS, contracts.RUNTIME_CONTRACTS);
+});
+
+
+fullSourceTest('public command surface catalog is directly discoverable', () => {
+  const jsonResult = run(['commands', '--json']);
+  const output = readJsonOutput(jsonResult);
+  assert.strictEqual(output.schema, 'agent-onboard-public-command-surface-catalog-001');
+  assert.strictEqual(output.status, 'ok');
+  assert.strictEqual(output.version, EXPECTED_VERSION);
+  assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
+  assert.deepStrictEqual(output.top_level_commands, ['help', 'version', 'status', 'commands', 'guide', 'init', 'agents', 'guard', 'authority', 'architecture', 'release', 'target-config', 'work-items', 'target', 'target-instance']);
+  assert.ok(output.runtime_command_groups.core.includes('commands'));
+  assert.ok(output.help_lines.includes('agent-onboard commands --json|--text'));
+  assert.ok(output.help_lines.includes('agent-onboard guide --json|--text'));
+  assert.ok(output.recommended_first_commands.includes('agent-onboard commands --text'));
+  assert.ok(output.recommended_first_commands.includes('agent-onboard guide --text'));
+  assert.strictEqual(output.boundary.writes_files, false);
+  assert.strictEqual(output.boundary.publishes_package, false);
+
+  const textResult = run(['commands', '--text']);
+  assert.strictEqual(textResult.status, 0, textResult.stderr || textResult.stdout);
+  assert.ok(textResult.stdout.includes('agent-onboard command surface'));
+  assert.ok(textResult.stdout.includes('agent-onboard commands --json|--text'));
+  assert.ok(textResult.stdout.includes('agent-onboard guide --json|--text'));
+});
+
+fullSourceTest('public operator guide is directly usable', () => {
+  const jsonResult = run(['guide', '--json']);
+  const output = readJsonOutput(jsonResult);
+  assert.strictEqual(output.schema, 'agent-onboard-public-operator-guide-001');
+  assert.strictEqual(output.status, 'ok');
+  assert.strictEqual(output.version, EXPECTED_VERSION);
+  assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
+  assert.ok(output.first_read_order.includes('README.md'));
+  assert.ok(output.first_read_order.includes('llms.txt'));
+  assert.ok(output.workflows.new_agent_orientation.commands.includes('agent-onboard commands --text'));
+  assert.ok(output.workflows.target_repo_triage.commands.includes('agent-onboard target doctor --text'));
+  assert.strictEqual(output.boundary.writes_files, false);
+  assert.strictEqual(output.boundary.network, false);
+
+  const textResult = run(['guide', '--text']);
+  assert.strictEqual(textResult.status, 0, textResult.stderr || textResult.stdout);
+  assert.ok(textResult.stdout.includes('agent-onboard operator guide'));
+  assert.ok(textResult.stdout.includes('New agent orientation'));
+  assert.ok(textResult.stdout.includes('Target repo triage'));
 });
 
 fullSourceTest('full source block line 161', () => {
@@ -703,6 +748,40 @@ fullSourceTest('full source block line 607', () => {
   assert.deepStrictEqual(output.errors, []);
 });
 
+fullSourceTest('package source manifest command is explicit, content-addressed, and read-only', () => {
+  const result = run(['release', '--source-manifest']);
+  const output = readJsonOutput(result);
+  assert.strictEqual(output.schema, 'agent-onboard-public-package-source-manifest-001');
+  assert.strictEqual(output.status, 'ok');
+  assert.strictEqual(output.version, EXPECTED_VERSION);
+  assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
+  assert.strictEqual(output.command, 'agent-onboard release --source-manifest');
+  assert.strictEqual(output.entry_count, EXPECTED_PACK_FILES.length);
+  assert.deepStrictEqual(output.projected_pack_files, EXPECTED_PACK_FILES);
+  assert.strictEqual(output.files.length, EXPECTED_PACK_FILES.length);
+  assert.ok(output.files.every((entry) => entry.file_id.startsWith('ni:///sha-256;')));
+  assert.ok(output.files.every((entry) => !Object.prototype.hasOwnProperty.call(entry, 'sha256')));
+  assert.strictEqual(output.hash_cache.cache_file_projected_into_pack, false);
+  assert.strictEqual(output.boundary.writes_files, false);
+  assert.strictEqual(output.boundary.runs_package_manager, false);
+});
+
+fullSourceTest('package source manifest check command validates drift guard shape without writes', () => {
+  const result = run(['release', '--source-manifest-check']);
+  const output = readJsonOutput(result);
+  assert.strictEqual(output.schema, 'agent-onboard-public-package-source-manifest-check-result-001');
+  assert.strictEqual(output.status, 'ok');
+  assert.strictEqual(output.version, EXPECTED_VERSION);
+  assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
+  assert.strictEqual(output.command, 'agent-onboard release --source-manifest-check');
+  assert.strictEqual(output.entry_count, EXPECTED_PACK_FILES.length);
+  assert.strictEqual(output.validated.package_files_are_content_addressed, true);
+  assert.strictEqual(output.validated.raw_sha256_not_exposed, true);
+  assert.strictEqual(output.validated.hash_cache_not_projected_into_package, true);
+  assert.strictEqual(output.validated.command_is_read_only, true);
+  assert.deepStrictEqual(output.errors, []);
+});
+
 fullSourceTest('full source block line 622', () => {
   const result = run(['architecture', '--check']);
   const output = readJsonOutput(result);
@@ -814,6 +893,8 @@ fullSourceTest('full source block line 703', () => {
   assert.ok(output.verification_commands.includes(`${EXPECTED_VERSIONED_NPX} target runtime --check`));
   assert.ok(output.verification_commands.includes(`${EXPECTED_VERSIONED_NPX} release --surface`));
   assert.ok(output.verification_commands.includes(`${EXPECTED_VERSIONED_NPX} release --surface-check`));
+  assert.ok(output.verification_commands.includes(`${EXPECTED_VERSIONED_NPX} release --source-manifest`));
+  assert.ok(output.verification_commands.includes(`${EXPECTED_VERSIONED_NPX} release --source-manifest-check`));
   assert.ok(output.verification_commands.includes(`${EXPECTED_VERSIONED_NPX} target onboarding --plan`));
   assert.ok(output.verification_commands.includes(`${EXPECTED_VERSIONED_NPX} target onboarding --fixture`));
   assert.ok(output.verification_commands.includes(`${EXPECTED_VERSIONED_NPX} target onboarding --trial`));
@@ -2876,6 +2957,8 @@ fullSourceTest('full source block line 2233', () => {
   assert.ok(readme.includes('npx agent-onboard architecture --extraction-check'));
   assert.ok(readme.includes('npx agent-onboard release --surface'));
   assert.ok(readme.includes('npx agent-onboard release --surface-check'));
+  assert.ok(readme.includes('npx agent-onboard release --source-manifest'));
+  assert.ok(readme.includes('npx agent-onboard release --source-manifest-check'));
   assert.ok(readme.includes('npx agent-onboard authority --first-read'));
   assert.ok(readme.includes('npx agent-onboard authority --check'));
   assert.ok(readme.includes('npx agent-onboard target doctor --json'));
@@ -2941,7 +3024,7 @@ fullSourceTest('full source block line 2323', () => {
   assert.ok(help.stdout.includes('work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>'));
   assert.ok(help.stdout.includes('architecture --map|--router|--facades|--check'));
   assert.ok(!help.stdout.includes('claims-installed-fallback-smoke'));
-  assert.ok(help.stdout.includes('release --plan|--surface|--surface-check|--target-onboarding-smoke|--real-target-trial|--check'));
+  assert.ok(help.stdout.includes('release --plan|--surface|--surface-check|--source-manifest|--source-manifest-check|--target-onboarding-smoke|--real-target-trial|--check'));
   assert.ok(help.stdout.includes('target repair --plan|--write [--force] [--target <path>]'));
   assert.ok(help.stdout.includes('target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]'));
 });
@@ -2990,6 +3073,8 @@ assert.ok(agents.includes('node cli/agent-onboard.js target runtime --check'));
   assert.ok(agents.includes('node cli/agent-onboard.js release --fixture'));
   assert.ok(agents.includes('node cli/agent-onboard.js release --surface'));
   assert.ok(agents.includes('node cli/agent-onboard.js release --surface-check'));
+  assert.ok(agents.includes('node cli/agent-onboard.js release --source-manifest'));
+  assert.ok(agents.includes('node cli/agent-onboard.js release --source-manifest-check'));
   assert.ok(agents.includes('node cli/agent-onboard.js release --version-sprawl-check'));
   assert.ok(agents.includes('node cli/agent-onboard.js release --parity-smoke'));
   assert.ok(agents.includes('node cli/agent-onboard.js release --architecture-parity-smoke'));

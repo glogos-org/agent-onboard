@@ -24,7 +24,7 @@ const WORK_ITEMS_COMMAND_ADAPTER_EXTRACTION = Object.freeze({
     'work-items --close'
   ]),
   fallback_commands: Object.freeze([]),
-  excluded_top_level_commands: Object.freeze(['help', 'version', 'status', 'architecture', 'release', 'authority', 'target', 'target-instance', 'init', 'agents', 'guard', 'target-config']),
+  excluded_top_level_commands: Object.freeze(['help', 'version', 'status', 'commands', 'architecture', 'release', 'authority', 'target', 'target-instance', 'init', 'agents', 'guard', 'target-config']),
   output_contract: Object.freeze({
     schema: 'work-items --schema is served by the packaged work-items runtime service',
     template: 'work-items --template is served by the packaged work-items runtime service',

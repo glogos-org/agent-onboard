@@ -4301,6 +4301,166 @@
           "npm run test:all was attempted after quick and full suites had already passed, but the sandbox wrapper timed out before the aggregate command returned; npm test and npm run test:full are the pass evidence for this handoff."
         ]
       }
+    },
+    {
+      "id": "P1S3M5W4",
+      "milestone_id": "P1S3M5",
+      "title": "Public package source manifest command gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-04T12:44:00.000Z"
+      },
+      "closure": {
+        "actor": "gpt-5.5-thinking",
+        "closed_at": "2026-07-04T12:55:00.000Z",
+        "summary": "Closed by promoting the package source manifest from an implicit surface-check subreport into explicit read-only release commands: release --source-manifest and release --source-manifest-check. The gate keeps content-addressed ni:///sha-256 file_id output, excludes raw sha256/hash-cache state, wires the commands into help, release handoff, README, AGENTS guidance, and full source tests, and bumps the package candidate to 0.0.111.",
+        "changed_files": [
+          ".agent-onboard/package-source-manifest-command-gate.json",
+          ".agent-onboard/work-items.json",
+          "AGENTS.md",
+          "README.md",
+          "package.json",
+          "authority-map.json",
+          "manifest.json",
+          "cli/agent_onboard/domains/architecture/static-catalog.js",
+          "cli/agent_onboard/domains/package/services/package-service.js",
+          "cli/agent_onboard/domains/package/services/package-surface-service.js",
+          "cli/agent_onboard/domains/package/services/source-manifest-service.js",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/runtime-contracts.js",
+          "test/agent-onboard.test.js"
+        ],
+        "checks_run": [
+          "node -c cli/agent_onboard/domains/package/services/source-manifest-service.js",
+          "node -c cli/agent_onboard/runtime-composer.js",
+          "node -c cli/agent_onboard/runtime-contracts.js",
+          "node -c cli/agent_onboard/domains/architecture/static-catalog.js",
+          "node -c test/agent-onboard.test.js",
+          "npm test",
+          "npm run test:full",
+          "node cli/agent-onboard.js release --source-manifest",
+          "node cli/agent-onboard.js release --source-manifest-check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js release --version-sprawl-check",
+          "npm pack --dry-run --json",
+          "node scripts/check-public-artifact-boundary.js",
+          "node cli/agent-onboard.js target metadata --write --force --target .",
+          "node cli/agent-onboard.js target metadata --check --target .",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json"
+        ],
+        "checks_not_run": [
+          "npm publish --access public"
+        ],
+        "known_non_pass": []
+      }
+    },
+    {
+      "id": "P1S3M5W5",
+      "milestone_id": "P1S3M5",
+      "title": "Public command surface catalog product gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-04T12:50:13.000Z"
+      },
+      "closure": {
+        "actor": "gpt-5.5-thinking",
+        "closed_at": "2026-07-04T12:50:13.000Z",
+        "summary": "Closed by adding a direct public command discovery surface: commands --json and commands --text. The feature exposes command help lines, recommended first commands, output modes, runtime command groups, and a no-mutation boundary without changing the historical architecture router contract or npm package file allowlist, then bumps the package candidate to 0.0.112.",
+        "changed_files": [
+          ".agent-onboard/command-surface-catalog-product-gate.json",
+          ".agent-onboard/work-items.json",
+          "AGENTS.md",
+          "README.md",
+          "authority-map.json",
+          "manifest.json",
+          "package.json",
+          "cli/agent_onboard/adapters/commands/architecture.js",
+          "cli/agent_onboard/adapters/commands/authority.js",
+          "cli/agent_onboard/adapters/commands/release-package.js",
+          "cli/agent_onboard/adapters/commands/target.js",
+          "cli/agent_onboard/adapters/commands/work-items.js",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/runtime-contracts.js",
+          "test/agent-onboard.test.js"
+        ],
+        "checks_run": [
+          "node -c cli/agent_onboard/runtime-composer.js",
+          "node -c cli/agent_onboard/runtime-contracts.js",
+          "node -c cli/agent_onboard/adapters/commands/core.js",
+          "node cli/agent-onboard.js commands --json",
+          "node cli/agent-onboard.js commands --text",
+          "node cli/agent-onboard.js --help",
+          "node cli/agent-onboard.js architecture --router",
+          "node cli/agent-onboard.js architecture --router-adapter-delegation-check",
+          "npm test",
+          "npm run test:full",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node cli/agent-onboard.js release --source-manifest-check",
+          "node cli/agent-onboard.js release --version-sprawl-check",
+          "npm pack --dry-run --json",
+          "node scripts/check-public-artifact-boundary.js",
+          "node cli/agent-onboard.js target metadata --write --force --target .",
+          "node cli/agent-onboard.js target metadata --check --target .",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json"
+        ],
+        "checks_not_run": [
+          "npm publish --access public",
+          "git diff --check (not run: handoff workspace is not a Git repository)"
+        ],
+        "known_non_pass": []
+      }
+    },
+    {
+      "id": "P1S3M5W6",
+      "milestone_id": "P1S3M5",
+      "title": "Public operator guide product gate",
+      "status": "closed",
+      "closure": {
+        "actor": "release-maintainer",
+        "closed_at": "2026-07-04T12:00:00.000Z",
+        "summary": "Closed by adding a direct public operator guide surface: guide --json and guide --text. The feature exposes first-read order, workflow command groups, escalation points, and a no-mutation boundary without adding packaged files or changing the historical architecture router contract, then bumps the package candidate to 0.0.113.",
+        "changed_files": [
+          "package.json",
+          "README.md",
+          "AGENTS.md",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/runtime-contracts.js",
+          "test/agent-onboard.test.js",
+          ".agent-onboard/operator-guide-product-gate.json",
+          ".agent-onboard/work-items.json",
+          "authority-map.json",
+          "manifest.json"
+        ],
+        "checks_run": [
+          "node cli/agent-onboard.js guide --json",
+          "node cli/agent-onboard.js guide --text",
+          "node cli/agent-onboard.js commands --json",
+          "node cli/agent-onboard.js commands --text",
+          "npm test",
+          "npm run test:full",
+          "node cli/agent-onboard.js release --source-manifest",
+          "node cli/agent-onboard.js release --source-manifest-check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js release --version-sprawl-check",
+          "npm pack --dry-run --json",
+          "node scripts/check-public-artifact-boundary.js",
+          "node cli/agent-onboard.js target metadata --write --force --target .",
+          "node cli/agent-onboard.js target metadata --check --target .",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json"
+        ],
+        "checks_not_run": [
+          "npm publish",
+          "git diff --check"
+        ],
+        "known_non_pass": [
+          "git diff --check was not available in the ZIP handoff workspace because no .git directory is present."
+        ]
+      }
     }
   ]
 }

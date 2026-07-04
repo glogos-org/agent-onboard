@@ -7,7 +7,7 @@ const AUTHORITY_COMMAND_ADAPTER_EXTRACTION = Object.freeze({
   planned_adapter_path: 'cli/agent_onboard/adapters/commands/authority.js',
   compatibility_port_group: 'authority',
   owned_top_level_commands: Object.freeze(['authority', 'agents', 'guard']),
-  excluded_top_level_commands: Object.freeze(['help', 'version', 'status', 'architecture', 'release', 'work-items', 'target', 'target-instance', 'init', 'target-config']),
+  excluded_top_level_commands: Object.freeze(['help', 'version', 'status', 'commands', 'architecture', 'release', 'work-items', 'target', 'target-instance', 'init', 'target-config']),
   output_contract: Object.freeze({
     authority: 'delegates to packaged CLI authority command family through injected bundled handler',
     agents: 'agents remains bundled CLI output behind the command adapter',

@@ -21,6 +21,8 @@ const SOURCE_MANIFEST_SERVICE_SEED = Object.freeze({
     content_identity_scheme: 'ni:///sha-256;...',
     forbidden_fields: Object.freeze(['sha256', 'path', 'urn']),
     package_manager_execution_required: false,
+    command: 'agent-onboard release --source-manifest',
+    check_command: 'agent-onboard release --source-manifest-check',
     writes_files: false
   }),
   boundary: Object.freeze({

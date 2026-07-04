@@ -15,10 +15,14 @@ const { configGuard: coreConfigGuardDomain } = require('./domains/core');
 const { service: packageDomain, sourceManifest: packageSourceManifestDomain } = require('./domains/package');
 const { createWorkItemsService } = require('./domains/work-items');
 const {
+  OUTPUT_FLAG,
+  PACKAGE_NAME,
   PRODUCT_HELP_LINES,
   PUBLIC_PACKAGED_ROUTER_PORT_MODULE_FILES,
   PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES,
   RELEASE_LINE,
+  ROUTER_COMMAND_ORDER,
+  RUNTIME_COMMAND_GROUP,
   RUNTIME_CONTRACTS,
   TARGET_COMMAND,
   TARGET_CONFIG_FILE,
@@ -31,6 +35,8 @@ const {
   TOP_LEVEL_COMMAND_ALIAS
 } = require('./runtime-contracts');
 const VERSION = require('../../package.json').version;
+const COMMANDS_COMMAND = 'commands';
+const GUIDE_COMMAND = 'guide';
 
 process.stdout.on('error', (error) => {
   if (error && error.code === 'EPIPE') process.exit(0);
@@ -111,6 +117,196 @@ const {
   publicReleaseContract: PUBLIC_RELEASE_CONTRACT
 });
 
+function commandLineFamily(line) {
+  const match = /^agent-onboard\s+([^\s]+)/.exec(line);
+  return match ? match[1] : 'other';
+}
+
+function groupCommandHelpLines(lines) {
+  const groups = {};
+  for (const line of lines) {
+    const family = commandLineFamily(line);
+    if (!groups[family]) groups[family] = [];
+    groups[family].push(line);
+  }
+  return groups;
+}
+
+function commandMutatesRepository(line) {
+  return /\s--write\b/.test(line) || /\s--force\b/.test(line);
+}
+
+function commandSurfaceCatalog() {
+  const helpLines = PRODUCT_HELP_LINES.slice();
+  return {
+    schema: 'agent-onboard-public-command-surface-catalog-001',
+    status: 'ok',
+    package_name: PACKAGE_NAME,
+    version: VERSION,
+    release_line: RELEASE_LINE,
+    command: 'agent-onboard commands --json',
+    purpose: 'machine-readable and human-readable catalog of the packaged public command surface',
+    top_level_commands: ROUTER_COMMAND_ORDER.includes(COMMANDS_COMMAND) ? ROUTER_COMMAND_ORDER.slice() : [...ROUTER_COMMAND_ORDER.slice(0, 3), COMMANDS_COMMAND, GUIDE_COMMAND, ...ROUTER_COMMAND_ORDER.slice(3)],
+    top_level_aliases: Object.assign({}, TOP_LEVEL_COMMAND_ALIAS),
+    runtime_command_groups: Object.fromEntries(Object.entries(RUNTIME_COMMAND_GROUP).map(([key, value]) => [key, key === 'core' ? Array.from(new Set([...value, COMMANDS_COMMAND, GUIDE_COMMAND])) : value.slice()])),
+    help_lines: helpLines,
+    help_groups: groupCommandHelpLines(helpLines),
+    command_lines: helpLines.map((line) => ({
+      command: line,
+      family: commandLineFamily(line),
+      mutates_repository_when_write_flag_is_used: commandMutatesRepository(line)
+    })),
+    recommended_first_commands: [
+      'agent-onboard commands --text',
+      'agent-onboard guide --text',
+      'agent-onboard status',
+      'agent-onboard target doctor --text',
+      'agent-onboard work-items --next --text',
+      'agent-onboard release --check'
+    ],
+    output_modes: ['--json', '--text'],
+    boundary: {
+      writes_files: false,
+      writes_target_repository_state: false,
+      publishes_package: false,
+      installs_dependencies: false,
+      runs_managed_project_commands: false,
+      git_mutation: false,
+      network: false
+    }
+  };
+}
+
+function commandSurfaceText(catalog = commandSurfaceCatalog()) {
+  const lines = [
+    `agent-onboard command surface ${catalog.version}`,
+    '',
+    'Top-level commands:',
+    ...catalog.top_level_commands.map((command) => `- ${command}`),
+    '',
+    'Recommended first commands:',
+    ...catalog.recommended_first_commands.map((command) => `- ${command}`),
+    '',
+    'Public command lines:'
+  ];
+  for (const line of catalog.help_lines) lines.push(`- ${line}`);
+  lines.push('', 'Use `agent-onboard commands --json` for machine-readable command discovery.');
+  return `${lines.join('\n')}\n`;
+}
+
+const commandSurfaceService = Object.freeze({
+  catalog: commandSurfaceCatalog,
+  text: commandSurfaceText
+});
+
+function operatorGuideCatalog() {
+  return {
+    schema: 'agent-onboard-public-operator-guide-001',
+    status: 'ok',
+    package_name: PACKAGE_NAME,
+    version: VERSION,
+    release_line: RELEASE_LINE,
+    command: 'agent-onboard guide --json',
+    purpose: 'compact operator and agent orientation guide for choosing the next public workflow',
+    first_read_order: [
+      'README.md',
+      'llms.txt',
+      'AGENTS.md',
+      'SOURCE_OF_TRUTH.md',
+      '.agent-onboard/authority-path.json',
+      '.agent-onboard/work-items.json'
+    ],
+    workflows: {
+      new_agent_orientation: {
+        goal: 'discover the CLI surface and repository authority before editing',
+        commands: [
+          'agent-onboard guide --text',
+          'agent-onboard commands --text',
+          'agent-onboard authority --first-read',
+          'agent-onboard work-items --next --text'
+        ],
+        writes_files: false
+      },
+      target_repo_triage: {
+        goal: 'inspect an arbitrary target repository before onboarding or repair',
+        commands: [
+          'agent-onboard target doctor --text',
+          'agent-onboard target profile --text',
+          'agent-onboard target metadata --plan',
+          'agent-onboard target manifest --check-drift'
+        ],
+        writes_files: false
+      },
+      target_onboarding_preview: {
+        goal: 'preview target onboarding files and conflicts before explicit writes',
+        commands: [
+          'agent-onboard target onboarding --plan',
+          'agent-onboard target onboarding --fixture',
+          'agent-onboard target bootstrap --dry-run',
+          'agent-onboard target-instance takeover --dry-run'
+        ],
+        writes_files: false
+      },
+      source_release_handoff: {
+        goal: 'prepare a source package handoff without publishing or mutating the registry',
+        commands: [
+          'agent-onboard release --source-manifest',
+          'agent-onboard release --source-manifest-check',
+          'agent-onboard release --surface-check',
+          'agent-onboard release --check'
+        ],
+        writes_files: false,
+        publishes_package: false
+      }
+    },
+    escalation_points: [
+      'Use explicit --write commands only after owner authorization.',
+      'Use --force only for intentional replacement of known canonical files.',
+      'Run package publish or Git mutation outside this CLI after human release handoff.'
+    ],
+    boundary: {
+      writes_files: false,
+      writes_target_repository_state: false,
+      publishes_package: false,
+      installs_dependencies: false,
+      runs_managed_project_commands: false,
+      git_mutation: false,
+      network: false
+    }
+  };
+}
+
+function operatorGuideText(guide = operatorGuideCatalog()) {
+  const lines = [
+    `agent-onboard operator guide ${guide.version}`,
+    '',
+    'First read order:',
+    ...guide.first_read_order.map((entry) => `- ${entry}`),
+    ''
+  ];
+  const labels = {
+    new_agent_orientation: 'New agent orientation',
+    target_repo_triage: 'Target repo triage',
+    target_onboarding_preview: 'Target onboarding preview',
+    source_release_handoff: 'Source release handoff'
+  };
+  for (const [key, workflow] of Object.entries(guide.workflows)) {
+    lines.push(labels[key] || key, `Goal: ${workflow.goal}`, 'Commands:');
+    for (const command of workflow.commands) lines.push(`- ${command}`);
+    lines.push('');
+  }
+  lines.push('Escalation points:');
+  for (const point of guide.escalation_points) lines.push(`- ${point}`);
+  lines.push('', 'Use `agent-onboard guide --json` for machine-readable workflow selection.');
+  return `${lines.join('\n')}\n`;
+}
+
+const operatorGuideService = Object.freeze({
+  catalog: operatorGuideCatalog,
+  text: operatorGuideText
+});
+
+
 const targetRuntimeService = createTargetRuntimeService({
   version: VERSION,
   publicReleaseContract: PUBLIC_RELEASE_CONTRACT,
@@ -124,6 +320,8 @@ const targetRuntimeService = createTargetRuntimeService({
   boundaryGuardContract: BOUNDARY_GUARD_CONTRACT,
   packageRoot,
   sourceContext,
+  commandSurfaceService,
+  operatorGuideService,
   arrayEquals
 });
 const {
@@ -187,6 +385,7 @@ const {
   performPlannedTextWrites,
   summarizePlan
 } = targetRuntimeService;
+
 function listRelativeFiles(root) {
   const files = [];
   function walk(dir) {
@@ -353,6 +552,8 @@ const publicArchitectureRuntimeService = createPublicArchitectureRuntimeService(
   targetOnboardingSurfacePlan: TARGET_ONBOARDING_SURFACE_PLAN,
   packageRoot,
   sourceContext,
+  commandSurfaceService,
+  operatorGuideService,
   arrayEquals,
   readJson,
   packageJsonProjectedPackFiles,
@@ -421,6 +622,8 @@ const publicArchitectureSourceDomainService = typeof createPublicArchitectureSou
   publicDomainServiceFacadesContract: PUBLIC_DOMAIN_SERVICE_FACADES,
   packageRoot,
   sourceContext,
+  commandSurfaceService,
+  operatorGuideService,
   arrayEquals,
   readJson,
   packageJsonProjectedPackFiles,
@@ -4256,6 +4459,34 @@ function publicPackageSurface(root = packageRoot()) {
   };
 }
 
+function publicPackageSourceManifest(root = packageRoot()) {
+  const result = createPublicPackageSourceManifestService().build(root);
+  return Object.assign({}, result, {
+    command: 'agent-onboard release --source-manifest',
+    package_root: root,
+    boundary: Object.assign({}, result.boundary, {
+      writes_files: false,
+      runs_package_manager: false,
+      publishes_package: false,
+      mutates_registry: false
+    })
+  });
+}
+
+function publicPackageSourceManifestCheck(root = packageRoot()) {
+  const result = createPublicPackageSourceManifestService().check(root);
+  return Object.assign({}, result, {
+    command: 'agent-onboard release --source-manifest-check',
+    package_root: root,
+    boundary: Object.assign({}, result.boundary, {
+      writes_files: false,
+      runs_package_manager: false,
+      publishes_package: false,
+      mutates_registry: false
+    })
+  });
+}
+
 function publicPackageSurfaceCheck(root = packageRoot()) {
   const surface = publicPackageSurface(root);
   const packageSourceManifest = createPublicPackageSourceManifestService().check(root);
@@ -4828,6 +5059,8 @@ function publicTargetOnboardingPostPublishHandoff(root = packageRoot(), version 
     `npx agent-onboard@${version} target runtime --check`,
     `npx agent-onboard@${version} release --surface`,
     `npx agent-onboard@${version} release --surface-check`,
+    `npx agent-onboard@${version} release --source-manifest`,
+    `npx agent-onboard@${version} release --source-manifest-check`,
     `npx agent-onboard@${version} architecture --check`,
     `npx agent-onboard@${version} release --check`,
     `npx agent-onboard@${version} init --dry-run`,
@@ -5675,6 +5908,16 @@ function runRelease(args) {
     json(result);
     return result.status === 'ok' ? 0 : 1;
   }
+  if (args.length === 1 && args[0] === '--source-manifest') {
+    const result = publicPackageSourceManifest();
+    json(result);
+    return result.status === 'ok' ? 0 : 1;
+  }
+  if (args.length === 1 && args[0] === '--source-manifest-check') {
+    const result = publicPackageSourceManifestCheck();
+    json(result);
+    return result.status === 'ok' ? 0 : 1;
+  }
   if (args.length === 1 && args[0] === '--version-sprawl-check') {
     const result = publicVersionReferencePolicyCheck();
     json(result);
@@ -5719,7 +5962,7 @@ function runRelease(args) {
     schema: 'agent-onboard-release-command-error-001',
     status: 'error',
     command_family: 'release',
-    message: 'release requires --plan, --contract, --fixture, --surface, --surface-check, --version-sprawl-check, --parity-smoke, --architecture-parity-smoke, --target-onboarding-smoke, --post-publish-handoff, --published-acceptance, --real-target-trial, or --check',
+    message: 'release requires --plan, --contract, --fixture, --surface, --surface-check, --source-manifest, --source-manifest-check, --version-sprawl-check, --parity-smoke, --architecture-parity-smoke, --target-onboarding-smoke, --post-publish-handoff, --published-acceptance, --real-target-trial, or --check',
     writes_files: false,
     publishes_package: false
   });
@@ -6197,6 +6440,67 @@ function runStatus() {
   return 0;
 }
 
+function runCommands(args = []) {
+  const wantsJson = args.includes(OUTPUT_FLAG.json);
+  const wantsText = args.includes(OUTPUT_FLAG.text) || !wantsJson;
+  if (wantsJson && wantsText && args.includes(OUTPUT_FLAG.text)) {
+    json({
+      schema: 'agent-onboard-public-command-surface-error-001',
+      status: 'error',
+      command_family: 'commands',
+      message: 'commands accepts either --json or --text, not both',
+      writes_files: false,
+      publishes_package: false
+    });
+    return 1;
+  }
+  if (args.some((arg) => ![OUTPUT_FLAG.json, OUTPUT_FLAG.text].includes(arg))) {
+    json({
+      schema: 'agent-onboard-public-command-surface-error-001',
+      status: 'error',
+      command_family: 'commands',
+      message: 'commands supports only --json or --text',
+      writes_files: false,
+      publishes_package: false
+    });
+    return 1;
+  }
+  if (wantsJson) json(commandSurfaceService.catalog());
+  else process.stdout.write(commandSurfaceService.text());
+  return 0;
+}
+
+
+function runGuide(args = []) {
+  const wantsJson = args.includes(OUTPUT_FLAG.json);
+  const wantsText = args.includes(OUTPUT_FLAG.text) || !wantsJson;
+  if (wantsJson && wantsText && args.includes(OUTPUT_FLAG.text)) {
+    json({
+      schema: 'agent-onboard-public-operator-guide-error-001',
+      status: 'error',
+      command_family: 'guide',
+      message: 'guide accepts either --json or --text, not both',
+      writes_files: false,
+      publishes_package: false
+    });
+    return 1;
+  }
+  if (args.some((arg) => ![OUTPUT_FLAG.json, OUTPUT_FLAG.text].includes(arg))) {
+    json({
+      schema: 'agent-onboard-public-operator-guide-error-001',
+      status: 'error',
+      command_family: 'guide',
+      message: 'guide supports only --json or --text',
+      writes_files: false,
+      publishes_package: false
+    });
+    return 1;
+  }
+  if (wantsJson) json(operatorGuideService.catalog());
+  else process.stdout.write(operatorGuideService.text());
+  return 0;
+}
+
 function runTargetRuntime(args) {
   if (args.length === 1 && args[0] === '--namespace') {
     json(publicTargetRuntimeNamespace());
@@ -6235,6 +6539,8 @@ const DOMAIN_SERVICE_FACADES = Object.freeze({
     help,
     printVersion,
     runStatus,
+    runCommands,
+    runGuide,
     runArchitecture
   }),
   authorityService: Object.freeze({
@@ -6264,6 +6570,8 @@ const COMMAND_ROUTE_HANDLERS = Object.freeze({
   [TOP_LEVEL_COMMAND.help]: DOMAIN_SERVICE_FACADES.coreService.help,
   [TOP_LEVEL_COMMAND.version]: DOMAIN_SERVICE_FACADES.coreService.printVersion,
   [TOP_LEVEL_COMMAND.status]: DOMAIN_SERVICE_FACADES.coreService.runStatus,
+  [COMMANDS_COMMAND]: DOMAIN_SERVICE_FACADES.coreService.runCommands,
+  [GUIDE_COMMAND]: DOMAIN_SERVICE_FACADES.coreService.runGuide,
   [TOP_LEVEL_COMMAND.init]: DOMAIN_SERVICE_FACADES.targetService.runInit,
   [TOP_LEVEL_COMMAND.agents]: DOMAIN_SERVICE_FACADES.authorityService.runAgents,
   [TOP_LEVEL_COMMAND.guard]: DOMAIN_SERVICE_FACADES.authorityService.runGuard,
@@ -6400,6 +6708,8 @@ module.exports = {
   evaluateTargetBoundaryConfig,
   sourceWorkItemsLedgerCheck,
   sourceContext,
+  commandSurfaceService,
+  operatorGuideService,
   publicReleaseCheck,
   publicArchitectureMap,
   publicCommandRouter,

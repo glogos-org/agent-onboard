@@ -7,7 +7,7 @@ const ARCHITECTURE_COMMAND_ADAPTER_EXTRACTION = Object.freeze({
   planned_adapter_path: 'cli/agent_onboard/adapters/commands/architecture.js',
   compatibility_port_group: 'architecture',
   owned_top_level_commands: Object.freeze(['architecture']),
-  excluded_top_level_commands: Object.freeze(['help', 'version', 'status', 'release', 'authority', 'work-items', 'target', 'target-instance', 'init', 'agents', 'guard', 'target-config']),
+  excluded_top_level_commands: Object.freeze(['help', 'version', 'status', 'commands', 'release', 'authority', 'work-items', 'target', 'target-instance', 'init', 'agents', 'guard', 'target-config']),
   output_contract: Object.freeze({
     architecture: 'delegates to packaged CLI architecture command family through injected bundled handler',
     map: 'architecture --map remains bundled CLI output behind the command adapter',

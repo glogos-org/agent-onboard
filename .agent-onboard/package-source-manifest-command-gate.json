@@ -1,0 +1,40 @@
+{
+  "schema": "agent-onboard-public-package-source-manifest-command-gate-001",
+  "package_name": "agent-onboard",
+  "version": "0.0.111",
+  "release_line": "public_package_source_manifest_command_gate",
+  "title": "Public package source manifest command gate",
+  "summary": "Admits explicit read-only release commands for printing and validating the content-addressed package source manifest. The commands expose file_id ni:///sha-256;... entries for projected npm package files while preserving raw sha256, hash-cache, package-manager, publish, and write boundaries.",
+  "runtime_surface": {
+    "service": "cli/agent_onboard/domains/package/services/source-manifest-service.js",
+    "commands": [
+      "agent-onboard release --source-manifest",
+      "agent-onboard release --source-manifest-check"
+    ],
+    "release_check_integration": "agent-onboard release --surface-check"
+  },
+  "boundary": {
+    "writes_files": false,
+    "runs_package_manager": false,
+    "publishes_package": false,
+    "mutates_registry": false,
+    "raw_sha256_exposed": false,
+    "hash_cache_projected_into_package": false,
+    "source_only_state_projected_into_package": false
+  },
+  "checks": [
+    "node -c cli/agent_onboard/domains/package/services/source-manifest-service.js",
+    "node -c cli/agent_onboard/runtime-composer.js",
+    "node -c cli/agent_onboard/runtime-contracts.js",
+    "node -c test/agent-onboard.test.js",
+    "npm test",
+    "npm run test:full",
+    "node cli/agent-onboard.js release --source-manifest",
+    "node cli/agent-onboard.js release --source-manifest-check",
+    "node cli/agent-onboard.js release --surface-check",
+    "node cli/agent-onboard.js release --check",
+    "node cli/agent-onboard.js release --version-sprawl-check",
+    "npm pack --dry-run --json",
+    "node scripts/check-public-artifact-boundary.js"
+  ]
+}
