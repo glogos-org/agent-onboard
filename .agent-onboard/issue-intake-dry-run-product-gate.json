@@ -1,0 +1,56 @@
+{
+  "schema": "agent-onboard-public-issue-intake-dry-run-product-gate-001",
+  "work_item_id": "P1S3M5W11",
+  "title": "Public issue intake dry-run product gate",
+  "status": "closed",
+  "package_name": "agent-onboard",
+  "version": "0.0.118",
+  "release_line": "public_issue_intake_dry_run_product_gate",
+  "commands": [
+    "agent-onboard issue --classify-dry-run",
+    "agent-onboard issue --classify-dry-run --json",
+    "agent-onboard issue --classify-dry-run --text"
+  ],
+  "optional_metadata_flags": [
+    "--title",
+    "--label",
+    "--actor",
+    "--source",
+    "--repo",
+    "--issue-number",
+    "--runtime",
+    "--handle"
+  ],
+  "purpose": "Expose a read-only external issue intake classifier that turns issue metadata into a disposition and in-memory work-item candidate preview before any canonical work item or claim admission exists.",
+  "classification_dispositions": [
+    "needs_triage",
+    "needs_generalization",
+    "upstream_candidate",
+    "consumer_specific",
+    "duplicate",
+    "rejected"
+  ],
+  "boundary": {
+    "writes_files": false,
+    "writes_consuming_repository_state": false,
+    "creates_agent_onboard_runtime_state": false,
+    "scans_consumer_repository": false,
+    "imports_github_issue": false,
+    "github_api_dependency_now": false,
+    "github_issue_mutation_allowed_now": false,
+    "github_issue_is_canonical_work_item_now": false,
+    "canonical_work_item_creation_allowed_now": false,
+    "claim_admission_allowed_now": false,
+    "installs_dependencies": false,
+    "runs_build_test_deploy": false,
+    "runs_managed_project_commands": false,
+    "git_mutation": false,
+    "publishes_package": false,
+    "network": false
+  },
+  "notes": [
+    "This gate does not admit issue --admit-work-item-dry-run, issue --write, platform imports, GitHub mutation, or ledger writes.",
+    "The classifier accepts explicit metadata flags only and does not scan repository or platform state.",
+    "Candidate previews remain in output memory and require later explicit work-item admission before any canonical ledger mutation."
+  ]
+}

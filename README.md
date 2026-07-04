@@ -32,6 +32,7 @@ npx agent-onboard target profile --json
 npx agent-onboard target profile --text
 npx agent-onboard target memory --preview
 npx agent-onboard target memory --text
+npx agent-onboard issue --classify-dry-run --text
 npx agent-onboard target metadata --plan
 npx agent-onboard target metadata --check
 npx agent-onboard target metadata --write
@@ -132,6 +133,7 @@ npx agent-onboard quickstart --json
 npx agent-onboard discovery --llms
 npx agent-onboard create --dry-run
 npx agent-onboard target memory --text
+npx agent-onboard issue --classify-dry-run --text
 npx create-agent-onboard --dry-run
 npm create agent-onboard@latest -- --dry-run
 npx agent-onboard discovery --text
@@ -140,7 +142,7 @@ npx agent-onboard commands --text
 npx agent-onboard commands --json
 ```
 
-The guide turns the public CLI into a first-read workflow selector: new-agent orientation, target repo triage, target onboarding preview, create-entrypoint preview, and source release handoff. The quickstart command turns that orientation into a read-only first-run recipe: guide, command discovery, target doctor, onboarding plan, bootstrap dry-run, create dry-run, and next work-item lookup. The discovery command prints the AI-readable llms-style entrypoint or a compact discovery catalog for installed/source package contexts. The create dry-run command previews the future npm-create onboarding write set without writing files, scanning the consumer repository, installing dependencies, mutating Git, publishing, or using network access. The target memory command prints a bounded metadata-only descriptor of known repo memory, instruction, identity, and target-owned state surfaces without importing file contents. The command catalog exposes top-level commands, aliases, runtime groups, help lines, recommended first commands, and the no-mutation boundary for command discovery. Together they are the fastest way for a new agent or operator to orient itself before choosing a workflow.
+The guide turns the public CLI into a first-read workflow selector: new-agent orientation, target repo triage, target onboarding preview, create-entrypoint preview, and source release handoff. The quickstart command turns that orientation into a read-only first-run recipe: guide, command discovery, target doctor, onboarding plan, bootstrap dry-run, create dry-run, issue intake dry-run, and next work-item lookup. The discovery command prints the AI-readable llms-style entrypoint or a compact discovery catalog for installed/source package contexts. The create dry-run command previews the future npm-create onboarding write set without writing files, scanning the consumer repository, installing dependencies, mutating Git, publishing, or using network access. The target memory command prints a bounded metadata-only descriptor of known repo memory, instruction, identity, and target-owned state surfaces without importing file contents. The issue intake dry-run command classifies external issue metadata and previews whether it should become a generalized work-item candidate without calling GitHub, importing an issue, writing a ledger, admitting a claim, mutating Git, publishing, or using network access. The command catalog exposes top-level commands, aliases, runtime groups, help lines, recommended first commands, and the no-mutation boundary for command discovery. Together they are the fastest way for a new agent or operator to orient itself before choosing a workflow.
 
 ```sh
 npx agent-onboard status
@@ -153,6 +155,7 @@ npx agent-onboard create --dry-run
 npx agent-onboard create --text
 npx agent-onboard target memory --preview
 npx agent-onboard target memory --text
+npx agent-onboard issue --classify-dry-run --text
 npx agent-onboard discovery --text
 npx agent-onboard discovery --json
 npx agent-onboard commands --text

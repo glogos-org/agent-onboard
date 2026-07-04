@@ -38,6 +38,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-create-dry-run-product-gate-json-197ac43b"
     },
     {
+      "file_path": ".agent-onboard/issue-intake-dry-run-product-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-issue-intake-dry-run-product-gate-json-322444c2"
+    },
+    {
       "file_path": ".agent-onboard/metadata-policy.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-metadata-policy-json-fbba7f6e"
     },

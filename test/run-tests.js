@@ -227,6 +227,8 @@ function quickTasks() {
     cliTask('target profile text', ['target', 'profile', '--text'], expectTextIncludes(['agent-onboard target profile', 'Package managers:', 'Writes performed: false'])),
     cliTask('target memory', ['target', 'memory', '--preview'], expectStatusOk),
     cliTask('target memory text', ['target', 'memory', '--text'], expectTextIncludes(['agent-onboard target memory', 'metadata-only preview', 'Writes performed: false'])),
+    cliTask('issue classify dry-run', ['issue', '--classify-dry-run'], expectStatusOk),
+    cliTask('issue classify dry-run text', ['issue', '--classify-dry-run', '--text'], expectTextIncludes(['agent-onboard issue intake dry-run', 'Authority: external signal only', 'no GitHub API'])),
     cliTask('target repair plan', ['target', 'repair', '--plan'], expectStatusOk),
     cliTask('work-items schema through runtime service', ['work-items', '--schema'], expectStatusOk),
     cliTask('work-items template through runtime service', ['work-items', '--template'], expectStatusOk),
