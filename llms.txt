@@ -20,6 +20,7 @@ Canonical AI-readable files:
 Stable commands:
 
 - agent-onboard discovery --llms
+agent-onboard create --dry-run
 - agent-onboard discovery --text
 - agent-onboard discovery --json
 - agent-onboard guide --text

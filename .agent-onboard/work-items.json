@@ -4571,6 +4571,71 @@
           "git diff --check was not available in the ZIP handoff workspace because no .git directory is present."
         ]
       }
+    },
+    {
+      "id": "P1S3M5W9",
+      "milestone_id": "P1S3M5",
+      "title": "Public create dry-run product gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-04T14:30:00.000Z"
+      },
+      "closure": {
+        "actor": "gpt-5.5-thinking",
+        "closed_at": "2026-07-04T14:50:00.000Z",
+        "summary": "Closed by adding a direct public create dry-run surface: create --dry-run, create --json, and create --text. The feature previews the future npm-create onboarding write set and recommended next commands without writing files, scanning arbitrary consumer state, installing dependencies, running managed project commands, publishing, mutating Git, or using network access, then bumps the package candidate to 0.0.116.",
+        "changed_files": [
+          "package.json",
+          "README.md",
+          "AGENTS.md",
+          "llms.txt",
+          "cli/agent-onboard.js",
+          "cli/agent_onboard/command-router.js",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/runtime-contracts.js",
+          "test/agent-onboard.test.js",
+          ".agent-onboard/create-dry-run-product-gate.json",
+          ".agent-onboard/work-items.json",
+          "authority-map.json",
+          "manifest.json"
+        ],
+        "checks_run": [
+          "node -c cli/agent-onboard.js",
+          "node -c cli/agent_onboard/command-router.js",
+          "node -c cli/agent_onboard/runtime-composer.js",
+          "node -c cli/agent_onboard/runtime-contracts.js",
+          "node -c test/agent-onboard.test.js",
+          "node cli/agent-onboard.js create --dry-run",
+          "node cli/agent-onboard.js create --json",
+          "node cli/agent-onboard.js create --text",
+          "node cli/agent-onboard.js create --write (expected exit 2 not_admitted)",
+          "create-agent-onboard --dry-run argv-normalization smoke",
+          "node cli/agent-onboard.js commands --json",
+          "node cli/agent-onboard.js guide --json",
+          "node cli/agent-onboard.js quickstart --json",
+          "node cli/agent-onboard.js discovery --json",
+          "npm test",
+          "npm run test:full",
+          "node cli/agent-onboard.js release --source-manifest",
+          "node cli/agent-onboard.js release --source-manifest-check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js release --version-sprawl-check",
+          "npm pack --dry-run --json",
+          "node scripts/check-public-artifact-boundary.js",
+          "node cli/agent-onboard.js target metadata --write --force --target .",
+          "node cli/agent-onboard.js target metadata --check --target .",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json"
+        ],
+        "checks_not_run": [
+          "npm publish --access public",
+          "git diff --check (not run: handoff workspace is not a Git repository)"
+        ],
+        "known_non_pass": [
+          "git diff --check was not available in the ZIP handoff workspace because no .git directory is present."
+        ]
+      }
     }
   ]
 }

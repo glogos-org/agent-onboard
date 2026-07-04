@@ -29,6 +29,16 @@ function describeRouterSeed() {
   return ROUTER_SEED;
 }
 
+function normalizeCreateEntrypointArgv(argv) {
+  if (!Array.isArray(argv)) return argv;
+  const raw = argv[1] || '';
+  const invoked = String(raw).split(/[\\/]/).pop();
+  if (invoked === 'create-agent-onboard' && argv[2] !== 'create') {
+    return [argv[0], argv[1], 'create', ...argv.slice(2)];
+  }
+  return argv;
+}
+
 function route(argv, compatibilityPort) {
   if (!Array.isArray(argv)) {
     return Object.freeze({
@@ -46,11 +56,12 @@ function route(argv, compatibilityPort) {
       writes_files: false
     });
   }
-  return compatibilityPort.run(argv);
+  return compatibilityPort.run(normalizeCreateEntrypointArgv(argv));
 }
 
 module.exports = Object.freeze({
   ROUTER_SEED,
   describeRouterSeed,
+  normalizeCreateEntrypointArgv,
   route
 });

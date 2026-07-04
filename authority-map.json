@@ -34,6 +34,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-core-command-adapter-extraction-json-da3b0b54"
     },
     {
+      "file_path": ".agent-onboard/create-dry-run-product-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-create-dry-run-product-gate-json-197ac43b"
+    },
+    {
       "file_path": ".agent-onboard/metadata-policy.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-metadata-policy-json-fbba7f6e"
     },

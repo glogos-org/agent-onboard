@@ -39,6 +39,7 @@ const COMMANDS_COMMAND = 'commands';
 const GUIDE_COMMAND = 'guide';
 const QUICKSTART_COMMAND = 'quickstart';
 const DISCOVERY_COMMAND = 'discovery';
+const CREATE_COMMAND = 'create';
 
 process.stdout.on('error', (error) => {
   if (error && error.code === 'EPIPE') process.exit(0);
@@ -150,7 +151,7 @@ function commandSurfaceCatalog() {
     purpose: 'machine-readable and human-readable catalog of the packaged public command surface',
     top_level_commands: ROUTER_COMMAND_ORDER.includes(COMMANDS_COMMAND) ? ROUTER_COMMAND_ORDER.slice() : [...ROUTER_COMMAND_ORDER.slice(0, 3), COMMANDS_COMMAND, GUIDE_COMMAND, QUICKSTART_COMMAND, DISCOVERY_COMMAND, ...ROUTER_COMMAND_ORDER.slice(3)],
     top_level_aliases: Object.assign({}, TOP_LEVEL_COMMAND_ALIAS),
-    runtime_command_groups: Object.fromEntries(Object.entries(RUNTIME_COMMAND_GROUP).map(([key, value]) => [key, key === 'core' ? Array.from(new Set([...value, COMMANDS_COMMAND, GUIDE_COMMAND, QUICKSTART_COMMAND, DISCOVERY_COMMAND])) : value.slice()])),
+    runtime_command_groups: Object.fromEntries(Object.entries(RUNTIME_COMMAND_GROUP).map(([key, value]) => [key, key === 'core' ? Array.from(new Set([...value, COMMANDS_COMMAND, GUIDE_COMMAND, QUICKSTART_COMMAND, DISCOVERY_COMMAND, CREATE_COMMAND])) : value.slice()])),
     help_lines: helpLines,
     help_groups: groupCommandHelpLines(helpLines),
     command_lines: helpLines.map((line) => ({
@@ -163,6 +164,7 @@ function commandSurfaceCatalog() {
       'agent-onboard guide --text',
       'agent-onboard quickstart --text',
       'agent-onboard discovery --llms',
+      'agent-onboard create --dry-run',
       'agent-onboard status',
       'agent-onboard target doctor --text',
       'agent-onboard work-items --next --text',
@@ -227,6 +229,7 @@ function operatorGuideCatalog() {
           'agent-onboard guide --text',
           'agent-onboard commands --text',
           'agent-onboard quickstart --text',
+          'agent-onboard create --dry-run',
           'agent-onboard authority --first-read',
           'agent-onboard work-items --next --text'
         ],
@@ -250,6 +253,15 @@ function operatorGuideCatalog() {
           'agent-onboard target onboarding --fixture',
           'agent-onboard target bootstrap --dry-run',
           'agent-onboard target-instance takeover --dry-run'
+        ],
+        writes_files: false
+      },
+      create_entrypoint_preview: {
+        goal: 'preview the future npm create onboarding write set without mutating the consuming repository',
+        commands: [
+          'agent-onboard create --dry-run',
+          'create-agent-onboard --dry-run',
+          'npm create agent-onboard@latest -- --dry-run'
         ],
         writes_files: false
       },
@@ -355,6 +367,12 @@ function quickstartCatalog() {
       },
       {
         step: 6,
+        command: 'agent-onboard create --dry-run',
+        purpose: 'preview the npm create entrypoint write set without mutating the consuming repository',
+        writes_files: false
+      },
+      {
+        step: 7,
         command: 'agent-onboard work-items --next --text',
         purpose: 'read the next admitted work item when a ledger exists',
         writes_files: false
@@ -429,6 +447,7 @@ function discoveryStableCommands() {
     'agent-onboard discovery --llms',
     'agent-onboard discovery --text',
     'agent-onboard discovery --json',
+    'agent-onboard create --dry-run',
     'agent-onboard guide --text',
     'agent-onboard quickstart --text',
     'agent-onboard commands --text',
@@ -540,6 +559,115 @@ const discoveryService = Object.freeze({
 });
 
 
+function createDryRunCatalog() {
+  return {
+    schema: 'agent-onboard-public-create-dry-run-001',
+    status: 'ok',
+    package_name: PACKAGE_NAME,
+    version: VERSION,
+    release_line: RELEASE_LINE,
+    command: 'agent-onboard create --dry-run',
+    npm_create_command: 'npm create agent-onboard@latest -- --dry-run',
+    bin_entrypoint: 'create-agent-onboard --dry-run',
+    purpose: 'read-only npm create entrypoint preview for bootstrapping agent-onboard into a target repository',
+    mode: 'dry-run',
+    package_coordinate: `${PACKAGE_NAME}@${VERSION}`,
+    preview: {
+      target_root: '.',
+      summary: 'Preview the canonical target onboarding files that a later owner-approved create/write gate may materialize.',
+      planned_files: [
+        {
+          path: 'package.json',
+          action: 'inspect_or_preserve',
+          required_for_npm_project: true,
+          writes_in_this_command: false
+        },
+        {
+          path: 'AGENTS.md',
+          action: 'would_create_or_preserve_agent_instructions',
+          writes_in_this_command: false
+        },
+        {
+          path: 'llms.txt',
+          action: 'would_create_or_preserve_ai_readable_entrypoint',
+          writes_in_this_command: false
+        },
+        {
+          path: '.agent-onboard/target.json',
+          action: 'would_create_target_config',
+          writes_in_this_command: false
+        },
+        {
+          path: '.agent-onboard/project.json',
+          action: 'would_create_project_descriptor',
+          writes_in_this_command: false
+        },
+        {
+          path: '.agent-onboard/work-items.json',
+          action: 'would_create_work_item_ledger',
+          writes_in_this_command: false
+        },
+        {
+          path: '.agent-onboard/authority-path.json',
+          action: 'would_create_first_read_authority_index',
+          writes_in_this_command: false
+        }
+      ],
+      recommended_next_commands: [
+        'agent-onboard guide --text',
+        'agent-onboard target doctor --text',
+        'agent-onboard target onboarding --plan',
+        'agent-onboard target bootstrap --dry-run',
+        'agent-onboard target bootstrap --write --force'
+      ],
+      write_mode_status: 'not_admitted_in_this_gate'
+    },
+    output_modes: ['--dry-run', '--json', '--text'],
+    boundary: {
+      writes_files: false,
+      writes_consuming_repository_state: false,
+      creates_agent_onboard_runtime_state: false,
+      scans_consumer_repository: false,
+      validates_arbitrary_target_config_file: false,
+      installs_dependencies: false,
+      runs_build_test_deploy: false,
+      runs_managed_project_commands: false,
+      git_mutation: false,
+      publishes_package: false,
+      network: false
+    }
+  };
+}
+
+function createDryRunText(catalog = createDryRunCatalog()) {
+  const lines = [
+    `agent-onboard create dry-run ${catalog.version}`,
+    '',
+    'Read-only npm create preview:',
+    `- ${catalog.command}`,
+    `- ${catalog.bin_entrypoint}`,
+    `- ${catalog.npm_create_command}`,
+    '',
+    catalog.preview.summary,
+    '',
+    'Planned files for a later owner-approved write gate:'
+  ];
+  for (const file of catalog.preview.planned_files) {
+    lines.push(`- ${file.path}: ${file.action}`);
+  }
+  lines.push('', 'Recommended next commands:');
+  for (const command of catalog.preview.recommended_next_commands) lines.push(`- ${command}`);
+  lines.push('', 'Boundary: no files written, no dependency install, no Git mutation, no publish, no network.');
+  lines.push('Use `agent-onboard create --json` for the machine-readable preview.');
+  return `${lines.join('\n')}\n`;
+}
+
+const createDryRunService = Object.freeze({
+  catalog: createDryRunCatalog,
+  text: createDryRunText
+});
+
+
 const targetRuntimeService = createTargetRuntimeService({
   version: VERSION,
   publicReleaseContract: PUBLIC_RELEASE_CONTRACT,
@@ -557,6 +685,7 @@ const targetRuntimeService = createTargetRuntimeService({
   operatorGuideService,
   quickstartService,
   discoveryService,
+  createDryRunService,
   arrayEquals
 });
 const {
@@ -791,6 +920,7 @@ const publicArchitectureRuntimeService = createPublicArchitectureRuntimeService(
   operatorGuideService,
   quickstartService,
   discoveryService,
+  createDryRunService,
   arrayEquals,
   readJson,
   packageJsonProjectedPackFiles,
@@ -863,6 +993,7 @@ const publicArchitectureSourceDomainService = typeof createPublicArchitectureSou
   operatorGuideService,
   quickstartService,
   discoveryService,
+  createDryRunService,
   arrayEquals,
   readJson,
   packageJsonProjectedPackFiles,
@@ -6805,6 +6936,38 @@ function runDiscovery(args = []) {
   return 0;
 }
 
+function runCreate(args = []) {
+  const allowed = ['--dry-run', OUTPUT_FLAG.json, OUTPUT_FLAG.text];
+  const selected = args.filter((arg) => allowed.includes(arg));
+  if (args.some((arg) => !allowed.includes(arg))) {
+    json({
+      schema: 'agent-onboard-public-create-dry-run-error-001',
+      status: 'not_admitted',
+      command_family: 'create',
+      message: 'create supports only --dry-run, --json, or --text in this public gate',
+      reason: 'create --write, init, dependency installation, target scanning, managed-project command execution, Git mutation, and npm publish require later explicit gates.',
+      writes_files: false,
+      publishes_package: false
+    });
+    return 2;
+  }
+  if (selected.length > 1) {
+    json({
+      schema: 'agent-onboard-public-create-dry-run-error-001',
+      status: 'error',
+      command_family: 'create',
+      message: 'create accepts only one output mode: --dry-run, --json, or --text',
+      writes_files: false,
+      publishes_package: false
+    });
+    return 1;
+  }
+  const mode = selected[0] || '--dry-run';
+  if (mode === OUTPUT_FLAG.text) process.stdout.write(createDryRunService.text());
+  else json(createDryRunService.catalog());
+  return 0;
+}
+
 function runTargetRuntime(args) {
   if (args.length === 1 && args[0] === '--namespace') {
     json(publicTargetRuntimeNamespace());
@@ -6847,6 +7010,7 @@ const DOMAIN_SERVICE_FACADES = Object.freeze({
     runGuide,
     runQuickstart,
     runDiscovery,
+    runCreate,
     runArchitecture
   }),
   authorityService: Object.freeze({
@@ -6880,6 +7044,8 @@ const COMMAND_ROUTE_HANDLERS = Object.freeze({
   [GUIDE_COMMAND]: DOMAIN_SERVICE_FACADES.coreService.runGuide,
   [QUICKSTART_COMMAND]: DOMAIN_SERVICE_FACADES.coreService.runQuickstart,
   [DISCOVERY_COMMAND]: DOMAIN_SERVICE_FACADES.coreService.runDiscovery,
+  [CREATE_COMMAND]: DOMAIN_SERVICE_FACADES.coreService.runCreate,
+  [TOP_LEVEL_COMMAND.create]: DOMAIN_SERVICE_FACADES.coreService.runCreate,
   [TOP_LEVEL_COMMAND.init]: DOMAIN_SERVICE_FACADES.targetService.runInit,
   [TOP_LEVEL_COMMAND.agents]: DOMAIN_SERVICE_FACADES.authorityService.runAgents,
   [TOP_LEVEL_COMMAND.guard]: DOMAIN_SERVICE_FACADES.authorityService.runGuard,
@@ -7020,6 +7186,7 @@ module.exports = {
   operatorGuideService,
   quickstartService,
   discoveryService,
+  createDryRunService,
   publicReleaseCheck,
   publicArchitectureMap,
   publicCommandRouter,

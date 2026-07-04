@@ -2,7 +2,7 @@
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
-const RELEASE_LINE = 'public_ai_discovery_product_gate';
+const RELEASE_LINE = 'public_create_dry_run_product_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
   agents: 'agents',
@@ -16,6 +16,7 @@ const TOP_LEVEL_COMMAND = Object.freeze({
   target: 'target',
   targetConfig: 'target-config',
   targetInstance: 'target-instance',
+  create: 'create',
   version: 'version',
   workItems: 'work-items'
 });
@@ -31,6 +32,7 @@ const ROUTER_COMMAND_ORDER = Object.freeze([
   TOP_LEVEL_COMMAND.help,
   TOP_LEVEL_COMMAND.version,
   TOP_LEVEL_COMMAND.status,
+  TOP_LEVEL_COMMAND.create,
   TOP_LEVEL_COMMAND.init,
   TOP_LEVEL_COMMAND.agents,
   TOP_LEVEL_COMMAND.guard,
@@ -47,7 +49,8 @@ const RUNTIME_COMMAND_GROUP = Object.freeze({
   core: Object.freeze([
     TOP_LEVEL_COMMAND.help,
     TOP_LEVEL_COMMAND.version,
-    TOP_LEVEL_COMMAND.status
+    TOP_LEVEL_COMMAND.status,
+    TOP_LEVEL_COMMAND.create
   ]),
   architecture: Object.freeze([
     TOP_LEVEL_COMMAND.architecture
@@ -193,6 +196,7 @@ const PRODUCT_HELP_LINES = Object.freeze([
   'agent-onboard guide --json|--text',
   'agent-onboard quickstart --json|--text|--dry-run',
   'agent-onboard discovery --llms|--json|--text',
+  'agent-onboard create --dry-run|--json|--text',
   TARGET_DOCTOR_COMMAND.help,
   TARGET_PROFILE_COMMAND.help,
   TARGET_REPAIR_COMMAND.help,

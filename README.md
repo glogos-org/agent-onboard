@@ -128,13 +128,16 @@ npx agent-onboard guide --json
 npx agent-onboard quickstart --text
 npx agent-onboard quickstart --json
 npx agent-onboard discovery --llms
+npx agent-onboard create --dry-run
+npx create-agent-onboard --dry-run
+npm create agent-onboard@latest -- --dry-run
 npx agent-onboard discovery --text
 npx agent-onboard discovery --json
 npx agent-onboard commands --text
 npx agent-onboard commands --json
 ```
 
-The guide turns the public CLI into a first-read workflow selector: new-agent orientation, target repo triage, target onboarding preview, and source release handoff. The quickstart command turns that orientation into a read-only first-run recipe: guide, command discovery, target doctor, onboarding plan, bootstrap dry-run, and next work-item lookup. The discovery command prints the AI-readable llms-style entrypoint or a compact discovery catalog for installed/source package contexts. The command catalog exposes top-level commands, aliases, runtime groups, help lines, recommended first commands, and the no-mutation boundary for command discovery. Together they are the fastest way for a new agent or operator to orient itself before choosing a workflow.
+The guide turns the public CLI into a first-read workflow selector: new-agent orientation, target repo triage, target onboarding preview, create-entrypoint preview, and source release handoff. The quickstart command turns that orientation into a read-only first-run recipe: guide, command discovery, target doctor, onboarding plan, bootstrap dry-run, create dry-run, and next work-item lookup. The discovery command prints the AI-readable llms-style entrypoint or a compact discovery catalog for installed/source package contexts. The create dry-run command previews the future npm-create onboarding write set without writing files, scanning the consumer repository, installing dependencies, mutating Git, publishing, or using network access. The command catalog exposes top-level commands, aliases, runtime groups, help lines, recommended first commands, and the no-mutation boundary for command discovery. Together they are the fastest way for a new agent or operator to orient itself before choosing a workflow.
 
 ```sh
 npx agent-onboard status
@@ -143,6 +146,8 @@ npx agent-onboard guide --json
 npx agent-onboard quickstart --text
 npx agent-onboard quickstart --json
 npx agent-onboard discovery --llms
+npx agent-onboard create --dry-run
+npx agent-onboard create --text
 npx agent-onboard discovery --text
 npx agent-onboard discovery --json
 npx agent-onboard commands --text
@@ -1144,4 +1149,9 @@ The current release adds the public target manifest drift guard: `target manifes
 
 The current release also exposes the package-domain source manifest as explicit read-only release commands: `release --source-manifest` prints every projected npm package file with a `file_id` using `ni:///sha-256;...`, and `release --source-manifest-check` validates the content-addressed manifest shape. `release --surface-check` continues to validate that raw `sha256` values are not exposed and that source-only hash-cache state remains outside the npm package projection.
 
-The current command surface includes `guide --json|--text`, `quickstart --json|--text|--dry-run`, and `commands --json|--text`. The guide provides a compact workflow selector for new-agent orientation, target repo triage, target onboarding preview, and source release handoff. Quickstart provides the concrete read-only first-run recipe. The command catalog remains the machine-readable inventory of top-level commands, runtime groups, help lines, and recommended first commands.
+The current command surface includes `guide --json|--text`, `quickstart --json|--text|--dry-run`, `discovery --llms|--json|--text`, `create --dry-run|--json|--text`, and `commands --json|--text`. The guide provides a compact workflow selector for new-agent orientation, target repo triage, target onboarding preview, create-entrypoint preview, and source release handoff. Quickstart provides the concrete read-only first-run recipe. Discovery provides the AI-readable entrypoint. Create dry-run previews the future npm-create onboarding write set without mutating a consumer repo. The command catalog remains the machine-readable inventory of top-level commands, runtime groups, help lines, and recommended first commands.
+
+
+## Create dry-run product surface
+
+The current release adds the public create dry-run product surface: `agent-onboard create --dry-run`, `agent-onboard create --json`, and `agent-onboard create --text`. It also keeps the existing `create-agent-onboard` bin as a read-only dry-run entrypoint when invoked with `--dry-run`. The command previews the future npm-create onboarding write set and recommended next commands while preserving the no-write, no-install, no-Git, no-publish, and no-network boundary.
