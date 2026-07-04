@@ -4251,6 +4251,56 @@
         ],
         "known_non_pass": []
       }
+    },
+    {
+      "id": "P1S3M5W3",
+      "milestone_id": "P1S3M5",
+      "title": "Public package source manifest service gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-04T12:21:34.000Z"
+      },
+      "closure": {
+        "actor": "gpt-5.5-thinking",
+        "closed_at": "2026-07-04T12:21:34.000Z",
+        "summary": "Closed by upgrading the package-domain source manifest service from a seed into a read-only content-addressed package manifest checker, integrating it into release --surface-check, validating ni:///sha-256 file_id entries for every projected npm package file, preserving raw sha256 and hash-cache exclusion boundaries, bumping the package patch version to 0.0.110, and documenting the public package source manifest surface.",
+        "changed_files": [
+          ".agent-onboard/package-source-manifest-service-gate.json",
+          ".agent-onboard/work-items.json",
+          "AGENTS.md",
+          "README.md",
+          "authority-map.json",
+          "manifest.json",
+          "package.json",
+          "cli/agent_onboard/domains/package/services/source-manifest-service.js",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/runtime-contracts.js",
+          "test/agent-onboard.test.js"
+        ],
+        "checks_run": [
+          "node -c cli/agent_onboard/domains/package/services/source-manifest-service.js",
+          "node -c cli/agent_onboard/runtime-composer.js",
+          "node -c cli/agent_onboard/runtime-contracts.js",
+          "node -c test/agent-onboard.test.js",
+          "npm test",
+          "node cli/agent-onboard.js release --surface-check",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js release --version-sprawl-check",
+          "npm run test:full",
+          "npm pack --dry-run --json",
+          "node scripts/check-public-artifact-boundary.js",
+          "node cli/agent-onboard.js target metadata --write --force --target .",
+          "node cli/agent-onboard.js target metadata --check --target .",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json"
+        ],
+        "checks_not_run": [
+          "npm publish --access public"
+        ],
+        "known_non_pass": [
+          "npm run test:all was attempted after quick and full suites had already passed, but the sandbox wrapper timed out before the aggregate command returned; npm test and npm run test:full are the pass evidence for this handoff."
+        ]
+      }
     }
   ]
 }

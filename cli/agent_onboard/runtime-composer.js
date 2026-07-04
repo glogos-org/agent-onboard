@@ -12,7 +12,7 @@ const { createAuthorityCommandAdapter } = require('./adapters/commands/authority
 const { createTargetCommandAdapter } = require('./adapters/commands/target');
 const { createWorkItemsCommandAdapter } = require('./adapters/commands/work-items');
 const { configGuard: coreConfigGuardDomain } = require('./domains/core');
-const { service: packageDomain } = require('./domains/package');
+const { service: packageDomain, sourceManifest: packageSourceManifestDomain } = require('./domains/package');
 const { createWorkItemsService } = require('./domains/work-items');
 const {
   PRODUCT_HELP_LINES,
@@ -4194,6 +4194,16 @@ const publicArchitectureAggregateCheckService = createPublicArchitectureAggregat
 });
 const { publicArchitectureCheck } = publicArchitectureAggregateCheckService;
 
+function createPublicPackageSourceManifestService() {
+  return packageSourceManifestDomain.createPackageSourceManifestService({
+    packageName: PUBLIC_RELEASE_CONTRACT.package_name,
+    version: VERSION,
+    releaseLine: PUBLIC_RELEASE_CONTRACT.release_line,
+    expectedPackFiles: PUBLIC_PACKAGE_SURFACE_PRESERVATION.expected_pack_files,
+    sourceOnlyFiles: PUBLIC_PACKAGE_SURFACE_PRESERVATION.source_only_files
+  });
+}
+
 function publicPackageSurface(root = packageRoot()) {
   const pkg = readJson(path.join(root, 'package.json'));
   const projectedPackFiles = packageJsonProjectedPackFiles(pkg);
@@ -4248,6 +4258,7 @@ function publicPackageSurface(root = packageRoot()) {
 
 function publicPackageSurfaceCheck(root = packageRoot()) {
   const surface = publicPackageSurface(root);
+  const packageSourceManifest = createPublicPackageSourceManifestService().check(root);
   const errors = [];
   const messagingErrors = publicArtifactMessagingErrors(root, surface.expected_pack_files);
   if (!arrayEquals(surface.projected_pack_files, surface.expected_pack_files)) errors.push(`projected npm pack files must be ${surface.expected_pack_files.join(', ')}`);
@@ -4255,6 +4266,7 @@ function publicPackageSurfaceCheck(root = packageRoot()) {
   if (surface.expected_pack_files_missing.length > 0) errors.push(`expected npm package files missing: ${surface.expected_pack_files_missing.join(', ')}`);
   if (surface.source_only_files_projected_into_pack.length > 0) errors.push(`source-only files projected into npm package: ${surface.source_only_files_projected_into_pack.join(', ')}`);
   if (!surface.bin_targets_in_projected_pack) errors.push('all bin targets must remain inside the projected npm package surface');
+  if (packageSourceManifest.status !== 'ok') errors.push(...packageSourceManifest.errors.map((error) => `package source manifest: ${error}`));
   errors.push(...messagingErrors.map((error) => `public artifact messaging: ${error}`));
   return {
     schema: 'agent-onboard-public-package-surface-preservation-check-result-001',
@@ -4274,6 +4286,9 @@ function publicPackageSurfaceCheck(root = packageRoot()) {
       source_growth_files_present_in_source_repo: surface.package_context === 'installed_package' || surface.source_only_files_present.length >= 5,
       bin_entrypoints_in_pack: surface.bin_targets_in_projected_pack,
       public_artifact_messaging: messagingErrors.length === 0,
+      package_source_manifest: packageSourceManifest.status === 'ok',
+      package_source_manifest_content_addressed: packageSourceManifest.validated.package_files_are_content_addressed,
+      package_source_manifest_hash_cache_excluded: packageSourceManifest.validated.hash_cache_not_projected_into_package,
       surface_commands_no_write: PUBLIC_PACKAGE_SURFACE_PRESERVATION.boundary.surface_command_writes_files === false && PUBLIC_PACKAGE_SURFACE_PRESERVATION.boundary.check_command_writes_files === false
     },
     expected_pack_files: surface.expected_pack_files,
@@ -4282,6 +4297,7 @@ function publicPackageSurfaceCheck(root = packageRoot()) {
     actual_package_json_files: surface.actual_package_json_files,
     source_only_files_present: surface.source_only_files_present,
     source_only_files_projected_into_pack: surface.source_only_files_projected_into_pack,
+    package_source_manifest: packageSourceManifest,
     boundary: surface.boundary,
     errors
   };

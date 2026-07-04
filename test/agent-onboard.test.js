@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_core_config_guard_service_extraction_gate';
+const EXPECTED_RELEASE_LINE = 'public_package_source_manifest_service_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -691,7 +691,15 @@ fullSourceTest('full source block line 607', () => {
   assert.strictEqual(output.validated.source_only_context_excluded_from_pack, true);
   assert.strictEqual(output.validated.bin_entrypoints_in_pack, true);
   assert.strictEqual(output.validated.public_artifact_messaging, true);
+  assert.strictEqual(output.validated.package_source_manifest, true);
+  assert.strictEqual(output.validated.package_source_manifest_content_addressed, true);
+  assert.strictEqual(output.validated.package_source_manifest_hash_cache_excluded, true);
   assert.strictEqual(output.validated.surface_commands_no_write, true);
+  assert.strictEqual(output.package_source_manifest.schema, 'agent-onboard-public-package-source-manifest-check-result-001');
+  assert.strictEqual(output.package_source_manifest.status, 'ok');
+  assert.strictEqual(output.package_source_manifest.entry_count, EXPECTED_PACK_FILES.length);
+  assert.ok(output.package_source_manifest.sample_entries[0].file_id.startsWith('ni:///sha-256;'));
+  assert.strictEqual(output.package_source_manifest.hash_cache.cache_file_projected_into_pack, false);
   assert.deepStrictEqual(output.errors, []);
 });
 
@@ -3608,6 +3616,20 @@ fullSourceTest('package runtime service partition seed admits release package do
   assert.strictEqual(typeof packageDomain.service.createPackageService, 'function');
   assert.strictEqual(typeof packageDomain.surface.createPackageSurfaceService, 'function');
   assert.strictEqual(typeof packageDomain.sourceManifest.describeSourceManifestServiceSeed, 'function');
+  assert.strictEqual(typeof packageDomain.sourceManifest.createPackageSourceManifestService, 'function');
+  const sourceManifestService = packageDomain.sourceManifest.createPackageSourceManifestService({
+    packageName: 'agent-onboard',
+    version: EXPECTED_VERSION,
+    releaseLine: EXPECTED_RELEASE_LINE,
+    expectedPackFiles: EXPECTED_PACK_FILES,
+    sourceOnlyFiles: ['AGENTS.md', '.agent-onboard/work-items.json']
+  });
+  const sourceManifest = sourceManifestService.check(ROOT);
+  assert.strictEqual(sourceManifest.status, 'ok');
+  assert.strictEqual(sourceManifest.entry_count, EXPECTED_PACK_FILES.length);
+  assert.strictEqual(sourceManifest.validated.raw_sha256_not_exposed, true);
+  assert.strictEqual(sourceManifest.validated.hash_cache_not_projected_into_package, true);
+  assert.strictEqual(typeof packageDomain.sourceManifest.digestBytes(Buffer.from('agent-onboard')).file_id, 'string');
   assert.strictEqual(typeof packageDomain.coordinate.describePackageCoordinateServiceSeed, 'function');
   assert.strictEqual(typeof packageDomain.firstReadContract.describeInstalledFirstReadContractSeed, 'function');
 });

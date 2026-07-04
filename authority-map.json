@@ -38,6 +38,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-package-command-adapter-extraction-json-d64d35fb"
     },
     {
+      "file_path": ".agent-onboard/package-source-manifest-service-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-package-source-manifest-service-gate-json-b49ef47b"
+    },
+    {
       "file_path": ".agent-onboard/packaged-router-port-inclusion.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-packaged-router-port-inclusion-json-572e8ee7"
     },

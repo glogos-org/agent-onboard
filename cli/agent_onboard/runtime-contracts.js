@@ -2,7 +2,7 @@
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
-const RELEASE_LINE = 'public_core_config_guard_service_extraction_gate';
+const RELEASE_LINE = 'public_package_source_manifest_service_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
   agents: 'agents',

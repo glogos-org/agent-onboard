@@ -1090,3 +1090,5 @@ The public line admits the `release_package` domain service partition under `cli
 The public line extracts `guard --plan` and `guard --check-boundary` into the packaged core config guard service at `cli/agent_onboard/domains/core/services/config-guard-service.js`. The guard remains read-only, keeps the same target config boundary contract, and preserves existing guard JSON outputs while `cli/agent-onboard.js` stays focused on wiring and dispatch.
 
 The current release adds the public target manifest drift guard: `target manifest --init|--check-drift|--refresh` creates and validates `.agent-onboard/target-manifest.json` with content-addressed `file_id` entries.
+
+The current release also upgrades the package-domain source manifest service from a seed into a read-only content-addressed package manifest checker. `release --surface-check` now validates that every projected npm package file has a `file_id` using `ni:///sha-256;...`, that raw `sha256` values are not exposed, and that source-only hash-cache state remains outside the npm package projection.

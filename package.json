@@ -1,6 +1,6 @@
 {
   "name": "agent-onboard",
-  "version": "0.0.109",
+  "version": "0.0.110",
   "description": "CLI for onboarding and managing target repositories.",
   "license": "Apache-2.0",
   "author": "Thanh Le <vnlemanhthanh@gmail.com>",
@@ -300,7 +300,11 @@
     "packaged-router",
     "packaged-command-port",
     "thin-entrypoint-rehearsal",
-    "thin-entrypoint-cutover"
+    "thin-entrypoint-cutover",
+    "package-source-manifest",
+    "content-addressed-package-manifest",
+    "source-manifest",
+    "ni-file-id"
   ],
   "type": "commonjs",
   "engines": {
