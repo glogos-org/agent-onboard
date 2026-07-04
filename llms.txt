@@ -1,6 +1,6 @@
-# agent-onboard agent-onboard first-read entrypoint
+# agent-onboard
 
-This repository uses agent-onboard public authority ordering for human and AI-assisted work.
+agent-onboard is the public npm package for AI-assisted repository onboarding, target-repo orientation, work-item coordination, and release-safe handoff.
 
 Target:
 
@@ -8,190 +8,45 @@ Target:
 - kind: node
 - control package: agent-onboard; version source: package.json#version
 
+Canonical AI-readable files:
+
+- AGENTS.md
+- llms.txt
+- README.md
+- SOURCE_OF_TRUTH.md
+- .agent-onboard/authority-path.json
+- .agent-onboard/work-items.json
+
+Stable commands:
+
+- agent-onboard discovery --llms
+- agent-onboard discovery --text
+- agent-onboard discovery --json
+- agent-onboard guide --text
+- agent-onboard quickstart --text
+- agent-onboard commands --text
+- agent-onboard target doctor --text
+- agent-onboard target onboarding --plan
+- agent-onboard work-items --next --text
+- agent-onboard release --source-manifest
+- agent-onboard release --check
+
+Default safety:
+
+- Start read-only.
+- Do not write files, install dependencies, publish, push, mutate Git, run managed project commands, or use network calls unless the repository owner explicitly authorizes that action.
+- Use explicit --write commands only after previewing the plan and receiving owner authorization.
+
 First-read order:
 
 1. AGENTS.md — human and agent operating rules.
 2. llms.txt — AI-readable public entrypoint.
-3. .agent-onboard/authority-path.json — machine-readable authority path index.
-4. agent-onboard.target.json — target boundary declaration.
-5. .agent-onboard/runtime-namespace.json — target runtime namespace declaration.
-6. .agent-onboard/project.json — target runtime identity.
-7. .agent-onboard/work-items.json — public work item ledger.
-8. README.md — public package or repository documentation.
-9. Raw evidence/source files — on demand only after the authority files above.
+3. README.md — public package and repository documentation.
+4. SOURCE_OF_TRUTH.md — public authority summary.
+5. .agent-onboard/authority-path.json — machine-readable authority path index.
+6. .agent-onboard/work-items.json — public work item ledger.
+7. Raw evidence/source files — on demand only after the authority files above.
 
-Default boundary: start read-only. Do not install dependencies, run builds/tests/deploys, publish, push, or overwrite non-identical files unless the repository owner explicitly authorizes that action.
+Source of truth order for agents: follow the First-read order above before raw evidence/source files.
 
-Source partition and extraction gates:
-- node cli/agent-onboard.js architecture --partition-plan
-- node cli/agent-onboard.js architecture --partition-check
-- node cli/agent-onboard.js architecture --extraction-rehearsal
-- node cli/agent-onboard.js architecture --extraction-check
-- node cli/agent-onboard.js architecture --golden-outputs
-- node cli/agent-onboard.js architecture --golden-check
-- node cli/agent-onboard.js architecture --adapter-boundary
-- node cli/agent-onboard.js architecture --adapter-check
-- node cli/agent-onboard.js architecture --first-slice
-- node cli/agent-onboard.js architecture --first-slice-check
-- node cli/agent-onboard.js architecture --bundle-parity
-- node cli/agent-onboard.js architecture --bundle-parity-check
-- node cli/agent-onboard.js architecture --runtime-bridge
-- node cli/agent-onboard.js architecture --runtime-bridge-check
-- node cli/agent-onboard.js architecture --installed-fallback-smoke
-- node cli/agent-onboard.js architecture --installed-fallback-check
-- node cli/agent-onboard.js architecture --second-slice-plan
-- node cli/agent-onboard.js architecture --second-slice-check
-
-Package surface gate:
-- node cli/agent-onboard.js release --surface
-- node cli/agent-onboard.js release --surface-check
-- node cli/agent-onboard.js release --architecture-parity-smoke
-- node cli/agent-onboard.js release --version-sprawl-check
-
-Public source module extraction second slice first-slice gate:
-- node cli/agent-onboard.js architecture --second-slice-first-slice
-- node cli/agent-onboard.js architecture --second-slice-first-slice-check
-- node cli/agent-onboard.js architecture --authority-bundle-parity
-- node cli/agent-onboard.js architecture --authority-bundle-parity-check
-- node cli/agent-onboard.js architecture --authority-runtime-bridge
-- node cli/agent-onboard.js architecture --authority-runtime-bridge-check
-- node cli/agent-onboard.js architecture --m2-seed
-- node cli/agent-onboard.js architecture --m2-seed-check
-- node cli/agent-onboard.js architecture --work-items-plan
-- node cli/agent-onboard.js architecture --work-items-check
-- node cli/agent-onboard.js architecture --work-items-first-slice
-- node cli/agent-onboard.js architecture --work-items-first-slice-check
-- node cli/agent-onboard.js architecture --work-items-bundle-parity
-- node cli/agent-onboard.js architecture --work-items-bundle-parity-check
-
-Public source module extraction authority bundle parity gate:
-- node cli/agent-onboard.js architecture --authority-bundle-parity
-- node cli/agent-onboard.js architecture --authority-bundle-parity-check
-- node cli/agent-onboard.js architecture --authority-runtime-bridge
-- node cli/agent-onboard.js architecture --authority-runtime-bridge-check
-- node cli/agent-onboard.js architecture --m2-seed
-- node cli/agent-onboard.js architecture --m2-seed-check
-- node cli/agent-onboard.js architecture --work-items-plan
-- node cli/agent-onboard.js architecture --work-items-check
-- node cli/agent-onboard.js architecture --work-items-first-slice
-- node cli/agent-onboard.js architecture --work-items-first-slice-check
-- node cli/agent-onboard.js architecture --work-items-bundle-parity
-- node cli/agent-onboard.js architecture --work-items-bundle-parity-check
-
-
-Architecture milestone transition gate:
-- node cli/agent-onboard.js architecture --m2-seed
-- node cli/agent-onboard.js architecture --m2-seed-check
-- node cli/agent-onboard.js architecture --work-items-plan
-- node cli/agent-onboard.js architecture --work-items-check
-- node cli/agent-onboard.js architecture --work-items-first-slice
-- node cli/agent-onboard.js architecture --work-items-first-slice-check
-- node cli/agent-onboard.js architecture --work-items-bundle-parity
-- node cli/agent-onboard.js architecture --work-items-bundle-parity-check
-
-Current transition state: architecture kernel milestone closed; next architecture milestone open; work-items planning, first-slice, and bundle parity gates are closed; next executable gate is work-items domain source extraction runtime bridge. Keep source modules source-only and keep npm package files compact.
-
-## Work-items installed fallback smoke
-
-Use `node cli/agent-onboard.js architecture --work-items-installed-fallback-smoke` and `node cli/agent-onboard.js architecture --work-items-installed-fallback-check` to verify that the source-only work-items module remains outside the npm package while installed context falls back to bundled CLI metadata. Claim and close behavior remain excluded from this slice.
-
-Public claims domain source extraction first-slice gate:
-- node cli/agent-onboard.js architecture --claims-plan
-- node cli/agent-onboard.js architecture --claims-check
-- node cli/agent-onboard.js architecture --claims-first-slice
-- node cli/agent-onboard.js architecture --claims-first-slice-check
-- node cli/agent-onboard.js architecture --claims-bundle-parity
-- node cli/agent-onboard.js architecture --claims-bundle-parity-check
-- node cli/agent-onboard.js architecture --claims-runtime-bridge
-- node cli/agent-onboard.js architecture --claims-runtime-bridge-check
-- node cli/agent-onboard.js architecture --claims-installed-fallback-smoke
-- node cli/agent-onboard.js architecture --claims-installed-fallback-check
-- node cli/agent-onboard.js architecture --source-domain-closure-review
-- node cli/agent-onboard.js architecture --source-domain-closure-check
-- node cli/agent-onboard.js architecture --check
-- node cli/agent-onboard.js release --check
-
-Current transition state: work-items installed fallback, claims-domain planning, claims-domain first-slice, claims-domain bundle parity, claims-domain runtime bridge, and claims-domain installed fallback smoke are closed; next executable gate is the public source-domain extraction stabilization closure review gate. Keep src/domains/claims.js source-only and keep npm package files compact.
-
-Source-domain stabilization closure review: `architecture --source-domain-closure-review` reports M2 closure across work-items and claims extraction gates, and `architecture --source-domain-closure-check` validates the M2 closure plus M3 seed while keeping source modules outside the npm package.
-
-
-## Public CLI runtime de-monolith planning
-
-`cli/agent-onboard.js` is now declared as monolith debt; the public runtime cutover path uses controlled source-module inclusion, keeps the current compact npm package allowlist unchanged for this planning gate, and seeds the thin CLI router cutover.
-
-Public thin entrypoint router cutover application:
-- node cli/agent-onboard.js architecture --package-adapter
-- node cli/agent-onboard.js architecture --package-adapter-check
-- node cli/agent-onboard.js architecture --architecture-adapter
-- node cli/agent-onboard.js architecture --architecture-adapter-check
-- node cli/agent-onboard.js architecture --authority-adapter
-- node cli/agent-onboard.js architecture --authority-adapter-check
-- node cli/agent-onboard.js architecture --module-inclusion-plan
-- node cli/agent-onboard.js architecture --module-inclusion-check
-- node cli/agent-onboard.js architecture --packaged-router-port
-- node cli/agent-onboard.js architecture --packaged-router-port-check
-- node cli/agent-onboard.js architecture --thin-entrypoint-rehearsal
-- node cli/agent-onboard.js architecture --thin-entrypoint-rehearsal-check
-- node cli/agent-onboard.js architecture --thin-entrypoint-cutover
-- node cli/agent-onboard.js architecture --thin-entrypoint-cutover-check
-- node cli/agent-onboard.js architecture --router-adapter-delegation
-- node cli/agent-onboard.js architecture --router-adapter-delegation-check
-- node cli/agent-onboard.js architecture --check
-- node cli/agent-onboard.js release --check
-
-Current command adapter state: core, release package, architecture, authority, target, and work-items adapter extraction gates are closed. The router, compatibility command port, port facade, admitted command adapters, work-items runtime service modules, and architecture static catalog module are packaged. The thin entrypoint router cutover is applied, and architecture static catalog extraction is the active gate.
-
-## Public work-items claim close runtime handoff
-
-The public line routes `work-items --claim` and `--close` through the packaged work-items command adapter and packaged work-items runtime service modules. `work-items --schema`, `--template`, `--validate-template`, `--list`, `--validate`, `--init`, `--append`, `--claim`, and `--close` route through the runtime service with explicit dry-run/write boundaries for ledger writes.
-
-Current command adapter state: core, release package, architecture, authority, target, and work-items adapters are packaged. The package surface remains intentionally bounded while preserving public CLI output compatibility.
-
-## Public work-items legacy fallback deletion
-
-The public line deletes the legacy bundled work-items fallback from `cli/agent-onboard.js`. The packaged work-items command adapter and packaged work-items runtime service are now the only public work-items command path.
-
-## Public architecture static catalog extraction
-
-The public line extracts the architecture/release static catalog from `cli/agent-onboard.js` into `cli/agent_onboard/domains/architecture/static-catalog.js`. Public CLI outputs remain stable while the entrypoint gets smaller.
-
-## Public target static catalog extraction
-
-The public line extracts the target onboarding static catalog from `cli/agent-onboard.js` into `cli/agent_onboard/domains/target/static-catalog.js`. Keep this module packaged, side-effect-free, and output-compatible.
-
-## Public target runtime service body extraction
-
-The public line extracts the target runtime service body from `cli/agent-onboard.js` into `cli/agent_onboard/domains/target/services/target-service.js`. Keep public target, guard, and ledger utility outputs stable while the entrypoint shrinks.
-
-## Public target service utility split
-
-The public line splits target runtime utilities into `cli/agent_onboard/domains/target/services/target-runtime-utilities.js`. Keep the utility module packaged and behavior-compatible with target, guard, and work-item validation outputs.
-
-## Public architecture M3 runtime catalog split
-
-The public line splits the M3 CLI runtime de-monolith catalog into `cli/agent_onboard/domains/architecture/m3-runtime-catalog.js`. Keep the catalog packaged, side-effect-free, and output-compatible with architecture and release checks.
-
-## Public architecture runtime service extraction
-
-The public line extracts architecture runtime/check handlers into `cli/agent_onboard/domains/architecture/services/runtime/architecture-runtime-service.js`. Keep the service packaged, dependency-injected, and output-compatible with architecture and release checks.
-
-## Public architecture source extraction service split
-
-The public line splits source-extraction and bridge handlers into `cli/agent_onboard/domains/architecture/services/source-extraction/architecture-source-extraction-service.js`. Keep both architecture services packaged, dependency-injected, and output-compatible with architecture and release checks.
-
-## Public architecture source domain service split
-
-The public line splits work-items and claims source-domain architecture handlers into `cli/agent_onboard/domains/architecture/services/source-domains/*` services. The orchestrator should stay thin, subservices should stay dependency-injected, and public package output must remain compatible with architecture and release checks.
-
-## Public architecture aggregate check service split
-
-The public line extracts the aggregate `architecture --check` coordinator into `cli/agent_onboard/domains/architecture/services/checks/architecture-check-service.js`. Keep it dependency-injected and output-compatible with architecture and release checks.
-
-## Public release package runtime service partition
-
-The public line admits `release_package` as packaged domain services under `cli/agent_onboard/domains/package/`. Keep release command coordination thin, keep package subresponsibilities split across service modules, and preserve existing release command outputs.
-
-## Public core config guard service extraction
-
-The public line extracts `guard --plan` and `guard --check-boundary` into `cli/agent_onboard/domains/core/services/config-guard-service.js`. Keep guard behavior read-only and output-compatible while the entrypoint delegates through the packaged service.
+Use `agent-onboard discovery --llms` to print this AI-readable entrypoint from either the source repository or an installed package.

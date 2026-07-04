@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_quickstart_product_gate';
+const EXPECTED_RELEASE_LINE = 'public_ai_discovery_product_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -242,15 +242,18 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.strictEqual(output.status, 'ok');
   assert.strictEqual(output.version, EXPECTED_VERSION);
   assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
-  assert.deepStrictEqual(output.top_level_commands, ['help', 'version', 'status', 'commands', 'guide', 'quickstart', 'init', 'agents', 'guard', 'authority', 'architecture', 'release', 'target-config', 'work-items', 'target', 'target-instance']);
+  assert.deepStrictEqual(output.top_level_commands, ['help', 'version', 'status', 'commands', 'guide', 'quickstart', 'discovery', 'init', 'agents', 'guard', 'authority', 'architecture', 'release', 'target-config', 'work-items', 'target', 'target-instance']);
   assert.ok(output.runtime_command_groups.core.includes('commands'));
   assert.ok(output.runtime_command_groups.core.includes('quickstart'));
+  assert.ok(output.runtime_command_groups.core.includes('discovery'));
   assert.ok(output.help_lines.includes('agent-onboard commands --json|--text'));
   assert.ok(output.help_lines.includes('agent-onboard guide --json|--text'));
   assert.ok(output.help_lines.includes('agent-onboard quickstart --json|--text|--dry-run'));
+  assert.ok(output.help_lines.includes('agent-onboard discovery --llms|--json|--text'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard commands --text'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard guide --text'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard quickstart --text'));
+  assert.ok(output.recommended_first_commands.includes('agent-onboard discovery --llms'));
   assert.strictEqual(output.boundary.writes_files, false);
   assert.strictEqual(output.boundary.publishes_package, false);
 
@@ -260,6 +263,34 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.ok(textResult.stdout.includes('agent-onboard commands --json|--text'));
   assert.ok(textResult.stdout.includes('agent-onboard guide --json|--text'));
   assert.ok(textResult.stdout.includes('agent-onboard quickstart --json|--text|--dry-run'));
+  assert.ok(textResult.stdout.includes('agent-onboard discovery --llms|--json|--text'));
+});
+
+fullSourceTest('public discovery is directly usable', () => {
+  const jsonResult = run(['discovery', '--json']);
+  const output = readJsonOutput(jsonResult);
+  assert.strictEqual(output.schema, 'agent-onboard-public-ai-discovery-001');
+  assert.strictEqual(output.status, 'ok');
+  assert.strictEqual(output.version, EXPECTED_VERSION);
+  assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
+  assert.strictEqual(output.llms_command, 'agent-onboard discovery --llms');
+  assert.ok(output.first_read_order.includes('llms.txt'));
+  assert.ok(output.stable_commands.includes('agent-onboard guide --text'));
+  assert.ok(output.stable_commands.includes('agent-onboard quickstart --text'));
+  assert.ok(output.stable_commands.includes('agent-onboard commands --text'));
+  assert.strictEqual(output.boundary.writes_files, false);
+  assert.strictEqual(output.boundary.network, false);
+
+  const textResult = run(['discovery', '--text']);
+  assert.strictEqual(textResult.status, 0, textResult.stderr || textResult.stdout);
+  assert.ok(textResult.stdout.includes('agent-onboard AI discovery'));
+  assert.ok(textResult.stdout.includes('agent-onboard discovery --llms'));
+
+  const llmsResult = run(['discovery', '--llms']);
+  assert.strictEqual(llmsResult.status, 0, llmsResult.stderr || llmsResult.stdout);
+  assert.ok(llmsResult.stdout.includes('# agent-onboard'));
+  assert.ok(llmsResult.stdout.includes('Stable commands:'));
+  assert.ok(llmsResult.stdout.includes('discovery --llms'));
 });
 
 fullSourceTest('public quickstart is directly usable', () => {

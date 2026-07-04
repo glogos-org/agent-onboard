@@ -2,6 +2,10 @@
   "authorities": [],
   "file_urns": [
     {
+      "file_path": ".agent-onboard/ai-discovery-product-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-ai-discovery-product-gate-json-f62e4038"
+    },
+    {
       "file_path": ".agent-onboard/architecture-command-adapter-extraction.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-architecture-command-adapter-extraction-json-c138388e"
     },

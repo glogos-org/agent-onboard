@@ -4512,6 +4512,65 @@
           "git diff --check was not available in the ZIP handoff workspace because no .git directory is present."
         ]
       }
+    },
+    {
+      "id": "P1S3M5W8",
+      "milestone_id": "P1S3M5",
+      "title": "Public AI discovery product gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-04T13:45:00.000Z"
+      },
+      "closure": {
+        "actor": "gpt-5.5-thinking",
+        "closed_at": "2026-07-04T14:05:00.000Z",
+        "summary": "Closed by adding a direct public AI discovery surface: discovery --llms, discovery --text, and discovery --json. The feature prints an AI-readable first-read entrypoint or machine-readable discovery catalog from source and installed package contexts without adding packaged files, writing target state, scanning target repositories, installing dependencies, publishing, mutating Git, running managed project commands, or using network access, then bumps the package candidate to 0.0.115.",
+        "changed_files": [
+          "package.json",
+          "README.md",
+          "AGENTS.md",
+          "llms.txt",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/runtime-contracts.js",
+          "test/agent-onboard.test.js",
+          ".agent-onboard/ai-discovery-product-gate.json",
+          ".agent-onboard/work-items.json",
+          "authority-map.json",
+          "manifest.json"
+        ],
+        "checks_run": [
+          "node -c cli/agent_onboard/runtime-composer.js",
+          "node -c cli/agent_onboard/runtime-contracts.js",
+          "node -c test/agent-onboard.test.js",
+          "node cli/agent-onboard.js discovery --llms",
+          "node cli/agent-onboard.js discovery --text",
+          "node cli/agent-onboard.js discovery --json",
+          "node cli/agent-onboard.js commands --json",
+          "node cli/agent-onboard.js guide --json",
+          "node cli/agent-onboard.js quickstart --json",
+          "installed package discovery fallback smoke without packaged llms.txt",
+          "npm test",
+          "npm run test:full",
+          "node cli/agent-onboard.js release --source-manifest",
+          "node cli/agent-onboard.js release --source-manifest-check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js release --version-sprawl-check",
+          "npm pack --dry-run --json",
+          "node scripts/check-public-artifact-boundary.js",
+          "node cli/agent-onboard.js target metadata --write --force --target .",
+          "node cli/agent-onboard.js target metadata --check --target .",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json"
+        ],
+        "checks_not_run": [
+          "npm publish --access public",
+          "git diff --check (not run: handoff workspace is not a Git repository)"
+        ],
+        "known_non_pass": [
+          "git diff --check was not available in the ZIP handoff workspace because no .git directory is present."
+        ]
+      }
     }
   ]
 }

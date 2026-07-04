@@ -127,11 +127,14 @@ npx agent-onboard guide --text
 npx agent-onboard guide --json
 npx agent-onboard quickstart --text
 npx agent-onboard quickstart --json
+npx agent-onboard discovery --llms
+npx agent-onboard discovery --text
+npx agent-onboard discovery --json
 npx agent-onboard commands --text
 npx agent-onboard commands --json
 ```
 
-The guide turns the public CLI into a first-read workflow selector: new-agent orientation, target repo triage, target onboarding preview, and source release handoff. The quickstart command turns that orientation into a read-only first-run recipe: guide, command discovery, target doctor, onboarding plan, bootstrap dry-run, and next work-item lookup. The command catalog exposes top-level commands, aliases, runtime groups, help lines, recommended first commands, and the no-mutation boundary for command discovery. Together they are the fastest way for a new agent or operator to orient itself before choosing a workflow.
+The guide turns the public CLI into a first-read workflow selector: new-agent orientation, target repo triage, target onboarding preview, and source release handoff. The quickstart command turns that orientation into a read-only first-run recipe: guide, command discovery, target doctor, onboarding plan, bootstrap dry-run, and next work-item lookup. The discovery command prints the AI-readable llms-style entrypoint or a compact discovery catalog for installed/source package contexts. The command catalog exposes top-level commands, aliases, runtime groups, help lines, recommended first commands, and the no-mutation boundary for command discovery. Together they are the fastest way for a new agent or operator to orient itself before choosing a workflow.
 
 ```sh
 npx agent-onboard status
@@ -139,6 +142,9 @@ npx agent-onboard guide --text
 npx agent-onboard guide --json
 npx agent-onboard quickstart --text
 npx agent-onboard quickstart --json
+npx agent-onboard discovery --llms
+npx agent-onboard discovery --text
+npx agent-onboard discovery --json
 npx agent-onboard commands --text
 npx agent-onboard commands --json
 npx agent-onboard init --dry-run

@@ -46,6 +46,9 @@ node cli/agent-onboard.js guide --text
 node cli/agent-onboard.js guide --json
 node cli/agent-onboard.js quickstart --text
 node cli/agent-onboard.js quickstart --json
+node cli/agent-onboard.js discovery --llms
+node cli/agent-onboard.js discovery --text
+node cli/agent-onboard.js discovery --json
 node cli/agent-onboard.js commands --text
 node cli/agent-onboard.js commands --json
 ```
@@ -407,3 +410,8 @@ Use `node cli/agent-onboard.js guide --text` or `node cli/agent-onboard.js guide
 ## Public quickstart product surface
 
 Use `node cli/agent-onboard.js quickstart --text`, `node cli/agent-onboard.js quickstart --json`, or `node cli/agent-onboard.js quickstart --dry-run` to print the first-run recipe before target onboarding. Quickstart is read-only: it may recommend guide, commands, target doctor, onboarding plan, bootstrap dry-run, and work-item lookup, but it must not write files, install dependencies, run managed project commands, publish, push, mutate Git state, or perform network calls.
+
+
+## Public AI discovery product surface
+
+Use `node cli/agent-onboard.js discovery --llms`, `node cli/agent-onboard.js discovery --text`, or `node cli/agent-onboard.js discovery --json` when a new agent needs the compact AI-readable public entrypoint before selecting a workflow. Discovery is read-only: it may print the packaged/source AI discovery catalog and llms-style entrypoint, but it must not scan target repositories, create runtime state, validate arbitrary target configs, install dependencies, run managed project commands, publish, mutate Git, or perform network calls.
