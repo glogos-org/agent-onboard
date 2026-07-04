@@ -1039,11 +1039,11 @@ fullSourceTest('target profile detects stack markers without running target comm
   assert.ok(textResult.stdout.includes('Writes performed: false'));
 });
 
-fullSourceTest('target metadata validates forge-style manifest and comment-header metadata without writes', () => {
+fullSourceTest('target metadata validates pilot-style manifest and comment-header metadata without writes', () => {
   const dir = tempRepo();
   fs.writeFileSync(path.join(dir, 'README.md'), [
     '<!--',
-    'file_urn: urn:forge:file:readme-md-test',
+    'file_urn: urn:pilot:file:readme-md-test',
     'metadata:',
     '  role: root navigation portal',
     '-->',
@@ -1052,7 +1052,7 @@ fullSourceTest('target metadata validates forge-style manifest and comment-heade
   ].join('\n'));
   fs.writeFileSync(path.join(dir, 'SOURCE_OF_TRUTH.md'), [
     '<!--',
-    'file_urn: urn:forge:source-of-truth-test',
+    'file_urn: urn:pilot:source-of-truth-test',
     'metadata:',
     '  current_work_item: none',
     '-->',
@@ -1062,20 +1062,20 @@ fullSourceTest('target metadata validates forge-style manifest and comment-heade
   fs.writeFileSync(path.join(dir, 'llms.txt'), 'Target metadata fixture\n');
   fs.writeFileSync(path.join(dir, 'authority-map.json'), JSON.stringify({
     authorities: {
-      'urn:forge:file:readme-md-test': { file_path: 'README.md' },
-      'urn:forge:source-of-truth-test': { file_path: 'SOURCE_OF_TRUTH.md' }
+      'urn:pilot:file:readme-md-test': { file_path: 'README.md' },
+      'urn:pilot:source-of-truth-test': { file_path: 'SOURCE_OF_TRUTH.md' }
     }
   }, null, 2) + '\n');
   fs.writeFileSync(path.join(dir, 'manifest.json'), JSON.stringify({
-    schema: 'forge-repo-content-manifest-002',
+    schema: 'pilot-repo-content-manifest-002',
     files: {
-      'urn:forge:file:readme-md-test': {
-        file_urn: 'urn:forge:file:readme-md-test',
+      'urn:pilot:file:readme-md-test': {
+        file_urn: 'urn:pilot:file:readme-md-test',
         file_path: 'README.md',
         file_id: 'ni:///sha-256;abc'
       },
-      'urn:forge:source-of-truth-test': {
-        file_urn: 'urn:forge:source-of-truth-test',
+      'urn:pilot:source-of-truth-test': {
+        file_urn: 'urn:pilot:source-of-truth-test',
         file_path: 'SOURCE_OF_TRUTH.md',
         file_id: 'ni:///sha-256;def'
       }
@@ -1115,17 +1115,17 @@ fullSourceTest('target metadata flags legacy manifest fields and visible markdow
   const dir = tempRepo();
   fs.writeFileSync(path.join(dir, 'README.md'), [
     '---',
-    'file_urn: urn:forge:file:readme-md-test',
+    'file_urn: urn:pilot:file:readme-md-test',
     'status: draft',
     '---',
     '# Target fixture',
     ''
   ].join('\n'));
   fs.writeFileSync(path.join(dir, 'manifest.json'), JSON.stringify({
-    schema: 'forge-repo-content-manifest-001',
+    schema: 'pilot-repo-content-manifest-001',
     files: [
       {
-        urn: 'urn:forge:file:readme-md-test',
+        urn: 'urn:pilot:file:readme-md-test',
         path: 'README.md',
         file_id: 'ni:///sha-256;abc',
         sha256: 'abc'
@@ -1182,7 +1182,7 @@ fullSourceTest('target metadata write respects target policy and preserves targe
   fs.writeFileSync(path.join(dir, 'README.md'), '# Target fixture\n');
   const sourceOfTruthPath = path.join(dir, 'SOURCE_OF_TRUTH.md');
   const sourceOfTruth = [
-    '# Forge Source',
+    '# Pilot Source',
     '',
     'Target-owned authority semantics stay here.',
     ''
@@ -1190,21 +1190,21 @@ fullSourceTest('target metadata write respects target policy and preserves targe
   fs.writeFileSync(sourceOfTruthPath, sourceOfTruth);
   fs.writeFileSync(path.join(dir, '.agent-onboard', 'metadata-policy.json'), JSON.stringify({
     metadata: {
-      manifest_schema: 'forge-repo-content-manifest-002',
-      authority_map_schema: 'forge-authority-and-file-urn-map-002',
-      urn_namespace: 'urn:forge:file',
+      manifest_schema: 'pilot-repo-content-manifest-002',
+      authority_map_schema: 'pilot-authority-and-file-urn-map-002',
+      urn_namespace: 'urn:pilot:file',
       include_control_state: true,
       include_manifest_in_authority_map: true,
       preserve_source_of_truth: true
     }
   }, null, 2) + '\n');
   fs.writeFileSync(path.join(dir, 'authority-map.json'), JSON.stringify({
-    schema: 'legacy-forge-authority-map',
+    schema: 'legacy-pilot-authority-map',
     authorities: [
       {
         class: 'source-of-truth',
         path: 'SOURCE_OF_TRUTH.md',
-        urn: 'urn:forge:source-of-truth'
+        urn: 'urn:pilot:source-of-truth'
       }
     ],
     metadata_policy: {
@@ -1212,7 +1212,7 @@ fullSourceTest('target metadata write respects target policy and preserves targe
     }
   }, null, 2) + '\n');
   fs.writeFileSync(path.join(dir, 'manifest.json'), JSON.stringify({
-    schema: 'legacy-forge-manifest',
+    schema: 'legacy-pilot-manifest',
     files: {}
   }, null, 2) + '\n');
 
@@ -1220,22 +1220,22 @@ fullSourceTest('target metadata write respects target policy and preserves targe
   const output = readJsonOutput(result);
   assert.strictEqual(output.status, 'ok');
   assert.strictEqual(output.metadata_policy.source, 'explicit_policy_file');
-  assert.strictEqual(output.metadata_policy.urn_namespace, 'urn:forge:file');
-  assert.strictEqual(output.metadata_policy.manifest_schema, 'forge-repo-content-manifest-002');
-  assert.strictEqual(output.metadata_policy.authority_map_schema, 'forge-authority-and-file-urn-map-002');
+  assert.strictEqual(output.metadata_policy.urn_namespace, 'urn:pilot:file');
+  assert.strictEqual(output.metadata_policy.manifest_schema, 'pilot-repo-content-manifest-002');
+  assert.strictEqual(output.metadata_policy.authority_map_schema, 'pilot-authority-and-file-urn-map-002');
   assert.strictEqual(output.adopt_existing, true);
   assert.strictEqual(fs.readFileSync(sourceOfTruthPath, 'utf8'), sourceOfTruth);
 
   const manifest = JSON.parse(fs.readFileSync(path.join(dir, 'manifest.json'), 'utf8'));
-  assert.strictEqual(manifest.schema, 'forge-repo-content-manifest-002');
-  assert.ok(Object.keys(manifest.files).some((urn) => urn.startsWith('urn:forge:file:readme-md-')));
+  assert.strictEqual(manifest.schema, 'pilot-repo-content-manifest-002');
+  assert.ok(Object.keys(manifest.files).some((urn) => urn.startsWith('urn:pilot:file:readme-md-')));
   assert.ok(Object.values(manifest.files).every((entry) => entry.file_id.startsWith('ni:///sha-256;')));
 
   const authorityMap = JSON.parse(fs.readFileSync(path.join(dir, 'authority-map.json'), 'utf8'));
-  assert.strictEqual(authorityMap.schema, 'forge-authority-and-file-urn-map-002');
-  assert.strictEqual(authorityMap.authorities[0].urn, 'urn:forge:source-of-truth');
+  assert.strictEqual(authorityMap.schema, 'pilot-authority-and-file-urn-map-002');
+  assert.strictEqual(authorityMap.authorities[0].urn, 'urn:pilot:source-of-truth');
   assert.strictEqual(authorityMap.metadata_policy.authority_semantics, 'target_owned');
-  assert.ok(authorityMap.file_urns.some((entry) => entry.file_path === 'manifest.json' && entry.file_urn.startsWith('urn:forge:file:manifest-json-')));
+  assert.ok(authorityMap.file_urns.some((entry) => entry.file_path === 'manifest.json' && entry.file_urn.startsWith('urn:pilot:file:manifest-json-')));
 });
 
 fullSourceTest('source repo target metadata surface validates without package expansion', () => {

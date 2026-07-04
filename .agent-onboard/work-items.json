@@ -4059,7 +4059,7 @@
       "closure": {
         "actor": "codex-gpt-5",
         "closed_at": "2026-07-03T20:03:43.513Z",
-        "summary": "Closed by adding target metadata manifest authority plan/check/write support, implementing a safe generator for SOURCE_OF_TRUTH.md, authority-map.json, and manifest.json, dogfooding the generator into the AOB source repo, validating Forge-style metadata, keeping metadata source-only outside the npm package, and preserving reduced M4 architecture checks.",
+        "summary": "Closed by adding target metadata manifest authority plan/check/write support, implementing a safe generator for SOURCE_OF_TRUTH.md, authority-map.json, and manifest.json, dogfooding the generator into the AOB source repo, validating target-pilot-style metadata, keeping metadata source-only outside the npm package, and preserving reduced M4 architecture checks.",
         "changed_files": [
           ".agent-onboard/work-items.json",
           "README.md",
@@ -4082,7 +4082,7 @@
           "node cli/agent-onboard.js target metadata --write --target .",
           "node cli/agent-onboard.js target metadata --write --force --target .",
           "node cli/agent-onboard.js target metadata --check --target .",
-          "node cli/agent-onboard.js target metadata --check --target C:\\Users\\manhthanh\\STD\\forge",
+          "node cli/agent-onboard.js target metadata --check --target ../target-pilot",
           "node cli/agent-onboard.js --help",
           "node cli/agent-onboard.js architecture --check",
           "node cli/agent-onboard.js release --surface-check",
@@ -4112,7 +4112,7 @@
       "closure": {
         "actor": "codex-gpt-5",
         "closed_at": "2026-07-03T20:06:43.019Z",
-        "summary": "Closed by running the M4 acceptance and publish-readiness gate for agent-onboard@0.0.105: quick and full test suites passed, release and package-surface checks passed, npm pack dry-run produced the expected 47-file package, metadata checks passed for both AOB and Forge targets, architecture checks remain reduced for M4, and publish remains the only operator action not run.",
+        "summary": "Closed by running the M4 acceptance and publish-readiness gate for agent-onboard@0.0.105: quick and full test suites passed, release and package-surface checks passed, npm pack dry-run produced the expected 47-file package, metadata checks passed for both AOB and target-pilot targets, architecture checks remain reduced for M4, and publish remains the only operator action not run.",
         "changed_files": [
           ".agent-onboard/work-items.json"
         ],
@@ -4125,7 +4125,7 @@
           "node scripts/check-public-artifact-boundary.js",
           "node cli/agent-onboard.js architecture --check",
           "node cli/agent-onboard.js target metadata --check --target .",
-          "node cli/agent-onboard.js target metadata --check --target C:\\Users\\manhthanh\\STD\\forge",
+          "node cli/agent-onboard.js target metadata --check --target ../target-pilot",
           "node cli/agent-onboard.js release --version-sprawl-check",
           "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
           "git diff --check"
@@ -4181,7 +4181,7 @@
           "node cli/agent-onboard.js target metadata --plan --target .",
           "node cli/agent-onboard.js target metadata --write --force --target .",
           "node cli/agent-onboard.js target metadata --check --target .",
-          "node cli/agent-onboard.js target metadata --check --target C:\\Users\\manhthanh\\STD\\forge",
+          "node cli/agent-onboard.js target metadata --check --target ../target-pilot",
           "node cli/agent-onboard.js target-config --template",
           "node cli/agent-onboard.js target-config --validate",
           "node cli/agent-onboard.js guard --plan",

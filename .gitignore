@@ -31,3 +31,6 @@ scratch/
 Thumbs.db
 .vscode/
 .idea/
+
+# Testing pilots
+target-pilot/
