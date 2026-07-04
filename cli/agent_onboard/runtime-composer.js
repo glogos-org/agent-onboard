@@ -37,6 +37,7 @@ const {
 const VERSION = require('../../package.json').version;
 const COMMANDS_COMMAND = 'commands';
 const GUIDE_COMMAND = 'guide';
+const QUICKSTART_COMMAND = 'quickstart';
 
 process.stdout.on('error', (error) => {
   if (error && error.code === 'EPIPE') process.exit(0);
@@ -146,9 +147,9 @@ function commandSurfaceCatalog() {
     release_line: RELEASE_LINE,
     command: 'agent-onboard commands --json',
     purpose: 'machine-readable and human-readable catalog of the packaged public command surface',
-    top_level_commands: ROUTER_COMMAND_ORDER.includes(COMMANDS_COMMAND) ? ROUTER_COMMAND_ORDER.slice() : [...ROUTER_COMMAND_ORDER.slice(0, 3), COMMANDS_COMMAND, GUIDE_COMMAND, ...ROUTER_COMMAND_ORDER.slice(3)],
+    top_level_commands: ROUTER_COMMAND_ORDER.includes(COMMANDS_COMMAND) ? ROUTER_COMMAND_ORDER.slice() : [...ROUTER_COMMAND_ORDER.slice(0, 3), COMMANDS_COMMAND, GUIDE_COMMAND, QUICKSTART_COMMAND, ...ROUTER_COMMAND_ORDER.slice(3)],
     top_level_aliases: Object.assign({}, TOP_LEVEL_COMMAND_ALIAS),
-    runtime_command_groups: Object.fromEntries(Object.entries(RUNTIME_COMMAND_GROUP).map(([key, value]) => [key, key === 'core' ? Array.from(new Set([...value, COMMANDS_COMMAND, GUIDE_COMMAND])) : value.slice()])),
+    runtime_command_groups: Object.fromEntries(Object.entries(RUNTIME_COMMAND_GROUP).map(([key, value]) => [key, key === 'core' ? Array.from(new Set([...value, COMMANDS_COMMAND, GUIDE_COMMAND, QUICKSTART_COMMAND])) : value.slice()])),
     help_lines: helpLines,
     help_groups: groupCommandHelpLines(helpLines),
     command_lines: helpLines.map((line) => ({
@@ -159,6 +160,7 @@ function commandSurfaceCatalog() {
     recommended_first_commands: [
       'agent-onboard commands --text',
       'agent-onboard guide --text',
+      'agent-onboard quickstart --text',
       'agent-onboard status',
       'agent-onboard target doctor --text',
       'agent-onboard work-items --next --text',
@@ -222,6 +224,7 @@ function operatorGuideCatalog() {
         commands: [
           'agent-onboard guide --text',
           'agent-onboard commands --text',
+          'agent-onboard quickstart --text',
           'agent-onboard authority --first-read',
           'agent-onboard work-items --next --text'
         ],
@@ -240,6 +243,7 @@ function operatorGuideCatalog() {
       target_onboarding_preview: {
         goal: 'preview target onboarding files and conflicts before explicit writes',
         commands: [
+          'agent-onboard quickstart --text',
           'agent-onboard target onboarding --plan',
           'agent-onboard target onboarding --fixture',
           'agent-onboard target bootstrap --dry-run',
@@ -306,6 +310,106 @@ const operatorGuideService = Object.freeze({
   text: operatorGuideText
 });
 
+function quickstartCatalog() {
+  return {
+    schema: 'agent-onboard-public-quickstart-001',
+    status: 'ok',
+    package_name: PACKAGE_NAME,
+    version: VERSION,
+    release_line: RELEASE_LINE,
+    command: 'agent-onboard quickstart --json',
+    purpose: 'read-only first-run recipe for orienting an operator or agent before target onboarding',
+    modes: ['--text', '--json', '--dry-run'],
+    primary_recipe: [
+      {
+        step: 1,
+        command: 'agent-onboard guide --text',
+        purpose: 'select the right public workflow before making changes',
+        writes_files: false
+      },
+      {
+        step: 2,
+        command: 'agent-onboard commands --text',
+        purpose: 'inspect the packaged CLI command surface',
+        writes_files: false
+      },
+      {
+        step: 3,
+        command: 'agent-onboard target doctor --text',
+        purpose: 'inspect target repository readiness without mutation',
+        writes_files: false
+      },
+      {
+        step: 4,
+        command: 'agent-onboard target onboarding --plan',
+        purpose: 'preview canonical target onboarding files and conflicts',
+        writes_files: false
+      },
+      {
+        step: 5,
+        command: 'agent-onboard target bootstrap --dry-run',
+        purpose: 'preview the explicit bootstrap write set before owner-approved writes',
+        writes_files: false
+      },
+      {
+        step: 6,
+        command: 'agent-onboard work-items --next --text',
+        purpose: 'read the next admitted work item when a ledger exists',
+        writes_files: false
+      }
+    ],
+    minimum_target_files: [
+      'package.json',
+      '.agent-onboard/target.json',
+      'AGENTS.md'
+    ],
+    write_after_preview: {
+      requires_owner_authorization: true,
+      command: 'agent-onboard target bootstrap --write [--force]',
+      use_force_only_for_known_canonical_replacement: true
+    },
+    escalation_points: [
+      'Stop before --write unless the owner has authorized target state changes.',
+      'Do not install dependencies, publish, push, or run managed project commands from quickstart.',
+      'Use guide and commands outputs as the first-read surface for unfamiliar repositories.'
+    ],
+    boundary: {
+      writes_files: false,
+      writes_target_repository_state: false,
+      publishes_package: false,
+      installs_dependencies: false,
+      runs_managed_project_commands: false,
+      git_mutation: false,
+      network: false
+    }
+  };
+}
+
+function quickstartText(quickstart = quickstartCatalog()) {
+  const lines = [
+    `agent-onboard quickstart ${quickstart.version}`,
+    '',
+    'Read-only first-run recipe:',
+  ];
+  for (const item of quickstart.primary_recipe) {
+    lines.push(`${item.step}. ${item.command}`);
+    lines.push(`   ${item.purpose}`);
+  }
+  lines.push('', 'Minimum target files:', ...quickstart.minimum_target_files.map((entry) => `- ${entry}`));
+  lines.push('', 'Write after preview:');
+  lines.push(`- ${quickstart.write_after_preview.command}`);
+  lines.push('- requires owner authorization');
+  lines.push('', 'Escalation points:');
+  for (const point of quickstart.escalation_points) lines.push(`- ${point}`);
+  lines.push('', 'Use `agent-onboard quickstart --json` for machine-readable first-run guidance.');
+  return `${lines.join('\n')}\n`;
+}
+
+const quickstartService = Object.freeze({
+  catalog: quickstartCatalog,
+  text: quickstartText
+});
+
 
 const targetRuntimeService = createTargetRuntimeService({
   version: VERSION,
@@ -322,6 +426,7 @@ const targetRuntimeService = createTargetRuntimeService({
   sourceContext,
   commandSurfaceService,
   operatorGuideService,
+  quickstartService,
   arrayEquals
 });
 const {
@@ -554,6 +659,7 @@ const publicArchitectureRuntimeService = createPublicArchitectureRuntimeService(
   sourceContext,
   commandSurfaceService,
   operatorGuideService,
+  quickstartService,
   arrayEquals,
   readJson,
   packageJsonProjectedPackFiles,
@@ -624,6 +730,7 @@ const publicArchitectureSourceDomainService = typeof createPublicArchitectureSou
   sourceContext,
   commandSurfaceService,
   operatorGuideService,
+  quickstartService,
   arrayEquals,
   readJson,
   packageJsonProjectedPackFiles,
@@ -6501,6 +6608,38 @@ function runGuide(args = []) {
   return 0;
 }
 
+
+function runQuickstart(args = []) {
+  const allowed = [OUTPUT_FLAG.json, OUTPUT_FLAG.text, '--dry-run'];
+  const selected = args.filter((arg) => allowed.includes(arg));
+  if (args.some((arg) => !allowed.includes(arg))) {
+    json({
+      schema: 'agent-onboard-public-quickstart-error-001',
+      status: 'error',
+      command_family: 'quickstart',
+      message: 'quickstart supports only --json, --text, or --dry-run',
+      writes_files: false,
+      publishes_package: false
+    });
+    return 1;
+  }
+  if (selected.length > 1) {
+    json({
+      schema: 'agent-onboard-public-quickstart-error-001',
+      status: 'error',
+      command_family: 'quickstart',
+      message: 'quickstart accepts only one output mode: --json, --text, or --dry-run',
+      writes_files: false,
+      publishes_package: false
+    });
+    return 1;
+  }
+  const mode = selected[0] || OUTPUT_FLAG.text;
+  if (mode === OUTPUT_FLAG.json || mode === '--dry-run') json(quickstartService.catalog());
+  else process.stdout.write(quickstartService.text());
+  return 0;
+}
+
 function runTargetRuntime(args) {
   if (args.length === 1 && args[0] === '--namespace') {
     json(publicTargetRuntimeNamespace());
@@ -6541,6 +6680,7 @@ const DOMAIN_SERVICE_FACADES = Object.freeze({
     runStatus,
     runCommands,
     runGuide,
+    runQuickstart,
     runArchitecture
   }),
   authorityService: Object.freeze({
@@ -6572,6 +6712,7 @@ const COMMAND_ROUTE_HANDLERS = Object.freeze({
   [TOP_LEVEL_COMMAND.status]: DOMAIN_SERVICE_FACADES.coreService.runStatus,
   [COMMANDS_COMMAND]: DOMAIN_SERVICE_FACADES.coreService.runCommands,
   [GUIDE_COMMAND]: DOMAIN_SERVICE_FACADES.coreService.runGuide,
+  [QUICKSTART_COMMAND]: DOMAIN_SERVICE_FACADES.coreService.runQuickstart,
   [TOP_LEVEL_COMMAND.init]: DOMAIN_SERVICE_FACADES.targetService.runInit,
   [TOP_LEVEL_COMMAND.agents]: DOMAIN_SERVICE_FACADES.authorityService.runAgents,
   [TOP_LEVEL_COMMAND.guard]: DOMAIN_SERVICE_FACADES.authorityService.runGuard,
@@ -6710,6 +6851,7 @@ module.exports = {
   sourceContext,
   commandSurfaceService,
   operatorGuideService,
+  quickstartService,
   publicReleaseCheck,
   publicArchitectureMap,
   publicCommandRouter,

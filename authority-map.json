@@ -66,6 +66,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-architecture-m1-closure-m2-seed-json-2aa8e507"
     },
     {
+      "file_path": ".agent-onboard/quickstart-product-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-quickstart-product-gate-json-eb9f94bd"
+    },
+    {
       "file_path": ".agent-onboard/router-command-adapter-delegation-expansion.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-router-command-adapter-delegation-expansion-json-ae638e03"
     },

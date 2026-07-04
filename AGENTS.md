@@ -44,6 +44,8 @@ Inspect the public command surface before choosing a workflow:
 ```sh
 node cli/agent-onboard.js guide --text
 node cli/agent-onboard.js guide --json
+node cli/agent-onboard.js quickstart --text
+node cli/agent-onboard.js quickstart --json
 node cli/agent-onboard.js commands --text
 node cli/agent-onboard.js commands --json
 ```
@@ -401,3 +403,7 @@ The public line extracts `guard --plan` and `guard --check-boundary` into `cli/a
 ## Public operator guide product surface
 
 Use `node cli/agent-onboard.js guide --text` or `node cli/agent-onboard.js guide --json` when a new agent or operator needs workflow selection before choosing a command family. The guide is read-only and must stay compact: first-read order, workflow command groups, escalation points, and no package publish, network, dependency install, Git mutation, or file writes.
+
+## Public quickstart product surface
+
+Use `node cli/agent-onboard.js quickstart --text`, `node cli/agent-onboard.js quickstart --json`, or `node cli/agent-onboard.js quickstart --dry-run` to print the first-run recipe before target onboarding. Quickstart is read-only: it may recommend guide, commands, target doctor, onboarding plan, bootstrap dry-run, and work-item lookup, but it must not write files, install dependencies, run managed project commands, publish, push, mutate Git state, or perform network calls.

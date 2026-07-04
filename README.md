@@ -19,6 +19,7 @@ Run without installing:
 ```sh
 npx agent-onboard status
 npx agent-onboard guide --text
+npx agent-onboard quickstart --text
 npx agent-onboard commands --text
 ```
 
@@ -41,6 +42,18 @@ Plan a repair for missing canonical onboarding files without overwriting existin
 ```sh
 npx agent-onboard target repair --plan
 ```
+
+## Quickstart
+
+Print a read-only first-run recipe for a new operator or agent:
+
+```sh
+npx agent-onboard quickstart --text
+npx agent-onboard quickstart --json
+npx agent-onboard quickstart --dry-run
+```
+
+Quickstart writes nothing. It does not install dependencies, run managed project commands, publish, push, mutate Git state, or scan the target repository beyond the commands it recommends. Use it before `target onboarding --write`, `target bootstrap --write`, publish operations, or broad repository edits.
 
 ## Minimal target init
 
@@ -112,16 +125,20 @@ Print the compact operator guide and discoverable command catalog for humans or 
 ```sh
 npx agent-onboard guide --text
 npx agent-onboard guide --json
+npx agent-onboard quickstart --text
+npx agent-onboard quickstart --json
 npx agent-onboard commands --text
 npx agent-onboard commands --json
 ```
 
-The guide turns the public CLI into a first-read workflow selector: new-agent orientation, target repo triage, target onboarding preview, and source release handoff. The command catalog exposes top-level commands, aliases, runtime groups, help lines, recommended first commands, and the no-mutation boundary for command discovery. Together they are the fastest way for a new agent or operator to orient itself before choosing a workflow.
+The guide turns the public CLI into a first-read workflow selector: new-agent orientation, target repo triage, target onboarding preview, and source release handoff. The quickstart command turns that orientation into a read-only first-run recipe: guide, command discovery, target doctor, onboarding plan, bootstrap dry-run, and next work-item lookup. The command catalog exposes top-level commands, aliases, runtime groups, help lines, recommended first commands, and the no-mutation boundary for command discovery. Together they are the fastest way for a new agent or operator to orient itself before choosing a workflow.
 
 ```sh
 npx agent-onboard status
 npx agent-onboard guide --text
 npx agent-onboard guide --json
+npx agent-onboard quickstart --text
+npx agent-onboard quickstart --json
 npx agent-onboard commands --text
 npx agent-onboard commands --json
 npx agent-onboard init --dry-run
@@ -1121,4 +1138,4 @@ The current release adds the public target manifest drift guard: `target manifes
 
 The current release also exposes the package-domain source manifest as explicit read-only release commands: `release --source-manifest` prints every projected npm package file with a `file_id` using `ni:///sha-256;...`, and `release --source-manifest-check` validates the content-addressed manifest shape. `release --surface-check` continues to validate that raw `sha256` values are not exposed and that source-only hash-cache state remains outside the npm package projection.
 
-The current command surface includes `guide --json|--text` and `commands --json|--text`. The guide provides a compact workflow selector for new-agent orientation, target repo triage, target onboarding preview, and source release handoff. The command catalog remains the machine-readable inventory of top-level commands, runtime groups, help lines, and recommended first commands.
+The current command surface includes `guide --json|--text`, `quickstart --json|--text|--dry-run`, and `commands --json|--text`. The guide provides a compact workflow selector for new-agent orientation, target repo triage, target onboarding preview, and source release handoff. Quickstart provides the concrete read-only first-run recipe. The command catalog remains the machine-readable inventory of top-level commands, runtime groups, help lines, and recommended first commands.
