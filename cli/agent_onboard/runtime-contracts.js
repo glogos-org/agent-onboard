@@ -2,7 +2,7 @@
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
-const RELEASE_LINE = 'public_create_dry_run_product_gate';
+const RELEASE_LINE = 'public_target_memory_descriptor_product_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
   agents: 'agents',
@@ -106,6 +106,7 @@ const TARGET_COMMAND = Object.freeze({
   profile: 'profile',
   repair: 'repair',
   runtime: 'runtime',
+  memory: 'memory',
   onboarding: 'onboarding',
   bootstrap: 'bootstrap'
 });
@@ -190,6 +191,18 @@ const TARGET_DOCTOR_COMMAND = Object.freeze({
   })
 });
 
+const TARGET_MEMORY_COMMAND = Object.freeze({
+  help: 'agent-onboard target memory --preview|--json|--text [--target <path>]',
+  mode: Object.freeze({
+    preview: '--preview'
+  }),
+  flag: Object.freeze({
+    json: OUTPUT_FLAG.json,
+    text: OUTPUT_FLAG.text,
+    target: TARGET_OPTION.target
+  })
+});
+
 const PRODUCT_HELP_LINES = Object.freeze([
   'agent-onboard status',
   'agent-onboard commands --json|--text',
@@ -199,6 +212,7 @@ const PRODUCT_HELP_LINES = Object.freeze([
   'agent-onboard create --dry-run|--json|--text',
   TARGET_DOCTOR_COMMAND.help,
   TARGET_PROFILE_COMMAND.help,
+  TARGET_MEMORY_COMMAND.help,
   TARGET_REPAIR_COMMAND.help,
   TARGET_METADATA_COMMAND.help,
   TARGET_MANIFEST_COMMAND.help,
@@ -299,6 +313,7 @@ module.exports = Object.freeze({
   TARGET_DOCTOR_COMMAND,
   TARGET_METADATA_COMMAND,
   TARGET_MANIFEST_COMMAND,
+  TARGET_MEMORY_COMMAND,
   TARGET_OPTION,
   TARGET_PROFILE_COMMAND,
   TARGET_REPAIR_COMMAND,

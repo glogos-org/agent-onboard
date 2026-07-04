@@ -182,6 +182,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-target-command-adapter-extraction-json-47b189e2"
     },
     {
+      "file_path": ".agent-onboard/target-memory-descriptor-product-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-target-memory-descriptor-product-gate-json-6bb2b744"
+    },
+    {
       "file_path": ".agent-onboard/target-repo-product-refactor-plan.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-target-repo-product-refactor-plan-json-0bcc1b6c"
     },

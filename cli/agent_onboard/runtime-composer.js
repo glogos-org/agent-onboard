@@ -29,6 +29,7 @@ const {
   TARGET_DOCTOR_COMMAND,
   TARGET_METADATA_COMMAND,
   TARGET_MANIFEST_COMMAND,
+  TARGET_MEMORY_COMMAND,
   TARGET_PROFILE_COMMAND,
   TARGET_REPAIR_COMMAND,
   TOP_LEVEL_COMMAND,
@@ -167,6 +168,7 @@ function commandSurfaceCatalog() {
       'agent-onboard create --dry-run',
       'agent-onboard status',
       'agent-onboard target doctor --text',
+      'agent-onboard target memory --text',
       'agent-onboard work-items --next --text',
       'agent-onboard release --check'
     ],
@@ -240,6 +242,7 @@ function operatorGuideCatalog() {
         commands: [
           'agent-onboard target doctor --text',
           'agent-onboard target profile --text',
+          'agent-onboard target memory --text',
           'agent-onboard target metadata --plan',
           'agent-onboard target manifest --check-drift'
         ],
@@ -661,12 +664,236 @@ function createDryRunText(catalog = createDryRunCatalog()) {
   lines.push('Use `agent-onboard create --json` for the machine-readable preview.');
   return `${lines.join('\n')}\n`;
 }
-
 const createDryRunService = Object.freeze({
   catalog: createDryRunCatalog,
   text: createDryRunText
 });
 
+
+const TARGET_MEMORY_SURFACE_CANDIDATES = Object.freeze([
+  { path: 'AGENTS.md', kind: 'agent_instruction', authority: 'candidate_first_read', read_policy: 'read_summary_or_full_text_on_agent_request' },
+  { path: 'llms.txt', kind: 'ai_discovery', authority: 'candidate_discovery', read_policy: 'read_before_agent_workflow_selection' },
+  { path: 'README.md', kind: 'human_project_overview', authority: 'candidate_context', read_policy: 'read_summary_or_full_text_on_agent_request' },
+  { path: 'CLAUDE.md', kind: 'model_specific_agent_instruction', authority: 'candidate_memory', read_policy: 'metadata_only_in_this_command' },
+  { path: '.github/copilot-instructions.md', kind: 'model_specific_agent_instruction', authority: 'candidate_memory', read_policy: 'metadata_only_in_this_command' },
+  { path: '.cursor/rules', kind: 'model_specific_agent_instruction_directory', authority: 'candidate_memory', read_policy: 'metadata_only_in_this_command' },
+  { path: '.claude/agents', kind: 'model_specific_agent_instruction_directory', authority: 'candidate_memory', read_policy: 'metadata_only_in_this_command' },
+  { path: '.claude/commands', kind: 'model_specific_agent_instruction_directory', authority: 'candidate_memory', read_policy: 'metadata_only_in_this_command' },
+  { path: '.claude/skills', kind: 'model_specific_agent_instruction_directory', authority: 'candidate_memory', read_policy: 'metadata_only_in_this_command' },
+  { path: '.repo-identifier', kind: 'repo_identity_marker', authority: 'candidate_identity', read_policy: 'metadata_only_in_this_command' },
+  { path: '.agent-onboard/target.json', kind: 'target_config', authority: 'target_owned_state', read_policy: 'schema_metadata_only_in_this_command' },
+  { path: '.agent-onboard/project.json', kind: 'target_project_state', authority: 'target_owned_state', read_policy: 'schema_metadata_only_in_this_command' },
+  { path: '.agent-onboard/work-items.json', kind: 'work_item_state', authority: 'target_owned_state', read_policy: 'schema_metadata_only_in_this_command' },
+  { path: '.agent-onboard/authority-path.json', kind: 'authority_path', authority: 'target_owned_state', read_policy: 'schema_metadata_only_in_this_command' },
+  { path: '.agent-onboard/claims.jsonl', kind: 'claims_ledger', authority: 'target_owned_state', read_policy: 'metadata_only_in_this_command' },
+  { path: '.agent-onboard/target-memory.json', kind: 'target_memory_descriptor', authority: 'target_owned_state', read_policy: 'metadata_only_in_this_command' }
+]);
+
+const TARGET_ROOT_MANIFEST_CANDIDATES = Object.freeze([
+  { path: 'package.json', ecosystem: 'node-npm' },
+  { path: 'Cargo.toml', ecosystem: 'rust-cargo' },
+  { path: 'pyproject.toml', ecosystem: 'python' },
+  { path: 'go.mod', ecosystem: 'go' },
+  { path: 'pom.xml', ecosystem: 'jvm-maven' },
+  { path: 'build.gradle', ecosystem: 'jvm-gradle' },
+  { path: 'deno.json', ecosystem: 'deno' }
+]);
+
+function safeRelativeStat(root, rel) {
+  const absolute = path.resolve(root, rel);
+  const rootWithSep = path.resolve(root) + path.sep;
+  if (absolute !== path.resolve(root) && !absolute.startsWith(rootWithSep)) {
+    return { path: rel, present: false, kind: 'invalid_path', bytes: null };
+  }
+  if (!fs.existsSync(absolute)) return { path: rel, present: false, kind: 'missing', bytes: null };
+  const stat = fs.statSync(absolute);
+  return {
+    path: rel,
+    present: true,
+    kind: stat.isDirectory() ? 'directory' : (stat.isFile() ? 'file' : 'other'),
+    bytes: stat.isFile() ? stat.size : null
+  };
+}
+
+function targetMemoryRootManifest(root) {
+  const seen = TARGET_ROOT_MANIFEST_CANDIDATES.filter((candidate) => fs.existsSync(path.join(root, candidate.path)));
+  const primary = seen[0] || null;
+  return {
+    primary_manifest: primary ? primary.path : null,
+    ecosystem: primary ? primary.ecosystem : 'unknown',
+    manifests_seen: seen.map((candidate) => candidate.path)
+  };
+}
+
+function targetMemoryDescriptor(targetRoot = process.cwd()) {
+  const absoluteTargetRoot = path.resolve(targetRoot || process.cwd());
+  if (!fs.existsSync(absoluteTargetRoot)) {
+    return {
+      schema: 'agent-onboard-public-target-memory-preview-001',
+      status: 'error',
+      package_name: PACKAGE_NAME,
+      version: VERSION,
+      release_line: RELEASE_LINE,
+      command: 'agent-onboard target memory --preview',
+      command_family: 'target memory',
+      target: { name: path.basename(absoluteTargetRoot) || 'target-repo', kind: 'missing', root: absoluteTargetRoot },
+      errors: [`target path does not exist: ${absoluteTargetRoot}`],
+      writes_performed: false,
+      boundary: {
+        writes_files: false,
+        writes_target_repository_state: false,
+        reads_file_contents: false,
+        stores_target_ai_file_contents: false,
+        imports_hidden_model_memory: false,
+        treats_chat_history_as_authority: false,
+        scans_arbitrary_private_files: false,
+        network: false,
+        git_mutation: false
+      }
+    };
+  }
+  if (!fs.statSync(absoluteTargetRoot).isDirectory()) {
+    return {
+      schema: 'agent-onboard-public-target-memory-preview-001',
+      status: 'error',
+      package_name: PACKAGE_NAME,
+      version: VERSION,
+      release_line: RELEASE_LINE,
+      command: 'agent-onboard target memory --preview',
+      command_family: 'target memory',
+      target: { name: path.basename(absoluteTargetRoot) || 'target-repo', kind: 'file', root: absoluteTargetRoot },
+      errors: [`target path is not a directory: ${absoluteTargetRoot}`],
+      writes_performed: false,
+      boundary: {
+        writes_files: false,
+        writes_target_repository_state: false,
+        reads_file_contents: false,
+        stores_target_ai_file_contents: false,
+        imports_hidden_model_memory: false,
+        treats_chat_history_as_authority: false,
+        scans_arbitrary_private_files: false,
+        network: false,
+        git_mutation: false
+      }
+    };
+  }
+
+  const rootManifest = targetMemoryRootManifest(absoluteTargetRoot);
+  const surfaces = TARGET_MEMORY_SURFACE_CANDIDATES.map((candidate) => {
+    const observed = safeRelativeStat(absoluteTargetRoot, candidate.path);
+    return {
+      path: candidate.path,
+      kind: candidate.kind,
+      authority: candidate.authority,
+      read_policy: candidate.read_policy,
+      present: observed.present,
+      observed_kind: observed.kind,
+      bytes: observed.bytes,
+      content_imported: false
+    };
+  });
+  const presentSurfaces = surfaces.filter((surface) => surface.present);
+  const authorityGroups = presentSurfaces.reduce((acc, surface) => {
+    if (!acc[surface.authority]) acc[surface.authority] = [];
+    acc[surface.authority].push(surface.path);
+    return acc;
+  }, {});
+  return {
+    schema: 'agent-onboard-public-target-memory-preview-001',
+    status: 'ok',
+    package_name: PACKAGE_NAME,
+    version: VERSION,
+    release_line: RELEASE_LINE,
+    command: 'agent-onboard target memory --preview',
+    command_family: 'target memory',
+    target: {
+      name: path.basename(absoluteTargetRoot) || 'target-repo',
+      kind: 'directory',
+      root: absoluteTargetRoot,
+      primary_manifest: rootManifest.primary_manifest,
+      ecosystem: rootManifest.ecosystem,
+      manifests_seen: rootManifest.manifests_seen
+    },
+    memory_model: {
+      repo_native_memory_surface_is_candidate_authority: true,
+      target_owned_state_may_be_authority_after_target_owner_admission: true,
+      hidden_model_memory_is_authority: false,
+      chat_history_is_authority: false,
+      provider_runtime_state_is_target_authority: false,
+      descriptor_preview_is_authority_now: false
+    },
+    surfaces,
+    summary: {
+      known_surface_count: surfaces.length,
+      present_surface_count: presentSurfaces.length,
+      present_surfaces: presentSurfaces.map((surface) => surface.path),
+      authority_groups: authorityGroups
+    },
+    output_policy: {
+      compact_default: true,
+      file_contents_inlined: false,
+      target_ai_memory_content_imported: false,
+      provider_authority_files_inlined: false,
+      stores_target_ai_file_metadata_only: true
+    },
+    recommended_next_commands: [
+      'agent-onboard target doctor --text',
+      'agent-onboard target profile --text',
+      'agent-onboard target onboarding --plan',
+      'agent-onboard work-items --next --text'
+    ],
+    writes_performed: false,
+    boundary: {
+      writes_files: false,
+      writes_target_repository_state: false,
+      reads_file_contents: false,
+      stores_target_ai_file_contents: false,
+      imports_hidden_model_memory: false,
+      treats_chat_history_as_authority: false,
+      scans_arbitrary_private_files: false,
+      bounded_known_path_probe_only: true,
+      installs_dependencies: false,
+      runs_build_test_deploy: false,
+      runs_managed_project_commands: false,
+      publishes_package: false,
+      network: false,
+      git_mutation: false
+    }
+  };
+}
+
+function targetMemoryText(result) {
+  if (result.status !== 'ok') {
+    return [
+      'agent-onboard target memory',
+      `Status: ${result.status}`,
+      `Target: ${result.target ? result.target.root : 'unknown'}`,
+      `Errors: ${(result.errors || []).join('; ') || 'none'}`,
+      'Writes performed: false'
+    ].join('\n') + '\n';
+  }
+  const present = result.summary.present_surfaces.length > 0 ? result.summary.present_surfaces.join(', ') : 'none';
+  const groups = Object.keys(result.summary.authority_groups).sort().map((key) => `  - ${key}: ${result.summary.authority_groups[key].join(', ')}`);
+  return [
+    'agent-onboard target memory',
+    `Target: ${result.target.name} (${result.target.ecosystem})`,
+    `Root: ${result.target.root}`,
+    `Known surfaces: ${result.summary.known_surface_count}`,
+    `Present surfaces: ${result.summary.present_surface_count}`,
+    `Present: ${present}`,
+    'Authority groups:',
+    ...(groups.length > 0 ? groups : ['  none']),
+    'Policy: metadata-only preview; file contents are not imported or stored.',
+    'Next steps:',
+    ...result.recommended_next_commands.map((command) => `  - ${command}`),
+    'Writes performed: false'
+  ].join('\n') + '\n';
+}
+
+const targetMemoryService = Object.freeze({
+  descriptor: targetMemoryDescriptor,
+  text: targetMemoryText
+});
 
 const targetRuntimeService = createTargetRuntimeService({
   version: VERSION,
@@ -6968,6 +7195,26 @@ function runCreate(args = []) {
   return 0;
 }
 
+function runTargetMemory(args) {
+  const allowed = [TARGET_MEMORY_COMMAND.mode.preview, TARGET_MEMORY_COMMAND.flag.json, TARGET_MEMORY_COMMAND.flag.text, TARGET_MEMORY_COMMAND.flag.target];
+  const targetIndex = args.indexOf(TARGET_MEMORY_COMMAND.flag.target);
+  const targetRoot = targetIndex >= 0 ? args[targetIndex + 1] : process.cwd();
+  const unknown = args.filter((arg, index) => {
+    if (targetIndex >= 0 && index === targetIndex + 1) return false;
+    return !allowed.includes(arg);
+  });
+  if (targetIndex >= 0 && (!targetRoot || targetRoot.startsWith('-'))) throw new Error(`target memory ${TARGET_MEMORY_COMMAND.flag.target} requires a path`);
+  if (unknown.length > 0) throw new Error(`target memory does not support: ${unknown.join(', ')}`);
+  const modes = args.filter((arg) => [TARGET_MEMORY_COMMAND.mode.preview, TARGET_MEMORY_COMMAND.flag.json, TARGET_MEMORY_COMMAND.flag.text].includes(arg));
+  if (modes.length > 1) throw new Error('target memory accepts only one output mode: --preview, --json, or --text');
+  const mode = modes[0] || TARGET_MEMORY_COMMAND.mode.preview;
+  const result = targetMemoryService.descriptor(targetRoot);
+  if (mode === TARGET_MEMORY_COMMAND.flag.text) process.stdout.write(targetMemoryService.text(result));
+  else json(result);
+  return result.status === 'ok' ? 0 : 1;
+}
+
+
 function runTargetRuntime(args) {
   if (args.length === 1 && args[0] === '--namespace') {
     json(publicTargetRuntimeNamespace());
@@ -6996,8 +7243,9 @@ function runTargetCommand(args) {
   if (args[0] === TARGET_COMMAND.profile) return runTargetProfile(args.slice(1));
   if (args[0] === TARGET_COMMAND.repair) return runTargetRepair(args.slice(1));
   if (args[0] === TARGET_COMMAND.runtime) return runTargetRuntime(args.slice(1));
+  if (args[0] === TARGET_COMMAND.memory) return runTargetMemory(args.slice(1));
   if (args[0] === TARGET_COMMAND.onboarding) return runTargetOnboarding(args.slice(1));
-  if (args[0] !== TARGET_COMMAND.bootstrap) throw new Error(`target supports only: ${TARGET_DOCTOR_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_PROFILE_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_REPAIR_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_METADATA_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_MANIFEST_COMMAND.help.replace('agent-onboard target ', '')}, runtime --namespace|--check, onboarding --plan|--fixture|--trial [--target <path>]|--write [--force], bootstrap`);
+  if (args[0] !== TARGET_COMMAND.bootstrap) throw new Error(`target supports only: ${TARGET_DOCTOR_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_PROFILE_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_REPAIR_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_METADATA_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_MANIFEST_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_MEMORY_COMMAND.help.replace('agent-onboard target ', '')}, runtime --namespace|--check, onboarding --plan|--fixture|--trial [--target <path>]|--write [--force], bootstrap`);
   return runTargetBootstrap(args.slice(1));
 }
 
@@ -7028,6 +7276,7 @@ const DOMAIN_SERVICE_FACADES = Object.freeze({
     runInit,
     runTargetConfig,
     runTargetRuntime,
+    runTargetMemory,
     runTargetCommand,
     runTargetInstance
   }),

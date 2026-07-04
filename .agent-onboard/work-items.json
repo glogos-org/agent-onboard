@@ -4636,6 +4636,69 @@
           "git diff --check was not available in the ZIP handoff workspace because no .git directory is present."
         ]
       }
+    },
+    {
+      "id": "P1S3M5W10",
+      "milestone_id": "P1S3M5",
+      "title": "Public target memory descriptor product gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-04T15:05:00.000Z"
+      },
+      "closure": {
+        "actor": "gpt-5.5-thinking",
+        "closed_at": "2026-07-04T15:35:00.000Z",
+        "summary": "Closed by adding a direct public target memory descriptor surface: target memory --preview, target memory --json, and target memory --text. The feature probes only bounded known repo memory/instruction/state paths and reports metadata, authority grouping, and read policy without importing file contents, scanning arbitrary private paths, writing target state, installing dependencies, running managed project commands, publishing, mutating Git, or using network access, then bumps the package candidate to 0.0.117.",
+        "changed_files": [
+          "package.json",
+          "README.md",
+          "AGENTS.md",
+          "llms.txt",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/runtime-contracts.js",
+          "test/agent-onboard.test.js",
+          "test/run-tests.js",
+          ".agent-onboard/target-memory-descriptor-product-gate.json",
+          ".agent-onboard/work-items.json",
+          "authority-map.json",
+          "manifest.json"
+        ],
+        "checks_run": [
+          "node -c cli/agent_onboard/runtime-composer.js",
+          "node -c cli/agent_onboard/runtime-contracts.js",
+          "node -c test/agent-onboard.test.js",
+          "node -c test/run-tests.js",
+          "node cli/agent-onboard.js target memory --preview",
+          "node cli/agent-onboard.js target memory --json",
+          "node cli/agent-onboard.js target memory --text",
+          "node cli/agent-onboard.js commands --json",
+          "node cli/agent-onboard.js guide --json",
+          "node cli/agent-onboard.js quickstart --json",
+          "node cli/agent-onboard.js discovery --json",
+          "node cli/agent-onboard.js create --dry-run",
+          "npm test",
+          "npm run test:full",
+          "node cli/agent-onboard.js release --source-manifest",
+          "node cli/agent-onboard.js release --source-manifest-check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js release --version-sprawl-check",
+          "npm pack --dry-run --json",
+          "installed package target memory smoke",
+          "node scripts/check-public-artifact-boundary.js",
+          "node cli/agent-onboard.js target metadata --write --force --target .",
+          "node cli/agent-onboard.js target metadata --check --target .",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json"
+        ],
+        "checks_not_run": [
+          "npm publish --access public",
+          "git diff --check (not run: handoff workspace is not a Git repository)"
+        ],
+        "known_non_pass": [
+          "git diff --check was not available in the ZIP handoff workspace because no .git directory is present."
+        ]
+      }
     }
   ]
 }

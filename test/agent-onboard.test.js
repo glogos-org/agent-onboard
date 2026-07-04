@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_create_dry_run_product_gate';
+const EXPECTED_RELEASE_LINE = 'public_target_memory_descriptor_product_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -219,6 +219,7 @@ fullSourceTest('public runtime contracts module centralizes command and package 
   assert.strictEqual(contracts.TARGET_CONFIG_FILE, '.agent-onboard/target.json');
   assert.strictEqual(contracts.TARGET_COMMAND.doctor, 'doctor');
   assert.strictEqual(contracts.TARGET_COMMAND.metadata, 'metadata');
+  assert.strictEqual(contracts.TARGET_COMMAND.memory, 'memory');
   assert.strictEqual(contracts.TARGET_DOCTOR_COMMAND.flag.text, '--text');
   assert.strictEqual(contracts.TARGET_METADATA_COMMAND.flag.target, '--target');
   assert.strictEqual(contracts.TARGET_METADATA_COMMAND.mode.write, '--write');
@@ -252,11 +253,13 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.ok(output.help_lines.includes('agent-onboard quickstart --json|--text|--dry-run'));
   assert.ok(output.help_lines.includes('agent-onboard discovery --llms|--json|--text'));
   assert.ok(output.help_lines.includes('agent-onboard create --dry-run|--json|--text'));
+  assert.ok(output.help_lines.includes('agent-onboard target memory --preview|--json|--text [--target <path>]'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard commands --text'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard guide --text'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard quickstart --text'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard discovery --llms'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard create --dry-run'));
+  assert.ok(output.recommended_first_commands.includes('agent-onboard target memory --text'));
   assert.strictEqual(output.boundary.writes_files, false);
   assert.strictEqual(output.boundary.publishes_package, false);
 
@@ -268,6 +271,7 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.ok(textResult.stdout.includes('agent-onboard quickstart --json|--text|--dry-run'));
   assert.ok(textResult.stdout.includes('agent-onboard discovery --llms|--json|--text'));
   assert.ok(textResult.stdout.includes('agent-onboard create --dry-run|--json|--text'));
+  assert.ok(textResult.stdout.includes('agent-onboard target memory --preview|--json|--text [--target <path>]'));
 });
 
 fullSourceTest('public discovery is directly usable', () => {
@@ -1116,6 +1120,50 @@ fullSourceTest('full source block line 840', () => {
   assert.ok(output.phases.some((phase) => phase.command === 'agent-onboard target onboarding --write'));
   assert.strictEqual(output.planned_files.length, 7);
   assert.deepStrictEqual(output.planned_files.map((item) => item.path), ['.agent-onboard/target.json', '.agent-onboard/runtime-namespace.json', '.agent-onboard/project.json', '.agent-onboard/work-items.json', 'AGENTS.md', 'llms.txt', '.agent-onboard/authority-path.json']);
+});
+
+fullSourceTest('target memory previews bounded repo memory surfaces without importing contents', () => {
+  const dir = tempRepo();
+  fs.writeFileSync(path.join(dir, 'AGENTS.md'), 'agent instructions should not be copied into the descriptor\n');
+  fs.writeFileSync(path.join(dir, 'llms.txt'), '# target ai entrypoint\n');
+  fs.mkdirSync(path.join(dir, '.github'), { recursive: true });
+  fs.writeFileSync(path.join(dir, '.github', 'copilot-instructions.md'), 'copilot instructions should stay out of stdout\n');
+  fs.mkdirSync(path.join(dir, '.agent-onboard'), { recursive: true });
+  fs.writeFileSync(path.join(dir, '.agent-onboard', 'work-items.json'), JSON.stringify({ schema: 'fixture', work_items: [] }, null, 2) + '\n');
+
+  const result = run(['target', 'memory', '--preview', '--target', dir]);
+  const output = readJsonOutput(result);
+  assert.strictEqual(output.schema, 'agent-onboard-public-target-memory-preview-001');
+  assert.strictEqual(output.status, 'ok');
+  assert.strictEqual(output.version, EXPECTED_VERSION);
+  assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
+  assert.strictEqual(output.command, 'agent-onboard target memory --preview');
+  assert.strictEqual(output.command_family, 'target memory');
+  assert.strictEqual(output.target.primary_manifest, 'package.json');
+  assert.strictEqual(output.target.ecosystem, 'node-npm');
+  assert.ok(output.surfaces.some((surface) => surface.path === 'AGENTS.md' && surface.present && surface.content_imported === false));
+  assert.ok(output.surfaces.some((surface) => surface.path === 'llms.txt' && surface.present && surface.authority === 'candidate_discovery'));
+  assert.ok(output.surfaces.some((surface) => surface.path === '.github/copilot-instructions.md' && surface.present && surface.read_policy === 'metadata_only_in_this_command'));
+  assert.ok(output.summary.present_surfaces.includes('.agent-onboard/work-items.json'));
+  assert.strictEqual(output.memory_model.hidden_model_memory_is_authority, false);
+  assert.strictEqual(output.memory_model.chat_history_is_authority, false);
+  assert.strictEqual(output.output_policy.file_contents_inlined, false);
+  assert.strictEqual(output.boundary.reads_file_contents, false);
+  assert.strictEqual(output.boundary.writes_files, false);
+  assert.strictEqual(output.boundary.scans_arbitrary_private_files, false);
+  assert.strictEqual(output.boundary.network, false);
+  assert.strictEqual(result.stdout.includes('agent instructions should not be copied'), false);
+  assert.strictEqual(result.stdout.includes('copilot instructions should stay out'), false);
+
+  const jsonResult = run(['target', 'memory', '--json', '--target', dir]);
+  assert.strictEqual(readJsonOutput(jsonResult).schema, 'agent-onboard-public-target-memory-preview-001');
+
+  const textResult = run(['target', 'memory', '--text', '--target', dir]);
+  assert.strictEqual(textResult.status, 0, textResult.stderr || textResult.stdout);
+  assert.ok(textResult.stdout.includes('agent-onboard target memory'));
+  assert.ok(textResult.stdout.includes('metadata-only preview'));
+  assert.ok(textResult.stdout.includes('AGENTS.md'));
+  assert.strictEqual(textResult.stdout.includes('agent instructions should not be copied'), false);
 });
 
 fullSourceTest('target doctor reports target repo readiness without writes', () => {
@@ -3113,6 +3161,7 @@ fullSourceTest('full source block line 2323', () => {
   assert.ok(help.stdout.includes('create --dry-run|--json|--text'));
   assert.ok(help.stdout.includes('target doctor --json|--text [--target <path>]'));
   assert.ok(help.stdout.includes('target profile --json|--text [--target <path>]'));
+  assert.ok(help.stdout.includes('target memory --preview|--json|--text [--target <path>]'));
   assert.ok(help.stdout.includes('target metadata --plan|--check|--write [--profile default] [--policy <path>] [--adopt-existing] [--force] [--target <path>]'));
   assert.ok(help.stdout.includes('target manifest --check-drift|--init|--refresh [--dry-run|--write] [--target <path>]'));
   assert.ok(help.stdout.includes('work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>'));
@@ -3177,6 +3226,7 @@ assert.ok(agents.includes('node cli/agent-onboard.js target runtime --check'));
   assert.ok(agents.includes('node cli/agent-onboard.js release --post-publish-handoff'));
   assert.ok(agents.includes('node cli/agent-onboard.js release --published-acceptance'));
   assert.ok(agents.includes('node cli/agent-onboard.js release --real-target-trial'));
+  assert.ok(agents.includes('node cli/agent-onboard.js target memory --preview'));
   assert.ok(agents.includes('node cli/agent-onboard.js target onboarding --plan'));
   assert.ok(agents.includes('node cli/agent-onboard.js target onboarding --fixture'));
   assert.ok(agents.includes('node cli/agent-onboard.js target onboarding --trial'));

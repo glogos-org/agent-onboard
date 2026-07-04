@@ -27,6 +27,7 @@ agent-onboard create --dry-run
 - agent-onboard quickstart --text
 - agent-onboard commands --text
 - agent-onboard target doctor --text
+- agent-onboard target memory --text
 - agent-onboard target onboarding --plan
 - agent-onboard work-items --next --text
 - agent-onboard release --source-manifest
@@ -50,4 +51,4 @@ First-read order:
 
 Source of truth order for agents: follow the First-read order above before raw evidence/source files.
 
-Use `agent-onboard discovery --llms` to print this AI-readable entrypoint from either the source repository or an installed package.
+Use `agent-onboard discovery --llms` to print this AI-readable entrypoint from either the source repository or an installed package. Use `agent-onboard target memory --text` for a metadata-only target memory surface preview before reading raw repo instruction files.

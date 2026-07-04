@@ -49,6 +49,8 @@ node cli/agent-onboard.js quickstart --json
 node cli/agent-onboard.js discovery --llms
 node cli/agent-onboard.js discovery --text
 node cli/agent-onboard.js discovery --json
+node cli/agent-onboard.js target memory --text
+node cli/agent-onboard.js target memory --preview
 node cli/agent-onboard.js commands --text
 node cli/agent-onboard.js commands --json
 ```
@@ -420,3 +422,8 @@ Use `node cli/agent-onboard.js create --dry-run`, `node cli/agent-onboard.js cre
 ## Public AI discovery product surface
 
 Use `node cli/agent-onboard.js discovery --llms`, `node cli/agent-onboard.js discovery --text`, or `node cli/agent-onboard.js discovery --json` when a new agent needs the compact AI-readable public entrypoint before selecting a workflow. Discovery is read-only: it may print the packaged/source AI discovery catalog and llms-style entrypoint, but it must not scan target repositories, create runtime state, validate arbitrary target configs, install dependencies, run managed project commands, publish, mutate Git, or perform network calls.
+
+
+## Public target memory descriptor product surface
+
+Use `node cli/agent-onboard.js target memory --preview`, `node cli/agent-onboard.js target memory --json`, or `node cli/agent-onboard.js target memory --text` when a new agent needs a bounded repo-memory descriptor before reading raw instruction/state files. Target memory is read-only and metadata-only: it may probe known root paths for presence/kind/authority grouping, but it must not import file contents, copy target AI memory, scan arbitrary private paths, write files, install dependencies, run managed project commands, publish, mutate Git, or perform network calls.

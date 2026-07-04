@@ -225,6 +225,8 @@ function quickTasks() {
     cliTask('target doctor text', ['target', 'doctor', '--text'], expectTextIncludes(['agent-onboard target doctor', 'Readiness:', 'Writes performed: false'])),
     cliTask('target profile', ['target', 'profile', '--json'], expectStatusOk),
     cliTask('target profile text', ['target', 'profile', '--text'], expectTextIncludes(['agent-onboard target profile', 'Package managers:', 'Writes performed: false'])),
+    cliTask('target memory', ['target', 'memory', '--preview'], expectStatusOk),
+    cliTask('target memory text', ['target', 'memory', '--text'], expectTextIncludes(['agent-onboard target memory', 'metadata-only preview', 'Writes performed: false'])),
     cliTask('target repair plan', ['target', 'repair', '--plan'], expectStatusOk),
     cliTask('work-items schema through runtime service', ['work-items', '--schema'], expectStatusOk),
     cliTask('work-items template through runtime service', ['work-items', '--template'], expectStatusOk),

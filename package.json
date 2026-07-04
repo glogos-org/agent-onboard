@@ -1,6 +1,6 @@
 {
   "name": "agent-onboard",
-  "version": "0.0.116",
+  "version": "0.0.117",
   "description": "CLI for onboarding and managing target repositories.",
   "license": "Apache-2.0",
   "author": "Thanh Le <vnlemanhthanh@gmail.com>",
@@ -326,7 +326,14 @@
     "create-dry-run",
     "npm-create",
     "create-agent-onboard-dry-run",
-    "read-only-create-preview"
+    "read-only-create-preview",
+    "target-memory",
+    "memory-descriptor",
+    "repo-memory",
+    "ai-memory",
+    "memory-surface",
+    "target-memory-preview",
+    "read-only-memory-preview"
   ],
   "type": "commonjs",
   "engines": {
