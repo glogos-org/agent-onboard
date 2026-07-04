@@ -26,6 +26,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-core-command-adapter-extraction-json-da3b0b54"
     },
     {
+      "file_path": ".agent-onboard/metadata-policy.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-metadata-policy-json-fbba7f6e"
+    },
+    {
       "file_path": ".agent-onboard/modular-runtime-package-inclusion-plan.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-modular-runtime-package-inclusion-plan-json-f5289e97"
     },
@@ -174,12 +178,20 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-work-items-runtime-service-partition-seed-json-a5319c9c"
     },
     {
+      "file_path": ".editorconfig",
+      "file_urn": "urn:agent-onboard:file:editorconfig-0947e272"
+    },
+    {
       "file_path": ".gitattributes",
       "file_urn": "urn:agent-onboard:file:gitattributes-618cd5b8"
     },
     {
       "file_path": ".gitignore",
       "file_urn": "urn:agent-onboard:file:gitignore-bc37d034"
+    },
+    {
+      "file_path": ".prettierrc.json",
+      "file_urn": "urn:agent-onboard:file:prettierrc-json-979a4a52"
     },
     {
       "file_path": "AGENTS.md",
@@ -282,6 +294,10 @@
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-core-services-config-guard-service-js-c3149e58"
     },
     {
+      "file_path": "cli/agent_onboard/domains/core/services/ni-uri-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-core-services-ni-uri-service-js-a57bcf9f"
+    },
+    {
       "file_path": "cli/agent_onboard/domains/package/index.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-index-js-d556ab24"
     },
@@ -316,6 +332,10 @@
     {
       "file_path": "cli/agent_onboard/domains/target/services/target-doctor-service.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-doctor-service-js-4b8bacad"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/target/services/target-manifest-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-manifest-service-js-ba35955e"
     },
     {
       "file_path": "cli/agent_onboard/domains/target/services/target-metadata-service.js",

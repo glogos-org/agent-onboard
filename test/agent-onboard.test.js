@@ -36,6 +36,7 @@ const EXPECTED_PACK_FILES = [
   'cli/agent_onboard/domains/architecture/static-catalog.js',
   'cli/agent_onboard/domains/core/index.js',
   'cli/agent_onboard/domains/core/services/config-guard-service.js',
+  'cli/agent_onboard/domains/core/services/ni-uri-service.js',
   'cli/agent_onboard/domains/package/index.js',
   'cli/agent_onboard/domains/package/services/installed-first-read-contract.js',
   'cli/agent_onboard/domains/package/services/package-coordinate-service.js',
@@ -45,6 +46,7 @@ const EXPECTED_PACK_FILES = [
   'cli/agent_onboard/domains/service-partitions.js',
   'cli/agent_onboard/domains/target/services/target-constants.js',
   'cli/agent_onboard/domains/target/services/target-doctor-service.js',
+  'cli/agent_onboard/domains/target/services/target-manifest-service.js',
   'cli/agent_onboard/domains/target/services/target-metadata-service.js',
   'cli/agent_onboard/domains/target/services/target-onboarding-service.js',
   'cli/agent_onboard/domains/target/services/target-profile-service.js',
@@ -1236,6 +1238,56 @@ fullSourceTest('target metadata write respects target policy and preserves targe
   assert.strictEqual(authorityMap.authorities[0].urn, 'urn:pilot:source-of-truth');
   assert.strictEqual(authorityMap.metadata_policy.authority_semantics, 'target_owned');
   assert.ok(authorityMap.file_urns.some((entry) => entry.file_path === 'manifest.json' && entry.file_urn.startsWith('urn:pilot:file:manifest-json-')));
+});
+
+
+fullSourceTest('target manifest initializes, detects drift, and refreshes content-addressed file ids', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'agent-onboard-target-manifest-'));
+  fs.mkdirSync(path.join(dir, 'src'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ name: 'manifest-fixture' }, null, 2) + '\n');
+  fs.writeFileSync(path.join(dir, 'src', 'index.js'), "console.log('one');\n");
+  fs.mkdirSync(path.join(dir, 'node_modules', 'ignored'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'node_modules', 'ignored', 'file.js'), 'ignored\n');
+
+  const missing = readJsonFailure(run(['target', 'manifest', '--check-drift', '--target', dir]));
+  assert.strictEqual(missing.schema, 'agent-onboard-target-manifest-drift-check-result-001');
+  assert.strictEqual(missing.status, 'error');
+  assert.strictEqual(missing.manifest_exists, false);
+  assert.strictEqual(missing.drift_detected, true);
+
+  const dryRun = readJsonOutput(run(['target', 'manifest', '--init', '--target', dir, '--dry-run']));
+  assert.strictEqual(dryRun.status, 'ok');
+  assert.strictEqual(dryRun.mode, 'dry-run');
+  assert.strictEqual(dryRun.manifest_written, false);
+  assert.ok(dryRun.manifest_preview.entries.some((entry) => entry.file_path === 'src/index.js'));
+  assert.ok(dryRun.manifest_preview.entries.every((entry) => entry.file_id.startsWith('ni:///sha-256;')));
+  assert.ok(dryRun.manifest_preview.entries.every((entry) => !Object.prototype.hasOwnProperty.call(entry, 'sha256')));
+  assert.ok(dryRun.manifest_preview.entries.every((entry) => !entry.file_path.startsWith('node_modules/')));
+
+  const init = readJsonOutput(run(['target', 'manifest', '--init', '--target', dir, '--write']));
+  assert.strictEqual(init.status, 'ok');
+  assert.strictEqual(init.manifest_written, true);
+  const manifestPath = path.join(dir, '.agent-onboard', 'target-manifest.json');
+  assert.ok(fs.existsSync(manifestPath));
+
+  const clean = readJsonOutput(run(['target', 'manifest', '--check-drift', '--target', dir]));
+  assert.strictEqual(clean.status, 'ok');
+  assert.strictEqual(clean.drift_detected, false);
+
+  fs.writeFileSync(path.join(dir, 'src', 'index.js'), "console.log('two');\n");
+  const drift = readJsonFailure(run(['target', 'manifest', '--check-drift', '--target', dir]));
+  assert.strictEqual(drift.status, 'error');
+  assert.strictEqual(drift.drift_detected, true);
+  assert.ok(drift.diff.changed_entries.some((entry) => entry.file_path === 'src/index.js'));
+
+  const refresh = readJsonOutput(run(['target', 'manifest', '--refresh', '--target', dir, '--write']));
+  assert.strictEqual(refresh.status, 'ok');
+  assert.strictEqual(refresh.manifest_written, true);
+  assert.strictEqual(refresh.drift_after_write, false);
+
+  const cleanAgain = readJsonOutput(run(['target', 'manifest', '--check-drift', '--target', dir]));
+  assert.strictEqual(cleanAgain.status, 'ok');
+  assert.strictEqual(cleanAgain.drift_detected, false);
 });
 
 fullSourceTest('source repo target metadata surface validates without package expansion', () => {
@@ -2876,6 +2928,7 @@ fullSourceTest('full source block line 2323', () => {
   assert.ok(help.stdout.includes('target doctor --json|--text [--target <path>]'));
   assert.ok(help.stdout.includes('target profile --json|--text [--target <path>]'));
   assert.ok(help.stdout.includes('target metadata --plan|--check|--write [--profile default] [--policy <path>] [--adopt-existing] [--force] [--target <path>]'));
+  assert.ok(help.stdout.includes('target manifest --check-drift|--init|--refresh [--dry-run|--write] [--target <path>]'));
   assert.ok(help.stdout.includes('work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>'));
   assert.ok(help.stdout.includes('work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>'));
   assert.ok(help.stdout.includes('architecture --map|--router|--facades|--check'));

@@ -38,7 +38,8 @@
       ".git",
       "dist",
       "build",
-      "coverage"
+      "coverage",
+      "target-pilot"
     ]
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "agent-onboard",
-  "version": "0.0.108",
+  "version": "0.0.109",
   "description": "CLI for onboarding and managing target repositories.",
   "license": "Apache-2.0",
   "author": "Thanh Le <vnlemanhthanh@gmail.com>",
@@ -341,6 +341,7 @@
     "cli/agent_onboard/domains/architecture/static-catalog.js",
     "cli/agent_onboard/domains/core/index.js",
     "cli/agent_onboard/domains/core/services/config-guard-service.js",
+    "cli/agent_onboard/domains/core/services/ni-uri-service.js",
     "cli/agent_onboard/domains/package/index.js",
     "cli/agent_onboard/domains/package/services/installed-first-read-contract.js",
     "cli/agent_onboard/domains/package/services/package-coordinate-service.js",
@@ -350,6 +351,7 @@
     "cli/agent_onboard/domains/service-partitions.js",
     "cli/agent_onboard/domains/target/services/target-constants.js",
     "cli/agent_onboard/domains/target/services/target-doctor-service.js",
+    "cli/agent_onboard/domains/target/services/target-manifest-service.js",
     "cli/agent_onboard/domains/target/services/target-metadata-service.js",
     "cli/agent_onboard/domains/target/services/target-onboarding-service.js",
     "cli/agent_onboard/domains/target/services/target-profile-service.js",

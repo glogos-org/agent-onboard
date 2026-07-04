@@ -1,0 +1,5 @@
+{
+  "exclude_path_prefixes": [
+    "target-pilot"
+  ]
+}

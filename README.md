@@ -30,6 +30,8 @@ npx agent-onboard target profile --text
 npx agent-onboard target metadata --plan
 npx agent-onboard target metadata --check
 npx agent-onboard target metadata --write
+npx agent-onboard target manifest --init --dry-run
+npx agent-onboard target manifest --check-drift
 ```
 
 Plan a repair for missing canonical onboarding files without overwriting existing files:
@@ -118,6 +120,9 @@ npx agent-onboard target doctor --text
 npx agent-onboard target profile --json
 npx agent-onboard target profile --text
 npx agent-onboard target repair --plan
+npx agent-onboard target manifest --init --dry-run
+npx agent-onboard target manifest --check-drift
+npx agent-onboard target manifest --refresh --dry-run
 npx agent-onboard target repair --write
 npx agent-onboard target metadata --plan
 npx agent-onboard target metadata --check
@@ -358,6 +363,36 @@ npx agent-onboard target metadata --write --adopt-existing
 ```
 
 `target metadata` keeps a strict boundary: agent-onboard owns mechanics, while the target repo owns semantics. The universal engine computes stable `file_id` values with `ni:///sha-256;...`, generates stable `file_urn` values, scans the file tree, and validates portable manifest/authority invariants. A target policy can override `manifest_schema`, `authority_map_schema`, `urn_namespace`, include/exclude rules, whether control state is included, and whether `manifest.json` appears in `authority-map.json`. `target metadata --write` refuses to overwrite existing non-identical generated metadata files unless `--force` or `--adopt-existing` is supplied. Existing `SOURCE_OF_TRUTH.md` files are non-destructive by default: agent-onboard only creates a missing file or updates its own `<!-- BEGIN AOB METADATA -->` block; target-owned prose is not rewritten. Markdown administrative metadata belongs in leading HTML comment headers or registry metadata, not visible YAML front matter. Work-item semantics remain delegated to `agent-onboard`; target repos do not need to grow their own workflow engine.
+
+## Public target manifest drift guard
+
+Freeze a target repository content manifest without writing files:
+
+```sh
+npx agent-onboard target manifest --init --target . --dry-run
+```
+
+Write the initial drift baseline after the target owner authorizes the `.agent-onboard/target-manifest.json` state file:
+
+```sh
+npx agent-onboard target manifest --init --target . --write
+```
+
+Check whether the target file tree has drifted from that baseline:
+
+```sh
+npx agent-onboard target manifest --check-drift --target .
+```
+
+Refresh the baseline after reviewing intentional changes:
+
+```sh
+npx agent-onboard target manifest --refresh --target . --dry-run
+npx agent-onboard target manifest --refresh --target . --write
+```
+
+`target manifest` is a content-addressed drift guard for target repositories. It writes only `.agent-onboard/target-manifest.json` when `--write` is explicit, excludes common build/dependency/cache directories, records entries as `file_path`, `bytes`, and `file_id`, and uses `ni:///sha-256;...` identifiers without exposing raw `sha256`, legacy `path`, `urn`, or `ni` entry fields.
+
 
 ## Public release verification
 
@@ -1053,3 +1088,5 @@ The public line admits the `release_package` domain service partition under `cli
 ## Public core config guard service extraction
 
 The public line extracts `guard --plan` and `guard --check-boundary` into the packaged core config guard service at `cli/agent_onboard/domains/core/services/config-guard-service.js`. The guard remains read-only, keeps the same target config boundary contract, and preserves existing guard JSON outputs while `cli/agent-onboard.js` stays focused on wiring and dispatch.
+
+The current release adds the public target manifest drift guard: `target manifest --init|--check-drift|--refresh` creates and validates `.agent-onboard/target-manifest.json` with content-addressed `file_id` entries.

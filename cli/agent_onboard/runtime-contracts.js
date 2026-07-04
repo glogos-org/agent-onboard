@@ -99,6 +99,7 @@ const RUNTIME_ADAPTER_GROUP = Object.freeze({
 const TARGET_COMMAND = Object.freeze({
   doctor: 'doctor',
   metadata: 'metadata',
+  manifest: 'manifest',
   profile: 'profile',
   repair: 'repair',
   runtime: 'runtime',
@@ -156,6 +157,21 @@ const TARGET_METADATA_COMMAND = Object.freeze({
   })
 });
 
+
+const TARGET_MANIFEST_COMMAND = Object.freeze({
+  help: 'agent-onboard target manifest --check-drift|--init|--refresh [--dry-run|--write] [--target <path>]',
+  mode: Object.freeze({
+    checkDrift: '--check-drift',
+    init: '--init',
+    refresh: '--refresh',
+    dryRun: '--dry-run',
+    write: '--write'
+  }),
+  flag: Object.freeze({
+    target: TARGET_OPTION.target
+  })
+});
+
 const WORK_ITEMS_USABILITY_HELP_LINES = Object.freeze([
   'agent-onboard work-items --summary [.agent-onboard/work-items.json] [--text]',
   'agent-onboard work-items --next [.agent-onboard/work-items.json] [--text]',
@@ -177,6 +193,7 @@ const PRODUCT_HELP_LINES = Object.freeze([
   TARGET_PROFILE_COMMAND.help,
   TARGET_REPAIR_COMMAND.help,
   TARGET_METADATA_COMMAND.help,
+  TARGET_MANIFEST_COMMAND.help,
   'agent-onboard target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]',
   'agent-onboard target bootstrap --dry-run|--write [--force]',
   'agent-onboard target-instance takeover --dry-run|--write [--force]',
@@ -218,6 +235,7 @@ const PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES = Object.freeze([
   'cli/agent_onboard/domains/architecture/static-catalog.js',
   'cli/agent_onboard/domains/core/index.js',
   'cli/agent_onboard/domains/core/services/config-guard-service.js',
+  'cli/agent_onboard/domains/core/services/ni-uri-service.js',
   'cli/agent_onboard/domains/package/index.js',
   'cli/agent_onboard/domains/package/services/installed-first-read-contract.js',
   'cli/agent_onboard/domains/package/services/package-coordinate-service.js',
@@ -227,6 +245,7 @@ const PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES = Object.freeze([
   'cli/agent_onboard/domains/service-partitions.js',
   'cli/agent_onboard/domains/target/services/target-constants.js',
   'cli/agent_onboard/domains/target/services/target-doctor-service.js',
+  'cli/agent_onboard/domains/target/services/target-manifest-service.js',
   'cli/agent_onboard/domains/target/services/target-metadata-service.js',
   'cli/agent_onboard/domains/target/services/target-onboarding-service.js',
   'cli/agent_onboard/domains/target/services/target-profile-service.js',
@@ -271,6 +290,7 @@ module.exports = Object.freeze({
   TARGET_CONFIG_FILE,
   TARGET_DOCTOR_COMMAND,
   TARGET_METADATA_COMMAND,
+  TARGET_MANIFEST_COMMAND,
   TARGET_OPTION,
   TARGET_PROFILE_COMMAND,
   TARGET_REPAIR_COMMAND,

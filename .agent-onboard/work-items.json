@@ -87,18 +87,18 @@
       "title": "Public CLI runtime de-monolith milestone",
       "status": "closed"
     },
-      {
-        "id": "P1S3M4",
-        "stage_id": "P1S3",
-        "title": "Public target-repo product refactor milestone",
-        "status": "closed"
-      },
-      {
-        "id": "P1S3M5",
-        "stage_id": "P1S3",
-        "title": "Public target policy adapter milestone",
-        "status": "open"
-      }
+    {
+      "id": "P1S3M4",
+      "stage_id": "P1S3",
+      "title": "Public target-repo product refactor milestone",
+      "status": "closed"
+    },
+    {
+      "id": "P1S3M5",
+      "stage_id": "P1S3",
+      "title": "Public target policy adapter milestone",
+      "status": "open"
+    }
   ],
   "work_items": [
     {
@@ -4195,6 +4195,56 @@
           "npm run test:full",
           "cmd.exe /d /s /c npm pack --dry-run --json",
           "git diff --check"
+        ],
+        "checks_not_run": [
+          "npm publish --access public"
+        ],
+        "known_non_pass": []
+      }
+    },
+    {
+      "id": "P1S3M5W2",
+      "milestone_id": "P1S3M5",
+      "title": "Public target manifest drift guard gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-04T12:00:00.000Z"
+      },
+      "closure": {
+        "actor": "gpt-5.5-thinking",
+        "closed_at": "2026-07-04T12:04:30.000Z",
+        "summary": "Closed by admitting a public target manifest drift guard: a reusable ni URI service, a target manifest runtime service, and the target manifest command family for init, drift-check, and refresh workflows using content-addressed file_id entries without raw sha256/path/urn fields.",
+        "changed_files": [
+          ".agent-onboard/work-items.json",
+          "README.md",
+          "authority-map.json",
+          "manifest.json",
+          "package.json",
+          "cli/agent_onboard/domains/core/services/ni-uri-service.js",
+          "cli/agent_onboard/domains/target/services/target-manifest-service.js",
+          "cli/agent_onboard/domains/target/services/target-service.js",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/runtime-contracts.js",
+          "test/agent-onboard.test.js"
+        ],
+        "checks_run": [
+          "node -c cli/agent_onboard/domains/core/services/ni-uri-service.js",
+          "node -c cli/agent_onboard/domains/target/services/target-manifest-service.js",
+          "node -c cli/agent_onboard/domains/target/services/target-service.js",
+          "node -c cli/agent_onboard/runtime-composer.js",
+          "node -c cli/agent_onboard/runtime-contracts.js",
+          "node cli/agent-onboard.js target manifest --init --target <tmp> --dry-run",
+          "node cli/agent-onboard.js target manifest --init --target <tmp> --write",
+          "node cli/agent-onboard.js target manifest --check-drift --target <tmp>",
+          "node test/agent-onboard.test.js --shard=33/100",
+          "node cli/agent-onboard.js target metadata --write --force --target .",
+          "npm test",
+          "node cli/agent-onboard.js target metadata --check --target .",
+          "node cli/agent-onboard.js release --version-sprawl-check",
+          "node cli/agent-onboard.js release --check",
+          "npm run test:full",
+          "npm run test:all"
         ],
         "checks_not_run": [
           "npm publish --access public"
