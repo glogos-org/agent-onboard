@@ -53,6 +53,8 @@ node cli/agent-onboard.js target memory --text
 node cli/agent-onboard.js target memory --preview
 node cli/agent-onboard.js issue --classify-dry-run --text
 node cli/agent-onboard.js contributor --admission-dry-run --text
+node cli/agent-onboard.js check --plan --text
+node cli/agent-onboard.js check --fast --text
 node cli/agent-onboard.js commands --text
 node cli/agent-onboard.js commands --json
 ```
@@ -126,6 +128,7 @@ node cli/agent-onboard.js target runtime --check
 Validate the public release contract and source/package surface before any package publish handoff:
 
 ```sh
+node cli/agent-onboard.js check --fast --json
 node cli/agent-onboard.js release --check
 ```
 

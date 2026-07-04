@@ -18,6 +18,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-authority-path-json-9c1fc126"
     },
     {
+      "file_path": ".agent-onboard/check-plan-fast-runner-product-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-check-plan-fast-runner-product-gate-json-994f46b2"
+    },
+    {
       "file_path": ".agent-onboard/cli-runtime-de-monolith-planning.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-cli-runtime-de-monolith-planning-json-4876c2d0"
     },

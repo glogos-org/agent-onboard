@@ -43,6 +43,7 @@ const DISCOVERY_COMMAND = 'discovery';
 const CREATE_COMMAND = 'create';
 const ISSUE_COMMAND = 'issue';
 const CONTRIBUTOR_COMMAND = 'contributor';
+const CHECK_COMMAND = 'check';
 
 process.stdout.on('error', (error) => {
   if (error && error.code === 'EPIPE') process.exit(0);
@@ -154,7 +155,7 @@ function commandSurfaceCatalog() {
     purpose: 'machine-readable and human-readable catalog of the packaged public command surface',
     top_level_commands: ROUTER_COMMAND_ORDER.includes(COMMANDS_COMMAND) ? ROUTER_COMMAND_ORDER.slice() : [...ROUTER_COMMAND_ORDER.slice(0, 3), COMMANDS_COMMAND, GUIDE_COMMAND, QUICKSTART_COMMAND, DISCOVERY_COMMAND, ...ROUTER_COMMAND_ORDER.slice(3)],
     top_level_aliases: Object.assign({}, TOP_LEVEL_COMMAND_ALIAS),
-    runtime_command_groups: Object.fromEntries(Object.entries(RUNTIME_COMMAND_GROUP).map(([key, value]) => [key, key === 'core' ? Array.from(new Set([...value, COMMANDS_COMMAND, GUIDE_COMMAND, QUICKSTART_COMMAND, DISCOVERY_COMMAND, CREATE_COMMAND, ISSUE_COMMAND, CONTRIBUTOR_COMMAND])) : value.slice()])),
+    runtime_command_groups: Object.fromEntries(Object.entries(RUNTIME_COMMAND_GROUP).map(([key, value]) => [key, key === 'core' ? Array.from(new Set([...value, COMMANDS_COMMAND, GUIDE_COMMAND, QUICKSTART_COMMAND, DISCOVERY_COMMAND, CREATE_COMMAND, ISSUE_COMMAND, CONTRIBUTOR_COMMAND, CHECK_COMMAND])) : value.slice()])),
     help_lines: helpLines,
     help_groups: groupCommandHelpLines(helpLines),
     command_lines: helpLines.map((line) => ({
@@ -170,6 +171,8 @@ function commandSurfaceCatalog() {
       'agent-onboard create --dry-run',
       'agent-onboard issue --classify-dry-run --text',
       'agent-onboard contributor --admission-dry-run --text',
+      'agent-onboard check --plan --text',
+      'agent-onboard check --fast --text',
       'agent-onboard status',
       'agent-onboard target doctor --text',
       'agent-onboard target memory --text',
@@ -238,6 +241,7 @@ function operatorGuideCatalog() {
           'agent-onboard create --dry-run',
           'agent-onboard issue --classify-dry-run --text',
           'agent-onboard contributor --admission-dry-run --text',
+          'agent-onboard check --plan --text',
           'agent-onboard authority --first-read',
           'agent-onboard work-items --next --text'
         ],
@@ -280,6 +284,7 @@ function operatorGuideCatalog() {
           'agent-onboard release --source-manifest',
           'agent-onboard release --source-manifest-check',
           'agent-onboard release --surface-check',
+          'agent-onboard check --fast --text',
           'agent-onboard release --check'
         ],
         writes_files: false,
@@ -471,6 +476,8 @@ function discoveryStableCommands() {
     'agent-onboard create --dry-run',
     'agent-onboard issue --classify-dry-run --text',
     'agent-onboard contributor --admission-dry-run --text',
+    'agent-onboard check --plan --text',
+    'agent-onboard check --fast --text',
     'agent-onboard guide --text',
     'agent-onboard quickstart --text',
     'agent-onboard commands --text',
@@ -1031,6 +1038,187 @@ const contributorAdmissionService = Object.freeze({
   input: contributorAdmissionValue,
   preview: contributorAdmissionPreview,
   text: contributorAdmissionText
+});
+
+
+const CHECK_FAST_REGISTRY = Object.freeze([
+  Object.freeze({ id: 'command-surface-catalog', command: 'agent-onboard commands --json', scope: 'product_discovery', slow: false }),
+  Object.freeze({ id: 'operator-guide', command: 'agent-onboard guide --json', scope: 'operator_orientation', slow: false }),
+  Object.freeze({ id: 'quickstart', command: 'agent-onboard quickstart --json', scope: 'first_run_recipe', slow: false }),
+  Object.freeze({ id: 'ai-discovery', command: 'agent-onboard discovery --json', scope: 'ai_readable_entrypoint', slow: false }),
+  Object.freeze({ id: 'create-dry-run', command: 'agent-onboard create --dry-run', scope: 'consumer_create_preview', slow: false }),
+  Object.freeze({ id: 'issue-intake-dry-run', command: 'agent-onboard issue --classify-dry-run', scope: 'external_issue_preview', slow: false }),
+  Object.freeze({ id: 'contributor-admission-dry-run', command: 'agent-onboard contributor --admission-dry-run', scope: 'contributor_preview', slow: false }),
+  Object.freeze({ id: 'target-memory-preview', command: 'agent-onboard target memory --preview', scope: 'target_memory_descriptor', slow: false }),
+  Object.freeze({ id: 'release-source-manifest-check', command: 'agent-onboard release --source-manifest-check', scope: 'package_source_manifest', slow: false }),
+  Object.freeze({ id: 'release-surface-check', command: 'agent-onboard release --surface-check', scope: 'package_surface', slow: false }),
+  Object.freeze({ id: 'release-check', command: 'agent-onboard release --check', scope: 'release_integrity', slow: false })
+]);
+
+const CHECK_FAST_OMITTED_SLOW = Object.freeze([
+  Object.freeze({ id: 'npm-test', command: 'npm test', reason: 'external test runner; keep in source/CI, not in packaged in-process fast runner' }),
+  Object.freeze({ id: 'npm-pack-dry-run', command: 'npm pack --dry-run --json', reason: 'package manager execution is intentionally outside check --fast' }),
+  Object.freeze({ id: 'git-diff-check', command: 'git diff --check', reason: 'requires Git working tree; ZIP/npm package contexts may not have .git' }),
+  Object.freeze({ id: 'publish', command: 'npm publish --access public', reason: 'release registry mutation is never run by check --fast' })
+]);
+
+function checkPlanCatalog() {
+  return {
+    schema: 'agent-onboard-public-check-plan-001',
+    status: 'ok',
+    package_name: PACKAGE_NAME,
+    version: VERSION,
+    release_line: RELEASE_LINE,
+    command: 'agent-onboard check --plan',
+    purpose: 'deterministic public fast-check plan for packaged product surfaces and release integrity probes',
+    plan_mode: 'default-fast',
+    runner_type: 'in_process_public_runtime_runner',
+    recursive_make_spawn: false,
+    deterministic_order: true,
+    check_count: CHECK_FAST_REGISTRY.length,
+    slow_check_count: CHECK_FAST_OMITTED_SLOW.length,
+    runnable_command_count: CHECK_FAST_REGISTRY.length,
+    checks: CHECK_FAST_REGISTRY.map((entry, index) => Object.freeze({
+      ordinal: index + 1,
+      id: entry.id,
+      command: entry.command,
+      scope: entry.scope,
+      slow: entry.slow,
+      writes_files: false,
+      network: false,
+      git_mutation: false,
+      publishes_package: false
+    })),
+    omitted_slow_checks: CHECK_FAST_OMITTED_SLOW.map((entry) => Object.freeze(Object.assign({}, entry))),
+    boundary: {
+      writes_files: false,
+      writes_target_repository_state: false,
+      creates_agent_onboard_runtime_state: false,
+      installs_dependencies: false,
+      runs_package_manager: false,
+      runs_shell: false,
+      child_process_spawn: false,
+      runs_build_test_deploy: false,
+      runs_managed_project_commands: false,
+      publishes_package: false,
+      mutates_registry: false,
+      git_mutation: false,
+      network: false
+    }
+  };
+}
+
+function checkPlanText(plan = checkPlanCatalog()) {
+  const lines = [
+    `agent-onboard check plan ${plan.version}`,
+    `Mode: ${plan.plan_mode}`,
+    `Runner: ${plan.runner_type}`,
+    `Runnable checks: ${plan.check_count}`,
+    '',
+    'Checks:'
+  ];
+  for (const item of plan.checks) lines.push(`- ${item.id}: ${item.command}`);
+  lines.push('', 'Omitted slow/external checks:');
+  for (const item of plan.omitted_slow_checks) lines.push(`- ${item.id}: ${item.reason}`);
+  lines.push('', 'Boundary: no files, no shell spawn, no npm, no Git, no network, no publish.');
+  lines.push('Use `agent-onboard check --fast --json` to run the in-process fast runner.');
+  return lines.join('\n') + '\n';
+}
+
+function timedCheck(id, command, fn) {
+  const started = Date.now();
+  try {
+    const output = fn();
+    const ok = output && (output.status === 'ok' || output.status === 'pass');
+    return {
+      id,
+      command,
+      status: ok ? 'ok' : 'error',
+      elapsed_ms: Date.now() - started,
+      output_schema: output && output.schema ? output.schema : null,
+      output_status: output && output.status ? output.status : null,
+      errors: output && Array.isArray(output.errors) ? output.errors : []
+    };
+  } catch (error) {
+    return {
+      id,
+      command,
+      status: 'error',
+      elapsed_ms: Date.now() - started,
+      output_schema: null,
+      output_status: null,
+      errors: [error && error.message ? error.message : String(error)]
+    };
+  }
+}
+
+function runCheckFastPlan(root = packageRoot()) {
+  const targetRoot = process.cwd();
+  const runners = Object.freeze({
+    'command-surface-catalog': () => commandSurfaceService.catalog(),
+    'operator-guide': () => operatorGuideService.catalog(),
+    quickstart: () => quickstartService.catalog(),
+    'ai-discovery': () => discoveryService.catalog(),
+    'create-dry-run': () => createDryRunService.catalog(),
+    'issue-intake-dry-run': () => issueIntakeService.classify(issueIntakeService.input(['--classify-dry-run']).input),
+    'contributor-admission-dry-run': () => contributorAdmissionService.preview(contributorAdmissionService.input(['--admission-dry-run']).input),
+    'target-memory-preview': () => targetMemoryService.descriptor(targetRoot),
+    'release-source-manifest-check': () => publicPackageSourceManifestCheck(root),
+    'release-surface-check': () => publicPackageSurfaceCheck(root),
+    'release-check': () => publicReleaseCheck(root)
+  });
+  const started = Date.now();
+  const checks = CHECK_FAST_REGISTRY.map((entry) => timedCheck(entry.id, entry.command, runners[entry.id]));
+  const errors = checks.flatMap((item) => item.status === 'ok' ? [] : item.errors.map((error) => `${item.id}: ${error}`));
+  return {
+    schema: 'agent-onboard-public-check-fast-result-001',
+    status: errors.length === 0 ? 'ok' : 'error',
+    result: errors.length === 0 ? 'pass' : 'fail',
+    package_name: PACKAGE_NAME,
+    version: VERSION,
+    release_line: RELEASE_LINE,
+    command: 'agent-onboard check --fast',
+    plan_mode: 'default-fast',
+    runner_type: 'in_process_public_runtime_runner',
+    package_root: root,
+    target_root: targetRoot,
+    elapsed_ms: Date.now() - started,
+    check_count: checks.length,
+    passed_count: checks.filter((item) => item.status === 'ok').length,
+    failed_count: checks.filter((item) => item.status !== 'ok').length,
+    skipped_slow_check_count: CHECK_FAST_OMITTED_SLOW.length,
+    deterministic_order: true,
+    recursive_make_spawn: false,
+    checks,
+    skipped_slow_checks: CHECK_FAST_OMITTED_SLOW.map((entry) => Object.freeze(Object.assign({}, entry))),
+    boundary: checkPlanCatalog().boundary,
+    errors
+  };
+}
+
+function checkFastText(result = runCheckFastPlan()) {
+  const lines = [
+    `agent-onboard check fast ${result.version}`,
+    `Result: ${result.result}`,
+    `Checks: ${result.passed_count}/${result.check_count} passed`,
+    `Skipped slow/external checks: ${result.skipped_slow_check_count}`,
+    '',
+    'Executed checks:'
+  ];
+  for (const item of result.checks) lines.push(`- ${item.status}: ${item.id} (${item.elapsed_ms}ms)`);
+  if (result.errors.length > 0) {
+    lines.push('', 'Errors:');
+    for (const error of result.errors) lines.push(`- ${error}`);
+  }
+  lines.push('', 'Boundary: no files written, no shell spawn, no npm, no Git mutation, no network, no publish.');
+  return lines.join('\n') + '\n';
+}
+
+const checkPlanFastService = Object.freeze({
+  plan: checkPlanCatalog,
+  planText: checkPlanText,
+  fast: runCheckFastPlan,
+  fastText: checkFastText
 });
 
 const TARGET_MEMORY_SURFACE_CANDIDATES = Object.freeze([
@@ -7650,6 +7838,62 @@ function runContributor(args = []) {
   return 0;
 }
 
+
+function runCheck(args = []) {
+  const hasPlan = args.includes('--plan');
+  const hasFast = args.includes('--fast');
+  const wantsJson = args.includes(OUTPUT_FLAG.json);
+  const wantsText = args.includes(OUTPUT_FLAG.text);
+  const allowed = new Set(['--plan', '--fast', OUTPUT_FLAG.json, OUTPUT_FLAG.text]);
+  const unknown = args.filter((arg) => !allowed.has(arg));
+  if (unknown.length > 0) {
+    json({
+      schema: 'agent-onboard-public-check-plan-fast-error-001',
+      status: 'error',
+      command_family: 'check',
+      message: `check does not support: ${unknown.join(', ')}`,
+      writes_files: false,
+      publishes_package: false
+    });
+    return 1;
+  }
+  if (hasPlan && hasFast) {
+    json({
+      schema: 'agent-onboard-public-check-plan-fast-error-001',
+      status: 'error',
+      command_family: 'check',
+      message: 'check accepts exactly one primary mode: --plan or --fast',
+      writes_files: false,
+      publishes_package: false
+    });
+    return 1;
+  }
+  if (wantsJson && wantsText) {
+    json({
+      schema: 'agent-onboard-public-check-plan-fast-error-001',
+      status: 'error',
+      command_family: 'check',
+      message: 'check accepts either --json or --text, not both',
+      writes_files: false,
+      publishes_package: false
+    });
+    return 1;
+  }
+  const mode = hasFast ? '--fast' : '--plan';
+  const outputText = wantsText || (!wantsJson && mode === '--plan');
+  if (mode === '--plan') {
+    const plan = checkPlanFastService.plan();
+    if (outputText) process.stdout.write(checkPlanFastService.planText(plan));
+    else json(plan);
+    return 0;
+  }
+  const result = checkPlanFastService.fast();
+  if (outputText) process.stdout.write(checkPlanFastService.fastText(result));
+  else json(result);
+  return result.status === 'ok' ? 0 : 1;
+}
+
+
 function runTargetMemory(args) {
   const allowed = [TARGET_MEMORY_COMMAND.mode.preview, TARGET_MEMORY_COMMAND.flag.json, TARGET_MEMORY_COMMAND.flag.text, TARGET_MEMORY_COMMAND.flag.target];
   const targetIndex = args.indexOf(TARGET_MEMORY_COMMAND.flag.target);
@@ -7716,6 +7960,7 @@ const DOMAIN_SERVICE_FACADES = Object.freeze({
     runCreate,
     runIssue,
     runContributor,
+    runCheck,
     runArchitecture
   }),
   authorityService: Object.freeze({
@@ -7756,6 +8001,8 @@ const COMMAND_ROUTE_HANDLERS = Object.freeze({
   [TOP_LEVEL_COMMAND.issue]: DOMAIN_SERVICE_FACADES.coreService.runIssue,
   [CONTRIBUTOR_COMMAND]: DOMAIN_SERVICE_FACADES.coreService.runContributor,
   [TOP_LEVEL_COMMAND.contributor]: DOMAIN_SERVICE_FACADES.coreService.runContributor,
+  [CHECK_COMMAND]: DOMAIN_SERVICE_FACADES.coreService.runCheck,
+  [TOP_LEVEL_COMMAND.check]: DOMAIN_SERVICE_FACADES.coreService.runCheck,
   [TOP_LEVEL_COMMAND.init]: DOMAIN_SERVICE_FACADES.targetService.runInit,
   [TOP_LEVEL_COMMAND.agents]: DOMAIN_SERVICE_FACADES.authorityService.runAgents,
   [TOP_LEVEL_COMMAND.guard]: DOMAIN_SERVICE_FACADES.authorityService.runGuard,

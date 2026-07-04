@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_contributor_admission_dry_run_product_gate';
+const EXPECTED_RELEASE_LINE = 'public_check_plan_fast_runner_product_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -226,7 +226,7 @@ fullSourceTest('public runtime contracts module centralizes command and package 
   assert.strictEqual(contracts.TARGET_PROFILE_COMMAND.flag.target, '--target');
   assert.ok(Object.isFrozen(contracts.TARGET_COMMAND));
   assert.ok(contracts.RUNTIME_CONTRACTS.top_level_commands.includes('target'));
-  assert.deepStrictEqual(contracts.ROUTER_COMMAND_ORDER, ['help', 'version', 'status', 'create', 'issue', 'contributor', 'init', 'agents', 'guard', 'authority', 'architecture', 'release', 'target-config', 'work-items', 'target', 'target-instance']);
+  assert.deepStrictEqual(contracts.ROUTER_COMMAND_ORDER, ['help', 'version', 'status', 'create', 'issue', 'contributor', 'check', 'init', 'agents', 'guard', 'authority', 'architecture', 'release', 'target-config', 'work-items', 'target', 'target-instance']);
   assert.strictEqual(contracts.TOP_LEVEL_COMMAND_ALIAS.helpLong, '--help');
   assert.deepStrictEqual(contracts.RUNTIME_COMMAND_GROUP.target, ['init', 'target-config', 'target', 'target-instance']);
   assert.deepStrictEqual(contracts.RUNTIME_ADAPTER_GROUP.core, ['help', '--help', '-h', 'version', '--version', '-v', 'status']);
@@ -243,13 +243,14 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.strictEqual(output.status, 'ok');
   assert.strictEqual(output.version, EXPECTED_VERSION);
   assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
-  assert.deepStrictEqual(output.top_level_commands, ['help', 'version', 'status', 'commands', 'guide', 'quickstart', 'discovery', 'create', 'issue', 'contributor', 'init', 'agents', 'guard', 'authority', 'architecture', 'release', 'target-config', 'work-items', 'target', 'target-instance']);
+  assert.deepStrictEqual(output.top_level_commands, ['help', 'version', 'status', 'commands', 'guide', 'quickstart', 'discovery', 'create', 'issue', 'contributor', 'check', 'init', 'agents', 'guard', 'authority', 'architecture', 'release', 'target-config', 'work-items', 'target', 'target-instance']);
   assert.ok(output.runtime_command_groups.core.includes('commands'));
   assert.ok(output.runtime_command_groups.core.includes('quickstart'));
   assert.ok(output.runtime_command_groups.core.includes('discovery'));
   assert.ok(output.runtime_command_groups.core.includes('create'));
   assert.ok(output.runtime_command_groups.core.includes('issue'));
   assert.ok(output.runtime_command_groups.core.includes('contributor'));
+  assert.ok(output.runtime_command_groups.core.includes('check'));
   assert.ok(output.help_lines.includes('agent-onboard commands --json|--text'));
   assert.ok(output.help_lines.includes('agent-onboard guide --json|--text'));
   assert.ok(output.help_lines.includes('agent-onboard quickstart --json|--text|--dry-run'));
@@ -257,6 +258,7 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.ok(output.help_lines.includes('agent-onboard create --dry-run|--json|--text'));
   assert.ok(output.help_lines.some((line) => line.startsWith('agent-onboard issue --classify-dry-run|--json|--text')));
   assert.ok(output.help_lines.some((line) => line.startsWith('agent-onboard contributor --admission-dry-run|--json|--text')));
+  assert.ok(output.help_lines.includes('agent-onboard check --plan|--fast [--json|--text]'));
   assert.ok(output.help_lines.includes('agent-onboard target memory --preview|--json|--text [--target <path>]'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard commands --text'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard guide --text'));
@@ -265,6 +267,8 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.ok(output.recommended_first_commands.includes('agent-onboard create --dry-run'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard issue --classify-dry-run --text'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard contributor --admission-dry-run --text'));
+  assert.ok(output.recommended_first_commands.includes('agent-onboard check --plan --text'));
+  assert.ok(output.recommended_first_commands.includes('agent-onboard check --fast --text'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard target memory --text'));
   assert.strictEqual(output.boundary.writes_files, false);
   assert.strictEqual(output.boundary.publishes_package, false);
@@ -279,6 +283,7 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.ok(textResult.stdout.includes('agent-onboard create --dry-run|--json|--text'));
   assert.ok(textResult.stdout.includes('agent-onboard issue --classify-dry-run|--json|--text'));
   assert.ok(textResult.stdout.includes('agent-onboard contributor --admission-dry-run|--json|--text'));
+  assert.ok(textResult.stdout.includes('agent-onboard check --plan|--fast [--json|--text]'));
   assert.ok(textResult.stdout.includes('agent-onboard target memory --preview|--json|--text [--target <path>]'));
 });
 
@@ -295,6 +300,8 @@ fullSourceTest('public discovery is directly usable', () => {
   assert.ok(output.stable_commands.includes('agent-onboard quickstart --text'));
   assert.ok(output.stable_commands.includes('agent-onboard issue --classify-dry-run --text'));
   assert.ok(output.stable_commands.includes('agent-onboard contributor --admission-dry-run --text'));
+  assert.ok(output.stable_commands.includes('agent-onboard check --plan --text'));
+  assert.ok(output.stable_commands.includes('agent-onboard check --fast --text'));
   assert.ok(output.stable_commands.includes('agent-onboard commands --text'));
   assert.strictEqual(output.boundary.writes_files, false);
   assert.strictEqual(output.boundary.network, false);
@@ -373,6 +380,59 @@ fullSourceTest('public contributor admission dry-run is directly usable', () => 
   const refusedOutput = readJsonFailure(refused);
   assert.strictEqual(refused.status, 2);
   assert.strictEqual(refusedOutput.status, 'not_admitted');
+});
+
+
+fullSourceTest('public check plan and fast runner are directly usable', () => {
+  const planResult = run(['check', '--plan', '--json']);
+  const plan = readJsonOutput(planResult);
+  assert.strictEqual(plan.schema, 'agent-onboard-public-check-plan-001');
+  assert.strictEqual(plan.status, 'ok');
+  assert.strictEqual(plan.version, EXPECTED_VERSION);
+  assert.strictEqual(plan.release_line, EXPECTED_RELEASE_LINE);
+  assert.strictEqual(plan.command, 'agent-onboard check --plan');
+  assert.strictEqual(plan.plan_mode, 'default-fast');
+  assert.strictEqual(plan.runner_type, 'in_process_public_runtime_runner');
+  assert.ok(plan.checks.some((item) => item.id === 'release-check'));
+  assert.ok(plan.omitted_slow_checks.some((item) => item.id === 'npm-pack-dry-run'));
+  assert.strictEqual(plan.boundary.writes_files, false);
+  assert.strictEqual(plan.boundary.child_process_spawn, false);
+  assert.strictEqual(plan.boundary.runs_package_manager, false);
+  assert.strictEqual(plan.boundary.network, false);
+
+  const planText = run(['check', '--plan', '--text']);
+  assert.strictEqual(planText.status, 0, planText.stderr || planText.stdout);
+  assert.ok(planText.stdout.includes('agent-onboard check plan'));
+  assert.ok(planText.stdout.includes('release-check'));
+
+  const fastResult = run(['check', '--fast', '--json']);
+  const fast = readJsonOutput(fastResult);
+  assert.strictEqual(fast.schema, 'agent-onboard-public-check-fast-result-001');
+  assert.strictEqual(fast.status, 'ok');
+  assert.strictEqual(fast.result, 'pass');
+  assert.strictEqual(fast.version, EXPECTED_VERSION);
+  assert.strictEqual(fast.release_line, EXPECTED_RELEASE_LINE);
+  assert.strictEqual(fast.command, 'agent-onboard check --fast');
+  assert.strictEqual(fast.failed_count, 0);
+  assert.strictEqual(fast.passed_count, fast.check_count);
+  assert.ok(fast.checks.some((item) => item.id === 'target-memory-preview'));
+  assert.ok(fast.checks.some((item) => item.id === 'release-source-manifest-check'));
+  assert.ok(fast.checks.some((item) => item.id === 'release-check'));
+  assert.strictEqual(fast.boundary.writes_files, false);
+  assert.strictEqual(fast.boundary.child_process_spawn, false);
+  assert.strictEqual(fast.boundary.runs_package_manager, false);
+  assert.strictEqual(fast.boundary.git_mutation, false);
+  assert.strictEqual(fast.boundary.network, false);
+
+  const fastText = run(['check', '--fast', '--text']);
+  assert.strictEqual(fastText.status, 0, fastText.stderr || fastText.stdout);
+  assert.ok(fastText.stdout.includes('agent-onboard check fast'));
+  assert.ok(fastText.stdout.includes('Result: pass'));
+
+  const bad = run(['check', '--plan', '--fast']);
+  const badOutput = readJsonFailure(bad);
+  assert.strictEqual(bad.status, 1);
+  assert.strictEqual(badOutput.status, 'error');
 });
 
 fullSourceTest('public create dry-run is directly usable', () => {
@@ -3221,6 +3281,10 @@ fullSourceTest('full source block line 2233', () => {
   assert.ok(readme.includes('`work-items --next` returns the first open item'));
   assert.ok(readme.includes('`work-items --mine` returns the actor'));
   assert.ok(readme.includes('Use `--text` on target-facing inspection commands'));
+  assert.ok(readme.includes('npx agent-onboard check --plan --text'));
+  assert.ok(readme.includes('npx agent-onboard check --fast --text'));
+  assert.ok(readme.includes('The current release adds the public check plan and fast runner product surface'));
+  assert.ok(readme.includes('without shell spawn, npm, Git, network, file writes, or publish'));
 });
 
 
@@ -3233,6 +3297,7 @@ fullSourceTest('full source block line 2323', () => {
   assert.ok(help.stdout.includes('work-items --mine [.agent-onboard/work-items.json] --actor <actor>'));
   assert.ok(help.stdout.includes('work-items --mine [.agent-onboard/work-items.json] --actor <actor> [--text]'));
   assert.ok(help.stdout.includes('create --dry-run|--json|--text'));
+  assert.ok(help.stdout.includes('check --plan|--fast [--json|--text]'));
   assert.ok(help.stdout.includes('target doctor --json|--text [--target <path>]'));
   assert.ok(help.stdout.includes('target profile --json|--text [--target <path>]'));
   assert.ok(help.stdout.includes('target memory --preview|--json|--text [--target <path>]'));
@@ -3286,6 +3351,8 @@ fullSourceTest('full source block line 2333', () => {
   assert.ok(agents.includes('node cli/agent-onboard.js architecture --check'));
 assert.ok(agents.includes('node cli/agent-onboard.js target runtime --namespace'));
 assert.ok(agents.includes('node cli/agent-onboard.js target runtime --check'));
+  assert.ok(agents.includes('node cli/agent-onboard.js check --plan --text'));
+  assert.ok(agents.includes('node cli/agent-onboard.js check --fast --text'));
   assert.ok(agents.includes('node cli/agent-onboard.js release --check'));
   assert.ok(agents.includes('node cli/agent-onboard.js release --contract'));
   assert.ok(agents.includes('node cli/agent-onboard.js release --fixture'));

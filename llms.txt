@@ -23,6 +23,8 @@ Stable commands:
 - agent-onboard create --dry-run
 - agent-onboard issue --classify-dry-run --text
 - agent-onboard contributor --admission-dry-run --text
+agent-onboard check --plan --text
+agent-onboard check --fast --text
 - agent-onboard discovery --text
 - agent-onboard discovery --json
 - agent-onboard guide --text
