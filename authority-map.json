@@ -46,6 +46,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-create-dry-run-product-gate-json-197ac43b"
     },
     {
+      "file_path": ".agent-onboard/github-action-ci-surface-product-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-github-action-ci-surface-product-gate-json-b4bc0552"
+    },
+    {
       "file_path": ".agent-onboard/issue-intake-dry-run-product-gate.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-issue-intake-dry-run-product-gate-json-322444c2"
     },

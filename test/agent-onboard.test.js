@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_check_plan_fast_runner_product_gate';
+const EXPECTED_RELEASE_LINE = 'public_github_action_ci_surface_product_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -226,7 +226,7 @@ fullSourceTest('public runtime contracts module centralizes command and package 
   assert.strictEqual(contracts.TARGET_PROFILE_COMMAND.flag.target, '--target');
   assert.ok(Object.isFrozen(contracts.TARGET_COMMAND));
   assert.ok(contracts.RUNTIME_CONTRACTS.top_level_commands.includes('target'));
-  assert.deepStrictEqual(contracts.ROUTER_COMMAND_ORDER, ['help', 'version', 'status', 'create', 'issue', 'contributor', 'check', 'init', 'agents', 'guard', 'authority', 'architecture', 'release', 'target-config', 'work-items', 'target', 'target-instance']);
+  assert.deepStrictEqual(contracts.ROUTER_COMMAND_ORDER, ['help', 'version', 'status', 'create', 'issue', 'contributor', 'check', 'ci', 'init', 'agents', 'guard', 'authority', 'architecture', 'release', 'target-config', 'work-items', 'target', 'target-instance']);
   assert.strictEqual(contracts.TOP_LEVEL_COMMAND_ALIAS.helpLong, '--help');
   assert.deepStrictEqual(contracts.RUNTIME_COMMAND_GROUP.target, ['init', 'target-config', 'target', 'target-instance']);
   assert.deepStrictEqual(contracts.RUNTIME_ADAPTER_GROUP.core, ['help', '--help', '-h', 'version', '--version', '-v', 'status']);
@@ -243,7 +243,7 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.strictEqual(output.status, 'ok');
   assert.strictEqual(output.version, EXPECTED_VERSION);
   assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
-  assert.deepStrictEqual(output.top_level_commands, ['help', 'version', 'status', 'commands', 'guide', 'quickstart', 'discovery', 'create', 'issue', 'contributor', 'check', 'init', 'agents', 'guard', 'authority', 'architecture', 'release', 'target-config', 'work-items', 'target', 'target-instance']);
+  assert.deepStrictEqual(output.top_level_commands, ['help', 'version', 'status', 'commands', 'guide', 'quickstart', 'discovery', 'create', 'issue', 'contributor', 'check', 'ci', 'init', 'agents', 'guard', 'authority', 'architecture', 'release', 'target-config', 'work-items', 'target', 'target-instance']);
   assert.ok(output.runtime_command_groups.core.includes('commands'));
   assert.ok(output.runtime_command_groups.core.includes('quickstart'));
   assert.ok(output.runtime_command_groups.core.includes('discovery'));
@@ -251,6 +251,7 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.ok(output.runtime_command_groups.core.includes('issue'));
   assert.ok(output.runtime_command_groups.core.includes('contributor'));
   assert.ok(output.runtime_command_groups.core.includes('check'));
+  assert.ok(output.runtime_command_groups.core.includes('ci'));
   assert.ok(output.help_lines.includes('agent-onboard commands --json|--text'));
   assert.ok(output.help_lines.includes('agent-onboard guide --json|--text'));
   assert.ok(output.help_lines.includes('agent-onboard quickstart --json|--text|--dry-run'));
@@ -259,6 +260,7 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.ok(output.help_lines.some((line) => line.startsWith('agent-onboard issue --classify-dry-run|--json|--text')));
   assert.ok(output.help_lines.some((line) => line.startsWith('agent-onboard contributor --admission-dry-run|--json|--text')));
   assert.ok(output.help_lines.includes('agent-onboard check --plan|--fast [--json|--text]'));
+  assert.ok(output.help_lines.includes('agent-onboard ci --github-action|--json|--text'));
   assert.ok(output.help_lines.includes('agent-onboard target memory --preview|--json|--text [--target <path>]'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard commands --text'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard guide --text'));
@@ -269,6 +271,7 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.ok(output.recommended_first_commands.includes('agent-onboard contributor --admission-dry-run --text'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard check --plan --text'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard check --fast --text'));
+  assert.ok(output.recommended_first_commands.includes('agent-onboard ci --github-action'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard target memory --text'));
   assert.strictEqual(output.boundary.writes_files, false);
   assert.strictEqual(output.boundary.publishes_package, false);
@@ -284,6 +287,7 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.ok(textResult.stdout.includes('agent-onboard issue --classify-dry-run|--json|--text'));
   assert.ok(textResult.stdout.includes('agent-onboard contributor --admission-dry-run|--json|--text'));
   assert.ok(textResult.stdout.includes('agent-onboard check --plan|--fast [--json|--text]'));
+  assert.ok(textResult.stdout.includes('agent-onboard ci --github-action|--json|--text'));
   assert.ok(textResult.stdout.includes('agent-onboard target memory --preview|--json|--text [--target <path>]'));
 });
 
@@ -302,6 +306,7 @@ fullSourceTest('public discovery is directly usable', () => {
   assert.ok(output.stable_commands.includes('agent-onboard contributor --admission-dry-run --text'));
   assert.ok(output.stable_commands.includes('agent-onboard check --plan --text'));
   assert.ok(output.stable_commands.includes('agent-onboard check --fast --text'));
+  assert.ok(output.stable_commands.includes('agent-onboard ci --github-action'));
   assert.ok(output.stable_commands.includes('agent-onboard commands --text'));
   assert.strictEqual(output.boundary.writes_files, false);
   assert.strictEqual(output.boundary.network, false);
@@ -433,6 +438,43 @@ fullSourceTest('public check plan and fast runner are directly usable', () => {
   const badOutput = readJsonFailure(bad);
   assert.strictEqual(bad.status, 1);
   assert.strictEqual(badOutput.status, 'error');
+});
+
+
+fullSourceTest('public CI surface is directly usable', () => {
+  const jsonResult = run(['ci', '--json']);
+  const output = readJsonOutput(jsonResult);
+  assert.strictEqual(output.schema, 'agent-onboard-public-ci-surface-001');
+  assert.strictEqual(output.status, 'ok');
+  assert.strictEqual(output.version, EXPECTED_VERSION);
+  assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
+  assert.strictEqual(output.workflow_path, '.github/workflows/agent-onboard.yml');
+  assert.strictEqual(output.github_action_command, 'agent-onboard ci --github-action');
+  assert.ok(output.recommended_ci_commands.includes(`npx agent-onboard@${EXPECTED_VERSION} check --fast --json`));
+  assert.ok(output.recommended_ci_commands.includes(`npx agent-onboard@${EXPECTED_VERSION} release --check`));
+  assert.strictEqual(output.github_actions.creates_or_updates_workflow, false);
+  assert.strictEqual(output.ci_role.ci_is_authority, false);
+  assert.strictEqual(output.ci_role.ci_can_report_evidence, true);
+  assert.strictEqual(output.ci_role.ci_can_admit_claim, false);
+  assert.strictEqual(output.ci_role.ci_can_create_canonical_work_item, false);
+  assert.strictEqual(output.ci_role.ci_can_write_ledger, false);
+  assert.strictEqual(output.boundary.writes_files, false);
+  assert.strictEqual(output.boundary.github_api_dependency_now, false);
+  assert.strictEqual(output.boundary.runs_npm_now, false);
+  assert.strictEqual(output.boundary.network_now, false);
+
+  const textResult = run(['ci', '--text']);
+  assert.strictEqual(textResult.status, 0, textResult.stderr || textResult.stdout);
+  assert.ok(textResult.stdout.includes('agent-onboard CI surface'));
+  assert.ok(textResult.stdout.includes('CI is authority: false'));
+  assert.ok(textResult.stdout.includes('agent-onboard ci --github-action'));
+
+  const yamlResult = run(['ci', '--github-action']);
+  assert.strictEqual(yamlResult.status, 0, yamlResult.stderr || yamlResult.stdout);
+  assert.ok(yamlResult.stdout.includes('name: Agent Onboard'));
+  assert.ok(yamlResult.stdout.includes('uses: actions/checkout@v4'));
+  assert.ok(yamlResult.stdout.includes(`npx agent-onboard@${EXPECTED_VERSION} check --fast --json`));
+  assert.ok(yamlResult.stdout.includes(`npx agent-onboard@${EXPECTED_VERSION} release --check`));
 });
 
 fullSourceTest('public create dry-run is directly usable', () => {
@@ -3283,8 +3325,8 @@ fullSourceTest('full source block line 2233', () => {
   assert.ok(readme.includes('Use `--text` on target-facing inspection commands'));
   assert.ok(readme.includes('npx agent-onboard check --plan --text'));
   assert.ok(readme.includes('npx agent-onboard check --fast --text'));
-  assert.ok(readme.includes('The current release adds the public check plan and fast runner product surface'));
-  assert.ok(readme.includes('without shell spawn, npm, Git, network, file writes, or publish'));
+  assert.ok(readme.includes('The current release adds the public GitHub Action / CI surface product surface'));
+  assert.ok(readme.includes('without creating workflow files, calling GitHub API, running npm, running shell commands, network, Git mutation, file writes, or publish'));
 });
 
 
@@ -3298,6 +3340,7 @@ fullSourceTest('full source block line 2323', () => {
   assert.ok(help.stdout.includes('work-items --mine [.agent-onboard/work-items.json] --actor <actor> [--text]'));
   assert.ok(help.stdout.includes('create --dry-run|--json|--text'));
   assert.ok(help.stdout.includes('check --plan|--fast [--json|--text]'));
+  assert.ok(help.stdout.includes('ci --github-action|--json|--text'));
   assert.ok(help.stdout.includes('target doctor --json|--text [--target <path>]'));
   assert.ok(help.stdout.includes('target profile --json|--text [--target <path>]'));
   assert.ok(help.stdout.includes('target memory --preview|--json|--text [--target <path>]'));

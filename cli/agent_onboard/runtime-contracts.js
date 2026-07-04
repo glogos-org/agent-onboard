@@ -2,7 +2,7 @@
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
-const RELEASE_LINE = 'public_check_plan_fast_runner_product_gate';
+const RELEASE_LINE = 'public_github_action_ci_surface_product_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
   agents: 'agents',
@@ -20,6 +20,7 @@ const TOP_LEVEL_COMMAND = Object.freeze({
   issue: 'issue',
   contributor: 'contributor',
   check: 'check',
+  ci: 'ci',
   version: 'version',
   workItems: 'work-items'
 });
@@ -39,6 +40,7 @@ const ROUTER_COMMAND_ORDER = Object.freeze([
   TOP_LEVEL_COMMAND.issue,
   TOP_LEVEL_COMMAND.contributor,
   TOP_LEVEL_COMMAND.check,
+  TOP_LEVEL_COMMAND.ci,
   TOP_LEVEL_COMMAND.init,
   TOP_LEVEL_COMMAND.agents,
   TOP_LEVEL_COMMAND.guard,
@@ -59,7 +61,8 @@ const RUNTIME_COMMAND_GROUP = Object.freeze({
     TOP_LEVEL_COMMAND.create,
     TOP_LEVEL_COMMAND.issue,
     TOP_LEVEL_COMMAND.contributor,
-    TOP_LEVEL_COMMAND.check
+    TOP_LEVEL_COMMAND.check,
+    TOP_LEVEL_COMMAND.ci
   ]),
   architecture: Object.freeze([
     TOP_LEVEL_COMMAND.architecture
@@ -224,6 +227,7 @@ const PRODUCT_HELP_LINES = Object.freeze([
   'agent-onboard issue --classify-dry-run|--json|--text [--title <title>] [--label <label>] [--actor <kind>] [--source <kind>] [--repo <owner/name>] [--issue-number <number>]',
   'agent-onboard contributor --admission-dry-run|--json|--text [--actor <kind>] [--handle <handle>] [--email <email>] [--repo <owner/name>] [--identity-surface <surface>] [--agreement <surface>] [--ai-assisted yes|no] [--assisted-by <trailer>]',
   'agent-onboard check --plan|--fast [--json|--text]',
+  'agent-onboard ci --github-action|--json|--text',
   TARGET_DOCTOR_COMMAND.help,
   TARGET_PROFILE_COMMAND.help,
   TARGET_MEMORY_COMMAND.help,

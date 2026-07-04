@@ -442,3 +442,8 @@ Use `node cli/agent-onboard.js contributor --admission-dry-run`, `node cli/agent
 ## Public issue intake dry-run product surface
 
 Use `node cli/agent-onboard.js issue --classify-dry-run`, `node cli/agent-onboard.js issue --classify-dry-run --json`, or `node cli/agent-onboard.js issue --classify-dry-run --text` to classify external issue metadata before deciding whether a future work item should be admitted. Optional metadata flags are `--title`, repeated `--label`, `--actor`, `--source`, `--repo`, `--issue-number`, `--runtime`, and `--handle`. Issue intake is read-only: it may create an in-memory classification and candidate preview, but it must not call GitHub, import issue state, mutate platform issues, write `.agent-onboard/work-items.json`, admit claims, install dependencies, run managed project commands, publish, mutate Git, or perform network calls.
+
+## Public GitHub Action / CI surface product surface
+
+Use `node cli/agent-onboard.js ci --github-action`, `node cli/agent-onboard.js ci --json`, or `node cli/agent-onboard.js ci --text` when a repo owner wants a copyable CI recipe for agent-onboard checks. The command is read-only: it may print a GitHub Actions workflow template and CI contract, but it must not create `.github/workflows/*`, call the GitHub API, run npm, run shell commands, install dependencies, mutate PRs/issues, create work items, admit claims, write ledgers, publish, mutate Git, or use network access. Treat CI output as evidence only, never as authority.
+

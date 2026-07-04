@@ -4907,6 +4907,78 @@
           "git diff --check was not available in the ZIP handoff workspace because no .git directory is present."
         ]
       }
+    },
+    {
+      "id": "P1S3M5W14",
+      "milestone_id": "P1S3M5",
+      "title": "Public GitHub Action / CI surface product gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-04T18:00:00.000Z"
+      },
+      "closure": {
+        "actor": "gpt-5.5-thinking",
+        "closed_at": "2026-07-04T18:35:00.000Z",
+        "summary": "Closed by adding a direct public GitHub Action / CI surface: ci --github-action, ci --json, and ci --text. The feature prints a copyable GitHub Actions workflow recipe and machine-readable CI evidence contract for check --fast and release --check without creating workflow files, calling GitHub APIs, running npm or shell commands, writing ledgers, admitting claims, creating work items, mutating Git, publishing, or using network access, then bumps the package candidate to 0.0.121.",
+        "changed_files": [
+          "package.json",
+          "README.md",
+          "AGENTS.md",
+          "llms.txt",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/runtime-contracts.js",
+          "test/agent-onboard.test.js",
+          "test/run-tests.js",
+          ".agent-onboard/github-action-ci-surface-product-gate.json",
+          ".agent-onboard/work-items.json",
+          "authority-map.json",
+          "manifest.json"
+        ],
+        "checks_run": [
+          "node -c cli/agent-onboard.js",
+          "node -c cli/agent_onboard/command-router.js",
+          "node -c cli/agent_onboard/runtime-composer.js",
+          "node -c cli/agent_onboard/runtime-contracts.js",
+          "node -c test/agent-onboard.test.js",
+          "node -c test/run-tests.js",
+          "node cli/agent-onboard.js ci --json",
+          "node cli/agent-onboard.js ci --text",
+          "node cli/agent-onboard.js ci --github-action",
+          "node cli/agent-onboard.js check --plan --json",
+          "node cli/agent-onboard.js check --fast --json",
+          "node cli/agent-onboard.js commands --json",
+          "node cli/agent-onboard.js guide --json",
+          "node cli/agent-onboard.js quickstart --json",
+          "node cli/agent-onboard.js discovery --json",
+          "node cli/agent-onboard.js create --dry-run",
+          "node cli/agent-onboard.js issue --classify-dry-run",
+          "node cli/agent-onboard.js contributor --admission-dry-run",
+          "node cli/agent-onboard.js target memory --preview",
+          "npm test",
+          "npm run test:full",
+          "node cli/agent-onboard.js release --source-manifest",
+          "node cli/agent-onboard.js release --source-manifest-check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js release --version-sprawl-check",
+          "npm pack --dry-run --json",
+          "installed package ci --json smoke",
+          "installed package ci --github-action smoke",
+          "installed package check --fast --json smoke",
+          "node scripts/check-public-artifact-boundary.js",
+          "node cli/agent-onboard.js target metadata --write --force --target .",
+          "node cli/agent-onboard.js target metadata --check --target .",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json"
+        ],
+        "checks_not_run": [
+          "npm publish --access public",
+          "git diff --check"
+        ],
+        "known_non_pass": [
+          "git diff --check was not run because the ZIP handoff workspace has no .git directory"
+        ]
+      }
     }
   ]
 }
