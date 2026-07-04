@@ -54,6 +54,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-issue-intake-dry-run-product-gate-json-322444c2"
     },
     {
+      "file_path": ".agent-onboard/mcp-bridge-plan-skeleton-product-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-mcp-bridge-plan-skeleton-product-gate-json-27460e26"
+    },
+    {
       "file_path": ".agent-onboard/metadata-policy.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-metadata-policy-json-fbba7f6e"
     },

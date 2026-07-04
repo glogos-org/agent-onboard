@@ -1,6 +1,6 @@
 {
   "name": "agent-onboard",
-  "version": "0.0.121",
+  "version": "0.0.122",
   "description": "CLI for onboarding and managing target repositories.",
   "license": "Apache-2.0",
   "author": "Thanh Le <vnlemanhthanh@gmail.com>",
@@ -360,7 +360,14 @@
     "ci-recipe",
     "workflow-template",
     "pull-request-check",
-    "action-yaml"
+    "action-yaml",
+    "mcp",
+    "mcp-bridge",
+    "mcp-plan",
+    "agent-client-bridge",
+    "tool-candidates",
+    "mcp-skeleton",
+    "stdio-mcp-plan"
   ],
   "type": "commonjs",
   "engines": {

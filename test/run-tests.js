@@ -238,6 +238,8 @@ function quickTasks() {
     cliTask('ci surface json', ['ci', '--json'], expectStatusOk),
     cliTask('ci surface text', ['ci', '--text'], expectTextIncludes(['agent-onboard CI surface', 'CI is authority: false', 'no GitHub API'])),
     cliTask('ci github action', ['ci', '--github-action'], expectTextIncludes(['name: Agent Onboard', 'actions/checkout@v4', 'check --fast --json'])),
+    cliTask('mcp bridge plan json', ['mcp', '--json'], expectStatusOk),
+    cliTask('mcp bridge plan text', ['mcp', '--text'], expectTextIncludes(['agent-onboard MCP bridge plan', 'server implemented now: false', 'agent_onboard_get_discovery'])),
     cliTask('target repair plan', ['target', 'repair', '--plan'], expectStatusOk),
     cliTask('work-items schema through runtime service', ['work-items', '--schema'], expectStatusOk),
     cliTask('work-items template through runtime service', ['work-items', '--template'], expectStatusOk),

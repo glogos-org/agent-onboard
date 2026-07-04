@@ -447,3 +447,7 @@ Use `node cli/agent-onboard.js issue --classify-dry-run`, `node cli/agent-onboar
 
 Use `node cli/agent-onboard.js ci --github-action`, `node cli/agent-onboard.js ci --json`, or `node cli/agent-onboard.js ci --text` when a repo owner wants a copyable CI recipe for agent-onboard checks. The command is read-only: it may print a GitHub Actions workflow template and CI contract, but it must not create `.github/workflows/*`, call the GitHub API, run npm, run shell commands, install dependencies, mutate PRs/issues, create work items, admit claims, write ledgers, publish, mutate Git, or use network access. Treat CI output as evidence only, never as authority.
 
+
+## Public MCP bridge plan / skeleton product surface
+
+Use `node cli/agent-onboard.js mcp --plan`, `node cli/agent-onboard.js mcp --json`, or `node cli/agent-onboard.js mcp --text` when an agent client needs a stable bridge contract before a real MCP server is admitted. The command is read-only: it may list tool candidates and their mapped public CLI commands, but it must not start an MCP server, add MCP dependencies, open sockets, start stdio transport, invoke tools, write files, install dependencies, run shell commands, mutate Git, publish, or use network access. Treat MCP bridge output as orientation/evidence only, never as authority.
