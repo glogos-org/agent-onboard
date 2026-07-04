@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_issue_intake_dry_run_product_gate';
+const EXPECTED_RELEASE_LINE = 'public_contributor_admission_dry_run_product_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -226,7 +226,7 @@ fullSourceTest('public runtime contracts module centralizes command and package 
   assert.strictEqual(contracts.TARGET_PROFILE_COMMAND.flag.target, '--target');
   assert.ok(Object.isFrozen(contracts.TARGET_COMMAND));
   assert.ok(contracts.RUNTIME_CONTRACTS.top_level_commands.includes('target'));
-  assert.deepStrictEqual(contracts.ROUTER_COMMAND_ORDER, ['help', 'version', 'status', 'create', 'issue', 'init', 'agents', 'guard', 'authority', 'architecture', 'release', 'target-config', 'work-items', 'target', 'target-instance']);
+  assert.deepStrictEqual(contracts.ROUTER_COMMAND_ORDER, ['help', 'version', 'status', 'create', 'issue', 'contributor', 'init', 'agents', 'guard', 'authority', 'architecture', 'release', 'target-config', 'work-items', 'target', 'target-instance']);
   assert.strictEqual(contracts.TOP_LEVEL_COMMAND_ALIAS.helpLong, '--help');
   assert.deepStrictEqual(contracts.RUNTIME_COMMAND_GROUP.target, ['init', 'target-config', 'target', 'target-instance']);
   assert.deepStrictEqual(contracts.RUNTIME_ADAPTER_GROUP.core, ['help', '--help', '-h', 'version', '--version', '-v', 'status']);
@@ -243,18 +243,20 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.strictEqual(output.status, 'ok');
   assert.strictEqual(output.version, EXPECTED_VERSION);
   assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
-  assert.deepStrictEqual(output.top_level_commands, ['help', 'version', 'status', 'commands', 'guide', 'quickstart', 'discovery', 'create', 'issue', 'init', 'agents', 'guard', 'authority', 'architecture', 'release', 'target-config', 'work-items', 'target', 'target-instance']);
+  assert.deepStrictEqual(output.top_level_commands, ['help', 'version', 'status', 'commands', 'guide', 'quickstart', 'discovery', 'create', 'issue', 'contributor', 'init', 'agents', 'guard', 'authority', 'architecture', 'release', 'target-config', 'work-items', 'target', 'target-instance']);
   assert.ok(output.runtime_command_groups.core.includes('commands'));
   assert.ok(output.runtime_command_groups.core.includes('quickstart'));
   assert.ok(output.runtime_command_groups.core.includes('discovery'));
   assert.ok(output.runtime_command_groups.core.includes('create'));
   assert.ok(output.runtime_command_groups.core.includes('issue'));
+  assert.ok(output.runtime_command_groups.core.includes('contributor'));
   assert.ok(output.help_lines.includes('agent-onboard commands --json|--text'));
   assert.ok(output.help_lines.includes('agent-onboard guide --json|--text'));
   assert.ok(output.help_lines.includes('agent-onboard quickstart --json|--text|--dry-run'));
   assert.ok(output.help_lines.includes('agent-onboard discovery --llms|--json|--text'));
   assert.ok(output.help_lines.includes('agent-onboard create --dry-run|--json|--text'));
   assert.ok(output.help_lines.some((line) => line.startsWith('agent-onboard issue --classify-dry-run|--json|--text')));
+  assert.ok(output.help_lines.some((line) => line.startsWith('agent-onboard contributor --admission-dry-run|--json|--text')));
   assert.ok(output.help_lines.includes('agent-onboard target memory --preview|--json|--text [--target <path>]'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard commands --text'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard guide --text'));
@@ -262,6 +264,7 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.ok(output.recommended_first_commands.includes('agent-onboard discovery --llms'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard create --dry-run'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard issue --classify-dry-run --text'));
+  assert.ok(output.recommended_first_commands.includes('agent-onboard contributor --admission-dry-run --text'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard target memory --text'));
   assert.strictEqual(output.boundary.writes_files, false);
   assert.strictEqual(output.boundary.publishes_package, false);
@@ -275,6 +278,7 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.ok(textResult.stdout.includes('agent-onboard discovery --llms|--json|--text'));
   assert.ok(textResult.stdout.includes('agent-onboard create --dry-run|--json|--text'));
   assert.ok(textResult.stdout.includes('agent-onboard issue --classify-dry-run|--json|--text'));
+  assert.ok(textResult.stdout.includes('agent-onboard contributor --admission-dry-run|--json|--text'));
   assert.ok(textResult.stdout.includes('agent-onboard target memory --preview|--json|--text [--target <path>]'));
 });
 
@@ -290,6 +294,7 @@ fullSourceTest('public discovery is directly usable', () => {
   assert.ok(output.stable_commands.includes('agent-onboard guide --text'));
   assert.ok(output.stable_commands.includes('agent-onboard quickstart --text'));
   assert.ok(output.stable_commands.includes('agent-onboard issue --classify-dry-run --text'));
+  assert.ok(output.stable_commands.includes('agent-onboard contributor --admission-dry-run --text'));
   assert.ok(output.stable_commands.includes('agent-onboard commands --text'));
   assert.strictEqual(output.boundary.writes_files, false);
   assert.strictEqual(output.boundary.network, false);
@@ -333,6 +338,38 @@ fullSourceTest('public issue intake dry-run is directly usable', () => {
   assert.ok(textResult.stdout.includes('Disposition: duplicate'));
 
   const refused = run(['issue', '--write']);
+  const refusedOutput = readJsonFailure(refused);
+  assert.strictEqual(refused.status, 2);
+  assert.strictEqual(refusedOutput.status, 'not_admitted');
+});
+
+
+fullSourceTest('public contributor admission dry-run is directly usable', () => {
+  const jsonResult = run(['contributor', '--admission-dry-run', '--json', '--actor', 'agent', '--handle', 'review-bot', '--repo', 'glogos-org/agent-onboard', '--identity-surface', 'github-user', '--agreement', 'project-policy', '--ai-assisted', 'yes', '--assisted-by', 'Assisted-by: review-bot:example-model']);
+  const output = readJsonOutput(jsonResult);
+  assert.strictEqual(output.schema, 'agent-onboard-public-contributor-admission-dry-run-001');
+  assert.strictEqual(output.status, 'ok');
+  assert.strictEqual(output.version, EXPECTED_VERSION);
+  assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
+  assert.strictEqual(output.command, 'agent-onboard contributor --admission-dry-run');
+  assert.strictEqual(output.actor_record_preview.actor_type, 'agent');
+  assert.strictEqual(output.actor_record_preview.handle, 'review-bot');
+  assert.strictEqual(output.actor_record_preview.repository_identifier, 'glogos-org/agent-onboard');
+  assert.strictEqual(output.ai_assistance_policy.ai_assistance_used, true);
+  assert.strictEqual(output.ai_assistance_policy.assisted_by_present, true);
+  assert.strictEqual(output.ai_assistance_policy.ai_signed_off_by_allowed_now, false);
+  assert.strictEqual(output.admission_preview.canonical_contributor_record_created, false);
+  assert.strictEqual(output.admission_preview.contributor_ledger_written, false);
+  assert.strictEqual(output.boundary.writes_files, false);
+  assert.strictEqual(output.boundary.github_api_dependency_now, false);
+  assert.strictEqual(output.boundary.network, false);
+
+  const textResult = run(['contributor', '--admission-dry-run', '--text', '--actor', 'human', '--handle', 'alice']);
+  assert.strictEqual(textResult.status, 0, textResult.stderr || textResult.stdout);
+  assert.ok(textResult.stdout.includes('agent-onboard contributor admission dry-run'));
+  assert.ok(textResult.stdout.includes('Authority: candidate only'));
+
+  const refused = run(['contributor', '--write']);
   const refusedOutput = readJsonFailure(refused);
   assert.strictEqual(refused.status, 2);
   assert.strictEqual(refusedOutput.status, 'not_admitted');

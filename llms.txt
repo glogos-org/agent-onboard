@@ -22,6 +22,7 @@ Stable commands:
 - agent-onboard discovery --llms
 - agent-onboard create --dry-run
 - agent-onboard issue --classify-dry-run --text
+- agent-onboard contributor --admission-dry-run --text
 - agent-onboard discovery --text
 - agent-onboard discovery --json
 - agent-onboard guide --text
@@ -52,4 +53,4 @@ First-read order:
 
 Source of truth order for agents: follow the First-read order above before raw evidence/source files.
 
-Use `agent-onboard discovery --llms` to print this AI-readable entrypoint from either the source repository or an installed package. Use `agent-onboard target memory --text` for a metadata-only target memory surface preview before reading raw repo instruction files. Use `agent-onboard issue --classify-dry-run --text` to classify external issue metadata before any work-item admission or platform mutation.
+Use `agent-onboard discovery --llms` to print this AI-readable entrypoint from either the source repository or an installed package. Use `agent-onboard target memory --text` for a metadata-only target memory surface preview before reading raw repo instruction files. Use `agent-onboard issue --classify-dry-run --text` to classify external issue metadata before any work-item admission or platform mutation. Use `agent-onboard contributor --admission-dry-run --text` to preview contributor identity, provenance, and AI-assistance attribution before any contributor ledger write or claim admission.

@@ -1,6 +1,6 @@
 {
   "name": "agent-onboard",
-  "version": "0.0.118",
+  "version": "0.0.119",
   "description": "CLI for onboarding and managing target repositories.",
   "license": "Apache-2.0",
   "author": "Thanh Le <vnlemanhthanh@gmail.com>",
@@ -340,7 +340,14 @@
     "issue-dry-run",
     "work-item-candidate",
     "github-issue-preview",
-    "read-only-issue-preview"
+    "read-only-issue-preview",
+    "contributor-admission",
+    "contributor-provenance",
+    "ai-assistance-attribution",
+    "assisted-by",
+    "human-responsibility",
+    "actor-admission",
+    "contribution-provenance"
   ],
   "type": "commonjs",
   "engines": {

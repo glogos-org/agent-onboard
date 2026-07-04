@@ -1,0 +1,55 @@
+{
+  "schema": "agent-onboard-public-product-gate-closure-001",
+  "package_name": "agent-onboard",
+  "version": "0.0.119",
+  "release_line": "public_contributor_admission_dry_run_product_gate",
+  "work_item": "P1S3M5W12",
+  "title": "Public contributor admission dry-run product gate",
+  "status": "closed",
+  "command_surface": [
+    "agent-onboard contributor --admission-dry-run",
+    "agent-onboard contributor --admission-dry-run --json",
+    "agent-onboard contributor --admission-dry-run --text"
+  ],
+  "purpose": "Preview contributor identity, provenance, and AI-assistance attribution before any authoritative admission or ledger write.",
+  "absorbed_capability": "public-safe contributor admission dry-run preview with human responsibility and Assisted-by attribution semantics",
+  "output_contract": {
+    "schema": "agent-onboard-public-contributor-admission-dry-run-001",
+    "status": "ok",
+    "creates_canonical_contributor_record": false,
+    "writes_contributor_ledger": false,
+    "admits_claim": false,
+    "ai_signing_authority_allowed": false,
+    "raw_ai_output_is_authority": false,
+    "human_responsibility_required": true,
+    "assisted_by_required_when_ai_used": true
+  },
+  "boundary": {
+    "writes_files": false,
+    "writes_consuming_repository_state": false,
+    "creates_agent_onboard_runtime_state": false,
+    "scans_consumer_repository": false,
+    "validates_arbitrary_consumer_config_file": false,
+    "contributor_ledger_write_allowed_now": false,
+    "canonical_contributor_record_creation_allowed_now": false,
+    "claim_admission_allowed_now": false,
+    "github_api_dependency_now": false,
+    "github_mutation_allowed_now": false,
+    "git_mutation": false,
+    "installs_dependencies": false,
+    "runs_build_test_deploy": false,
+    "runs_managed_project_commands": false,
+    "publishes_package": false,
+    "network": false
+  },
+  "checks_run_so_far": [
+    "node -c cli/agent_onboard/runtime-contracts.js",
+    "node -c cli/agent_onboard/runtime-composer.js",
+    "node -c test/agent-onboard.test.js",
+    "node -c test/run-tests.js",
+    "node cli/agent-onboard.js contributor --admission-dry-run --json --actor agent --handle review-bot --repo glogos-org/agent-onboard --ai-assisted yes --assisted-by 'Assisted-by: review-bot:example-model'",
+    "node cli/agent-onboard.js contributor --admission-dry-run --text",
+    "npm test",
+    "npm run test:full"
+  ]
+}

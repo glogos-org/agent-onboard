@@ -42,6 +42,7 @@ const QUICKSTART_COMMAND = 'quickstart';
 const DISCOVERY_COMMAND = 'discovery';
 const CREATE_COMMAND = 'create';
 const ISSUE_COMMAND = 'issue';
+const CONTRIBUTOR_COMMAND = 'contributor';
 
 process.stdout.on('error', (error) => {
   if (error && error.code === 'EPIPE') process.exit(0);
@@ -153,7 +154,7 @@ function commandSurfaceCatalog() {
     purpose: 'machine-readable and human-readable catalog of the packaged public command surface',
     top_level_commands: ROUTER_COMMAND_ORDER.includes(COMMANDS_COMMAND) ? ROUTER_COMMAND_ORDER.slice() : [...ROUTER_COMMAND_ORDER.slice(0, 3), COMMANDS_COMMAND, GUIDE_COMMAND, QUICKSTART_COMMAND, DISCOVERY_COMMAND, ...ROUTER_COMMAND_ORDER.slice(3)],
     top_level_aliases: Object.assign({}, TOP_LEVEL_COMMAND_ALIAS),
-    runtime_command_groups: Object.fromEntries(Object.entries(RUNTIME_COMMAND_GROUP).map(([key, value]) => [key, key === 'core' ? Array.from(new Set([...value, COMMANDS_COMMAND, GUIDE_COMMAND, QUICKSTART_COMMAND, DISCOVERY_COMMAND, CREATE_COMMAND, ISSUE_COMMAND])) : value.slice()])),
+    runtime_command_groups: Object.fromEntries(Object.entries(RUNTIME_COMMAND_GROUP).map(([key, value]) => [key, key === 'core' ? Array.from(new Set([...value, COMMANDS_COMMAND, GUIDE_COMMAND, QUICKSTART_COMMAND, DISCOVERY_COMMAND, CREATE_COMMAND, ISSUE_COMMAND, CONTRIBUTOR_COMMAND])) : value.slice()])),
     help_lines: helpLines,
     help_groups: groupCommandHelpLines(helpLines),
     command_lines: helpLines.map((line) => ({
@@ -168,6 +169,7 @@ function commandSurfaceCatalog() {
       'agent-onboard discovery --llms',
       'agent-onboard create --dry-run',
       'agent-onboard issue --classify-dry-run --text',
+      'agent-onboard contributor --admission-dry-run --text',
       'agent-onboard status',
       'agent-onboard target doctor --text',
       'agent-onboard target memory --text',
@@ -235,6 +237,7 @@ function operatorGuideCatalog() {
           'agent-onboard quickstart --text',
           'agent-onboard create --dry-run',
           'agent-onboard issue --classify-dry-run --text',
+          'agent-onboard contributor --admission-dry-run --text',
           'agent-onboard authority --first-read',
           'agent-onboard work-items --next --text'
         ],
@@ -385,6 +388,12 @@ function quickstartCatalog() {
       },
       {
         step: 8,
+        command: 'agent-onboard contributor --admission-dry-run --text',
+        purpose: 'preview contributor identity, provenance, and AI-assistance attribution before any authoritative admission',
+        writes_files: false
+      },
+      {
+        step: 9,
         command: 'agent-onboard work-items --next --text',
         purpose: 'read the next admitted work item when a ledger exists',
         writes_files: false
@@ -461,6 +470,7 @@ function discoveryStableCommands() {
     'agent-onboard discovery --json',
     'agent-onboard create --dry-run',
     'agent-onboard issue --classify-dry-run --text',
+    'agent-onboard contributor --admission-dry-run --text',
     'agent-onboard guide --text',
     'agent-onboard quickstart --text',
     'agent-onboard commands --text',
@@ -841,6 +851,186 @@ const issueIntakeService = Object.freeze({
   input: issueIntakeValue,
   classify: issueIntakeClassification,
   text: issueIntakeText
+});
+
+
+const CONTRIBUTOR_ADMISSION_DEFAULT = Object.freeze({
+  actor: Object.freeze({
+    kind: 'human',
+    handle: null,
+    email: null,
+    identity_surface: 'manual',
+    agreement_surface: 'project-policy',
+    repository_identifier: null,
+    fingerprint: null
+  }),
+  ai_assistance: Object.freeze({
+    used: false,
+    assisted_by: null
+  })
+});
+
+function parseBooleanLike(value) {
+  if (['yes', 'true', '1', 'used'].includes(String(value).toLowerCase())) return true;
+  if (['no', 'false', '0', 'none'].includes(String(value).toLowerCase())) return false;
+  return null;
+}
+
+function contributorAdmissionValue(args = []) {
+  const input = {
+    actor: Object.assign({}, CONTRIBUTOR_ADMISSION_DEFAULT.actor),
+    ai_assistance: Object.assign({}, CONTRIBUTOR_ADMISSION_DEFAULT.ai_assistance)
+  };
+  const allowed = new Set([
+    '--admission-dry-run', OUTPUT_FLAG.json, OUTPUT_FLAG.text,
+    '--actor', '--handle', '--email', '--repo', '--repository', '--fingerprint',
+    '--identity-surface', '--agreement', '--ai-assisted', '--assisted-by'
+  ]);
+  for (let index = 0; index < args.length; index += 1) {
+    const arg = args[index];
+    if (!allowed.has(arg)) {
+      return { error: 'contributor supports only --admission-dry-run, --json, --text, --actor, --handle, --email, --repo, --repository, --fingerprint, --identity-surface, --agreement, --ai-assisted, or --assisted-by in this public gate' };
+    }
+    if (arg === '--admission-dry-run' || arg === OUTPUT_FLAG.json || arg === OUTPUT_FLAG.text) continue;
+    const value = args[index + 1];
+    if (!value || value.startsWith('-')) return { error: `contributor ${arg} requires a value` };
+    index += 1;
+    if (arg === '--actor') input.actor.kind = value;
+    else if (arg === '--handle') input.actor.handle = value;
+    else if (arg === '--email') input.actor.email = value;
+    else if (arg === '--repo' || arg === '--repository') input.actor.repository_identifier = value;
+    else if (arg === '--fingerprint') input.actor.fingerprint = value;
+    else if (arg === '--identity-surface') input.actor.identity_surface = value;
+    else if (arg === '--agreement') input.actor.agreement_surface = value;
+    else if (arg === '--ai-assisted') {
+      const parsed = parseBooleanLike(value);
+      if (parsed === null) return { error: 'contributor --ai-assisted requires yes or no' };
+      input.ai_assistance.used = parsed;
+    } else if (arg === '--assisted-by') {
+      input.ai_assistance.assisted_by = value;
+      input.ai_assistance.used = true;
+    }
+  }
+  return { input };
+}
+
+function contributorActorId(input) {
+  const kind = input.actor.kind || 'unknown';
+  if (input.actor.email) return `actor:${kind}:${input.actor.email}`;
+  if (input.actor.handle) return `actor:${kind}:${input.actor.handle}`;
+  return `actor:${kind}:unidentified`;
+}
+
+function contributorAdmissionPreview(input) {
+  const actorKinds = new Set(['human', 'agent', 'automation', 'maintainer', 'unknown']);
+  const identitySurfaces = new Set(['git-author', 'github-user', 'ssh-fingerprint', 'signing-fingerprint', 'manual', 'unknown']);
+  const agreementSurfaces = new Set(['project-policy', 'external-policy', 'none', 'unknown']);
+  const kind = actorKinds.has(input.actor.kind) ? input.actor.kind : 'unknown';
+  const identitySurface = identitySurfaces.has(input.actor.identity_surface) ? input.actor.identity_surface : 'unknown';
+  const agreementSurface = agreementSurfaces.has(input.actor.agreement_surface) ? input.actor.agreement_surface : 'unknown';
+  const aiUsed = Boolean(input.ai_assistance.used);
+  const assistedBy = input.ai_assistance.assisted_by || (aiUsed ? null : null);
+  const missing = [];
+  if (!input.actor.handle && !input.actor.email) missing.push('actor_handle_or_email');
+  if (!input.actor.repository_identifier) missing.push('repository_identifier');
+  if (aiUsed && !assistedBy) missing.push('assisted_by_trailer');
+  const disposition = missing.length === 0 ? 'candidate_admission_preview_only' : 'needs_admission_evidence';
+  return {
+    schema: 'agent-onboard-public-contributor-admission-dry-run-001',
+    status: 'ok',
+    package_name: PACKAGE_NAME,
+    version: VERSION,
+    release_line: RELEASE_LINE,
+    command: 'agent-onboard contributor --admission-dry-run',
+    mode: 'admission-dry-run',
+    actor_record_preview: {
+      actor_id: contributorActorId({ actor: Object.assign({}, input.actor, { kind }) }),
+      actor_type: kind,
+      handle: input.actor.handle || null,
+      email: input.actor.email || null,
+      identity_surface: identitySurface,
+      agreement_surface: agreementSurface,
+      repository_identifier: input.actor.repository_identifier || null,
+      fingerprint: input.actor.fingerprint || null,
+      authority: kind === 'maintainer' ? 'candidate_upstream_only' : 'candidate_only',
+      local_actor_record_is_authority_now: false,
+      mutation_authority_granted: false
+    },
+    ai_assistance_policy: {
+      ai_assistance_may_be_disclosed: true,
+      ai_assistance_used: aiUsed,
+      permitted_ai_attribution_trailer: 'Assisted-by',
+      assisted_by: assistedBy,
+      assisted_by_required_when_ai_used: true,
+      assisted_by_present: !aiUsed || Boolean(assistedBy),
+      human_responsibility_required: true,
+      ai_signed_off_by_allowed_now: false,
+      ai_coauthor_claim_allowed_now: false,
+      raw_ai_output_is_authority_now: false
+    },
+    admission_preview: {
+      disposition,
+      missing_evidence: missing,
+      candidate_created_in_memory: true,
+      canonical_contributor_record_created: false,
+      contributor_ledger_written: false,
+      work_item_created: false,
+      admitted_claim_created: false,
+      github_api_used: false,
+      git_mutation: false,
+      requires_explicit_future_admission: true
+    },
+    contribution_trailer_guidance: {
+      signed_off_by_ai_allowed_now: false,
+      assisted_by_required_when_ai_used: true,
+      examples: aiUsed ? [assistedBy || 'Assisted-by: <tool-or-agent-name>'] : []
+    },
+    recommended_next_commands: [
+      'agent-onboard issue --classify-dry-run --text',
+      'agent-onboard work-items --claim --dry-run --id <public-work-item-id> --actor <actor>',
+      'agent-onboard work-items --append --dry-run --id <public-work-item-id> --title <title>'
+    ],
+    boundary: {
+      writes_files: false,
+      writes_consuming_repository_state: false,
+      creates_agent_onboard_runtime_state: false,
+      scans_consumer_repository: false,
+      validates_arbitrary_consumer_config_file: false,
+      contributor_ledger_write_allowed_now: false,
+      canonical_contributor_record_creation_allowed_now: false,
+      claim_admission_allowed_now: false,
+      github_api_dependency_now: false,
+      github_mutation_allowed_now: false,
+      git_mutation: false,
+      installs_dependencies: false,
+      runs_build_test_deploy: false,
+      runs_managed_project_commands: false,
+      publishes_package: false,
+      network: false
+    }
+  };
+}
+
+function contributorAdmissionText(result) {
+  return [
+    'agent-onboard contributor admission dry-run',
+    `Actor: ${result.actor_record_preview.actor_type}${result.actor_record_preview.handle ? ` (${result.actor_record_preview.handle})` : ''}`,
+    `Identity surface: ${result.actor_record_preview.identity_surface}`,
+    `Agreement surface: ${result.actor_record_preview.agreement_surface}`,
+    `Disposition: ${result.admission_preview.disposition}`,
+    `AI assistance used: ${result.ai_assistance_policy.ai_assistance_used}`,
+    `Assisted-by present: ${result.ai_assistance_policy.assisted_by_present}`,
+    'Authority: candidate only; no canonical contributor record, admitted claim, or ledger write created.',
+    'Boundary: no files written, no GitHub API, no Git mutation, no network, no publish.',
+    'Next steps:',
+    ...result.recommended_next_commands.map((command) => `  - ${command}`)
+  ].join('\n') + '\n';
+}
+
+const contributorAdmissionService = Object.freeze({
+  input: contributorAdmissionValue,
+  preview: contributorAdmissionPreview,
+  text: contributorAdmissionText
 });
 
 const TARGET_MEMORY_SURFACE_CANDIDATES = Object.freeze([
@@ -7414,6 +7604,52 @@ function runIssue(args = []) {
   return 0;
 }
 
+
+function runContributor(args = []) {
+  const hasAdmission = args.includes('--admission-dry-run');
+  const wantsJson = args.includes(OUTPUT_FLAG.json);
+  const wantsText = args.includes(OUTPUT_FLAG.text);
+  if (!hasAdmission) {
+    json({
+      schema: 'agent-onboard-public-contributor-admission-error-001',
+      status: 'not_admitted',
+      command_family: 'contributor',
+      message: 'contributor requires --admission-dry-run in this public gate',
+      reason: 'Contributor ledger writes, external identity verification, GitHub API access, Git mutation, claim admission, and repository scans require later explicit gates.',
+      writes_files: false,
+      publishes_package: false
+    });
+    return 2;
+  }
+  if (wantsJson && wantsText) {
+    json({
+      schema: 'agent-onboard-public-contributor-admission-error-001',
+      status: 'error',
+      command_family: 'contributor',
+      message: 'contributor accepts either --json or --text, not both',
+      writes_files: false,
+      publishes_package: false
+    });
+    return 1;
+  }
+  const parsed = contributorAdmissionService.input(args);
+  if (parsed.error) {
+    json({
+      schema: 'agent-onboard-public-contributor-admission-error-001',
+      status: 'error',
+      command_family: 'contributor',
+      message: parsed.error,
+      writes_files: false,
+      publishes_package: false
+    });
+    return 1;
+  }
+  const result = contributorAdmissionService.preview(parsed.input);
+  if (wantsText) process.stdout.write(contributorAdmissionService.text(result));
+  else json(result);
+  return 0;
+}
+
 function runTargetMemory(args) {
   const allowed = [TARGET_MEMORY_COMMAND.mode.preview, TARGET_MEMORY_COMMAND.flag.json, TARGET_MEMORY_COMMAND.flag.text, TARGET_MEMORY_COMMAND.flag.target];
   const targetIndex = args.indexOf(TARGET_MEMORY_COMMAND.flag.target);
@@ -7479,6 +7715,7 @@ const DOMAIN_SERVICE_FACADES = Object.freeze({
     runDiscovery,
     runCreate,
     runIssue,
+    runContributor,
     runArchitecture
   }),
   authorityService: Object.freeze({
@@ -7517,6 +7754,8 @@ const COMMAND_ROUTE_HANDLERS = Object.freeze({
   [TOP_LEVEL_COMMAND.create]: DOMAIN_SERVICE_FACADES.coreService.runCreate,
   [ISSUE_COMMAND]: DOMAIN_SERVICE_FACADES.coreService.runIssue,
   [TOP_LEVEL_COMMAND.issue]: DOMAIN_SERVICE_FACADES.coreService.runIssue,
+  [CONTRIBUTOR_COMMAND]: DOMAIN_SERVICE_FACADES.coreService.runContributor,
+  [TOP_LEVEL_COMMAND.contributor]: DOMAIN_SERVICE_FACADES.coreService.runContributor,
   [TOP_LEVEL_COMMAND.init]: DOMAIN_SERVICE_FACADES.targetService.runInit,
   [TOP_LEVEL_COMMAND.agents]: DOMAIN_SERVICE_FACADES.authorityService.runAgents,
   [TOP_LEVEL_COMMAND.guard]: DOMAIN_SERVICE_FACADES.authorityService.runGuard,

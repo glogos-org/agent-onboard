@@ -52,6 +52,7 @@ node cli/agent-onboard.js discovery --json
 node cli/agent-onboard.js target memory --text
 node cli/agent-onboard.js target memory --preview
 node cli/agent-onboard.js issue --classify-dry-run --text
+node cli/agent-onboard.js contributor --admission-dry-run --text
 node cli/agent-onboard.js commands --text
 node cli/agent-onboard.js commands --json
 ```
@@ -428,6 +429,12 @@ Use `node cli/agent-onboard.js discovery --llms`, `node cli/agent-onboard.js dis
 ## Public target memory descriptor product surface
 
 Use `node cli/agent-onboard.js target memory --preview`, `node cli/agent-onboard.js target memory --json`, or `node cli/agent-onboard.js target memory --text` when a new agent needs a bounded repo-memory descriptor before reading raw instruction/state files. Target memory is read-only and metadata-only: it may probe known root paths for presence/kind/authority grouping, but it must not import file contents, copy target AI memory, scan arbitrary private paths, write files, install dependencies, run managed project commands, publish, mutate Git, or perform network calls.
+
+
+
+## Public contributor admission dry-run product surface
+
+Use `node cli/agent-onboard.js contributor --admission-dry-run`, `node cli/agent-onboard.js contributor --admission-dry-run --json`, or `node cli/agent-onboard.js contributor --admission-dry-run --text` to preview contributor identity, provenance, and AI-assistance attribution before future admission. Optional metadata flags are `--actor`, `--handle`, `--email`, `--repo`, `--identity-surface`, `--agreement`, `--ai-assisted`, and `--assisted-by`. Contributor admission is read-only: it may create an in-memory admission preview, missing-evidence list, and `Assisted-by` guidance, but it must not verify identity externally, create canonical contributor records, write ledgers, admit claims, call GitHub, scan arbitrary target state, install dependencies, run managed project commands, publish, mutate Git, or perform network calls.
 
 ## Public issue intake dry-run product surface
 

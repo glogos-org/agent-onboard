@@ -30,6 +30,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-compatibility-command-port-seed-json-e63f5635"
     },
     {
+      "file_path": ".agent-onboard/contributor-admission-dry-run-product-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-contributor-admission-dry-run-product-gate-json-44f5057c"
+    },
+    {
       "file_path": ".agent-onboard/core-command-adapter-extraction.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-core-command-adapter-extraction-json-da3b0b54"
     },
