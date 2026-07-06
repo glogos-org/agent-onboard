@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_target_work_items_preview_product_gate';
+const EXPECTED_RELEASE_LINE = 'public_target_handoff_preview_product_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -46,6 +46,7 @@ const EXPECTED_PACK_FILES = [
   'cli/agent_onboard/domains/service-partitions.js',
   'cli/agent_onboard/domains/target/services/target-constants.js',
   'cli/agent_onboard/domains/target/services/target-doctor-service.js',
+  'cli/agent_onboard/domains/target/services/target-handoff-service.js',
   'cli/agent_onboard/domains/target/services/target-inventory-service.js',
   'cli/agent_onboard/domains/target/services/target-manifest-service.js',
   'cli/agent_onboard/domains/target/services/target-metadata-service.js',
@@ -223,9 +224,11 @@ fullSourceTest('public runtime contracts module centralizes command and package 
   assert.strictEqual(contracts.TARGET_COMMAND.metadata, 'metadata');
   assert.strictEqual(contracts.TARGET_COMMAND.memory, 'memory');
   assert.strictEqual(contracts.TARGET_COMMAND.workItems, 'work-items');
+  assert.strictEqual(contracts.TARGET_COMMAND.handoff, 'handoff');
   assert.strictEqual(contracts.TARGET_DOCTOR_COMMAND.flag.text, '--text');
   assert.strictEqual(contracts.TARGET_METADATA_COMMAND.flag.target, '--target');
   assert.strictEqual(contracts.TARGET_WORK_ITEMS_COMMAND.flag.text, '--text');
+  assert.strictEqual(contracts.TARGET_HANDOFF_COMMAND.flag.text, '--text');
   assert.strictEqual(contracts.TARGET_METADATA_COMMAND.mode.write, '--write');
   assert.strictEqual(contracts.TARGET_PROFILE_COMMAND.flag.target, '--target');
   assert.ok(Object.isFrozen(contracts.TARGET_COMMAND));
@@ -270,6 +273,7 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.ok(output.help_lines.includes('agent-onboard target inventory --preview|--json|--text [--target <path>]'));
   assert.ok(output.help_lines.includes('agent-onboard target memory --preview|--json|--text [--target <path>]'));
   assert.ok(output.help_lines.includes('agent-onboard target work-items --preview|--json|--text [--target <path>]'));
+  assert.ok(output.help_lines.includes('agent-onboard target handoff --preview|--json|--text [--target <path>]'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard commands --text'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard guide --text'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard quickstart --text'));
@@ -284,6 +288,7 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.ok(output.recommended_first_commands.includes('agent-onboard target inventory --text'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard target memory --text'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard target work-items --text'));
+  assert.ok(output.recommended_first_commands.includes('agent-onboard target handoff --text'));
   assert.strictEqual(output.boundary.writes_files, false);
   assert.strictEqual(output.boundary.publishes_package, false);
 
@@ -303,6 +308,7 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.ok(textResult.stdout.includes('agent-onboard target inventory --preview|--json|--text [--target <path>]'));
   assert.ok(textResult.stdout.includes('agent-onboard target memory --preview|--json|--text [--target <path>]'));
   assert.ok(textResult.stdout.includes('agent-onboard target work-items --preview|--json|--text [--target <path>]'));
+  assert.ok(textResult.stdout.includes('agent-onboard target handoff --preview|--json|--text [--target <path>]'));
 });
 
 fullSourceTest('public discovery is directly usable', () => {
@@ -436,6 +442,7 @@ fullSourceTest('public check plan and fast runner are directly usable', () => {
   assert.strictEqual(fast.failed_count, 0);
   assert.strictEqual(fast.passed_count, fast.check_count);
   assert.ok(fast.checks.some((item) => item.id === 'target-memory-preview'));
+  assert.ok(fast.checks.some((item) => item.id === 'target-handoff-preview'));
   assert.ok(fast.checks.some((item) => item.id === 'release-source-manifest-check'));
   assert.ok(fast.checks.some((item) => item.id === 'release-check'));
   assert.strictEqual(fast.boundary.writes_files, false);
@@ -630,6 +637,70 @@ fullSourceTest('public target work-items preview is directly usable', () => {
   assert.strictEqual(missingOutput.summary.next_action_state, 'no_target_work_items_file');
 
   const refused = run(['target', 'work-items', '--write', '--target', dir]);
+  const refusedOutput = readJsonFailure(refused);
+  assert.strictEqual(refused.status, 1);
+  assert.strictEqual(refusedOutput.status, 'error');
+});
+
+
+fullSourceTest('public target handoff preview is directly usable', () => {
+  const dir = tempRepo();
+  const milestoneId = ['P8', 'S1', 'M1'].join('');
+  const openId = [milestoneId, 'W1'].join('');
+  const queuedId = [milestoneId, 'W2'].join('');
+  fs.mkdirSync(path.join(dir, 'src'), { recursive: true });
+  fs.mkdirSync(path.join(dir, '.agent-onboard'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'src', 'index.js'), 'module.exports = 1;\n');
+  fs.writeFileSync(path.join(dir, 'AGENTS.md'), 'target instructions must not be inlined\n');
+  fs.writeFileSync(path.join(dir, 'llms.txt'), '# target llms entrypoint\n');
+  fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ name: 'handoff-fixture', version: '1.0.0', scripts: { test: 'node src/index.js' } }, null, 2) + '\n');
+  fs.writeFileSync(path.join(dir, '.agent-onboard', 'work-items.json'), JSON.stringify({
+    schema: 'target-work-items-fixture',
+    work_items: [
+      { id: openId, title: 'Open fixture gate', status: 'open', milestone_id: milestoneId }
+    ],
+    admission_queue: [
+      { id: queuedId, title: 'Queued fixture gate', status: 'planned', milestone_id: milestoneId }
+    ]
+  }, null, 2) + '\n');
+
+  const jsonResult = run(['target', 'handoff', '--json', '--target', dir]);
+  const output = readJsonOutput(jsonResult);
+  assert.strictEqual(output.schema, 'agent-onboard-public-target-handoff-preview-001');
+  assert.strictEqual(output.status, 'ok');
+  assert.strictEqual(output.version, EXPECTED_VERSION);
+  assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
+  assert.strictEqual(output.command, 'agent-onboard target handoff --preview');
+  assert.strictEqual(output.command_family, 'target handoff');
+  assert.strictEqual(output.target.name, 'handoff-fixture');
+  assert.strictEqual(output.handoff.inventory_summary.files_seen > 0, true);
+  assert.ok(output.handoff.inventory_summary.script_names.includes('test'));
+  assert.ok(output.handoff.memory_surface_summary.present_paths.includes('AGENTS.md'));
+  assert.ok(output.handoff.memory_surface_summary.present_paths.includes('llms.txt'));
+  assert.strictEqual(output.handoff.memory_surface_summary.file_contents_inlined, false);
+  assert.strictEqual(output.handoff.work_items_summary.open_work_item.id, openId);
+  assert.strictEqual(output.handoff.work_items_summary.next_admission_candidate.id, queuedId);
+  assert.strictEqual(output.handoff.readiness.next_agent_ready, true);
+  assert.ok(output.handoff.readiness.warnings.includes('open_target_work_item_should_be_continued_before_new_admission'));
+  assert.strictEqual(output.output_policy.file_contents_inlined, false);
+  assert.strictEqual(output.boundary.writes_files, false);
+  assert.strictEqual(output.boundary.admits_or_closes_work_items, false);
+  assert.strictEqual(output.boundary.network, false);
+  assert.strictEqual(output.writes_performed, false);
+  assert.strictEqual(jsonResult.stdout.includes('target instructions must not be inlined'), false);
+
+  const textResult = run(['target', 'handoff', '--text', '--target', dir]);
+  assert.strictEqual(textResult.status, 0, textResult.stderr || textResult.stdout);
+  assert.ok(textResult.stdout.includes('agent-onboard target handoff'));
+  assert.ok(textResult.stdout.includes('Readiness: usable_with_warnings'));
+  assert.ok(textResult.stdout.includes(`Next queued candidate: ${queuedId}`));
+  assert.ok(textResult.stdout.includes('no file content import'));
+  assert.strictEqual(textResult.stdout.includes('target instructions must not be inlined'), false);
+
+  const previewResult = run(['target', 'handoff', '--preview', '--target', dir]);
+  assert.strictEqual(readJsonOutput(previewResult).schema, 'agent-onboard-public-target-handoff-preview-001');
+
+  const refused = run(['target', 'handoff', '--write', '--target', dir]);
   const refusedOutput = readJsonFailure(refused);
   assert.strictEqual(refused.status, 1);
   assert.strictEqual(refusedOutput.status, 'error');
@@ -3440,6 +3511,7 @@ fullSourceTest('full source block line 2233', () => {
   assert.ok(readme.includes('npx agent-onboard target doctor --json'));
   assert.ok(readme.includes('npx agent-onboard target profile --json'));
   assert.ok(readme.includes('npx agent-onboard target work-items --preview'));
+  assert.ok(readme.includes('npx agent-onboard target handoff --preview'));
   assert.ok(readme.includes('npx agent-onboard target repair --plan'));
   assert.ok(readme.includes('npx agent-onboard target repair --write'));
   assert.ok(readme.includes('npx agent-onboard target metadata --plan'));
@@ -3484,7 +3556,8 @@ fullSourceTest('full source block line 2233', () => {
   assert.ok(readme.includes('Use `--text` on target-facing inspection commands'));
   assert.ok(readme.includes('npx agent-onboard check --plan --text'));
   assert.ok(readme.includes('npx agent-onboard check --fast --text'));
-  assert.ok(readme.includes('The current release adds the public target work-items preview product surface'));
+  assert.ok(readme.includes('The current release adds the public target handoff preview product surface'));
+  assert.ok(readme.includes('The previous release added the public target work-items preview product surface'));
   assert.ok(readme.includes('The previous release added the public target inventory preview product surface'));
   assert.ok(readme.includes('without dependency installation, managed-project command execution, Git mutation, network access, or writes'));
   assert.ok(readme.includes('The previous release added the public MCP bridge plan / skeleton product surface'));
@@ -3509,6 +3582,7 @@ fullSourceTest('full source block line 2323', () => {
   assert.ok(help.stdout.includes('target inventory --preview|--json|--text [--target <path>]'));
   assert.ok(help.stdout.includes('target memory --preview|--json|--text [--target <path>]'));
   assert.ok(help.stdout.includes('target work-items --preview|--json|--text [--target <path>]'));
+  assert.ok(help.stdout.includes('target handoff --preview|--json|--text [--target <path>]'));
   assert.ok(help.stdout.includes('target metadata --plan|--check|--write [--profile default] [--policy <path>] [--adopt-existing] [--force] [--target <path>]'));
   assert.ok(help.stdout.includes('target manifest --check-drift|--init|--refresh [--dry-run|--write] [--target <path>]'));
   assert.ok(help.stdout.includes('work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>'));
@@ -3576,6 +3650,7 @@ assert.ok(agents.includes('node cli/agent-onboard.js target runtime --check'));
   assert.ok(agents.includes('node cli/agent-onboard.js release --published-acceptance'));
   assert.ok(agents.includes('node cli/agent-onboard.js release --real-target-trial'));
   assert.ok(agents.includes('node cli/agent-onboard.js target memory --preview'));
+  assert.ok(agents.includes('node cli/agent-onboard.js target handoff --preview'));
   assert.ok(agents.includes('node cli/agent-onboard.js target onboarding --plan'));
   assert.ok(agents.includes('node cli/agent-onboard.js target onboarding --fixture'));
   assert.ok(agents.includes('node cli/agent-onboard.js target onboarding --trial'));

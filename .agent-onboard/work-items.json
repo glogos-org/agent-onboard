@@ -5181,6 +5181,73 @@
           "npm run test:full aggregate runner hit the execution timeout in this session after most shards passed; the previously missing shards were rerun individually and passed."
         ]
       }
+    },
+    {
+      "id": "P1S3M5W18",
+      "milestone_id": "P1S3M5",
+      "title": "Public target handoff preview product gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-04T21:00:00.000+07:00"
+      },
+      "closure": {
+        "actor": "gpt-5.5-thinking",
+        "closed_at": "2026-07-04T21:35:00.000+07:00",
+        "summary": "Closed by adding a direct public target handoff preview surface: target handoff --preview, target handoff --json, and target handoff --text. The feature composes bounded target inventory, known handoff/memory surface presence, and target-owned work-item summary into a compact next-session handoff while refusing file-content import, authority grants, target writes, work-item admission/closure, synthetic next-id generation, Git mutation, dependency installation, managed-project command execution, publishing, network access, and ledger writes; then bumps the package candidate to 0.0.125.",
+        "changed_files": [
+          "README.md",
+          "AGENTS.md",
+          "llms.txt",
+          "package.json",
+          "cli/agent_onboard/runtime-contracts.js",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/domains/target/services/target-service.js",
+          "cli/agent_onboard/domains/target/services/target-handoff-service.js",
+          "test/agent-onboard.test.js",
+          "test/run-tests.js",
+          ".agent-onboard/work-items.json",
+          ".agent-onboard/target-handoff-preview-product-gate.json",
+          "SOURCE_OF_TRUTH.md",
+          "authority-map.json",
+          "manifest.json"
+        ],
+        "checks_run": [
+          "node -c cli/agent_onboard/domains/target/services/target-handoff-service.js",
+          "node -c cli/agent_onboard/domains/target/services/target-service.js",
+          "node -c cli/agent_onboard/runtime-contracts.js",
+          "node -c cli/agent_onboard/runtime-composer.js",
+          "node -c test/agent-onboard.test.js",
+          "node -c test/run-tests.js",
+          "node cli/agent-onboard.js target handoff --preview",
+          "node cli/agent-onboard.js target handoff --json",
+          "node cli/agent-onboard.js target handoff --text",
+          "node cli/agent-onboard.js target handoff --write (expected unsupported)",
+          "node cli/agent-onboard.js commands --json",
+          "node cli/agent-onboard.js check --fast --json",
+          "npm test",
+          "node test/agent-onboard.test.js aggregate attempted; timed out under session limit",
+          "node test/agent-onboard.test.js --shard=0/32 through --shard=31/32 passed",
+          "node cli/agent-onboard.js release --source-manifest-check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js target metadata --write --force --target .",
+          "node cli/agent-onboard.js target metadata --check --target .",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "npm pack --dry-run --json",
+          "node scripts/check-public-artifact-boundary.js",
+          "installed package target handoff --json smoke",
+          "installed package check --fast --json smoke",
+          "installed package release --check smoke"
+        ],
+        "checks_not_run": [
+          "npm publish",
+          "npm view/npx registry verification"
+        ],
+        "known_non_pass": [
+          "Full-source aggregate command exceeded the interactive execution timeout; all 32 explicit shards were run and passed."
+        ]
+      }
     }
   ]
 }

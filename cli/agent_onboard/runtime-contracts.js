@@ -2,7 +2,7 @@
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
-const RELEASE_LINE = 'public_target_work_items_preview_product_gate';
+const RELEASE_LINE = 'public_target_handoff_preview_product_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
   agents: 'agents',
@@ -126,6 +126,7 @@ const TARGET_COMMAND = Object.freeze({
   inventory: 'inventory',
   memory: 'memory',
   workItems: 'work-items',
+  handoff: 'handoff',
   onboarding: 'onboarding',
   bootstrap: 'bootstrap'
 });
@@ -246,6 +247,18 @@ const TARGET_WORK_ITEMS_COMMAND = Object.freeze({
   })
 });
 
+const TARGET_HANDOFF_COMMAND = Object.freeze({
+  help: 'agent-onboard target handoff --preview|--json|--text [--target <path>]',
+  mode: Object.freeze({
+    preview: '--preview'
+  }),
+  flag: Object.freeze({
+    json: OUTPUT_FLAG.json,
+    text: OUTPUT_FLAG.text,
+    target: TARGET_OPTION.target
+  })
+});
+
 const PRODUCT_HELP_LINES = Object.freeze([
   'agent-onboard status',
   'agent-onboard commands --json|--text',
@@ -263,6 +276,7 @@ const PRODUCT_HELP_LINES = Object.freeze([
   TARGET_INVENTORY_COMMAND.help,
   TARGET_MEMORY_COMMAND.help,
   TARGET_WORK_ITEMS_COMMAND.help,
+  TARGET_HANDOFF_COMMAND.help,
   TARGET_REPAIR_COMMAND.help,
   TARGET_METADATA_COMMAND.help,
   TARGET_MANIFEST_COMMAND.help,
@@ -317,6 +331,7 @@ const PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES = Object.freeze([
   'cli/agent_onboard/domains/service-partitions.js',
   'cli/agent_onboard/domains/target/services/target-constants.js',
   'cli/agent_onboard/domains/target/services/target-doctor-service.js',
+  'cli/agent_onboard/domains/target/services/target-handoff-service.js',
   'cli/agent_onboard/domains/target/services/target-inventory-service.js',
   'cli/agent_onboard/domains/target/services/target-manifest-service.js',
   'cli/agent_onboard/domains/target/services/target-metadata-service.js',
@@ -363,6 +378,7 @@ module.exports = Object.freeze({
   TARGET_COMMAND,
   TARGET_CONFIG_FILE,
   TARGET_DOCTOR_COMMAND,
+  TARGET_HANDOFF_COMMAND,
   TARGET_INVENTORY_COMMAND,
   TARGET_METADATA_COMMAND,
   TARGET_MANIFEST_COMMAND,

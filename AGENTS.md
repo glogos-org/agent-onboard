@@ -53,6 +53,8 @@ node cli/agent-onboard.js target memory --text
 node cli/agent-onboard.js target memory --preview
 node cli/agent-onboard.js target work-items --text
 node cli/agent-onboard.js target work-items --preview
+node cli/agent-onboard.js target handoff --text
+node cli/agent-onboard.js target handoff --preview
 node cli/agent-onboard.js issue --classify-dry-run --text
 node cli/agent-onboard.js contributor --admission-dry-run --text
 node cli/agent-onboard.js check --plan --text
@@ -430,6 +432,11 @@ Use `node cli/agent-onboard.js create --dry-run`, `node cli/agent-onboard.js cre
 
 Use `node cli/agent-onboard.js discovery --llms`, `node cli/agent-onboard.js discovery --text`, or `node cli/agent-onboard.js discovery --json` when a new agent needs the compact AI-readable public entrypoint before selecting a workflow. Discovery is read-only: it may print the packaged/source AI discovery catalog and llms-style entrypoint, but it must not scan target repositories, create runtime state, validate arbitrary target configs, install dependencies, run managed project commands, publish, mutate Git, or perform network calls.
 
+
+
+## Public target handoff preview product surface
+
+Use `node cli/agent-onboard.js target handoff --preview`, `node cli/agent-onboard.js target handoff --json`, or `node cli/agent-onboard.js target handoff --text` when a new human or agent needs a compact read-only next-session handoff. Target handoff composes bounded target inventory, known memory/handoff surface presence, and target work-item summary. It must not import file contents, admit work items, close work items, synthesize a next id, write ledgers, install dependencies, run managed project commands, publish, mutate Git, or perform network calls. Handoff output is evidence and orientation only; it cannot grant authority.
 
 ## Public target work-items preview product surface
 

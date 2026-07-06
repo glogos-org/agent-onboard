@@ -202,6 +202,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-target-command-adapter-extraction-json-47b189e2"
     },
     {
+      "file_path": ".agent-onboard/target-handoff-preview-product-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-target-handoff-preview-product-gate-json-fcfbf502"
+    },
+    {
       "file_path": ".agent-onboard/target-inventory-preview-product-gate.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-target-inventory-preview-product-gate-json-d33bd0d4"
     },
@@ -392,6 +396,10 @@
     {
       "file_path": "cli/agent_onboard/domains/target/services/target-doctor-service.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-doctor-service-js-4b8bacad"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/target/services/target-handoff-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-handoff-service-js-b8f9fd0f"
     },
     {
       "file_path": "cli/agent_onboard/domains/target/services/target-inventory-service.js",
