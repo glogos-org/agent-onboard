@@ -11,6 +11,7 @@ const { createTargetRepairService } = require('./target-repair-service');
 const { createTargetMetadataService } = require('./target-metadata-service');
 const { createTargetManifestService } = require('./target-manifest-service');
 const { createTargetInventoryService } = require('./target-inventory-service');
+const { createTargetWorkItemsService } = require('./target-work-items-service');
 const { createTargetTemplatesService } = require('./target-templates-service');
 const { createTargetWriteService } = require('./target-write-service');
 const targetConstants = require('./target-constants');
@@ -94,6 +95,9 @@ function createTargetRuntimeService(deps) {
   const inventoryService = createTargetInventoryService(context);
   Object.assign(context, inventoryService);
 
+  const workItemsPreviewService = createTargetWorkItemsService(context);
+  Object.assign(context, workItemsPreviewService);
+
   const onboardingService = createTargetOnboardingService(context);
   Object.assign(context, onboardingService);
 
@@ -107,6 +111,7 @@ function createTargetRuntimeService(deps) {
     ...metadataService,
     ...manifestService,
     ...inventoryService,
+    ...workItemsPreviewService,
     ...onboardingService
   });
 }

@@ -51,6 +51,8 @@ node cli/agent-onboard.js discovery --text
 node cli/agent-onboard.js discovery --json
 node cli/agent-onboard.js target memory --text
 node cli/agent-onboard.js target memory --preview
+node cli/agent-onboard.js target work-items --text
+node cli/agent-onboard.js target work-items --preview
 node cli/agent-onboard.js issue --classify-dry-run --text
 node cli/agent-onboard.js contributor --admission-dry-run --text
 node cli/agent-onboard.js check --plan --text
@@ -427,6 +429,11 @@ Use `node cli/agent-onboard.js create --dry-run`, `node cli/agent-onboard.js cre
 ## Public AI discovery product surface
 
 Use `node cli/agent-onboard.js discovery --llms`, `node cli/agent-onboard.js discovery --text`, or `node cli/agent-onboard.js discovery --json` when a new agent needs the compact AI-readable public entrypoint before selecting a workflow. Discovery is read-only: it may print the packaged/source AI discovery catalog and llms-style entrypoint, but it must not scan target repositories, create runtime state, validate arbitrary target configs, install dependencies, run managed project commands, publish, mutate Git, or perform network calls.
+
+
+## Public target work-items preview product surface
+
+Use `node cli/agent-onboard.js target work-items --preview`, `node cli/agent-onboard.js target work-items --json`, or `node cli/agent-onboard.js target work-items --text` when a new agent needs a read-only view of target-owned work-item state before admitting or closing anything. Target work-items preview reads only `.agent-onboard/work-items.json` metadata when present and reports counts, open item, last closed item, admission queue count, and the next explicit queued candidate. It must not admit work items, close work items, synthesize a next id, write ledgers, install dependencies, run managed project commands, publish, mutate Git, or perform network calls.
 
 
 ## Public target memory descriptor product surface

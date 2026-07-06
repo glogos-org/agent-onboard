@@ -2,7 +2,7 @@
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
-const RELEASE_LINE = 'public_target_inventory_preview_product_gate';
+const RELEASE_LINE = 'public_target_work_items_preview_product_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
   agents: 'agents',
@@ -125,6 +125,7 @@ const TARGET_COMMAND = Object.freeze({
   runtime: 'runtime',
   inventory: 'inventory',
   memory: 'memory',
+  workItems: 'work-items',
   onboarding: 'onboarding',
   bootstrap: 'bootstrap'
 });
@@ -233,6 +234,18 @@ const TARGET_MEMORY_COMMAND = Object.freeze({
   })
 });
 
+const TARGET_WORK_ITEMS_COMMAND = Object.freeze({
+  help: 'agent-onboard target work-items --preview|--json|--text [--target <path>]',
+  mode: Object.freeze({
+    preview: '--preview'
+  }),
+  flag: Object.freeze({
+    json: OUTPUT_FLAG.json,
+    text: OUTPUT_FLAG.text,
+    target: TARGET_OPTION.target
+  })
+});
+
 const PRODUCT_HELP_LINES = Object.freeze([
   'agent-onboard status',
   'agent-onboard commands --json|--text',
@@ -249,6 +262,7 @@ const PRODUCT_HELP_LINES = Object.freeze([
   TARGET_PROFILE_COMMAND.help,
   TARGET_INVENTORY_COMMAND.help,
   TARGET_MEMORY_COMMAND.help,
+  TARGET_WORK_ITEMS_COMMAND.help,
   TARGET_REPAIR_COMMAND.help,
   TARGET_METADATA_COMMAND.help,
   TARGET_MANIFEST_COMMAND.help,
@@ -312,6 +326,7 @@ const PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES = Object.freeze([
   'cli/agent_onboard/domains/target/services/target-runtime-utilities.js',
   'cli/agent_onboard/domains/target/services/target-service.js',
   'cli/agent_onboard/domains/target/services/target-templates-service.js',
+  'cli/agent_onboard/domains/target/services/target-work-items-service.js',
   'cli/agent_onboard/domains/target/services/target-write-service.js',
   'cli/agent_onboard/domains/target/static-catalog.js',
   'cli/agent_onboard/domains/work-items/index.js',
@@ -352,6 +367,7 @@ module.exports = Object.freeze({
   TARGET_METADATA_COMMAND,
   TARGET_MANIFEST_COMMAND,
   TARGET_MEMORY_COMMAND,
+  TARGET_WORK_ITEMS_COMMAND,
   TARGET_OPTION,
   TARGET_PROFILE_COMMAND,
   TARGET_REPAIR_COMMAND,

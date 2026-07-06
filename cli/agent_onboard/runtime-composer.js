@@ -32,6 +32,7 @@ const {
   TARGET_MANIFEST_COMMAND,
   TARGET_MEMORY_COMMAND,
   TARGET_PROFILE_COMMAND,
+  TARGET_WORK_ITEMS_COMMAND,
   TARGET_REPAIR_COMMAND,
   TOP_LEVEL_COMMAND,
   TOP_LEVEL_COMMAND_ALIAS
@@ -182,6 +183,7 @@ function commandSurfaceCatalog() {
       'agent-onboard target doctor --text',
       'agent-onboard target inventory --text',
       'agent-onboard target memory --text',
+      'agent-onboard target work-items --text',
       'agent-onboard work-items --next --text',
       'agent-onboard release --check'
     ],
@@ -261,6 +263,7 @@ function operatorGuideCatalog() {
           'agent-onboard target profile --text',
           'agent-onboard target inventory --text',
           'agent-onboard target memory --text',
+          'agent-onboard target work-items --text',
           'agent-onboard target metadata --plan',
           'agent-onboard target manifest --check-drift'
         ],
@@ -1083,7 +1086,9 @@ const CHECK_FAST_REGISTRY = Object.freeze([
   Object.freeze({ id: 'create-dry-run', command: 'agent-onboard create --dry-run', scope: 'consumer_create_preview', slow: false }),
   Object.freeze({ id: 'issue-intake-dry-run', command: 'agent-onboard issue --classify-dry-run', scope: 'external_issue_preview', slow: false }),
   Object.freeze({ id: 'contributor-admission-dry-run', command: 'agent-onboard contributor --admission-dry-run', scope: 'contributor_preview', slow: false }),
+  Object.freeze({ id: 'target-inventory-preview', command: 'agent-onboard target inventory --preview', scope: 'target_runtime_inventory', slow: false }),
   Object.freeze({ id: 'target-memory-preview', command: 'agent-onboard target memory --preview', scope: 'target_memory_descriptor', slow: false }),
+  Object.freeze({ id: 'target-work-items-preview', command: 'agent-onboard target work-items --preview', scope: 'target_work_items_preview', slow: false }),
   Object.freeze({ id: 'release-source-manifest-check', command: 'agent-onboard release --source-manifest-check', scope: 'package_source_manifest', slow: false }),
   Object.freeze({ id: 'release-surface-check', command: 'agent-onboard release --surface-check', scope: 'package_surface', slow: false }),
   Object.freeze({ id: 'release-check', command: 'agent-onboard release --check', scope: 'release_integrity', slow: false }),
@@ -1200,6 +1205,7 @@ function runCheckFastPlan(root = packageRoot()) {
     'contributor-admission-dry-run': () => contributorAdmissionService.preview(contributorAdmissionService.input(['--admission-dry-run']).input),
     'target-inventory-preview': () => targetRuntimeService.targetInventory(targetRoot),
     'target-memory-preview': () => targetMemoryService.descriptor(targetRoot),
+    'target-work-items-preview': () => targetRuntimeService.targetWorkItemsPreview(targetRoot),
     'release-source-manifest-check': () => publicPackageSourceManifestCheck(root),
     'release-surface-check': () => publicPackageSurfaceCheck(root),
     'release-check': () => publicReleaseCheck(root),
@@ -1389,6 +1395,7 @@ const MCP_TOOL_CANDIDATES = Object.freeze([
   Object.freeze({ name: 'agent_onboard_preview_contributor', command: 'agent-onboard contributor --admission-dry-run --json', output_schema: 'agent-onboard-public-contributor-admission-dry-run-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_preview_target_inventory', command: 'agent-onboard target inventory --json', output_schema: 'agent-onboard-public-target-runtime-inventory-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_preview_target_memory', command: 'agent-onboard target memory --json', output_schema: 'agent-onboard-public-target-memory-descriptor-001', mutates: false }),
+  Object.freeze({ name: 'agent_onboard_preview_target_work_items', command: 'agent-onboard target work-items --json', output_schema: 'agent-onboard-public-target-work-items-preview-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_run_fast_check', command: 'agent-onboard check --fast --json', output_schema: 'agent-onboard-public-check-fast-result-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_get_ci_recipe', command: 'agent-onboard ci --json', output_schema: 'agent-onboard-public-ci-surface-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_get_source_manifest', command: 'agent-onboard release --source-manifest', output_schema: 'agent-onboard-public-package-source-manifest-001', mutates: false }),
@@ -1768,6 +1775,8 @@ const {
   targetProfile,
   targetInventory,
   formatTargetInventoryText,
+  targetWorkItemsPreview,
+  formatTargetWorkItemsPreviewText,
   agentsMdTemplate,
   firstReadOrder,
   llmsTxtTemplate,
@@ -8249,6 +8258,25 @@ function runTargetInventory(args) {
   return result.status === 'ok' ? 0 : 1;
 }
 
+function runTargetWorkItems(args) {
+  const allowed = [TARGET_WORK_ITEMS_COMMAND.mode.preview, TARGET_WORK_ITEMS_COMMAND.flag.json, TARGET_WORK_ITEMS_COMMAND.flag.text, TARGET_WORK_ITEMS_COMMAND.flag.target];
+  const targetIndex = args.indexOf(TARGET_WORK_ITEMS_COMMAND.flag.target);
+  const targetRoot = targetIndex >= 0 ? args[targetIndex + 1] : process.cwd();
+  const unknown = args.filter((arg, index) => {
+    if (targetIndex >= 0 && index === targetIndex + 1) return false;
+    return !allowed.includes(arg);
+  });
+  if (targetIndex >= 0 && (!targetRoot || targetRoot.startsWith('-'))) throw new Error(`target work-items ${TARGET_WORK_ITEMS_COMMAND.flag.target} requires a path`);
+  if (unknown.length > 0) throw new Error(`target work-items does not support: ${unknown.join(', ')}`);
+  const modes = args.filter((arg) => [TARGET_WORK_ITEMS_COMMAND.mode.preview, TARGET_WORK_ITEMS_COMMAND.flag.json, TARGET_WORK_ITEMS_COMMAND.flag.text].includes(arg));
+  if (modes.length > 1) throw new Error('target work-items accepts only one output mode: --preview, --json, or --text');
+  const mode = modes[0] || TARGET_WORK_ITEMS_COMMAND.mode.preview;
+  const result = targetWorkItemsPreview(targetRoot);
+  if (mode === TARGET_WORK_ITEMS_COMMAND.flag.text) process.stdout.write(formatTargetWorkItemsPreviewText(result));
+  else json(result);
+  return result.status === 'ok' ? 0 : 1;
+}
+
 function runTargetMemory(args) {
   const allowed = [TARGET_MEMORY_COMMAND.mode.preview, TARGET_MEMORY_COMMAND.flag.json, TARGET_MEMORY_COMMAND.flag.text, TARGET_MEMORY_COMMAND.flag.target];
   const targetIndex = args.indexOf(TARGET_MEMORY_COMMAND.flag.target);
@@ -8299,8 +8327,9 @@ function runTargetCommand(args) {
   if (args[0] === TARGET_COMMAND.runtime) return runTargetRuntime(args.slice(1));
   if (args[0] === TARGET_COMMAND.inventory) return runTargetInventory(args.slice(1));
   if (args[0] === TARGET_COMMAND.memory) return runTargetMemory(args.slice(1));
+  if (args[0] === TARGET_COMMAND.workItems) return runTargetWorkItems(args.slice(1));
   if (args[0] === TARGET_COMMAND.onboarding) return runTargetOnboarding(args.slice(1));
-  if (args[0] !== TARGET_COMMAND.bootstrap) throw new Error(`target supports only: ${TARGET_DOCTOR_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_PROFILE_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_REPAIR_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_METADATA_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_MANIFEST_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_INVENTORY_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_MEMORY_COMMAND.help.replace('agent-onboard target ', '')}, runtime --namespace|--check, onboarding --plan|--fixture|--trial [--target <path>]|--write [--force], bootstrap`);
+  if (args[0] !== TARGET_COMMAND.bootstrap) throw new Error(`target supports only: ${TARGET_DOCTOR_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_PROFILE_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_REPAIR_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_METADATA_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_MANIFEST_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_INVENTORY_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_MEMORY_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_WORK_ITEMS_COMMAND.help.replace('agent-onboard target ', '')}, runtime --namespace|--check, onboarding --plan|--fixture|--trial [--target <path>]|--write [--force], bootstrap`);
   return runTargetBootstrap(args.slice(1));
 }
 
@@ -8567,6 +8596,8 @@ module.exports = {
   targetProfile,
   targetInventory,
   formatTargetInventoryText,
+  targetWorkItemsPreview,
+  formatTargetWorkItemsPreviewText,
   targetRuntimeNamespaceTemplate,
   planTargetOnboardingWritesForRoot,
   TARGET_ONBOARDING_SURFACE_PLAN,

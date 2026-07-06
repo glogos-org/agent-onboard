@@ -214,6 +214,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-target-repo-product-refactor-plan-json-0bcc1b6c"
     },
     {
+      "file_path": ".agent-onboard/target-work-items-preview-product-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-target-work-items-preview-product-gate-json-81e38fd0"
+    },
+    {
       "file_path": ".agent-onboard/target.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-target-json-38c70815"
     },
@@ -424,6 +428,10 @@
     {
       "file_path": "cli/agent_onboard/domains/target/services/target-templates-service.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-templates-service-js-c231e9b6"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/target/services/target-work-items-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-work-items-service-js-1a079328"
     },
     {
       "file_path": "cli/agent_onboard/domains/target/services/target-write-service.js",

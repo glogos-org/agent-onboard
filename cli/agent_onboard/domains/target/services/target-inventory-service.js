@@ -196,7 +196,7 @@ function commandSurface(root, files, packageJson) {
 
 function targetInventory(targetRoot = process.cwd(), deps = {}) {
   const version = deps.version || '0.0.0';
-  const releaseLine = deps.releaseLine || 'public_target_inventory_preview_product_gate';
+  const releaseLine = deps.releaseLine || 'public_target_work_items_preview_product_gate';
   const absoluteTargetRoot = path.resolve(targetRoot || process.cwd());
   const base = {
     schema: TARGET_INVENTORY_SCHEMA,

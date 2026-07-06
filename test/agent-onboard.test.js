@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_target_inventory_preview_product_gate';
+const EXPECTED_RELEASE_LINE = 'public_target_work_items_preview_product_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -55,6 +55,7 @@ const EXPECTED_PACK_FILES = [
   'cli/agent_onboard/domains/target/services/target-runtime-utilities.js',
   'cli/agent_onboard/domains/target/services/target-service.js',
   'cli/agent_onboard/domains/target/services/target-templates-service.js',
+  'cli/agent_onboard/domains/target/services/target-work-items-service.js',
   'cli/agent_onboard/domains/target/services/target-write-service.js',
   'cli/agent_onboard/domains/target/static-catalog.js',
   'cli/agent_onboard/domains/work-items/index.js',
@@ -221,8 +222,10 @@ fullSourceTest('public runtime contracts module centralizes command and package 
   assert.strictEqual(contracts.TARGET_COMMAND.doctor, 'doctor');
   assert.strictEqual(contracts.TARGET_COMMAND.metadata, 'metadata');
   assert.strictEqual(contracts.TARGET_COMMAND.memory, 'memory');
+  assert.strictEqual(contracts.TARGET_COMMAND.workItems, 'work-items');
   assert.strictEqual(contracts.TARGET_DOCTOR_COMMAND.flag.text, '--text');
   assert.strictEqual(contracts.TARGET_METADATA_COMMAND.flag.target, '--target');
+  assert.strictEqual(contracts.TARGET_WORK_ITEMS_COMMAND.flag.text, '--text');
   assert.strictEqual(contracts.TARGET_METADATA_COMMAND.mode.write, '--write');
   assert.strictEqual(contracts.TARGET_PROFILE_COMMAND.flag.target, '--target');
   assert.ok(Object.isFrozen(contracts.TARGET_COMMAND));
@@ -266,6 +269,7 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.ok(output.help_lines.includes('agent-onboard mcp --plan|--json|--text'));
   assert.ok(output.help_lines.includes('agent-onboard target inventory --preview|--json|--text [--target <path>]'));
   assert.ok(output.help_lines.includes('agent-onboard target memory --preview|--json|--text [--target <path>]'));
+  assert.ok(output.help_lines.includes('agent-onboard target work-items --preview|--json|--text [--target <path>]'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard commands --text'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard guide --text'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard quickstart --text'));
@@ -279,6 +283,7 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.ok(output.recommended_first_commands.includes('agent-onboard mcp --plan --text'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard target inventory --text'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard target memory --text'));
+  assert.ok(output.recommended_first_commands.includes('agent-onboard target work-items --text'));
   assert.strictEqual(output.boundary.writes_files, false);
   assert.strictEqual(output.boundary.publishes_package, false);
 
@@ -297,6 +302,7 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.ok(textResult.stdout.includes('agent-onboard mcp --plan|--json|--text'));
   assert.ok(textResult.stdout.includes('agent-onboard target inventory --preview|--json|--text [--target <path>]'));
   assert.ok(textResult.stdout.includes('agent-onboard target memory --preview|--json|--text [--target <path>]'));
+  assert.ok(textResult.stdout.includes('agent-onboard target work-items --preview|--json|--text [--target <path>]'));
 });
 
 fullSourceTest('public discovery is directly usable', () => {
@@ -566,6 +572,64 @@ fullSourceTest('public target inventory preview is directly usable', () => {
   assert.strictEqual(previewOutput.schema, 'agent-onboard-public-target-runtime-inventory-001');
 
   const refused = run(['target', 'inventory', '--write', '--target', dir]);
+  const refusedOutput = readJsonFailure(refused);
+  assert.strictEqual(refused.status, 1);
+  assert.strictEqual(refusedOutput.status, 'error');
+});
+
+
+fullSourceTest('public target work-items preview is directly usable', () => {
+  const dir = tempRepo();
+  const milestoneId = ['P9', 'S1', 'M1'].join('');
+  const closedId = [milestoneId, 'W1'].join('');
+  const queuedId = [milestoneId, 'W2'].join('');
+  fs.mkdirSync(path.join(dir, '.agent-onboard'), { recursive: true });
+  fs.writeFileSync(path.join(dir, '.agent-onboard', 'work-items.json'), JSON.stringify({
+    schema: 'target-work-items-fixture',
+    work_items: [
+      { id: closedId, title: 'Closed fixture gate', status: 'closed', milestone_id: milestoneId }
+    ],
+    admission_queue: [
+      { id: queuedId, title: 'Queued fixture gate', status: 'planned', milestone_id: milestoneId, queue_policy: 'explicit_candidate_required' }
+    ]
+  }, null, 2) + '\n');
+
+  const jsonResult = run(['target', 'work-items', '--json', '--target', dir]);
+  const output = readJsonOutput(jsonResult);
+  assert.strictEqual(output.schema, 'agent-onboard-public-target-work-items-preview-001');
+  assert.strictEqual(output.status, 'ok');
+  assert.strictEqual(output.version, EXPECTED_VERSION);
+  assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
+  assert.strictEqual(output.command, 'agent-onboard target work-items --preview');
+  assert.strictEqual(output.command_family, 'target work-items');
+  assert.strictEqual(output.work_items_file.present, true);
+  assert.strictEqual(output.summary.total_work_items, 1);
+  assert.strictEqual(output.summary.status_counts.closed, 1);
+  assert.strictEqual(output.summary.admission_queue_count, 1);
+  assert.strictEqual(output.summary.last_closed_work_item.id, closedId);
+  assert.strictEqual(output.summary.next_admission_candidate.id, queuedId);
+  assert.strictEqual(output.summary.next_action_state, 'explicit_admission_candidate_available');
+  assert.strictEqual(output.validation.synthesizes_next_id, false);
+  assert.strictEqual(output.boundary.admits_or_closes_work_items, false);
+  assert.strictEqual(output.boundary.writes_files, false);
+  assert.strictEqual(output.boundary.network, false);
+  assert.strictEqual(output.writes_performed, false);
+
+  const textResult = run(['target', 'work-items', '--text', '--target', dir]);
+  assert.strictEqual(textResult.status, 0, textResult.stderr || textResult.stdout);
+  assert.ok(textResult.stdout.includes('agent-onboard target work-items'));
+  assert.ok(textResult.stdout.includes(`Next queued candidate: ${queuedId}`));
+  assert.ok(textResult.stdout.includes('no work-item admission'));
+  assert.ok(textResult.stdout.includes('Writes performed: false'));
+
+  const missingDir = tempRepo();
+  const missingResult = run(['target', 'work-items', '--preview', '--target', missingDir]);
+  const missingOutput = readJsonOutput(missingResult);
+  assert.strictEqual(missingOutput.status, 'ok');
+  assert.strictEqual(missingOutput.work_items_file.present, false);
+  assert.strictEqual(missingOutput.summary.next_action_state, 'no_target_work_items_file');
+
+  const refused = run(['target', 'work-items', '--write', '--target', dir]);
   const refusedOutput = readJsonFailure(refused);
   assert.strictEqual(refused.status, 1);
   assert.strictEqual(refusedOutput.status, 'error');
@@ -3375,6 +3439,7 @@ fullSourceTest('full source block line 2233', () => {
   assert.ok(readme.includes('npx agent-onboard authority --check'));
   assert.ok(readme.includes('npx agent-onboard target doctor --json'));
   assert.ok(readme.includes('npx agent-onboard target profile --json'));
+  assert.ok(readme.includes('npx agent-onboard target work-items --preview'));
   assert.ok(readme.includes('npx agent-onboard target repair --plan'));
   assert.ok(readme.includes('npx agent-onboard target repair --write'));
   assert.ok(readme.includes('npx agent-onboard target metadata --plan'));
@@ -3419,7 +3484,8 @@ fullSourceTest('full source block line 2233', () => {
   assert.ok(readme.includes('Use `--text` on target-facing inspection commands'));
   assert.ok(readme.includes('npx agent-onboard check --plan --text'));
   assert.ok(readme.includes('npx agent-onboard check --fast --text'));
-  assert.ok(readme.includes('The current release adds the public target inventory preview product surface'));
+  assert.ok(readme.includes('The current release adds the public target work-items preview product surface'));
+  assert.ok(readme.includes('The previous release added the public target inventory preview product surface'));
   assert.ok(readme.includes('without dependency installation, managed-project command execution, Git mutation, network access, or writes'));
   assert.ok(readme.includes('The previous release added the public MCP bridge plan / skeleton product surface'));
   assert.ok(readme.includes('without starting an MCP server, adding MCP dependencies, opening sockets, starting stdio transport, writing files, network, Git mutation, or publish'));
@@ -3442,6 +3508,7 @@ fullSourceTest('full source block line 2323', () => {
   assert.ok(help.stdout.includes('target profile --json|--text [--target <path>]'));
   assert.ok(help.stdout.includes('target inventory --preview|--json|--text [--target <path>]'));
   assert.ok(help.stdout.includes('target memory --preview|--json|--text [--target <path>]'));
+  assert.ok(help.stdout.includes('target work-items --preview|--json|--text [--target <path>]'));
   assert.ok(help.stdout.includes('target metadata --plan|--check|--write [--profile default] [--policy <path>] [--adopt-existing] [--force] [--target <path>]'));
   assert.ok(help.stdout.includes('target manifest --check-drift|--init|--refresh [--dry-run|--write] [--target <path>]'));
   assert.ok(help.stdout.includes('work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>'));
