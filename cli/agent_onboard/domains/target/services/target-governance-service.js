@@ -7,6 +7,7 @@ const PACKAGE_NAME = 'agent-onboard';
 const TARGET_GOVERNANCE_SCHEMA = 'agent-onboard-public-target-governance-preview-001';
 const TARGET_GOVERNANCE_MATERIALIZATION_SCHEMA = 'agent-onboard-public-target-governance-index-materialization-dry-run-001';
 const TARGET_GOVERNANCE_MATERIALIZATION_WRITE_SCHEMA = 'agent-onboard-public-target-governance-index-materialization-write-001';
+const TARGET_GOVERNANCE_REFRESH_SCHEMA = 'agent-onboard-public-target-governance-index-refresh-after-mutation-001';
 const TARGET_GOVERNANCE_COMMAND = 'agent-onboard target governance --preview';
 const TARGET_GOVERNANCE_MATERIALIZATION_COMMAND = 'agent-onboard target governance --materialize-dry-run';
 const TARGET_GOVERNANCE_MATERIALIZATION_WRITE_COMMAND = 'agent-onboard target governance --materialize --write';
@@ -346,7 +347,7 @@ function governanceReadiness(workIndex, claimsIndex, rawWorkItems, rawClaims) {
 
 function targetGovernanceIndexMaterializationDryRun(targetRoot = process.cwd(), deps = {}) {
   const version = deps.version || '0.0.0';
-  const releaseLine = deps.releaseLine || 'public_target_governance_index_explicit_write_gate';
+  const releaseLine = deps.releaseLine || 'public_target_governance_index_refresh_integration_gate';
   const absoluteTargetRoot = path.resolve(targetRoot || process.cwd());
   const updatedAt = safeString(deps.updatedAt) || new Date().toISOString();
   const base = Object.freeze({
@@ -503,7 +504,7 @@ function targetGovernanceIndexMaterializationDryRunText(result) {
 
 function targetGovernanceIndexMaterializationWrite(targetRoot = process.cwd(), deps = {}) {
   const version = deps.version || '0.0.0';
-  const releaseLine = deps.releaseLine || 'public_target_governance_index_explicit_write_gate';
+  const releaseLine = deps.releaseLine || 'public_target_governance_index_refresh_integration_gate';
   const force = deps.force === true;
   const updatedAt = safeString(deps.updatedAt) || new Date().toISOString();
   const plan = targetGovernanceIndexMaterializationDryRun(targetRoot, { version, releaseLine, updatedAt });
@@ -599,6 +600,95 @@ function targetGovernanceIndexMaterializationWrite(targetRoot = process.cwd(), d
   });
 }
 
+
+function targetGovernanceIndexRefreshBoundary(writeBoundary, triggered) {
+  return Object.freeze({
+    writes_files: Boolean(writeBoundary && writeBoundary.writes_files),
+    writes_target_repository_state: Boolean(writeBoundary && writeBoundary.writes_target_repository_state),
+    creates_agent_onboard_runtime_state: Boolean(writeBoundary && writeBoundary.creates_agent_onboard_runtime_state),
+    scans_target_repository: true,
+    bounded_to_known_governance_files: true,
+    allowed_write_paths: ALLOWED_INDEX_WRITE_PATHS.slice(),
+    refreshes_governance_indexes_after_admitted_mutation: Boolean(triggered),
+    writes_governance_indexes: Boolean(writeBoundary && writeBoundary.writes_governance_indexes),
+    compare_before_write: true,
+    inlines_raw_work_items_file: false,
+    inlines_raw_claims_ledger: false,
+    mutates_raw_work_items_file: false,
+    mutates_claims_ledger: false,
+    admits_or_closes_work_items: false,
+    creates_claims: false,
+    installs_dependencies: false,
+    runs_build_test_deploy: false,
+    runs_managed_project_commands: false,
+    publishes_package: false,
+    network: false,
+    git_mutation: false
+  });
+}
+
+function targetGovernanceIndexRefreshAfterMutation(targetRoot = process.cwd(), deps = {}) {
+  const version = deps.version || '0.0.0';
+  const releaseLine = deps.releaseLine || 'public_target_governance_index_refresh_integration_gate';
+  const trigger = isPlainObject(deps.trigger) ? deps.trigger : {};
+  const command = safeString(trigger.command) || 'unknown write command';
+  const file = safeString(trigger.file) || WORK_ITEMS_PATH;
+  const canonicalWorkItemsFile = file === WORK_ITEMS_PATH;
+  const base = Object.freeze({
+    schema: TARGET_GOVERNANCE_REFRESH_SCHEMA,
+    package_name: PACKAGE_NAME,
+    version,
+    release_line: releaseLine,
+    command: `${command} -> target governance index refresh`,
+    command_family: TARGET_GOVERNANCE_FAMILY,
+    trigger: Object.freeze({
+      command,
+      file,
+      canonical_work_items_file: canonicalWorkItemsFile,
+      admitted_write_completed: trigger.admitted_write_completed === true
+    })
+  });
+
+  if (trigger.admitted_write_completed !== true) {
+    return Object.assign({}, base, {
+      status: 'skipped',
+      reason: 'governance index refresh requires a completed admitted write',
+      materialization: null,
+      writes_performed: false,
+      boundary: targetGovernanceIndexRefreshBoundary(materializationBoundary(false, false), false),
+      errors: []
+    });
+  }
+
+  if (!canonicalWorkItemsFile) {
+    return Object.assign({}, base, {
+      status: 'skipped',
+      reason: `governance index refresh is bound to ${WORK_ITEMS_PATH}`,
+      materialization: null,
+      writes_performed: false,
+      boundary: targetGovernanceIndexRefreshBoundary(materializationBoundary(false, false), false),
+      errors: []
+    });
+  }
+
+  const writeResult = targetGovernanceIndexMaterializationWrite(targetRoot, {
+    version,
+    releaseLine,
+    force: true,
+    updatedAt: safeString(deps.updatedAt)
+  });
+  return Object.assign({}, base, {
+    status: writeResult.status,
+    reason: writeResult.status === 'ok' ? 'governance indexes refreshed after admitted write' : 'governance index refresh failed after admitted write',
+    materialization: writeResult.materialization,
+    refresh_result_schema: writeResult.schema,
+    refresh_changed_path_count: writeResult.materialization && typeof writeResult.materialization.changed_path_count === 'number' ? writeResult.materialization.changed_path_count : 0,
+    writes_performed: writeResult.writes_performed === true,
+    boundary: targetGovernanceIndexRefreshBoundary(writeResult.boundary, true),
+    errors: Array.isArray(writeResult.errors) ? writeResult.errors : []
+  });
+}
+
 function targetGovernanceIndexMaterializationWriteText(result) {
   if (result.status !== 'ok') {
     return [
@@ -627,7 +717,7 @@ function targetGovernanceIndexMaterializationWriteText(result) {
 
 function targetGovernancePreview(targetRoot = process.cwd(), deps = {}) {
   const version = deps.version || '0.0.0';
-  const releaseLine = deps.releaseLine || 'public_target_governance_index_explicit_write_gate';
+  const releaseLine = deps.releaseLine || 'public_target_governance_index_refresh_integration_gate';
   const absoluteTargetRoot = path.resolve(targetRoot || process.cwd());
   const base = Object.freeze({
     schema: TARGET_GOVERNANCE_SCHEMA,
@@ -769,6 +859,7 @@ function createTargetGovernanceService(deps = {}) {
     targetGovernanceIndexMaterializationDryRun: (targetRoot) => targetGovernanceIndexMaterializationDryRun(targetRoot, { version: deps.version, releaseLine }),
     formatTargetGovernanceIndexMaterializationDryRunText: targetGovernanceIndexMaterializationDryRunText,
     targetGovernanceIndexMaterializationWrite: (targetRoot, options = {}) => targetGovernanceIndexMaterializationWrite(targetRoot, { version: deps.version, releaseLine, force: options.force }),
+    targetGovernanceIndexRefreshAfterMutation: (targetRoot, options = {}) => targetGovernanceIndexRefreshAfterMutation(targetRoot, { version: deps.version, releaseLine, trigger: options.trigger, updatedAt: options.updatedAt }),
     formatTargetGovernanceIndexMaterializationWriteText: targetGovernanceIndexMaterializationWriteText,
     buildTargetGovernanceWorkItemsIndex: buildWorkItemsIndex,
     buildTargetGovernanceClaimsIndex: buildClaimsIndex
@@ -783,6 +874,7 @@ module.exports = {
   targetGovernanceIndexMaterializationDryRunText,
   targetGovernanceIndexMaterializationWrite,
   targetGovernanceIndexMaterializationWriteText,
+  targetGovernanceIndexRefreshAfterMutation,
   buildWorkItemsIndex,
   buildClaimsIndex
 };

@@ -1,0 +1,14 @@
+{
+  "schema": "agent-onboard-target-claims-index-001",
+  "status": "active",
+  "ledger_path": ".agent-onboard/claims.jsonl",
+  "raw_ledger_loaded_by_default": false,
+  "claim_count": 0,
+  "proposed_count": 0,
+  "merged_count": 0,
+  "latest_claims_limit": 5,
+  "latest_claims": [],
+  "active_work_item_ids": [],
+  "latest_merged_work_item_ids": [],
+  "updated_at": "2026-07-04T17:18:31.938Z"
+}

@@ -440,6 +440,11 @@ Use `node cli/agent-onboard.js discovery --llms`, `node cli/agent-onboard.js dis
 
 
 
+
+## Public target governance index refresh integration gate
+
+After successful canonical `node cli/agent-onboard.js work-items --init --write`, `--append --write`, `--claim --write`, or `--close --write`, the work-items response may include `governance_index_refresh`. That refresh writes only `.agent-onboard/work-items.index.json` and `.agent-onboard/claims.index.json`, uses compare-before-write, and is cache/orientation only. It must not treat the indexes as authority, mutate `.agent-onboard/claims.jsonl`, create claims, install dependencies, run managed project commands, publish, mutate Git, or perform network calls. If `--file` points away from the canonical `.agent-onboard/work-items.json`, the refresh is skipped.
+
 ## Public target governance index explicit write product surface
 
 Use `node cli/agent-onboard.js target governance --materialize --write --force`, `node cli/agent-onboard.js target governance --materialize --write --force --json`, or `node cli/agent-onboard.js target governance --materialize --write --force --text` only after explicit owner authorization to materialize compact first-read governance indexes. The command writes only `.agent-onboard/work-items.index.json` and `.agent-onboard/claims.index.json`, uses compare-before-write, and reports create/replace/keep actions. It must not mutate `.agent-onboard/work-items.json`, truncate or rewrite `.agent-onboard/claims.jsonl`, admit or close work items, create claims, install dependencies, run managed project commands, publish, mutate Git, or perform network calls. Index output is cache/orientation only; raw work-items and claims files remain authoritative.

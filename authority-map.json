@@ -22,6 +22,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-check-plan-fast-runner-product-gate-json-994f46b2"
     },
     {
+      "file_path": ".agent-onboard/claims.index.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-claims-index-json-30119f4c"
+    },
+    {
       "file_path": ".agent-onboard/cli-runtime-de-monolith-planning.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-cli-runtime-de-monolith-planning-json-4876c2d0"
     },
@@ -210,6 +214,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-target-governance-index-materialization-dry-run-product-gate-json-a64ca318"
     },
     {
+      "file_path": ".agent-onboard/target-governance-index-refresh-integration-product-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-target-governance-index-refresh-integration-product-gate-json-057a3df5"
+    },
+    {
       "file_path": ".agent-onboard/target-governance-preview-product-gate.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-target-governance-preview-product-gate-json-eb89da54"
     },
@@ -252,6 +260,10 @@
     {
       "file_path": ".agent-onboard/work-items-runtime-service-partition-seed.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-work-items-runtime-service-partition-seed-json-a5319c9c"
+    },
+    {
+      "file_path": ".agent-onboard/work-items.index.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-work-items-index-json-e4fde6be"
     },
     {
       "file_path": ".editorconfig",

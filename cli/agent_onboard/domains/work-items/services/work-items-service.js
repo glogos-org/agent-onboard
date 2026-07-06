@@ -126,6 +126,8 @@ const WORK_ITEMS_SERVICE_SEED = Object.freeze({
     no_child_process: true,
     init_append_commands_write_only_under_explicit_write: true,
     claim_close_commands_write_only_under_explicit_write: true,
+    canonical_work_items_writes_refresh_governance_indexes: true,
+    governance_index_refresh_writes_only_allowlisted_cache_files: true,
     no_legacy_work_items_fallback_commands: true
   })
 });
@@ -169,6 +171,10 @@ function defaultClaimWorkItemDryRun() {
 
 function defaultCloseWorkItemDryRun() {
   throw new Error(`${WORK_ITEMS_COMMAND.CLOSE} requires a close planner`);
+}
+
+function defaultRefreshGovernanceIndexesAfterWorkItemsWrite() {
+  return null;
 }
 
 function fileAfterFlag(args, flag, fallback) {
@@ -328,6 +334,7 @@ function createWorkItemsService(options = Object.freeze({})) {
   const appendWorkItemDryRun = typeof options.appendWorkItemDryRun === 'function' ? options.appendWorkItemDryRun : defaultAppendWorkItemDryRun;
   const claimWorkItemDryRun = typeof options.claimWorkItemDryRun === 'function' ? options.claimWorkItemDryRun : defaultClaimWorkItemDryRun;
   const closeWorkItemDryRun = typeof options.closeWorkItemDryRun === 'function' ? options.closeWorkItemDryRun : defaultCloseWorkItemDryRun;
+  const refreshGovernanceIndexesAfterWorkItemsWrite = typeof options.refreshGovernanceIndexesAfterWorkItemsWrite === 'function' ? options.refreshGovernanceIndexesAfterWorkItemsWrite : defaultRefreshGovernanceIndexesAfterWorkItemsWrite;
   const planWrites = typeof options.planWrites === 'function' ? options.planWrites : () => [];
   const performPlannedWrites = typeof options.performPlannedWrites === 'function' ? options.performPlannedWrites : () => {};
   const summarizePlan = typeof options.summarizePlan === 'function' ? options.summarizePlan : (plannedWrites) => plannedWrites;
@@ -340,6 +347,49 @@ function createWorkItemsService(options = Object.freeze({})) {
   function emitView(args, payload) {
     if (args.includes(OUTPUT_FLAG.TEXT)) emitText(formatWorkItemsText(payload));
     else emit(payload);
+  }
+
+  function refreshGovernanceIndexesAfterWrite({ write, ok, file, command }) {
+    if (!write || !ok) return null;
+    if (file !== CANONICAL_WORK_ITEMS_FILE) {
+      return {
+        schema: 'agent-onboard-work-items-governance-index-refresh-skipped-001',
+        status: 'skipped',
+        reason: `governance index refresh is bound to ${CANONICAL_WORK_ITEMS_FILE}`,
+        trigger: {
+          command,
+          file,
+          canonical_work_items_file: false,
+          admitted_write_completed: true
+        },
+        writes_performed: false
+      };
+    }
+    try {
+      return refreshGovernanceIndexesAfterWorkItemsWrite({
+        target_root: cwd(),
+        trigger: {
+          command,
+          file,
+          canonical_work_items_file: true,
+          admitted_write_completed: true
+        }
+      });
+    } catch (error) {
+      return {
+        schema: 'agent-onboard-work-items-governance-index-refresh-error-001',
+        status: 'error',
+        reason: error && error.message ? error.message : String(error),
+        trigger: {
+          command,
+          file,
+          canonical_work_items_file: true,
+          admitted_write_completed: true
+        },
+        writes_performed: false,
+        errors: [error && error.message ? error.message : String(error)]
+      };
+    }
   }
 
   function readLedgerForView(args, flag, resultSchema) {
@@ -441,6 +491,7 @@ function createWorkItemsService(options = Object.freeze({})) {
     const proposalErrors = validateWorkItems(proposal.proposed_ledger);
     const ok = proposalErrors.length === 0;
     if (write && ok) writeJson(absolutePath, proposal.proposed_ledger);
+    const governanceIndexRefresh = refreshGovernanceIndexesAfterWrite({ write, ok, file, command });
     emit({
       schema: WORK_ITEMS_RESULT_SCHEMA.APPEND,
       status: resultStatus(ok),
@@ -453,6 +504,7 @@ function createWorkItemsService(options = Object.freeze({})) {
       counts_after: workItemCounts(proposal.proposed_ledger),
       added: proposal.added,
       proposed_ledger: proposal.proposed_ledger,
+      governance_index_refresh: governanceIndexRefresh,
       errors: proposalErrors,
       boundary: {
         installs_dependencies: false,
@@ -460,7 +512,10 @@ function createWorkItemsService(options = Object.freeze({})) {
         publishes_or_pushes: false,
         modifies_source_files: false,
         modifies_work_items_file: write,
-        modifies_only_canonical_work_items_file: write
+        modifies_only_canonical_work_items_file: write && !governanceIndexRefresh,
+        refreshes_governance_indexes: Boolean(governanceIndexRefresh),
+        governance_index_refresh_after_admitted_write: Boolean(governanceIndexRefresh),
+        governance_index_refresh_writes_performed: Boolean(governanceIndexRefresh && governanceIndexRefresh.writes_performed)
       }
     });
     return ok ? 0 : 1;
@@ -480,6 +535,7 @@ function createWorkItemsService(options = Object.freeze({})) {
     const ok = conflicts.length === 0 && errors.length === 0;
 
     if (write && ok) performPlannedWrites(plannedWrites);
+    const governanceIndexRefresh = refreshGovernanceIndexesAfterWrite({ write, ok, file: CANONICAL_WORK_ITEMS_FILE, command: commandWithMode(WORK_ITEMS_COMMAND.INIT, modeFromWrite(write)) });
 
     emit({
       schema: WORK_ITEMS_RESULT_SCHEMA.INIT,
@@ -494,13 +550,18 @@ function createWorkItemsService(options = Object.freeze({})) {
       conflicts: conflicts.map((item) => item.path),
       validated_template: errors.length === 0,
       counts: workItemCounts(templateValue),
+      governance_index_refresh: governanceIndexRefresh,
       errors,
       boundary: {
         installs_dependencies: false,
         runs_build_test_deploy: false,
         publishes_or_pushes: false,
         modifies_source_files: false,
-        modifies_only_canonical_work_items_file: write
+        modifies_work_items_file: write,
+        modifies_only_canonical_work_items_file: write && !governanceIndexRefresh,
+        refreshes_governance_indexes: Boolean(governanceIndexRefresh),
+        governance_index_refresh_after_admitted_write: Boolean(governanceIndexRefresh),
+        governance_index_refresh_writes_performed: Boolean(governanceIndexRefresh && governanceIndexRefresh.writes_performed)
       }
     });
     return ok ? 0 : 1;
@@ -572,6 +633,7 @@ function createWorkItemsService(options = Object.freeze({})) {
     const proposalErrors = validateWorkItems(proposal.proposed_ledger);
     const ok = proposalErrors.length === 0;
     if (write && ok) writeJson(absolutePath, proposal.proposed_ledger);
+    const governanceIndexRefresh = refreshGovernanceIndexesAfterWrite({ write, ok, file, command });
     emit({
       schema: WORK_ITEMS_RESULT_SCHEMA.CLAIM,
       status: resultStatus(ok),
@@ -585,6 +647,7 @@ function createWorkItemsService(options = Object.freeze({})) {
       claimed: proposal.claimed,
       next_steps: proposal.next_steps,
       proposed_ledger: proposal.proposed_ledger,
+      governance_index_refresh: governanceIndexRefresh,
       errors: proposalErrors,
       boundary: {
         installs_dependencies: false,
@@ -592,7 +655,10 @@ function createWorkItemsService(options = Object.freeze({})) {
         publishes_or_pushes: false,
         modifies_source_files: false,
         modifies_work_items_file: write,
-        modifies_only_canonical_work_items_file: write
+        modifies_only_canonical_work_items_file: write && !governanceIndexRefresh,
+        refreshes_governance_indexes: Boolean(governanceIndexRefresh),
+        governance_index_refresh_after_admitted_write: Boolean(governanceIndexRefresh),
+        governance_index_refresh_writes_performed: Boolean(governanceIndexRefresh && governanceIndexRefresh.writes_performed)
       }
     });
     return ok ? 0 : 1;
@@ -668,6 +734,7 @@ function createWorkItemsService(options = Object.freeze({})) {
     const proposalErrors = validateWorkItems(proposal.proposed_ledger);
     const ok = proposalErrors.length === 0;
     if (write && ok) writeJson(absolutePath, proposal.proposed_ledger);
+    const governanceIndexRefresh = refreshGovernanceIndexesAfterWrite({ write, ok, file, command });
     emit({
       schema: WORK_ITEMS_RESULT_SCHEMA.CLOSE,
       status: resultStatus(ok),
@@ -681,6 +748,7 @@ function createWorkItemsService(options = Object.freeze({})) {
       closed: proposal.closed,
       handoff_evidence: proposal.handoff_evidence,
       proposed_ledger: proposal.proposed_ledger,
+      governance_index_refresh: governanceIndexRefresh,
       errors: proposalErrors,
       boundary: {
         installs_dependencies: false,
@@ -688,7 +756,10 @@ function createWorkItemsService(options = Object.freeze({})) {
         publishes_or_pushes: false,
         modifies_source_files: false,
         modifies_work_items_file: write,
-        modifies_only_canonical_work_items_file: write
+        modifies_only_canonical_work_items_file: write && !governanceIndexRefresh,
+        refreshes_governance_indexes: Boolean(governanceIndexRefresh),
+        governance_index_refresh_after_admitted_write: Boolean(governanceIndexRefresh),
+        governance_index_refresh_writes_performed: Boolean(governanceIndexRefresh && governanceIndexRefresh.writes_performed)
       }
     });
     return ok ? 0 : 1;
