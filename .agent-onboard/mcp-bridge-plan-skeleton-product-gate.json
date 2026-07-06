@@ -12,7 +12,7 @@
     "agent-onboard mcp --text"
   ],
   "purpose": "Expose a read-only MCP bridge plan and agent-client tool candidate skeleton without starting an MCP server or adding runtime dependencies.",
-  "absorbed_capability": "public-safe agent-client bridge contract that maps future MCP tools to existing read-only public CLI surfaces",
+  "product_capability": "public-safe agent-client bridge contract that maps future MCP tools to existing read-only public CLI surfaces",
   "output_contract": {
     "schema": "agent-onboard-public-mcp-bridge-plan-001",
     "plan_command": "agent-onboard mcp --plan",

@@ -1,0 +1,32 @@
+{
+  "schema": "agent-onboard-public-work-item-closure-001",
+  "id": "P1S3M5W32",
+  "version": "0.0.139",
+  "release_line": "public_release_surface_vocabulary_gate",
+  "title": "Public release surface vocabulary gate",
+  "status": "closed",
+  "product_capability": "release-facing vocabulary normalization for public docs, AI entrypoints, and contract text",
+  "public_surface": {
+    "runtime_release_line": "public_release_surface_vocabulary_gate",
+    "contracts_text": "uses source-only implementation archive wording instead of back-office lineage wording",
+    "docs_current_release": "describes product surface hygiene and stable output contracts",
+    "ai_entrypoint": "keeps first-read command guidance neutral and product-oriented"
+  },
+  "boundary": {
+    "writes_files": false,
+    "writes_target_repository_state": false,
+    "installs_dependencies": false,
+    "runs_managed_project_commands": false,
+    "git_mutation": false,
+    "network": false,
+    "publishes_package": false,
+    "exposes_back_office_lineage_language": false
+  },
+  "checks": [
+    "npm test",
+    "npm run check:public-artifact-boundary",
+    "node cli/agent-onboard.js contracts --check --json",
+    "node cli/agent-onboard.js check --fast --json",
+    "npm pack --dry-run --json"
+  ]
+}

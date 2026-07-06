@@ -2,7 +2,7 @@
   "schema": "agent-onboard-public-work-item-closure-artifact-001",
   "package_name": "agent-onboard",
   "version": "0.0.138",
-  "release_line": "public_contract_output_validator_gate",
+  "release_line": "public_release_surface_vocabulary_gate",
   "work_item_id": "P1S3M5W31",
   "title": "Public contract output validator gate",
   "status": "closed",
@@ -15,7 +15,7 @@
     "git_mutation": false,
     "network": false,
     "publishes_package": false,
-    "exports_internal_contract_archive": false,
+    "exports_source_contract_archive": false,
     "requires_typescript_or_abstract_classes": false,
     "reemits_validated_file_contents": false
   },

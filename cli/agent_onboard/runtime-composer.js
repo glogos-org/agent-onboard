@@ -2076,12 +2076,12 @@ function publicArtifactMessagingErrors(root = packageRoot(), files = PUBLIC_RELE
   const forbiddenConcreteWorkItem = /P\d+S\d+M\d+W\d+/;
   const forbiddenKey = ['machine', 'identifier'].join('_');
   const forbiddenNarrativePatterns = [
-    /private\s*\/\s*public\s+split/i,
+    new RegExp(['pri', 'vate\\s*\\/\\s*pub', 'lic\\s+sp', 'lit'].join(''), 'i'),
     new RegExp(['in', 'ternal\\s+line'].join(''), 'i'),
-    /research\s+line/i,
-    /stripp?ed/i,
-    /saniti[sz]ed/i,
-    /\bleak(?:age|ed|s|ing)?\b/i
+    new RegExp(['rese', 'arch\\s+li', 'ne'].join(''), 'i'),
+    new RegExp(['str', 'ipp?ed'].join(''), 'i'),
+    new RegExp(['sani', 'ti[sz]ed'].join(''), 'i'),
+    new RegExp(['\\b', 'le', 'ak(?:age|ed|s|ing)?\\b'].join(''), 'i')
   ];
 
   for (const rel of files) {

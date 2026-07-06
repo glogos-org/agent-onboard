@@ -12,7 +12,7 @@
     "agent-onboard ci --text"
   ],
   "purpose": "Expose a copyable GitHub Actions workflow recipe and CI evidence contract for agent-onboard public checks without creating workflow files or calling GitHub.",
-  "absorbed_capability": "public-safe CI recipe surface for check --fast and release --check, with explicit evidence-only CI authority boundary",
+  "product_capability": "public-safe CI recipe surface for check --fast and release --check, with explicit evidence-only CI authority boundary",
   "output_contract": {
     "schema": "agent-onboard-public-ci-surface-001",
     "workflow_path": ".github/workflows/agent-onboard.yml",

@@ -198,7 +198,7 @@ function publicContractCatalog(options = {}) {
     command: 'agent-onboard contracts --json',
     check_command: 'agent-onboard contracts --check --json',
     output_validation_command: 'agent-onboard contracts --validate-output --contract <id> --file <path> --json',
-    purpose: 'compact public contract/interface spine for stable CLI JSON outputs without exposing internal contract archives',
+    purpose: 'compact public contract/interface spine for stable CLI JSON outputs without exposing source-only implementation archives',
     contract_model: {
       style: 'javascript_contract_descriptors_and_validators',
       typescript_required: false,
@@ -444,7 +444,7 @@ function publicContractText(catalog) {
     `- descriptors and validators: ${catalog.contract_model.public_descriptor_layer_exported}`,
     `- TypeScript required: ${catalog.contract_model.typescript_required}`,
     `- abstract classes required: ${catalog.contract_model.abstract_classes_required}`,
-    `- internal contract archive exported: ${catalog.contract_model.source_contract_archive_exported}`,
+    `- source-only implementation archive exported: ${catalog.contract_model.source_contract_archive_exported}`,
     '',
     'Public contracts:'
   ];

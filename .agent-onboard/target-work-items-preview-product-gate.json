@@ -12,7 +12,7 @@
     "agent-onboard target work-items --text"
   ],
   "purpose": "Expose a read-only target work-items preview that summarizes target-owned work-item state before admission, closure, or repair decisions.",
-  "absorbed_capability": "consumer runtime next-work-item admission discipline distilled into a public-safe target work-items preview with no writes, no admission, no closure, and no synthetic next-id generation",
+  "product_capability": "consumer runtime next-work-item admission discipline packaged as a public-safe target work-items preview with no writes, no admission, no closure, and no synthetic next-id generation",
   "output_contract": {
     "schema": "agent-onboard-public-target-work-items-preview-001",
     "preview_command": "agent-onboard target work-items --preview",

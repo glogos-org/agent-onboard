@@ -12,7 +12,7 @@
     "agent-onboard target governance --materialize-dry-run --text"
   ],
   "purpose": "Expose a public-safe dry-run that derives compact target governance index payloads and budget impact without writing target state.",
-  "absorbed_capability": "governance growth index materialization discipline distilled into a no-write public dry-run with first-read cache semantics, raw-ledger authority preservation, and compact byte budgets",
+  "product_capability": "governance growth index materialization discipline packaged as a no-write public dry-run with first-read cache semantics, raw-ledger authority preservation, and compact byte budgets",
   "output_contract": {
     "schema": "agent-onboard-public-target-governance-index-materialization-dry-run-001",
     "dry_run_command": "agent-onboard target governance --materialize-dry-run",

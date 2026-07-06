@@ -9,7 +9,7 @@
   "principles": [
     "Target repo owner value comes before source self-dogfood evidence.",
     "Public CLI commands should be small, explainable, and useful without knowing this repository's history.",
-    "Historical architecture gates may remain as internal checks, but should not block target-repo product work.",
+    "Historical architecture gates may remain as source-only maintenance checks, but should not block target-repo product work.",
     "Runtime code should prefer explicit constants and frozen enum-like maps over repeated string literals.",
     "Release checks should protect package safety, command compatibility, and target-repo behavior rather than every retired architecture gate."
   ],
@@ -24,7 +24,7 @@
     "work-items --schema|--template|--validate-template|--validate|--list|--init|--append|--claim|--close",
     "release --surface|--surface-check|--version-sprawl-check|--target-onboarding-smoke|--check"
   ],
-  "public_cli_reduce_or_internalize": [
+  "public_cli_reduce_or_source_only": [
     "architecture --golden-outputs",
     "architecture --golden-check",
     "architecture --adapter-boundary",
@@ -85,7 +85,7 @@
     "Split target-repo behavior out of runtime-composer into focused target, authority, guard, work-items, and release services.",
     "Shrink or delete static architecture catalog sections that only validate retired gates.",
     "Keep package allowlist and artifact boundary checks, but remove retired architecture gates from release --check.",
-    "Move any remaining historical self-dogfood assertions to agent-onboard-internal checks instead of the public package."
+    "Move any remaining historical self-dogfood assertions to source-only maintenance checks instead of the public package."
   ],
   "acceptance_criteria": [
     "P1S3M3 remains closed and P1S3M4 remains open without architecture --check failing solely because M3 is no longer open.",

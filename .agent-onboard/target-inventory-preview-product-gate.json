@@ -12,7 +12,7 @@
     "agent-onboard target inventory --text"
   ],
   "purpose": "Expose a read-only target runtime inventory preview that summarizes package, source, command, identity/provenance, and boundary surfaces before onboarding or repair.",
-  "absorbed_capability": "consumer runtime inventory distilled into a public-safe target inventory preview with no writes and no managed project command execution",
+  "product_capability": "consumer runtime inventory packaged as a public-safe target inventory preview with no writes and no managed project command execution",
   "output_contract": {
     "schema": "agent-onboard-public-target-runtime-inventory-001",
     "preview_command": "agent-onboard target inventory --preview",

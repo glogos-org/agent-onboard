@@ -46,7 +46,7 @@
     {
       "id": "P1S3",
       "program_id": "P1",
-      "title": "Public architecture absorption stage",
+      "title": "Public architecture maturation stage",
       "status": "open"
     }
   ],
@@ -240,12 +240,12 @@
     {
       "id": "P1S1M2W1",
       "milestone_id": "P1S1M2",
-      "title": "Public release contract absorption gate",
+      "title": "Public release contract integration gate",
       "status": "closed",
       "closure": {
         "actor": "release-maintainer",
         "closed_at": "2026-06-30T00:00:00.000Z",
-        "summary": "Closed by absorbing the public release contract into agent-onboard@0.0.18: added a normalized release contract command, source-ledger-aware release checks, explicit source-vs-package context reporting, and retained the compact public npm pack allowlist.",
+        "summary": "Closed by integrating the public release contract into agent-onboard@0.0.18: added a normalized release contract command, source-ledger-aware release checks, explicit source-vs-package context reporting, and retained the compact public npm pack allowlist.",
         "changed_files": [
           "README.md",
           "AGENTS.md",
@@ -709,7 +709,7 @@
       "closure": {
         "actor": "release-maintainer",
         "closed_at": "2026-06-30T00:00:00.000Z",
-        "summary": "Closed by carrying the owner handoff from the 0.0.27 real target trial into agent-onboard@0.0.28. The next admitted public line is architecture absorption; any real target write remains owner-authorized only.",
+        "summary": "Closed by carrying the owner handoff from the 0.0.27 real target trial into agent-onboard@0.0.28. The next admitted public line is architecture maturation; any real target write remains owner-authorized only.",
         "changed_files": [
           ".agent-onboard/work-items.json",
           "README.md",
@@ -5876,7 +5876,7 @@
       "closure": {
         "actor": "gpt-5.5-thinking",
         "closed_at": "2026-07-05T15:23:32Z",
-        "summary": "Closed by adding a compact public contract/interface spine for stable CLI JSON outputs. The new contracts command exposes descriptor-based output contracts for handoff readiness, readiness reason entries, governance budget contract/check outputs, and the shared no-mutation runtime boundary; contracts --check validates both the catalog and live runtime outputs without exporting the internal contract archive, requiring TypeScript/abstract classes, writing files, mutating target state, installing dependencies, mutating Git, publishing, or using network access.",
+        "summary": "Closed by adding a compact public contract/interface spine for stable CLI JSON outputs. The new contracts command exposes descriptor-based output contracts for handoff readiness, readiness reason entries, governance budget contract/check outputs, and the shared no-mutation runtime boundary; contracts --check validates both the catalog and live runtime outputs without exporting the source-only implementation archive, requiring TypeScript/abstract classes, writing files, mutating target state, installing dependencies, mutating Git, publishing, or using network access.",
         "changed_files": [
           "package.json",
           "README.md",
@@ -5996,6 +5996,40 @@
         "known_non_pass": [
           "Full runner was not executed end-to-end; quick suite and targeted full-source shard covering public contracts passed."
         ]
+      }
+    },
+    {
+      "id": "P1S3M5W32",
+      "milestone_id": "P1S3M5",
+      "title": "Public release surface vocabulary gate",
+      "status": "closed",
+      "closure": {
+        "actor": "release-maintainer",
+        "closed_at": "2026-07-05T18:45:00.000Z",
+        "summary": "Closed by normalizing public-facing release vocabulary and contract spine wording. Current documentation, AI entrypoints, runtime contract text, release-line metadata, and source-control summaries now describe product surfaces without back-office lineage language, while preserving the stable JSON output contracts and no-mutation boundaries.",
+        "changed_files": [
+          "README.md",
+          "AGENTS.md",
+          "llms.txt",
+          "package.json",
+          "cli/agent_onboard/runtime-contracts.js",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/contracts/public-contracts.js",
+          "scripts/check-public-artifact-boundary.js",
+          "test/agent-onboard.test.js",
+          ".agent-onboard/work-items.json",
+          ".agent-onboard/work-items.index.json",
+          ".agent-onboard/public-release-surface-vocabulary-gate.json"
+        ],
+        "checks_run": [
+          "npm test",
+          "npm run check:public-artifact-boundary",
+          "node cli/agent-onboard.js contracts --check --json",
+          "node cli/agent-onboard.js check --fast --json",
+          "npm pack --dry-run --json"
+        ],
+        "checks_not_run": [],
+        "known_non_pass": []
       }
     }
   ]

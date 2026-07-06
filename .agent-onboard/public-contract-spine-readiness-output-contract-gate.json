@@ -11,7 +11,7 @@
     "closure": {
       "actor": "gpt-5.5-thinking",
       "closed_at": "2026-07-05T15:23:32Z",
-      "summary": "Closed by adding a compact public contract/interface spine for stable CLI JSON outputs. The new contracts command exposes descriptor-based output contracts for handoff readiness, readiness reason entries, governance budget contract/check outputs, and the shared no-mutation runtime boundary; contracts --check validates both the catalog and live runtime outputs without exporting the internal contract archive, requiring TypeScript/abstract classes, writing files, mutating target state, installing dependencies, mutating Git, publishing, or using network access.",
+      "summary": "Closed by adding a compact public contract/interface spine for stable CLI JSON outputs. The new contracts command exposes descriptor-based output contracts for handoff readiness, readiness reason entries, governance budget contract/check outputs, and the shared no-mutation runtime boundary; contracts --check validates both the catalog and live runtime outputs without exporting the source-only implementation archive, requiring TypeScript/abstract classes, writing files, mutating target state, installing dependencies, mutating Git, publishing, or using network access.",
       "changed_files": [
         "package.json",
         "README.md",
@@ -72,12 +72,12 @@
     "command": "agent-onboard contracts --json|--text|--check",
     "catalog_schema": "agent-onboard-public-contract-spine-001",
     "check_schema": "agent-onboard-public-contract-check-001",
-    "purpose": "compact public contract/interface spine for stable CLI JSON outputs without exporting internal contract archives",
+    "purpose": "compact public contract/interface spine for stable CLI JSON outputs without exporting source-only implementation archives",
     "contract_model": {
       "javascript_contract_descriptors_and_validators": true,
       "typescript_required": false,
       "abstract_classes_required": false,
-      "internal_contract_archive_exported": false,
+      "source_contract_archive_exported": false,
       "runtime_output_validation_supported": true
     },
     "declared_contracts": [
@@ -113,14 +113,14 @@
     "check_fast_runs_contract_spine_check": true,
     "mcp_bridge_exposes_contract_check_tool_candidate": true,
     "package_surface_includes_contract_module": true,
-    "no_internal_contract_archive_exported": true,
+    "no_source_contract_archive_exported": true,
     "typescript_or_abstract_class_dependency_added": false
   },
   "boundary": {
     "writes_consuming_repository_state": false,
     "writes_target_repository_state": false,
     "creates_agent_onboard_runtime_state": false,
-    "exports_internal_contract_archive": false,
+    "exports_source_contract_archive": false,
     "requires_typescript": false,
     "requires_abstract_classes": false,
     "inlines_raw_growth_files": false,

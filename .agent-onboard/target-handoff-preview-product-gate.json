@@ -12,7 +12,7 @@
     "agent-onboard target handoff --text"
   ],
   "purpose": "Expose a compact read-only target handoff preview that summarizes target inventory, known handoff/memory surfaces, and target-owned work-item state for the next human or agent session before mutation.",
-  "absorbed_capability": "session-continuity and target-runtime descriptor discipline distilled into a public-safe next-session handoff preview with no file-content import, no writes, no authority grant, and no work-item admission or closure",
+  "product_capability": "session-continuity and target-runtime descriptor discipline packaged as a public-safe next-session handoff preview with no file-content import, no writes, no authority grant, and no work-item admission or closure",
   "output_contract": {
     "schema": "agent-onboard-public-target-handoff-preview-001",
     "preview_command": "agent-onboard target handoff --preview",

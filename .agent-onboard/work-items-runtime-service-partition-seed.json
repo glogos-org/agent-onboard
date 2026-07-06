@@ -28,10 +28,10 @@
     "work-items --close"
   ],
   "package_strategy": "controlled_packaged_runtime_service_seed_inclusion",
-  "runtime_pattern_absorbed": {
+  "runtime_pattern_integrated": {
     "source": "runtime domain service partition pattern",
-    "absorbed_shape": "packaged command adapter plus runtime domain service for all public work-items commands, with the legacy bundled CLI fallback deleted",
-    "not_absorbed_yet": [
+    "integrated_shape": "packaged command adapter plus runtime domain service for all public work-items commands, with the legacy bundled CLI fallback deleted",
+    "pending_integration": [
       "full lazy command group catalog",
       "full physical service directory partition"
     ]

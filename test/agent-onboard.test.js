@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_contract_output_validator_gate';
+const EXPECTED_RELEASE_LINE = 'public_release_surface_vocabulary_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -3312,7 +3312,7 @@ fullSourceTest('full source block line 1508', () => {
 
   assert.ok(m2w1);
 
-  assert.strictEqual(m2w1.title, 'Public release contract absorption gate');
+  assert.strictEqual(m2w1.title, 'Public release contract integration gate');
 
   assert.strictEqual(m2w1.status, 'closed');
 
@@ -3899,7 +3899,7 @@ fullSourceTest('full source block line 2233', () => {
 
   assert.ok(readme.includes('`0.0.16` aligns public source closure tests'));
   assert.ok(readme.includes('`0.0.17` adds public `release --plan` and `release --check`'));
-  assert.ok(readme.includes('`0.0.18` absorbs that release surface into a normalized public release contract'));
+  assert.ok(readme.includes('`0.0.18` integrates that release surface into a normalized public release contract'));
   assert.ok(readme.includes('`0.0.19` adds a public package contract fixture matrix'));
   assert.ok(readme.includes('`0.0.20` adds installed package parity smoke'));
   assert.ok(readme.includes('`0.0.21` adds the public target onboarding surface plan'));
@@ -4005,7 +4005,7 @@ fullSourceTest('full source block line 2233', () => {
   assert.ok(readme.includes('npx agent-onboard check --fast --text'));
   assert.ok(readme.includes('The current release adds `contracts --json|--text|--check` as a compact public contract/interface spine'));
   assert.ok(readme.includes('The previous release added `target handoff --readiness-check --json|--text` as a no-write machine-readable readiness gate'));
-  assert.ok(readme.includes('without exporting the internal contract archive or requiring TypeScript/abstract classes'));
+  assert.ok(readme.includes('without exporting the source-only implementation archive or requiring TypeScript/abstract classes'));
   assert.ok(readme.includes('The previous release added stable handoff readiness reason codes to `target handoff --json|--text`'));
   assert.ok(readme.includes('The earlier governance budget gate remains available through `target governance --budget-check --json|--text`'));
   assert.ok(readme.includes('The previous release added `target governance --budget-check --json|--text` as a compact no-write target scan'));

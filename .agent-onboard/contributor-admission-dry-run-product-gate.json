@@ -12,7 +12,7 @@
     "agent-onboard contributor --admission-dry-run --text"
   ],
   "purpose": "Preview contributor identity, provenance, and AI-assistance attribution before any authoritative admission or ledger write.",
-  "absorbed_capability": "public-safe contributor admission dry-run preview with human responsibility and Assisted-by attribution semantics",
+  "product_capability": "public-safe contributor admission dry-run preview with human responsibility and Assisted-by attribution semantics",
   "output_contract": {
     "schema": "agent-onboard-public-contributor-admission-dry-run-001",
     "status": "ok",

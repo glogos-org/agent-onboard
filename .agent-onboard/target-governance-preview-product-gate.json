@@ -12,7 +12,7 @@
     "agent-onboard target governance --text"
   ],
   "purpose": "Expose a compact read-only target governance preview that summarizes target work-item and claim indexes before a handoff has to read raw growth ledgers.",
-  "absorbed_capability": "target governance index/ledger compaction discipline distilled into a public-safe preview surface with no writes, no claim admission, no ledger mutation, and no raw growth-file inlining",
+  "product_capability": "target governance index/ledger compaction discipline packaged as a public-safe preview surface with no writes, no claim admission, no ledger mutation, and no raw growth-file inlining",
   "output_contract": {
     "schema": "agent-onboard-public-target-governance-preview-001",
     "preview_command": "agent-onboard target governance --preview",

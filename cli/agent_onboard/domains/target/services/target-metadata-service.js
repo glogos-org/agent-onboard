@@ -41,7 +41,7 @@ const ADMIN_FRONT_MATTER_FIELDS = Object.freeze([
   'status',
   'canonical_path',
   'handling',
-  'internal_version'
+  'implementation_version'
 ]);
 
 const DEFAULT_EXCLUDED_PATHS = Object.freeze([

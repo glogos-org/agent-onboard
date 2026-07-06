@@ -2,7 +2,7 @@
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
-const RELEASE_LINE = 'public_contract_output_validator_gate';
+const RELEASE_LINE = 'public_release_surface_vocabulary_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
   agents: 'agents',

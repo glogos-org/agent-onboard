@@ -15,7 +15,7 @@
     "agent-onboard check --fast --text"
   ],
   "purpose": "Expose a deterministic check registry and run a bundled in-process fast check across public product and release surfaces.",
-  "absorbed_capability": "public-safe in-process default-fast check plan and runner with slow/external check boundary metadata",
+  "product_capability": "public-safe in-process default-fast check plan and runner with slow/external check boundary metadata",
   "output_contract": {
     "plan_schema": "agent-onboard-public-check-plan-001",
     "fast_schema": "agent-onboard-public-check-fast-result-001",
