@@ -27,6 +27,7 @@ const {
   TARGET_COMMAND,
   TARGET_CONFIG_FILE,
   TARGET_DOCTOR_COMMAND,
+  TARGET_INVENTORY_COMMAND,
   TARGET_METADATA_COMMAND,
   TARGET_MANIFEST_COMMAND,
   TARGET_MEMORY_COMMAND,
@@ -179,6 +180,7 @@ function commandSurfaceCatalog() {
       'agent-onboard mcp --plan --text',
       'agent-onboard status',
       'agent-onboard target doctor --text',
+      'agent-onboard target inventory --text',
       'agent-onboard target memory --text',
       'agent-onboard work-items --next --text',
       'agent-onboard release --check'
@@ -257,6 +259,7 @@ function operatorGuideCatalog() {
         commands: [
           'agent-onboard target doctor --text',
           'agent-onboard target profile --text',
+          'agent-onboard target inventory --text',
           'agent-onboard target memory --text',
           'agent-onboard target metadata --plan',
           'agent-onboard target manifest --check-drift'
@@ -386,42 +389,48 @@ function quickstartCatalog() {
       },
       {
         step: 4,
+        command: 'agent-onboard target inventory --text',
+        purpose: 'inventory package, source, command, and provenance surfaces without mutation',
+        writes_files: false
+      },
+      {
+        step: 5,
         command: 'agent-onboard target onboarding --plan',
         purpose: 'preview canonical target onboarding files and conflicts',
         writes_files: false
       },
       {
-        step: 5,
+        step: 6,
         command: 'agent-onboard target bootstrap --dry-run',
         purpose: 'preview the explicit bootstrap write set before owner-approved writes',
         writes_files: false
       },
       {
-        step: 6,
+        step: 7,
         command: 'agent-onboard create --dry-run',
         purpose: 'preview the npm create entrypoint write set without mutating the consuming repository',
         writes_files: false
       },
       {
-        step: 7,
+        step: 8,
         command: 'agent-onboard issue --classify-dry-run --text',
         purpose: 'classify an external issue signal into a dry-run disposition without GitHub/API mutation',
         writes_files: false
       },
       {
-        step: 8,
+        step: 9,
         command: 'agent-onboard contributor --admission-dry-run --text',
         purpose: 'preview contributor identity, provenance, and AI-assistance attribution before any authoritative admission',
         writes_files: false
       },
       {
-        step: 9,
+        step: 10,
         command: 'agent-onboard mcp --plan --text',
         purpose: 'preview MCP tool bridge candidates without starting a server or adding dependencies',
         writes_files: false
       },
       {
-        step: 10,
+        step: 11,
         command: 'agent-onboard work-items --next --text',
         purpose: 'read the next admitted work item when a ledger exists',
         writes_files: false
@@ -1189,6 +1198,7 @@ function runCheckFastPlan(root = packageRoot()) {
     'create-dry-run': () => createDryRunService.catalog(),
     'issue-intake-dry-run': () => issueIntakeService.classify(issueIntakeService.input(['--classify-dry-run']).input),
     'contributor-admission-dry-run': () => contributorAdmissionService.preview(contributorAdmissionService.input(['--admission-dry-run']).input),
+    'target-inventory-preview': () => targetRuntimeService.targetInventory(targetRoot),
     'target-memory-preview': () => targetMemoryService.descriptor(targetRoot),
     'release-source-manifest-check': () => publicPackageSourceManifestCheck(root),
     'release-surface-check': () => publicPackageSurfaceCheck(root),
@@ -1377,6 +1387,7 @@ const MCP_TOOL_CANDIDATES = Object.freeze([
   Object.freeze({ name: 'agent_onboard_preview_create', command: 'agent-onboard create --dry-run', output_schema: 'agent-onboard-public-create-dry-run-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_classify_issue', command: 'agent-onboard issue --classify-dry-run --json', output_schema: 'agent-onboard-public-issue-intake-classification-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_preview_contributor', command: 'agent-onboard contributor --admission-dry-run --json', output_schema: 'agent-onboard-public-contributor-admission-dry-run-001', mutates: false }),
+  Object.freeze({ name: 'agent_onboard_preview_target_inventory', command: 'agent-onboard target inventory --json', output_schema: 'agent-onboard-public-target-runtime-inventory-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_preview_target_memory', command: 'agent-onboard target memory --json', output_schema: 'agent-onboard-public-target-memory-descriptor-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_run_fast_check', command: 'agent-onboard check --fast --json', output_schema: 'agent-onboard-public-check-fast-result-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_get_ci_recipe', command: 'agent-onboard ci --json', output_schema: 'agent-onboard-public-ci-surface-001', mutates: false }),
@@ -1755,6 +1766,8 @@ const {
   refreshTargetManifest,
   targetRepair,
   targetProfile,
+  targetInventory,
+  formatTargetInventoryText,
   agentsMdTemplate,
   firstReadOrder,
   llmsTxtTemplate,
@@ -8216,6 +8229,26 @@ function runCheck(args = []) {
 }
 
 
+
+function runTargetInventory(args) {
+  const allowed = [TARGET_INVENTORY_COMMAND.mode.preview, TARGET_INVENTORY_COMMAND.flag.json, TARGET_INVENTORY_COMMAND.flag.text, TARGET_INVENTORY_COMMAND.flag.target];
+  const targetIndex = args.indexOf(TARGET_INVENTORY_COMMAND.flag.target);
+  const targetRoot = targetIndex >= 0 ? args[targetIndex + 1] : process.cwd();
+  const unknown = args.filter((arg, index) => {
+    if (targetIndex >= 0 && index === targetIndex + 1) return false;
+    return !allowed.includes(arg);
+  });
+  if (targetIndex >= 0 && (!targetRoot || targetRoot.startsWith('-'))) throw new Error(`target inventory ${TARGET_INVENTORY_COMMAND.flag.target} requires a path`);
+  if (unknown.length > 0) throw new Error(`target inventory does not support: ${unknown.join(', ')}`);
+  const modes = args.filter((arg) => [TARGET_INVENTORY_COMMAND.mode.preview, TARGET_INVENTORY_COMMAND.flag.json, TARGET_INVENTORY_COMMAND.flag.text].includes(arg));
+  if (modes.length > 1) throw new Error('target inventory accepts only one output mode: --preview, --json, or --text');
+  const mode = modes[0] || TARGET_INVENTORY_COMMAND.mode.preview;
+  const result = targetInventory(targetRoot);
+  if (mode === TARGET_INVENTORY_COMMAND.flag.text) process.stdout.write(formatTargetInventoryText(result));
+  else json(result);
+  return result.status === 'ok' ? 0 : 1;
+}
+
 function runTargetMemory(args) {
   const allowed = [TARGET_MEMORY_COMMAND.mode.preview, TARGET_MEMORY_COMMAND.flag.json, TARGET_MEMORY_COMMAND.flag.text, TARGET_MEMORY_COMMAND.flag.target];
   const targetIndex = args.indexOf(TARGET_MEMORY_COMMAND.flag.target);
@@ -8264,9 +8297,10 @@ function runTargetCommand(args) {
   if (args[0] === TARGET_COMMAND.profile) return runTargetProfile(args.slice(1));
   if (args[0] === TARGET_COMMAND.repair) return runTargetRepair(args.slice(1));
   if (args[0] === TARGET_COMMAND.runtime) return runTargetRuntime(args.slice(1));
+  if (args[0] === TARGET_COMMAND.inventory) return runTargetInventory(args.slice(1));
   if (args[0] === TARGET_COMMAND.memory) return runTargetMemory(args.slice(1));
   if (args[0] === TARGET_COMMAND.onboarding) return runTargetOnboarding(args.slice(1));
-  if (args[0] !== TARGET_COMMAND.bootstrap) throw new Error(`target supports only: ${TARGET_DOCTOR_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_PROFILE_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_REPAIR_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_METADATA_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_MANIFEST_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_MEMORY_COMMAND.help.replace('agent-onboard target ', '')}, runtime --namespace|--check, onboarding --plan|--fixture|--trial [--target <path>]|--write [--force], bootstrap`);
+  if (args[0] !== TARGET_COMMAND.bootstrap) throw new Error(`target supports only: ${TARGET_DOCTOR_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_PROFILE_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_REPAIR_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_METADATA_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_MANIFEST_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_INVENTORY_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_MEMORY_COMMAND.help.replace('agent-onboard target ', '')}, runtime --namespace|--check, onboarding --plan|--fixture|--trial [--target <path>]|--write [--force], bootstrap`);
   return runTargetBootstrap(args.slice(1));
 }
 
@@ -8302,6 +8336,7 @@ const DOMAIN_SERVICE_FACADES = Object.freeze({
     runInit,
     runTargetConfig,
     runTargetRuntime,
+    runTargetInventory,
     runTargetMemory,
     runTargetCommand,
     runTargetInstance
@@ -8530,6 +8565,8 @@ module.exports = {
   targetDoctor,
   targetRepair,
   targetProfile,
+  targetInventory,
+  formatTargetInventoryText,
   targetRuntimeNamespaceTemplate,
   planTargetOnboardingWritesForRoot,
   TARGET_ONBOARDING_SURFACE_PLAN,

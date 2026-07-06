@@ -2,7 +2,7 @@
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
-const RELEASE_LINE = 'public_mcp_bridge_plan_skeleton_product_gate';
+const RELEASE_LINE = 'public_target_inventory_preview_product_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
   agents: 'agents',
@@ -123,6 +123,7 @@ const TARGET_COMMAND = Object.freeze({
   profile: 'profile',
   repair: 'repair',
   runtime: 'runtime',
+  inventory: 'inventory',
   memory: 'memory',
   onboarding: 'onboarding',
   bootstrap: 'bootstrap'
@@ -208,6 +209,18 @@ const TARGET_DOCTOR_COMMAND = Object.freeze({
   })
 });
 
+const TARGET_INVENTORY_COMMAND = Object.freeze({
+  help: 'agent-onboard target inventory --preview|--json|--text [--target <path>]',
+  mode: Object.freeze({
+    preview: '--preview'
+  }),
+  flag: Object.freeze({
+    json: OUTPUT_FLAG.json,
+    text: OUTPUT_FLAG.text,
+    target: TARGET_OPTION.target
+  })
+});
+
 const TARGET_MEMORY_COMMAND = Object.freeze({
   help: 'agent-onboard target memory --preview|--json|--text [--target <path>]',
   mode: Object.freeze({
@@ -234,6 +247,7 @@ const PRODUCT_HELP_LINES = Object.freeze([
   'agent-onboard mcp --plan|--json|--text',
   TARGET_DOCTOR_COMMAND.help,
   TARGET_PROFILE_COMMAND.help,
+  TARGET_INVENTORY_COMMAND.help,
   TARGET_MEMORY_COMMAND.help,
   TARGET_REPAIR_COMMAND.help,
   TARGET_METADATA_COMMAND.help,
@@ -289,6 +303,7 @@ const PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES = Object.freeze([
   'cli/agent_onboard/domains/service-partitions.js',
   'cli/agent_onboard/domains/target/services/target-constants.js',
   'cli/agent_onboard/domains/target/services/target-doctor-service.js',
+  'cli/agent_onboard/domains/target/services/target-inventory-service.js',
   'cli/agent_onboard/domains/target/services/target-manifest-service.js',
   'cli/agent_onboard/domains/target/services/target-metadata-service.js',
   'cli/agent_onboard/domains/target/services/target-onboarding-service.js',
@@ -333,6 +348,7 @@ module.exports = Object.freeze({
   TARGET_COMMAND,
   TARGET_CONFIG_FILE,
   TARGET_DOCTOR_COMMAND,
+  TARGET_INVENTORY_COMMAND,
   TARGET_METADATA_COMMAND,
   TARGET_MANIFEST_COMMAND,
   TARGET_MEMORY_COMMAND,

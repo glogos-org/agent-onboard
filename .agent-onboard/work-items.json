@@ -5054,6 +5054,61 @@
           "git diff --check was not run because the ZIP handoff workspace has no .git directory"
         ]
       }
+    },
+    {
+      "id": "P1S3M5W16",
+      "milestone_id": "P1S3M5",
+      "title": "Public target inventory preview product gate",
+      "status": "closed",
+      "closure": {
+        "actor": "release-maintainer",
+        "closed_at": "2026-07-04T15:25:00.000Z",
+        "summary": "Closed by adding a direct public target inventory preview surface: target inventory --preview, target inventory --json, and target inventory --text. The feature reports package, source, command, identity/provenance, and boundary surfaces while excluding .git, node_modules, and .agent-onboard state, reading only bounded package/README/workflow metadata, and avoiding dependency installation, managed-project command execution, Git mutation, network access, publishing, and writes; then bumps the package candidate to 0.0.123.",
+        "changed_files": [
+          "README.md",
+          "cli/agent_onboard/domains/target/services/target-inventory-service.js",
+          "cli/agent_onboard/domains/target/services/target-service.js",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/runtime-contracts.js",
+          "package.json",
+          "test/agent-onboard.test.js",
+          "test/run-tests.js",
+          ".agent-onboard/work-items.json",
+          ".agent-onboard/target-inventory-preview-product-gate.json"
+        ],
+        "checks_run": [
+          "node -c cli/agent-onboard.js",
+          "node -c cli/agent_onboard/runtime-composer.js",
+          "node -c cli/agent_onboard/runtime-contracts.js",
+          "node -c cli/agent_onboard/domains/target/services/target-inventory-service.js",
+          "node -c cli/agent_onboard/domains/target/services/target-service.js",
+          "node -c test/agent-onboard.test.js",
+          "node -c test/run-tests.js",
+          "node cli/agent-onboard.js target inventory --preview",
+          "node cli/agent-onboard.js target inventory --json",
+          "node cli/agent-onboard.js target inventory --text",
+          "node cli/agent-onboard.js target inventory --write (expected unsupported)",
+          "node cli/agent-onboard.js commands --json",
+          "node cli/agent-onboard.js check --fast --json",
+          "npm test",
+          "full source shards 0/32 through 31/32 passed via node test/agent-onboard.test.js --shard=<n>/32",
+          "npm pack --dry-run --json",
+          "node scripts/check-public-artifact-boundary.js",
+          "node cli/agent-onboard.js release --source-manifest-check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js target metadata --write --force --target .",
+          "node cli/agent-onboard.js target metadata --check --target .",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "installed package target inventory --json smoke",
+          "installed package check --fast --json smoke",
+          "installed package release --check smoke"
+        ],
+        "checks_not_run": [],
+        "known_non_pass": [
+          "aggregate npm run test:full exceeded the interactive tool timeout after many shards had passed; all 32 full-source shards were then verified with explicit shard runs"
+        ]
+      }
     }
   ]
 }
