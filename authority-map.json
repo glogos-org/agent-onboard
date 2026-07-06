@@ -246,6 +246,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-target-handoff-preview-product-gate-json-fcfbf502"
     },
     {
+      "file_path": ".agent-onboard/target-handoff-readiness-check-product-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-target-handoff-readiness-check-product-gate-json-55be30e8"
+    },
+    {
       "file_path": ".agent-onboard/target-handoff-readiness-reasons-product-gate.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-target-handoff-readiness-reasons-product-gate-json-466180f7"
     },

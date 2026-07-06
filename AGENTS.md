@@ -64,6 +64,7 @@ node cli/agent-onboard.js target governance --materialize-dry-run
 node cli/agent-onboard.js target governance --materialize --write --force
 node cli/agent-onboard.js target handoff --text
 node cli/agent-onboard.js target handoff --preview
+node cli/agent-onboard.js target handoff --readiness-check --text
 node cli/agent-onboard.js issue --classify-dry-run --text
 node cli/agent-onboard.js contributor --admission-dry-run --text
 node cli/agent-onboard.js check --plan --text
@@ -72,7 +73,7 @@ node cli/agent-onboard.js commands --text
 node cli/agent-onboard.js commands --json
 ```
 
-Target handoff includes governance budget state, governance index drift state, and structured readiness reason codes for next-session readiness, while remaining read-only and non-authoritative.
+Target handoff includes governance budget state, governance index drift state, structured readiness reason codes, and a no-write readiness-check mode for next-session or CI readiness, while remaining read-only and non-authoritative.
 
 Run the target onboarding plan before expanding target-surface behavior:
 
@@ -482,7 +483,7 @@ Use `node cli/agent-onboard.js target governance --preview`, `node cli/agent-onb
 
 ## Public target handoff preview product surface
 
-Use `node cli/agent-onboard.js target handoff --preview`, `node cli/agent-onboard.js target handoff --json`, or `node cli/agent-onboard.js target handoff --text` when a new human or agent needs a compact read-only next-session handoff. Target handoff composes bounded target inventory, known memory/handoff surface presence, target governance summary, governance index drift state, and target work-item summary. It must not import file contents, admit work items, close work items, synthesize a next id, write ledgers, install dependencies, run managed project commands, publish, mutate Git, or perform network calls. Handoff output is evidence and orientation only; it cannot grant authority.
+Use `node cli/agent-onboard.js target handoff --preview`, `node cli/agent-onboard.js target handoff --json`, `node cli/agent-onboard.js target handoff --text`, or `node cli/agent-onboard.js target handoff --readiness-check --text` when a new human or agent needs a compact read-only next-session handoff or machine-readable readiness gate. Target handoff composes bounded target inventory, known memory/handoff surface presence, target governance summary, governance index drift state, and target work-item summary. It must not import file contents, admit work items, close work items, synthesize a next id, write ledgers, install dependencies, run managed project commands, publish, mutate Git, or perform network calls. Handoff output is evidence and orientation only; it cannot grant authority.
 
 ## Public target work-items preview product surface
 
@@ -511,3 +512,7 @@ Use `node cli/agent-onboard.js ci --github-action`, `node cli/agent-onboard.js c
 ## Public MCP bridge plan / skeleton product surface
 
 Use `node cli/agent-onboard.js mcp --plan`, `node cli/agent-onboard.js mcp --json`, or `node cli/agent-onboard.js mcp --text` when an agent client needs a stable bridge contract before a real MCP server is admitted. The command is read-only: it may list tool candidates and their mapped public CLI commands, but it must not start an MCP server, add MCP dependencies, open sockets, start stdio transport, invoke tools, write files, install dependencies, run shell commands, mutate Git, publish, or use network access. Treat MCP bridge output as orientation/evidence only, never as authority.
+
+## Public target handoff readiness check product surface
+
+Use `node cli/agent-onboard.js target handoff --readiness-check --json|--text` when CI or a next agent needs a compact pass/fail readiness gate over handoff reason codes. The check must fail closed on blocker reason codes, must not fail on warnings alone, and must not inline raw work-items, claims ledgers, planned governance-index payloads, memory contents, source evidence, or provider-private state. It must not write files, admit or close work items, create claims, install dependencies, run managed-project commands, mutate Git, publish, or use network access.

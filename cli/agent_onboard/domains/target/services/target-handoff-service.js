@@ -5,6 +5,7 @@ const path = require('path');
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_HANDOFF_SCHEMA = 'agent-onboard-public-target-handoff-preview-001';
+const TARGET_HANDOFF_READINESS_CHECK_SCHEMA = 'agent-onboard-public-target-handoff-readiness-check-001';
 const TARGET_HANDOFF_COMMAND = 'agent-onboard target handoff --preview';
 const TARGET_HANDOFF_FAMILY = 'target handoff';
 
@@ -411,6 +412,111 @@ function targetHandoffPreview(targetRoot = process.cwd(), deps = {}) {
   });
 }
 
+
+function compactHandoffReadiness(preview) {
+  const handoff = preview && preview.handoff ? preview.handoff : {};
+  const readiness = handoff.readiness || {};
+  const reasons = Array.isArray(readiness.reasons) ? readiness.reasons.map((entry) => Object.freeze({
+    code: entry && entry.code ? entry.code : 'unknown',
+    severity: entry && entry.severity ? entry.severity : 'warning',
+    summary: entry && entry.summary ? entry.summary : '',
+    next_command: entry && entry.next_command ? entry.next_command : null
+  })) : [];
+  return Object.freeze({
+    status: readiness.status || 'unknown',
+    next_agent_ready: readiness.next_agent_ready === true,
+    reason_codes: Array.isArray(readiness.reason_codes) ? readiness.reason_codes.slice() : reasons.map((entry) => entry.code),
+    blocker_reason_codes: Array.isArray(readiness.blockers) ? readiness.blockers.slice() : reasons.filter((entry) => entry.severity === 'blocker').map((entry) => entry.code),
+    warning_reason_codes: Array.isArray(readiness.warnings) ? readiness.warnings.slice() : reasons.filter((entry) => entry.severity === 'warning').map((entry) => entry.code),
+    reasons,
+    authority_note: readiness.authority_note || 'Use target-owned files and explicit owner instructions as authority; this check is non-authoritative evidence only.'
+  });
+}
+
+function targetHandoffReadinessCheck(targetRoot = process.cwd(), deps = {}) {
+  const preview = targetHandoffPreview(targetRoot, deps);
+  const readiness = compactHandoffReadiness(preview);
+  const previewOk = preview && preview.status === 'ok';
+  const status = previewOk ? (readiness.next_agent_ready ? 'ok' : 'blocked') : 'error';
+  return Object.freeze({
+    schema: TARGET_HANDOFF_READINESS_CHECK_SCHEMA,
+    status,
+    package_name: PACKAGE_NAME,
+    version: deps.version,
+    release_line: deps.releaseLine,
+    command: 'agent-onboard target handoff --readiness-check',
+    command_family: TARGET_HANDOFF_FAMILY,
+    target: preview.target || { name: path.basename(path.resolve(targetRoot || process.cwd())) || 'target-repo', root: path.resolve(targetRoot || process.cwd()), kind: 'unknown', primary_manifest: null, ecosystem: 'unknown' },
+    readiness_check: {
+      purpose: 'machine-readable no-write target handoff readiness gate for CI and next-agent startup',
+      source_command: 'agent-onboard target handoff --json',
+      status: readiness.status,
+      next_agent_ready: readiness.next_agent_ready,
+      reason_codes: readiness.reason_codes,
+      blocker_reason_codes: readiness.blocker_reason_codes,
+      warning_reason_codes: readiness.warning_reason_codes,
+      reasons: readiness.reasons,
+      stable_reason_code_surface: true,
+      fail_closed_on_blocker: true,
+      warnings_do_not_fail_check: true,
+      authority_note: readiness.authority_note
+    },
+    recommended_next_commands: previewOk && readiness.next_agent_ready ? [
+      'agent-onboard target handoff --text',
+      'agent-onboard check --fast --text'
+    ] : [
+      'agent-onboard target handoff --text',
+      'agent-onboard target governance --budget-check --text',
+      'agent-onboard target governance --check --text',
+      'agent-onboard target work-items --text'
+    ],
+    output_policy: {
+      compact_default: true,
+      file_contents_inlined: false,
+      target_ai_memory_content_inlined: false,
+      source_evidence_inlined: false,
+      provider_private_state_inlined: false,
+      raw_work_items_file_inlined: false,
+      raw_claims_ledger_inlined: false,
+      planned_index_payloads_inlined: false,
+      readiness_reasons_inlined: true
+    },
+    writes_performed: false,
+    boundary: noMutationBoundary(),
+    errors: previewOk ? readiness.blocker_reason_codes.slice() : (Array.isArray(preview.errors) ? preview.errors.slice() : ['target handoff preview unavailable'])
+  });
+}
+
+function targetHandoffReadinessCheckText(result) {
+  if (result.status === 'error') {
+    return [
+      'agent-onboard target handoff readiness check',
+      `Status: ${result.status}`,
+      `Target: ${result.target ? result.target.root : 'unknown'}`,
+      `Errors: ${(result.errors || []).join('; ') || 'none'}`,
+      'Writes performed: false'
+    ].join('\n') + '\n';
+  }
+  const check = result.readiness_check || {};
+  const reasons = Array.isArray(check.reasons) ? check.reasons : [];
+  return [
+    'agent-onboard target handoff readiness check',
+    `Target: ${result.target.name} (${result.target.ecosystem})`,
+    `Root: ${result.target.root}`,
+    `Status: ${result.status}`,
+    `Readiness: ${check.status || 'unknown'}`,
+    `Next-agent ready: ${check.next_agent_ready ? 'true' : 'false'}`,
+    `Reason codes: ${Array.isArray(check.reason_codes) && check.reason_codes.length > 0 ? check.reason_codes.join(', ') : 'none'}`,
+    `Blockers: ${Array.isArray(check.blocker_reason_codes) && check.blocker_reason_codes.length > 0 ? check.blocker_reason_codes.join(', ') : 'none'}`,
+    `Warnings: ${Array.isArray(check.warning_reason_codes) && check.warning_reason_codes.length > 0 ? check.warning_reason_codes.join(', ') : 'none'}`,
+    ...reasons.map((entry) => `  - ${entry.severity}:${entry.code}${entry.next_command ? ` -> ${entry.next_command}` : ''}`),
+    'Boundary: no-write readiness check; no raw ledger inline, no planned index payload inline, no admission, no claims, no Git mutation, no network.',
+    'Next commands:',
+    ...result.recommended_next_commands.map((command) => `  - ${command}`),
+    'Writes performed: false'
+  ].join('\n') + '\n';
+}
+
 function noMutationBoundary() {
   return Object.freeze({
     writes_files: false,
@@ -487,6 +593,16 @@ function createTargetHandoffService(deps = {}) {
       targetGovernanceBudgetCheck: deps.targetGovernanceBudgetCheck
     }),
     formatTargetHandoffPreviewText: targetHandoffPreviewText,
+    targetHandoffReadinessCheck: (targetRoot) => targetHandoffReadinessCheck(targetRoot, {
+      version: deps.version,
+      releaseLine,
+      targetInventory: deps.targetInventory,
+      targetWorkItemsPreview: deps.targetWorkItemsPreview,
+      targetGovernancePreview: deps.targetGovernancePreview,
+      targetGovernanceIndexDriftCheck: deps.targetGovernanceIndexDriftCheck,
+      targetGovernanceBudgetCheck: deps.targetGovernanceBudgetCheck
+    }),
+    formatTargetHandoffReadinessCheckText: targetHandoffReadinessCheckText,
     targetHandoffSurfaces
   });
 }
@@ -495,6 +611,8 @@ module.exports = {
   createTargetHandoffService,
   targetHandoffPreview,
   targetHandoffPreviewText,
+  targetHandoffReadinessCheck,
+  targetHandoffReadinessCheckText,
   targetHandoffSurfaces,
   governanceDriftSummary,
   governanceBudgetSummary

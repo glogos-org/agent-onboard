@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_target_handoff_readiness_reasons_product_gate';
+const EXPECTED_RELEASE_LINE = 'public_target_handoff_readiness_check_product_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -275,7 +275,7 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.ok(output.help_lines.includes('agent-onboard target memory --preview|--json|--text [--target <path>]'));
   assert.ok(output.help_lines.includes('agent-onboard target work-items --preview|--json|--text [--target <path>]'));
   assert.ok(output.help_lines.includes('agent-onboard target governance --preview|--check|--budget-contract|--budget-check|--materialize-dry-run|--materialize --write [--force]|--json|--text [--target <path>]'));
-  assert.ok(output.help_lines.includes('agent-onboard target handoff --preview|--json|--text [--target <path>]'));
+  assert.ok(output.help_lines.includes('agent-onboard target handoff --preview|--readiness-check|--json|--text [--target <path>]'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard commands --text'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard guide --text'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard quickstart --text'));
@@ -312,7 +312,7 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.ok(textResult.stdout.includes('agent-onboard target memory --preview|--json|--text [--target <path>]'));
   assert.ok(textResult.stdout.includes('agent-onboard target work-items --preview|--json|--text [--target <path>]'));
   assert.ok(textResult.stdout.includes('agent-onboard target governance --preview|--check|--budget-contract|--budget-check|--materialize-dry-run|--materialize --write [--force]|--json|--text [--target <path>]'));
-  assert.ok(textResult.stdout.includes('agent-onboard target handoff --preview|--json|--text [--target <path>]'));
+  assert.ok(textResult.stdout.includes('agent-onboard target handoff --preview|--readiness-check|--json|--text [--target <path>]'));
 });
 
 fullSourceTest('public discovery is directly usable', () => {
@@ -453,6 +453,7 @@ fullSourceTest('public check plan and fast runner are directly usable', () => {
   assert.ok(fast.checks.some((item) => item.id === 'target-governance-materialization-dry-run'));
   assert.ok(fast.checks.some((item) => item.id === 'target-governance-index-drift-check'));
   assert.ok(fast.checks.some((item) => item.id === 'target-handoff-preview'));
+  assert.ok(fast.checks.some((item) => item.id === 'target-handoff-readiness-check'));
   assert.ok(fast.checks.some((item) => item.id === 'release-source-manifest-check'));
   assert.ok(fast.checks.some((item) => item.id === 'release-check'));
   assert.strictEqual(fast.boundary.writes_files, false);
@@ -547,6 +548,7 @@ fullSourceTest('public MCP bridge plan surface is directly usable', () => {
   assert.ok(output.tool_candidates.some((tool) => tool.name === 'agent_onboard_dry_run_target_governance_indexes'));
   assert.ok(output.tool_candidates.some((tool) => tool.name === 'agent_onboard_check_target_governance_index_drift'));
   assert.ok(output.tool_candidates.some((tool) => tool.name === 'agent_onboard_check_target_governance_budget'));
+  assert.ok(output.tool_candidates.some((tool) => tool.name === 'agent_onboard_check_target_handoff_readiness'));
   assert.ok(output.tool_candidates.some((tool) => tool.name === 'agent_onboard_run_fast_check'));
   assert.ok(output.tool_candidates.some((tool) => tool.command === 'agent-onboard release --check'));
   assert.strictEqual(output.client_guidance.authority_rule.includes('cannot admit claims'), true);
@@ -995,6 +997,33 @@ fullSourceTest('public target handoff preview is directly usable', () => {
   const previewResult = run(['target', 'handoff', '--preview', '--target', dir]);
   assert.strictEqual(readJsonOutput(previewResult).schema, 'agent-onboard-public-target-handoff-preview-001');
 
+  const readinessCheckResult = run(['target', 'handoff', '--readiness-check', '--json', '--target', dir]);
+  const readinessCheck = readJsonOutput(readinessCheckResult);
+  assert.strictEqual(readinessCheck.schema, 'agent-onboard-public-target-handoff-readiness-check-001');
+  assert.strictEqual(readinessCheck.status, 'ok');
+  assert.strictEqual(readinessCheck.version, EXPECTED_VERSION);
+  assert.strictEqual(readinessCheck.release_line, EXPECTED_RELEASE_LINE);
+  assert.strictEqual(readinessCheck.command, 'agent-onboard target handoff --readiness-check');
+  assert.strictEqual(readinessCheck.readiness_check.status, 'usable_with_warnings');
+  assert.strictEqual(readinessCheck.readiness_check.next_agent_ready, true);
+  assert.strictEqual(readinessCheck.readiness_check.stable_reason_code_surface, true);
+  assert.strictEqual(readinessCheck.readiness_check.fail_closed_on_blocker, true);
+  assert.strictEqual(readinessCheck.readiness_check.warnings_do_not_fail_check, true);
+  assert.ok(readinessCheck.readiness_check.warning_reason_codes.includes('open_target_work_item_should_be_continued_before_new_admission'));
+  assert.deepStrictEqual(readinessCheck.readiness_check.blocker_reason_codes, []);
+  assert.strictEqual(readinessCheck.output_policy.raw_work_items_file_inlined, false);
+  assert.strictEqual(readinessCheck.output_policy.planned_index_payloads_inlined, false);
+  assert.strictEqual(readinessCheck.boundary.writes_files, false);
+  assert.strictEqual(readinessCheck.writes_performed, false);
+  assert.strictEqual(JSON.stringify(readinessCheck).includes('target instructions must not be inlined'), false);
+
+  const readinessCheckText = run(['target', 'handoff', '--readiness-check', '--text', '--target', dir]);
+  assert.strictEqual(readinessCheckText.status, 0, readinessCheckText.stderr || readinessCheckText.stdout);
+  assert.ok(readinessCheckText.stdout.includes('agent-onboard target handoff readiness check'));
+  assert.ok(readinessCheckText.stdout.includes('Next-agent ready: true'));
+  assert.ok(readinessCheckText.stdout.includes('warning:open_target_work_item_should_be_continued_before_new_admission'));
+  assert.ok(readinessCheckText.stdout.includes('no-write readiness check'));
+
   const largeLedgerDir = tempRepo();
   fs.mkdirSync(path.join(largeLedgerDir, '.agent-onboard'), { recursive: true });
   fs.writeFileSync(path.join(largeLedgerDir, '.agent-onboard', 'work-items.json'), JSON.stringify({ schema: 'target-work-items-fixture', work_items: [] }, null, 2) + '\n');
@@ -1008,6 +1037,14 @@ fullSourceTest('public target handoff preview is directly usable', () => {
   assert.ok(blockedBudgetHandoff.handoff.readiness.reason_codes.includes('governance_budget_check_blocked') || blockedBudgetHandoff.handoff.readiness.reason_codes.includes('governance_budget_over_contract'));
   assert.ok(blockedBudgetHandoff.handoff.readiness.reasons.some((entry) => entry.severity === 'blocker' && entry.next_command === 'agent-onboard target governance --budget-check --text'));
   assert.strictEqual(JSON.stringify(blockedBudgetHandoff).includes('oversized'), false);
+
+  const blockedReadinessCheck = readJsonFailure(run(['target', 'handoff', '--readiness-check', '--json', '--target', largeLedgerDir]));
+  assert.strictEqual(blockedReadinessCheck.schema, 'agent-onboard-public-target-handoff-readiness-check-001');
+  assert.strictEqual(blockedReadinessCheck.status, 'blocked');
+  assert.strictEqual(blockedReadinessCheck.readiness_check.next_agent_ready, false);
+  assert.ok(blockedReadinessCheck.readiness_check.blocker_reason_codes.includes('governance_budget_check_blocked') || blockedReadinessCheck.readiness_check.blocker_reason_codes.includes('governance_budget_over_contract'));
+  assert.strictEqual(blockedReadinessCheck.output_policy.raw_claims_ledger_inlined, false);
+  assert.strictEqual(JSON.stringify(blockedReadinessCheck).includes('oversized'), false);
 
   const refused = run(['target', 'handoff', '--write', '--target', dir]);
   const refusedOutput = readJsonFailure(refused);
@@ -3884,7 +3921,8 @@ fullSourceTest('full source block line 2233', () => {
   assert.ok(readme.includes('Use `--text` on target-facing inspection commands'));
   assert.ok(readme.includes('npx agent-onboard check --plan --text'));
   assert.ok(readme.includes('npx agent-onboard check --fast --text'));
-  assert.ok(readme.includes('The current release adds stable handoff readiness reason codes to `target handoff --json|--text`'));
+  assert.ok(readme.includes('The current release adds `target handoff --readiness-check --json|--text` as a no-write machine-readable readiness gate'));
+  assert.ok(readme.includes('The previous release added stable handoff readiness reason codes to `target handoff --json|--text`'));
   assert.ok(readme.includes('The previous release added governance budget state to `target handoff --json|--text`'));
   assert.ok(readme.includes('`target governance --budget-check --json|--text` remains the compact no-write target scan'));
   assert.ok(readme.includes('4096-byte per-index and 8192-byte combined governance budget'));

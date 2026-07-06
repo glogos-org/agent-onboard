@@ -1111,6 +1111,7 @@ const CHECK_FAST_REGISTRY = Object.freeze([
   Object.freeze({ id: 'target-governance-budget-contract', command: 'agent-onboard target governance --budget-contract', scope: 'target_governance_budget_contract', slow: false }),
   Object.freeze({ id: 'target-governance-budget-check', command: 'agent-onboard target governance --budget-check', scope: 'target_governance_budget_check', slow: false }),
   Object.freeze({ id: 'target-handoff-preview', command: 'agent-onboard target handoff --preview', scope: 'target_handoff_preview', slow: false }),
+  Object.freeze({ id: 'target-handoff-readiness-check', command: 'agent-onboard target handoff --readiness-check', scope: 'target_handoff_readiness_check', slow: false }),
   Object.freeze({ id: 'release-source-manifest-check', command: 'agent-onboard release --source-manifest-check', scope: 'package_source_manifest', slow: false }),
   Object.freeze({ id: 'release-surface-check', command: 'agent-onboard release --surface-check', scope: 'package_surface', slow: false }),
   Object.freeze({ id: 'release-check', command: 'agent-onboard release --check', scope: 'release_integrity', slow: false }),
@@ -1258,6 +1259,7 @@ function runCheckFastPlan(root = packageRoot()) {
     'target-governance-budget-contract': () => targetRuntimeService.targetGovernanceBudgetContract(),
     'target-governance-budget-check': () => targetRuntimeService.targetGovernanceBudgetCheck(targetRoot),
     'target-handoff-preview': () => targetRuntimeService.targetHandoffPreview(targetRoot),
+    'target-handoff-readiness-check': () => targetRuntimeService.targetHandoffReadinessCheck(targetRoot),
     'release-source-manifest-check': () => publicPackageSourceManifestCheck(root),
     'release-surface-check': () => publicPackageSurfaceCheck(root),
     'release-check': () => publicReleaseCheck(root),
@@ -1464,6 +1466,7 @@ const MCP_TOOL_CANDIDATES = Object.freeze([
   Object.freeze({ name: 'agent_onboard_dry_run_target_governance_indexes', command: 'agent-onboard target governance --materialize-dry-run --json', output_schema: 'agent-onboard-public-target-governance-index-materialization-dry-run-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_check_target_governance_index_drift', command: 'agent-onboard target governance --check --json', output_schema: 'agent-onboard-public-target-governance-index-drift-check-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_preview_target_handoff', command: 'agent-onboard target handoff --json', output_schema: 'agent-onboard-public-target-handoff-preview-001', mutates: false }),
+  Object.freeze({ name: 'agent_onboard_check_target_handoff_readiness', command: 'agent-onboard target handoff --readiness-check --json', output_schema: 'agent-onboard-public-target-handoff-readiness-check-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_run_fast_check', command: 'agent-onboard check --fast --json', output_schema: 'agent-onboard-public-check-fast-result-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_get_ci_recipe', command: 'agent-onboard ci --json', output_schema: 'agent-onboard-public-ci-surface-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_get_source_manifest', command: 'agent-onboard release --source-manifest', output_schema: 'agent-onboard-public-package-source-manifest-001', mutates: false }),
@@ -8406,7 +8409,7 @@ function runTargetGovernance(args) {
 
 
 function runTargetHandoff(args) {
-  const allowed = [TARGET_HANDOFF_COMMAND.mode.preview, TARGET_HANDOFF_COMMAND.flag.json, TARGET_HANDOFF_COMMAND.flag.text, TARGET_HANDOFF_COMMAND.flag.target];
+  const allowed = [TARGET_HANDOFF_COMMAND.mode.preview, TARGET_HANDOFF_COMMAND.mode.readinessCheck, TARGET_HANDOFF_COMMAND.flag.json, TARGET_HANDOFF_COMMAND.flag.text, TARGET_HANDOFF_COMMAND.flag.target];
   const targetIndex = args.indexOf(TARGET_HANDOFF_COMMAND.flag.target);
   const targetRoot = targetIndex >= 0 ? args[targetIndex + 1] : process.cwd();
   const unknown = args.filter((arg, index) => {
@@ -8415,12 +8418,19 @@ function runTargetHandoff(args) {
   });
   if (targetIndex >= 0 && (!targetRoot || targetRoot.startsWith('-'))) throw new Error(`target handoff ${TARGET_HANDOFF_COMMAND.flag.target} requires a path`);
   if (unknown.length > 0) throw new Error(`target handoff does not support: ${unknown.join(', ')}`);
-  const modes = args.filter((arg) => [TARGET_HANDOFF_COMMAND.mode.preview, TARGET_HANDOFF_COMMAND.flag.json, TARGET_HANDOFF_COMMAND.flag.text].includes(arg));
-  if (modes.length > 1) throw new Error('target handoff accepts only one output mode: --preview, --json, or --text');
-  const mode = modes[0] || TARGET_HANDOFF_COMMAND.mode.preview;
-  const result = targetHandoffPreview(targetRoot);
-  if (mode === TARGET_HANDOFF_COMMAND.flag.text) process.stdout.write(formatTargetHandoffPreviewText(result));
-  else json(result);
+  const primaryModes = args.filter((arg) => [TARGET_HANDOFF_COMMAND.mode.preview, TARGET_HANDOFF_COMMAND.mode.readinessCheck].includes(arg));
+  const outputModes = args.filter((arg) => [TARGET_HANDOFF_COMMAND.flag.json, TARGET_HANDOFF_COMMAND.flag.text].includes(arg));
+  if (primaryModes.length > 1) throw new Error('target handoff accepts only one primary mode: --preview or --readiness-check');
+  if (outputModes.length > 1) throw new Error('target handoff accepts only one output mode: --json or --text');
+  const primaryMode = primaryModes[0] || TARGET_HANDOFF_COMMAND.mode.preview;
+  const outputMode = outputModes[0] || (primaryMode === TARGET_HANDOFF_COMMAND.mode.preview ? TARGET_HANDOFF_COMMAND.mode.preview : TARGET_HANDOFF_COMMAND.flag.json);
+  const result = primaryMode === TARGET_HANDOFF_COMMAND.mode.readinessCheck
+    ? targetRuntimeService.targetHandoffReadinessCheck(targetRoot)
+    : targetHandoffPreview(targetRoot);
+  if (outputMode === TARGET_HANDOFF_COMMAND.flag.text) {
+    if (primaryMode === TARGET_HANDOFF_COMMAND.mode.readinessCheck) process.stdout.write(targetRuntimeService.formatTargetHandoffReadinessCheckText(result));
+    else process.stdout.write(formatTargetHandoffPreviewText(result));
+  } else json(result);
   return result.status === 'ok' ? 0 : 1;
 }
 

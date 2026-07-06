@@ -5808,6 +5808,65 @@
           "Full runner attempt started and passed early full-source shards but exceeded the local tool timeout before all shards completed; quick suite plus targeted runtime, handoff, and README/doc shards passed."
         ]
       }
+    },
+    {
+      "id": "P1S3M5W29",
+      "milestone_id": "P1S3M5",
+      "title": "Public target handoff readiness check product gate",
+      "status": "closed",
+      "closure": {
+        "actor": "gpt-5.5-thinking",
+        "closed_at": "2026-07-05T14:18:13Z",
+        "summary": "Closed by adding target handoff --readiness-check as a no-write machine-readable readiness gate. The check reuses handoff readiness reason codes, returns blocker and warning reason-code arrays, fails closed on blocker reasons, does not fail on warnings alone, and preserves no-inline/no-write boundaries for raw work-items, claims ledgers, planned governance-index payloads, memory content, source evidence, and provider-private state.",
+        "changed_files": [
+          "package.json",
+          "README.md",
+          "AGENTS.md",
+          "llms.txt",
+          "cli/agent_onboard/runtime-contracts.js",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/domains/target/services/target-handoff-service.js",
+          "test/agent-onboard.test.js",
+          ".agent-onboard/work-items.json",
+          ".agent-onboard/work-items.index.json",
+          ".agent-onboard/claims.index.json",
+          ".agent-onboard/target-handoff-readiness-check-product-gate.json",
+          "authority-map.json",
+          "manifest.json"
+        ],
+        "checks_run": [
+          "node -c cli/agent_onboard/domains/target/services/target-handoff-service.js",
+          "node -c cli/agent_onboard/runtime-contracts.js",
+          "node -c cli/agent_onboard/runtime-composer.js",
+          "node -c test/agent-onboard.test.js",
+          "node cli/agent-onboard.js target handoff --readiness-check --json",
+          "node cli/agent-onboard.js target handoff --readiness-check --text",
+          "node cli/agent-onboard.js target handoff --json",
+          "node cli/agent-onboard.js check --plan --json",
+          "node cli/agent-onboard.js check --fast --json",
+          "npm test",
+          "node test/agent-onboard.test.js --shard=1/139",
+          "node test/agent-onboard.test.js --shard=5/139",
+          "node test/agent-onboard.test.js --shard=7/139",
+          "node test/agent-onboard.test.js --shard=11/139",
+          "node test/agent-onboard.test.js --shard=129/139",
+          "node cli/agent-onboard.js target governance --materialize --write --force --target .",
+          "node cli/agent-onboard.js target metadata --write --force --target .",
+          "node cli/agent-onboard.js target metadata --check --target .",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "node scripts/check-public-artifact-boundary.js",
+          "node cli/agent-onboard.js release --source-manifest-check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node cli/agent-onboard.js release --check",
+          "npm pack --dry-run --json"
+        ],
+        "checks_not_run": [
+          "npm run test:full was not run end-to-end in this local tool window"
+        ],
+        "known_non_pass": [
+          "Full runner was not executed end-to-end; quick suite and targeted full-source shards covering command surface, fast check, MCP, handoff readiness, and README/docs passed."
+        ]
+      }
     }
   ]
 }

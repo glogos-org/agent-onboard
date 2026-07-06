@@ -2,7 +2,7 @@
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
-const RELEASE_LINE = 'public_target_handoff_readiness_reasons_product_gate';
+const RELEASE_LINE = 'public_target_handoff_readiness_check_product_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
   agents: 'agents',
@@ -217,7 +217,8 @@ const TARGET_DOCTOR_COMMAND = Object.freeze({
 const TARGET_INVENTORY_COMMAND = Object.freeze({
   help: 'agent-onboard target inventory --preview|--json|--text [--target <path>]',
   mode: Object.freeze({
-    preview: '--preview'
+    preview: '--preview',
+    readinessCheck: '--readiness-check'
   }),
   flag: Object.freeze({
     json: OUTPUT_FLAG.json,
@@ -270,9 +271,10 @@ const TARGET_GOVERNANCE_COMMAND = Object.freeze({
 });
 
 const TARGET_HANDOFF_COMMAND = Object.freeze({
-  help: 'agent-onboard target handoff --preview|--json|--text [--target <path>]',
+  help: 'agent-onboard target handoff --preview|--readiness-check|--json|--text [--target <path>]',
   mode: Object.freeze({
-    preview: '--preview'
+    preview: '--preview',
+    readinessCheck: '--readiness-check'
   }),
   flag: Object.freeze({
     json: OUTPUT_FLAG.json,
