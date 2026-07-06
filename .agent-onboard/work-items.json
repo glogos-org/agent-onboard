@@ -5599,6 +5599,53 @@
         "checks_not_run": [],
         "known_non_pass": []
       }
+    },
+    {
+      "id": "P1S3M5W25",
+      "milestone_id": "P1S3M5",
+      "title": "Public target governance budget contract product gate",
+      "status": "closed",
+      "closure": {
+        "actor": "release-maintainer",
+        "closed_at": "2026-07-05T10:21:17.650Z",
+        "summary": "Closed by adding target governance --budget-contract as a no-scan, no-write public governance budget contract surface. The command exposes compact first-read index paths, raw authority files, byte budgets, explicit materialization write policy, text/JSON output, check-fast coverage, documentation, and dogfood guidance without adding new write paths or scanning targets.",
+        "changed_files": [
+          "package.json",
+          "README.md",
+          "AGENTS.md",
+          "llms.txt",
+          "cli/agent_onboard/runtime-contracts.js",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/domains/target/services/target-governance-service.js",
+          "test/agent-onboard.test.js",
+          ".agent-onboard/work-items.json",
+          ".agent-onboard/work-items.index.json",
+          ".agent-onboard/claims.index.json",
+          ".agent-onboard/target-governance-budget-contract-product-gate.json",
+          "authority-map.json",
+          "manifest.json"
+        ],
+        "checks_run": [
+          "node cli/agent-onboard.js target governance --budget-contract --json",
+          "node cli/agent-onboard.js target governance --budget-contract --text",
+          "node cli/agent-onboard.js check --fast --json",
+          "npm test",
+          "npm pack --dry-run --json",
+          "node cli/agent-onboard.js target metadata --write --force --target .",
+          "node cli/agent-onboard.js target metadata --check --target .",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "node scripts/check-public-artifact-boundary.js",
+          "node cli/agent-onboard.js release --source-manifest-check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node cli/agent-onboard.js release --check"
+        ],
+        "checks_not_run": [
+          "node test/agent-onboard.test.js completed attempt not available within local tool timeout window"
+        ],
+        "known_non_pass": [
+          "Full unsharded source test command was attempted but exceeded the local execution timeout; quick suite, direct budget-contract commands, check --fast, and npm pack dry-run passed."
+        ]
+      }
     }
   ]
 }

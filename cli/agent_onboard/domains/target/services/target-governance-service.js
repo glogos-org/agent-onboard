@@ -9,10 +9,12 @@ const TARGET_GOVERNANCE_MATERIALIZATION_SCHEMA = 'agent-onboard-public-target-go
 const TARGET_GOVERNANCE_MATERIALIZATION_WRITE_SCHEMA = 'agent-onboard-public-target-governance-index-materialization-write-001';
 const TARGET_GOVERNANCE_REFRESH_SCHEMA = 'agent-onboard-public-target-governance-index-refresh-after-mutation-001';
 const TARGET_GOVERNANCE_INDEX_DRIFT_CHECK_SCHEMA = 'agent-onboard-public-target-governance-index-drift-check-001';
+const TARGET_GOVERNANCE_BUDGET_CONTRACT_SCHEMA = 'agent-onboard-public-target-governance-budget-contract-001';
 const TARGET_GOVERNANCE_COMMAND = 'agent-onboard target governance --preview';
 const TARGET_GOVERNANCE_MATERIALIZATION_COMMAND = 'agent-onboard target governance --materialize-dry-run';
 const TARGET_GOVERNANCE_MATERIALIZATION_WRITE_COMMAND = 'agent-onboard target governance --materialize --write';
 const TARGET_GOVERNANCE_INDEX_DRIFT_CHECK_COMMAND = 'agent-onboard target governance --check';
+const TARGET_GOVERNANCE_BUDGET_CONTRACT_COMMAND = 'agent-onboard target governance --budget-contract';
 const TARGET_GOVERNANCE_FAMILY = 'target governance';
 const WORK_ITEMS_PATH = '.agent-onboard/work-items.json';
 const CLAIMS_PATH = '.agent-onboard/claims.jsonl';
@@ -377,7 +379,7 @@ function indexDriftOverallState(entries, errors) {
 
 function targetGovernanceIndexDriftCheck(targetRoot = process.cwd(), deps = {}) {
   const version = deps.version || '0.0.0';
-  const releaseLine = deps.releaseLine || 'public_target_governance_stale_read_fast_check_wiring_gate';
+  const releaseLine = deps.releaseLine || 'public_target_governance_budget_contract_product_gate';
   const plan = targetGovernanceIndexMaterializationDryRun(targetRoot, { version, releaseLine, updatedAt: safeString(deps.updatedAt) || new Date().toISOString() });
   const base = Object.freeze({
     schema: TARGET_GOVERNANCE_INDEX_DRIFT_CHECK_SCHEMA,
@@ -533,7 +535,7 @@ function targetGovernanceIndexDriftCheckText(result) {
 
 function targetGovernanceIndexMaterializationDryRun(targetRoot = process.cwd(), deps = {}) {
   const version = deps.version || '0.0.0';
-  const releaseLine = deps.releaseLine || 'public_target_governance_stale_read_fast_check_wiring_gate';
+  const releaseLine = deps.releaseLine || 'public_target_governance_budget_contract_product_gate';
   const absoluteTargetRoot = path.resolve(targetRoot || process.cwd());
   const updatedAt = safeString(deps.updatedAt) || new Date().toISOString();
   const base = Object.freeze({
@@ -690,7 +692,7 @@ function targetGovernanceIndexMaterializationDryRunText(result) {
 
 function targetGovernanceIndexMaterializationWrite(targetRoot = process.cwd(), deps = {}) {
   const version = deps.version || '0.0.0';
-  const releaseLine = deps.releaseLine || 'public_target_governance_stale_read_fast_check_wiring_gate';
+  const releaseLine = deps.releaseLine || 'public_target_governance_budget_contract_product_gate';
   const force = deps.force === true;
   const updatedAt = safeString(deps.updatedAt) || new Date().toISOString();
   const plan = targetGovernanceIndexMaterializationDryRun(targetRoot, { version, releaseLine, updatedAt });
@@ -815,7 +817,7 @@ function targetGovernanceIndexRefreshBoundary(writeBoundary, triggered) {
 
 function targetGovernanceIndexRefreshAfterMutation(targetRoot = process.cwd(), deps = {}) {
   const version = deps.version || '0.0.0';
-  const releaseLine = deps.releaseLine || 'public_target_governance_stale_read_fast_check_wiring_gate';
+  const releaseLine = deps.releaseLine || 'public_target_governance_budget_contract_product_gate';
   const trigger = isPlainObject(deps.trigger) ? deps.trigger : {};
   const command = safeString(trigger.command) || 'unknown write command';
   const file = safeString(trigger.file) || WORK_ITEMS_PATH;
@@ -903,7 +905,7 @@ function targetGovernanceIndexMaterializationWriteText(result) {
 
 function targetGovernancePreview(targetRoot = process.cwd(), deps = {}) {
   const version = deps.version || '0.0.0';
-  const releaseLine = deps.releaseLine || 'public_target_governance_stale_read_fast_check_wiring_gate';
+  const releaseLine = deps.releaseLine || 'public_target_governance_budget_contract_product_gate';
   const absoluteTargetRoot = path.resolve(targetRoot || process.cwd());
   const base = Object.freeze({
     schema: TARGET_GOVERNANCE_SCHEMA,
@@ -1037,11 +1039,94 @@ function targetGovernancePreviewText(result) {
   ].join('\n') + '\n';
 }
 
+
+function targetGovernanceBudgetContract(deps = {}) {
+  const version = deps.version || '0.0.0';
+  const releaseLine = deps.releaseLine || 'public_target_governance_budget_contract_product_gate';
+  return Object.freeze({
+    schema: TARGET_GOVERNANCE_BUDGET_CONTRACT_SCHEMA,
+    status: 'ok',
+    package_name: PACKAGE_NAME,
+    version,
+    release_line: releaseLine,
+    command: TARGET_GOVERNANCE_BUDGET_CONTRACT_COMMAND,
+    command_family: TARGET_GOVERNANCE_FAMILY,
+    purpose: 'stable public contract for compact target governance first-read indexes and raw growth-file authority boundaries',
+    target_first_read_indexes: Object.freeze([WORK_ITEMS_INDEX_PATH, CLAIMS_INDEX_PATH]),
+    raw_growth_files_on_demand_only: Object.freeze([WORK_ITEMS_PATH, CLAIMS_PATH]),
+    raw_growth_files_loaded_by_default: false,
+    compact_first_read_indexes_preferred: true,
+    indexes_are_first_read_cache: true,
+    work_items_json_remains_authoritative: true,
+    claims_jsonl_remains_authoritative: true,
+    max_index_bytes_each: MAX_INDEX_BYTES_EACH,
+    max_combined_index_bytes: MAX_COMBINED_INDEX_BYTES,
+    max_claims_ledger_bytes_for_preview: MAX_LEDGER_BYTES,
+    latest_limit: DEFAULT_LATEST_LIMIT,
+    write_policy: Object.freeze({
+      allowed_write_paths: ALLOWED_INDEX_WRITE_PATHS.slice(),
+      explicit_write_required: true,
+      materialize_requires_write_and_force: true,
+      compare_before_write: true,
+      drift_check_writes_files: false,
+      budget_contract_writes_files: false,
+      raw_work_items_file_mutated_by_governance_commands: false,
+      claims_ledger_mutated_by_governance_commands: false
+    }),
+    output_policy: Object.freeze({
+      compact_default: true,
+      raw_work_items_file_inlined: false,
+      raw_claims_ledger_inlined: false,
+      planned_index_payloads_inlined_by_contract: false,
+      target_ai_memory_content_inlined: false,
+      provider_private_state_inlined: false
+    }),
+    recommended_next_commands: Object.freeze([
+      'agent-onboard target governance --text',
+      'agent-onboard target governance --check --text',
+      'agent-onboard target governance --materialize-dry-run --text',
+      'agent-onboard check --fast --text'
+    ]),
+    writes_performed: false,
+    boundary: noMutationBoundary(false),
+    errors: Object.freeze([])
+  });
+}
+
+function targetGovernanceBudgetContractText(result) {
+  if (result.status !== 'ok') {
+    return [
+      'agent-onboard target governance budget contract',
+      `Status: ${result.status}`,
+      `Errors: ${(result.errors || []).join('; ') || 'none'}`,
+      'Writes performed: false'
+    ].join('\n') + '\n';
+  }
+  return [
+    'agent-onboard target governance budget contract',
+    `Package: ${result.package_name}@${result.version}`,
+    `Release line: ${result.release_line}`,
+    `First-read indexes: ${result.target_first_read_indexes.join(', ')}`,
+    `Raw authority files: ${result.raw_growth_files_on_demand_only.join(', ')} (on-demand only)`,
+    `Index budget: ${result.max_index_bytes_each} bytes each; ${result.max_combined_index_bytes} bytes combined`,
+    `Claims preview limit: ${result.max_claims_ledger_bytes_for_preview} bytes`,
+    `Latest item limit: ${result.latest_limit}`,
+    'Authority: indexes are compact first-read cache; raw work-items and claims ledger remain authoritative.',
+    'Write policy: explicit materialize --write --force only; compare-before-write; allowlisted index paths only.',
+    'Boundary: contract read only; no target scan, no raw file import, no admission, no claims, no Git mutation, no network, no writes.',
+    'Next commands:',
+    ...result.recommended_next_commands.map((command) => `  - ${command}`),
+    'Writes performed: false'
+  ].join('\n') + '\n';
+}
+
 function createTargetGovernanceService(deps = {}) {
   const releaseLine = deps.publicReleaseContract && deps.publicReleaseContract.release_line ? deps.publicReleaseContract.release_line : deps.releaseLine;
   return Object.freeze({
     targetGovernancePreview: (targetRoot) => targetGovernancePreview(targetRoot, { version: deps.version, releaseLine }),
     formatTargetGovernancePreviewText: targetGovernancePreviewText,
+    targetGovernanceBudgetContract: () => targetGovernanceBudgetContract({ version: deps.version, releaseLine }),
+    formatTargetGovernanceBudgetContractText: targetGovernanceBudgetContractText,
     targetGovernanceIndexMaterializationDryRun: (targetRoot) => targetGovernanceIndexMaterializationDryRun(targetRoot, { version: deps.version, releaseLine }),
     formatTargetGovernanceIndexMaterializationDryRunText: targetGovernanceIndexMaterializationDryRunText,
     targetGovernanceIndexMaterializationWrite: (targetRoot, options = {}) => targetGovernanceIndexMaterializationWrite(targetRoot, { version: deps.version, releaseLine, force: options.force }),
@@ -1060,6 +1145,8 @@ module.exports = {
   createTargetGovernanceService,
   targetGovernancePreview,
   targetGovernancePreviewText,
+  targetGovernanceBudgetContract,
+  targetGovernanceBudgetContractText,
   targetGovernanceIndexMaterializationDryRun,
   targetGovernanceIndexMaterializationDryRunText,
   targetGovernanceIndexMaterializationWrite,

@@ -1,6 +1,6 @@
 {
   "name": "agent-onboard",
-  "version": "0.0.131",
+  "version": "0.0.132",
   "description": "CLI for onboarding and managing target repositories.",
   "license": "Apache-2.0",
   "author": "Thanh Le <vnlemanhthanh@gmail.com>",
@@ -401,7 +401,10 @@
     "governance-index-drift",
     "governance-index-warning",
     "fast-check-advisory",
-    "handoff-drift-summary"
+    "handoff-drift-summary",
+    "governance-budget-contract",
+    "target-governance-budget",
+    "first-read-cache-contract"
   ],
   "type": "commonjs",
   "engines": {

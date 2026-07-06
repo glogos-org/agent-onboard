@@ -1,0 +1,101 @@
+{
+  "schema": "agent-onboard-public-target-governance-budget-contract-product-gate-001",
+  "package_name": "agent-onboard",
+  "version": "0.0.132",
+  "release_line": "public_target_governance_budget_contract_product_gate",
+  "work_item": {
+    "id": "P1S3M5W25",
+    "milestone_id": "P1S3M5",
+    "title": "Public target governance budget contract product gate",
+    "status": "closed",
+    "closure": {
+      "actor": "release-maintainer",
+      "closed_at": "2026-07-05T10:21:17.650Z",
+      "summary": "Closed by adding target governance --budget-contract as a no-scan, no-write public governance budget contract surface. The command exposes compact first-read index paths, raw authority files, byte budgets, explicit materialization write policy, text/JSON output, check-fast coverage, documentation, and dogfood guidance without adding new write paths or scanning targets.",
+      "changed_files": [
+        "package.json",
+        "README.md",
+        "AGENTS.md",
+        "llms.txt",
+        "cli/agent_onboard/runtime-contracts.js",
+        "cli/agent_onboard/runtime-composer.js",
+        "cli/agent_onboard/domains/target/services/target-governance-service.js",
+        "test/agent-onboard.test.js",
+        ".agent-onboard/work-items.json",
+        ".agent-onboard/work-items.index.json",
+        ".agent-onboard/claims.index.json",
+        ".agent-onboard/target-governance-budget-contract-product-gate.json",
+        "authority-map.json",
+        "manifest.json"
+      ],
+      "checks_run": [
+        "node cli/agent-onboard.js target governance --budget-contract --json",
+        "node cli/agent-onboard.js target governance --budget-contract --text",
+        "node cli/agent-onboard.js check --fast --json",
+        "npm test",
+        "npm pack --dry-run --json",
+        "node cli/agent-onboard.js target metadata --write --force --target .",
+        "node cli/agent-onboard.js target metadata --check --target .",
+        "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+        "node scripts/check-public-artifact-boundary.js",
+        "node cli/agent-onboard.js release --source-manifest-check",
+        "node cli/agent-onboard.js release --surface-check",
+        "node cli/agent-onboard.js release --check"
+      ],
+      "checks_not_run": [
+        "node test/agent-onboard.test.js completed attempt not available within local tool timeout window"
+      ],
+      "known_non_pass": [
+        "Full unsharded source test command was attempted but exceeded the local execution timeout; quick suite, direct budget-contract commands, check --fast, and npm pack dry-run passed."
+      ]
+    }
+  },
+  "admitted_surface": {
+    "command": "agent-onboard target governance --budget-contract",
+    "json_output_schema": "agent-onboard-public-target-governance-budget-contract-001",
+    "text_output": true,
+    "no_scan_contract": true,
+    "target_first_read_indexes": [
+      ".agent-onboard/work-items.index.json",
+      ".agent-onboard/claims.index.json"
+    ],
+    "raw_growth_files_on_demand_only": [
+      ".agent-onboard/work-items.json",
+      ".agent-onboard/claims.jsonl"
+    ],
+    "max_index_bytes_each": 4096,
+    "max_combined_index_bytes": 8192,
+    "max_claims_ledger_bytes_for_preview": 131072,
+    "latest_limit": 5,
+    "check_fast_probe_id": "target-governance-budget-contract",
+    "mcp_tool_candidate": "agent_onboard_get_target_governance_budget_contract"
+  },
+  "authority_boundary": {
+    "indexes_are_first_read_cache": true,
+    "work_items_json_remains_authoritative": true,
+    "claims_jsonl_remains_authoritative": true,
+    "explicit_materialize_write_required": true,
+    "materialize_requires_force": true,
+    "compare_before_write": true,
+    "allowed_write_paths": [
+      ".agent-onboard/work-items.index.json",
+      ".agent-onboard/claims.index.json"
+    ],
+    "does_not_scan_target_repository": true,
+    "does_not_write_files": true,
+    "does_not_refresh_indexes": true,
+    "does_not_inline_raw_growth_files": true,
+    "does_not_create_claims": true,
+    "does_not_admit_or_close_work_items": true,
+    "no_dependency_install": true,
+    "no_managed_project_command": true,
+    "no_git_mutation": true,
+    "no_network": true,
+    "no_publish": true
+  },
+  "recommended_next_candidate": {
+    "id": "P1S3M5W26",
+    "title": "Public target governance remediation hint product gate",
+    "summary": "Consider adding compact remediation hints that choose preview, budget contract, drift check, dry-run materialization, or explicit materialization without auto-writing."
+  }
+}

@@ -186,6 +186,7 @@ function commandSurfaceCatalog() {
       'agent-onboard target inventory --text',
       'agent-onboard target memory --text',
       'agent-onboard target governance --text',
+      'agent-onboard target governance --budget-contract --text',
       'agent-onboard target governance --materialize-dry-run --text',
       'agent-onboard target governance --check --text',
       'agent-onboard target work-items --text',
@@ -270,6 +271,7 @@ function operatorGuideCatalog() {
           'agent-onboard target inventory --text',
           'agent-onboard target memory --text',
           'agent-onboard target governance --text',
+          'agent-onboard target governance --budget-contract --text',
           'agent-onboard target governance --materialize-dry-run --text',
           'agent-onboard target work-items --text',
           'agent-onboard target metadata --plan',
@@ -528,6 +530,7 @@ function discoveryStableCommands() {
     'agent-onboard commands --text',
     'agent-onboard target doctor --text',
     'agent-onboard target governance --text',
+    'agent-onboard target governance --budget-contract --text',
     'agent-onboard target governance --materialize-dry-run --text',
     'agent-onboard target onboarding --plan',
     'agent-onboard work-items --next --text',
@@ -1102,6 +1105,7 @@ const CHECK_FAST_REGISTRY = Object.freeze([
   Object.freeze({ id: 'target-governance-preview', command: 'agent-onboard target governance --preview', scope: 'target_governance_preview', slow: false }),
   Object.freeze({ id: 'target-governance-materialization-dry-run', command: 'agent-onboard target governance --materialize-dry-run', scope: 'target_governance_index_materialization', slow: false }),
   Object.freeze({ id: 'target-governance-index-drift-check', command: 'agent-onboard target governance --check', scope: 'target_governance_index_drift_check', slow: false }),
+  Object.freeze({ id: 'target-governance-budget-contract', command: 'agent-onboard target governance --budget-contract', scope: 'target_governance_budget_contract', slow: false }),
   Object.freeze({ id: 'target-handoff-preview', command: 'agent-onboard target handoff --preview', scope: 'target_handoff_preview', slow: false }),
   Object.freeze({ id: 'release-source-manifest-check', command: 'agent-onboard release --source-manifest-check', scope: 'package_source_manifest', slow: false }),
   Object.freeze({ id: 'release-surface-check', command: 'agent-onboard release --surface-check', scope: 'package_surface', slow: false }),
@@ -1247,6 +1251,7 @@ function runCheckFastPlan(root = packageRoot()) {
     'target-governance-preview': () => targetRuntimeService.targetGovernancePreview(targetRoot),
     'target-governance-materialization-dry-run': () => targetRuntimeService.targetGovernanceIndexMaterializationDryRun(targetRoot),
     'target-governance-index-drift-check': () => targetRuntimeService.targetGovernanceIndexDriftCheck(targetRoot),
+    'target-governance-budget-contract': () => targetRuntimeService.targetGovernanceBudgetContract(),
     'target-handoff-preview': () => targetRuntimeService.targetHandoffPreview(targetRoot),
     'release-source-manifest-check': () => publicPackageSourceManifestCheck(root),
     'release-surface-check': () => publicPackageSurfaceCheck(root),
@@ -1449,6 +1454,7 @@ const MCP_TOOL_CANDIDATES = Object.freeze([
   Object.freeze({ name: 'agent_onboard_preview_target_memory', command: 'agent-onboard target memory --json', output_schema: 'agent-onboard-public-target-memory-descriptor-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_preview_target_work_items', command: 'agent-onboard target work-items --json', output_schema: 'agent-onboard-public-target-work-items-preview-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_preview_target_governance', command: 'agent-onboard target governance --json', output_schema: 'agent-onboard-public-target-governance-preview-001', mutates: false }),
+  Object.freeze({ name: 'agent_onboard_get_target_governance_budget_contract', command: 'agent-onboard target governance --budget-contract --json', output_schema: 'agent-onboard-public-target-governance-budget-contract-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_dry_run_target_governance_indexes', command: 'agent-onboard target governance --materialize-dry-run --json', output_schema: 'agent-onboard-public-target-governance-index-materialization-dry-run-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_check_target_governance_index_drift', command: 'agent-onboard target governance --check --json', output_schema: 'agent-onboard-public-target-governance-index-drift-check-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_preview_target_handoff', command: 'agent-onboard target handoff --json', output_schema: 'agent-onboard-public-target-handoff-preview-001', mutates: false }),
@@ -1835,6 +1841,8 @@ const {
   formatTargetWorkItemsPreviewText,
   targetGovernancePreview,
   formatTargetGovernancePreviewText,
+  targetGovernanceBudgetContract,
+  formatTargetGovernanceBudgetContractText,
   targetGovernanceIndexMaterializationDryRun,
   formatTargetGovernanceIndexMaterializationDryRunText,
   targetGovernanceIndexMaterializationWrite,
@@ -8346,7 +8354,7 @@ function runTargetWorkItems(args) {
 
 
 function runTargetGovernance(args) {
-  const allowed = [TARGET_GOVERNANCE_COMMAND.mode.preview, TARGET_GOVERNANCE_COMMAND.mode.driftCheck, TARGET_GOVERNANCE_COMMAND.mode.materializeDryRun, TARGET_GOVERNANCE_COMMAND.mode.materialize, TARGET_GOVERNANCE_COMMAND.flag.write, TARGET_GOVERNANCE_COMMAND.flag.force, TARGET_GOVERNANCE_COMMAND.flag.json, TARGET_GOVERNANCE_COMMAND.flag.text, TARGET_GOVERNANCE_COMMAND.flag.target];
+  const allowed = [TARGET_GOVERNANCE_COMMAND.mode.preview, TARGET_GOVERNANCE_COMMAND.mode.driftCheck, TARGET_GOVERNANCE_COMMAND.mode.budgetContract, TARGET_GOVERNANCE_COMMAND.mode.materializeDryRun, TARGET_GOVERNANCE_COMMAND.mode.materialize, TARGET_GOVERNANCE_COMMAND.flag.write, TARGET_GOVERNANCE_COMMAND.flag.force, TARGET_GOVERNANCE_COMMAND.flag.json, TARGET_GOVERNANCE_COMMAND.flag.text, TARGET_GOVERNANCE_COMMAND.flag.target];
   const targetIndex = args.indexOf(TARGET_GOVERNANCE_COMMAND.flag.target);
   const targetRoot = targetIndex >= 0 ? args[targetIndex + 1] : process.cwd();
   const unknown = args.filter((arg, index) => {
@@ -8355,9 +8363,9 @@ function runTargetGovernance(args) {
   });
   if (targetIndex >= 0 && (!targetRoot || targetRoot.startsWith('-'))) throw new Error(`target governance ${TARGET_GOVERNANCE_COMMAND.flag.target} requires a path`);
   if (unknown.length > 0) throw new Error(`target governance does not support: ${unknown.join(', ')}`);
-  const primaryModes = args.filter((arg) => [TARGET_GOVERNANCE_COMMAND.mode.preview, TARGET_GOVERNANCE_COMMAND.mode.driftCheck, TARGET_GOVERNANCE_COMMAND.mode.materializeDryRun, TARGET_GOVERNANCE_COMMAND.mode.materialize].includes(arg));
+  const primaryModes = args.filter((arg) => [TARGET_GOVERNANCE_COMMAND.mode.preview, TARGET_GOVERNANCE_COMMAND.mode.driftCheck, TARGET_GOVERNANCE_COMMAND.mode.budgetContract, TARGET_GOVERNANCE_COMMAND.mode.materializeDryRun, TARGET_GOVERNANCE_COMMAND.mode.materialize].includes(arg));
   const outputModes = args.filter((arg) => [TARGET_GOVERNANCE_COMMAND.flag.json, TARGET_GOVERNANCE_COMMAND.flag.text].includes(arg));
-  if (primaryModes.length > 1) throw new Error('target governance accepts only one primary mode: --preview, --check, --materialize-dry-run, or --materialize');
+  if (primaryModes.length > 1) throw new Error('target governance accepts only one primary mode: --preview, --check, --budget-contract, --materialize-dry-run, or --materialize');
   if (outputModes.length > 1) throw new Error('target governance accepts only one output mode: --json or --text');
   const primaryMode = primaryModes[0] || TARGET_GOVERNANCE_COMMAND.mode.preview;
   const outputMode = outputModes[0] || (primaryMode === TARGET_GOVERNANCE_COMMAND.mode.preview ? TARGET_GOVERNANCE_COMMAND.mode.preview : TARGET_GOVERNANCE_COMMAND.flag.json);
@@ -8372,11 +8380,14 @@ function runTargetGovernance(args) {
       ? targetGovernanceIndexMaterializationWrite(targetRoot, { force })
       : (primaryMode === TARGET_GOVERNANCE_COMMAND.mode.driftCheck
         ? targetGovernanceIndexDriftCheck(targetRoot)
-        : targetGovernancePreview(targetRoot)));
+        : (primaryMode === TARGET_GOVERNANCE_COMMAND.mode.budgetContract
+          ? targetGovernanceBudgetContract()
+          : targetGovernancePreview(targetRoot))));
   if (outputMode === TARGET_GOVERNANCE_COMMAND.flag.text) {
     if (primaryMode === TARGET_GOVERNANCE_COMMAND.mode.materializeDryRun) process.stdout.write(formatTargetGovernanceIndexMaterializationDryRunText(result));
     else if (primaryMode === TARGET_GOVERNANCE_COMMAND.mode.materialize) process.stdout.write(formatTargetGovernanceIndexMaterializationWriteText(result));
     else if (primaryMode === TARGET_GOVERNANCE_COMMAND.mode.driftCheck) process.stdout.write(formatTargetGovernanceIndexDriftCheckText(result));
+    else if (primaryMode === TARGET_GOVERNANCE_COMMAND.mode.budgetContract) process.stdout.write(formatTargetGovernanceBudgetContractText(result));
     else process.stdout.write(formatTargetGovernancePreviewText(result));
   } else json(result);
   return result.status === 'ok' ? 0 : 1;
@@ -8730,6 +8741,8 @@ module.exports = {
   formatTargetWorkItemsPreviewText,
   targetGovernancePreview,
   formatTargetGovernancePreviewText,
+  targetGovernanceBudgetContract,
+  formatTargetGovernanceBudgetContractText,
   targetGovernanceIndexMaterializationDryRun,
   formatTargetGovernanceIndexMaterializationDryRunText,
   targetGovernanceIndexMaterializationWrite,

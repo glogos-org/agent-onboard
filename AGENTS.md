@@ -54,6 +54,7 @@ node cli/agent-onboard.js target memory --preview
 node cli/agent-onboard.js target work-items --text
 node cli/agent-onboard.js target work-items --preview
 node cli/agent-onboard.js target governance --text
+node cli/agent-onboard.js target governance --budget-contract --text
 node cli/agent-onboard.js target governance --materialize-dry-run --text
 node cli/agent-onboard.js target governance --check --text
 node cli/agent-onboard.js target governance --materialize --write --force --text
@@ -442,6 +443,10 @@ Use `node cli/agent-onboard.js discovery --llms`, `node cli/agent-onboard.js dis
 
 
 
+
+## Public target governance budget contract product gate
+
+Use `node cli/agent-onboard.js target governance --budget-contract`, `node cli/agent-onboard.js target governance --budget-contract --json`, or `node cli/agent-onboard.js target governance --budget-contract --text` when a human or agent needs the stable compact-governance budget/authority contract before scanning a target. The command declares the compact first-read index paths, raw authority files, size budgets, and explicit write policy. It must not scan target repositories, import raw growth files, write files, admit or close work items, create claims, install dependencies, run managed project commands, publish, mutate Git, or perform network calls. Contract output is policy/orientation only; it cannot grant authority or refresh indexes.
 
 ## Public target governance stale-read fast-check wiring gate
 
