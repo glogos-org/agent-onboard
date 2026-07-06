@@ -1,6 +1,6 @@
 {
   "name": "agent-onboard",
-  "version": "0.0.125",
+  "version": "0.0.126",
   "description": "CLI for onboarding and managing target repositories.",
   "license": "Apache-2.0",
   "author": "Thanh Le <vnlemanhthanh@gmail.com>",
@@ -378,7 +378,13 @@
     "handoff-preview",
     "agent-handoff-preview",
     "next-agent-handoff",
-    "read-only-handoff-preview"
+    "read-only-handoff-preview",
+    "target-governance",
+    "governance-preview",
+    "claims-index",
+    "work-items-index",
+    "compact-first-read",
+    "raw-growth-budget"
   ],
   "type": "commonjs",
   "engines": {
@@ -429,6 +435,7 @@
     "cli/agent_onboard/domains/service-partitions.js",
     "cli/agent_onboard/domains/target/services/target-constants.js",
     "cli/agent_onboard/domains/target/services/target-doctor-service.js",
+    "cli/agent_onboard/domains/target/services/target-governance-service.js",
     "cli/agent_onboard/domains/target/services/target-handoff-service.js",
     "cli/agent_onboard/domains/target/services/target-inventory-service.js",
     "cli/agent_onboard/domains/target/services/target-manifest-service.js",

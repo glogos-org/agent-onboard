@@ -13,6 +13,7 @@ const { createTargetManifestService } = require('./target-manifest-service');
 const { createTargetInventoryService } = require('./target-inventory-service');
 const { createTargetWorkItemsService } = require('./target-work-items-service');
 const { createTargetHandoffService } = require('./target-handoff-service');
+const { createTargetGovernanceService } = require('./target-governance-service');
 const { createTargetTemplatesService } = require('./target-templates-service');
 const { createTargetWriteService } = require('./target-write-service');
 const targetConstants = require('./target-constants');
@@ -99,6 +100,9 @@ function createTargetRuntimeService(deps) {
   const workItemsPreviewService = createTargetWorkItemsService(context);
   Object.assign(context, workItemsPreviewService);
 
+  const governanceService = createTargetGovernanceService(context);
+  Object.assign(context, governanceService);
+
   const handoffPreviewService = createTargetHandoffService(context);
   Object.assign(context, handoffPreviewService);
 
@@ -116,6 +120,7 @@ function createTargetRuntimeService(deps) {
     ...manifestService,
     ...inventoryService,
     ...workItemsPreviewService,
+    ...governanceService,
     ...handoffPreviewService,
     ...onboardingService
   });

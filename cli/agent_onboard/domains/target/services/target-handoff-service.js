@@ -137,6 +137,29 @@ function workItemsSummary(workItems) {
   });
 }
 
+function governanceSummary(governance) {
+  if (!governance || governance.status !== 'ok') {
+    return Object.freeze({ status: governance && governance.status ? governance.status : 'unavailable', compact_first_read_available: false, work_items_index_present: false, claims_index_present: false, active_work_item_ids: [], claim_count: 0, warnings: [] });
+  }
+  const payload = governance.governance || {};
+  const workIndex = payload.work_items_index || {};
+  const claimsIndex = payload.claims_index || {};
+  const readiness = payload.readiness || {};
+  return Object.freeze({
+    status: governance.status,
+    readiness_status: readiness.status || 'unknown',
+    compact_first_read_available: Boolean(readiness.compact_first_read_available),
+    derived_preview_available: Boolean(readiness.derived_preview_available),
+    work_items_index_present: Boolean(workIndex.present),
+    work_items_index_source: workIndex.source || 'unavailable',
+    claims_index_present: Boolean(claimsIndex.present),
+    claims_index_source: claimsIndex.source || 'unavailable',
+    active_work_item_ids: Array.isArray(workIndex.active_work_item_ids) ? workIndex.active_work_item_ids.slice() : [],
+    claim_count: claimsIndex.claim_count || 0,
+    warnings: Array.isArray(readiness.warnings) ? readiness.warnings.slice() : []
+  });
+}
+
 function readinessFromSummaries(surfaceSummary, inventory, workItems) {
   const blockers = [];
   const warnings = [];
@@ -196,9 +219,13 @@ function targetHandoffPreview(targetRoot = process.cwd(), deps = {}) {
   const workItems = typeof deps.targetWorkItemsPreview === 'function'
     ? deps.targetWorkItemsPreview(absoluteTargetRoot)
     : { status: 'unavailable' };
+  const governance = typeof deps.targetGovernancePreview === 'function'
+    ? deps.targetGovernancePreview(absoluteTargetRoot)
+    : { status: 'unavailable' };
   const surfaces = targetHandoffSurfaces(absoluteTargetRoot);
   const inventoryCompact = inventorySummary(inventory);
   const workItemsCompact = workItemsSummary(workItems);
+  const governanceCompact = governanceSummary(governance);
   const readiness = readinessFromSummaries(surfaces, inventoryCompact, workItemsCompact);
 
   return Object.freeze({
@@ -221,12 +248,14 @@ function targetHandoffPreview(targetRoot = process.cwd(), deps = {}) {
       purpose: 'compact read-only handoff preview for the next human or agent session before target mutation',
       inventory_summary: inventoryCompact,
       work_items_summary: workItemsCompact,
+      governance_summary: governanceCompact,
       memory_surface_summary: surfaces,
       readiness,
       recommended_next_commands: [
         'agent-onboard target doctor --text',
         'agent-onboard target inventory --text',
         'agent-onboard target memory --text',
+        'agent-onboard target governance --text',
         'agent-onboard target work-items --text',
         'agent-onboard check --fast --text'
       ],
@@ -284,6 +313,7 @@ function targetHandoffPreviewText(result) {
   const inventory = result.handoff.inventory_summary;
   const workItems = result.handoff.work_items_summary;
   const memory = result.handoff.memory_surface_summary;
+  const governance = result.handoff.governance_summary || {};
   const roots = inventory.source_roots.map((entry) => `${entry.path}(${entry.role}:${entry.file_count})`).join(', ') || 'none';
   const present = memory.present_paths.length > 0 ? memory.present_paths.join(', ') : 'none';
   const open = workItems.open_work_item ? `${workItems.open_work_item.id} — ${workItems.open_work_item.title || 'untitled'}` : 'none';
@@ -297,6 +327,7 @@ function targetHandoffPreviewText(result) {
     `Source roots: ${roots}`,
     `Scripts: ${inventory.script_names.length > 0 ? inventory.script_names.join(', ') : 'none'}`,
     `Memory/handoff surfaces: ${present}`,
+    `Governance indexes: work-items ${governance.work_items_index_present ? 'present' : (governance.work_items_index_source || 'unavailable')}, claims ${governance.claims_index_present ? 'present' : (governance.claims_index_source || 'unavailable')}`,
     `Work-items present: ${workItems.present}`,
     `Open item: ${open}`,
     `Next queued candidate: ${next}`,
@@ -315,7 +346,8 @@ function createTargetHandoffService(deps = {}) {
       version: deps.version,
       releaseLine,
       targetInventory: deps.targetInventory,
-      targetWorkItemsPreview: deps.targetWorkItemsPreview
+      targetWorkItemsPreview: deps.targetWorkItemsPreview,
+      targetGovernancePreview: deps.targetGovernancePreview
     }),
     formatTargetHandoffPreviewText: targetHandoffPreviewText,
     targetHandoffSurfaces

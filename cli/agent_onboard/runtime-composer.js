@@ -27,6 +27,7 @@ const {
   TARGET_COMMAND,
   TARGET_CONFIG_FILE,
   TARGET_DOCTOR_COMMAND,
+  TARGET_GOVERNANCE_COMMAND,
   TARGET_HANDOFF_COMMAND,
   TARGET_INVENTORY_COMMAND,
   TARGET_METADATA_COMMAND,
@@ -184,6 +185,7 @@ function commandSurfaceCatalog() {
       'agent-onboard target doctor --text',
       'agent-onboard target inventory --text',
       'agent-onboard target memory --text',
+      'agent-onboard target governance --text',
       'agent-onboard target work-items --text',
       'agent-onboard target handoff --text',
       'agent-onboard work-items --next --text',
@@ -265,6 +267,7 @@ function operatorGuideCatalog() {
           'agent-onboard target profile --text',
           'agent-onboard target inventory --text',
           'agent-onboard target memory --text',
+          'agent-onboard target governance --text',
           'agent-onboard target work-items --text',
           'agent-onboard target metadata --plan',
           'agent-onboard target manifest --check-drift'
@@ -521,6 +524,7 @@ function discoveryStableCommands() {
     'agent-onboard quickstart --text',
     'agent-onboard commands --text',
     'agent-onboard target doctor --text',
+    'agent-onboard target governance --text',
     'agent-onboard target onboarding --plan',
     'agent-onboard work-items --next --text',
     'agent-onboard release --source-manifest',
@@ -1091,6 +1095,7 @@ const CHECK_FAST_REGISTRY = Object.freeze([
   Object.freeze({ id: 'target-inventory-preview', command: 'agent-onboard target inventory --preview', scope: 'target_runtime_inventory', slow: false }),
   Object.freeze({ id: 'target-memory-preview', command: 'agent-onboard target memory --preview', scope: 'target_memory_descriptor', slow: false }),
   Object.freeze({ id: 'target-work-items-preview', command: 'agent-onboard target work-items --preview', scope: 'target_work_items_preview', slow: false }),
+  Object.freeze({ id: 'target-governance-preview', command: 'agent-onboard target governance --preview', scope: 'target_governance_preview', slow: false }),
   Object.freeze({ id: 'target-handoff-preview', command: 'agent-onboard target handoff --preview', scope: 'target_handoff_preview', slow: false }),
   Object.freeze({ id: 'release-source-manifest-check', command: 'agent-onboard release --source-manifest-check', scope: 'package_source_manifest', slow: false }),
   Object.freeze({ id: 'release-surface-check', command: 'agent-onboard release --surface-check', scope: 'package_surface', slow: false }),
@@ -1209,6 +1214,7 @@ function runCheckFastPlan(root = packageRoot()) {
     'target-inventory-preview': () => targetRuntimeService.targetInventory(targetRoot),
     'target-memory-preview': () => targetMemoryService.descriptor(targetRoot),
     'target-work-items-preview': () => targetRuntimeService.targetWorkItemsPreview(targetRoot),
+    'target-governance-preview': () => targetRuntimeService.targetGovernancePreview(targetRoot),
     'target-handoff-preview': () => targetRuntimeService.targetHandoffPreview(targetRoot),
     'release-source-manifest-check': () => publicPackageSourceManifestCheck(root),
     'release-surface-check': () => publicPackageSurfaceCheck(root),
@@ -1400,6 +1406,7 @@ const MCP_TOOL_CANDIDATES = Object.freeze([
   Object.freeze({ name: 'agent_onboard_preview_target_inventory', command: 'agent-onboard target inventory --json', output_schema: 'agent-onboard-public-target-runtime-inventory-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_preview_target_memory', command: 'agent-onboard target memory --json', output_schema: 'agent-onboard-public-target-memory-descriptor-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_preview_target_work_items', command: 'agent-onboard target work-items --json', output_schema: 'agent-onboard-public-target-work-items-preview-001', mutates: false }),
+  Object.freeze({ name: 'agent_onboard_preview_target_governance', command: 'agent-onboard target governance --json', output_schema: 'agent-onboard-public-target-governance-preview-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_preview_target_handoff', command: 'agent-onboard target handoff --json', output_schema: 'agent-onboard-public-target-handoff-preview-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_run_fast_check', command: 'agent-onboard check --fast --json', output_schema: 'agent-onboard-public-check-fast-result-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_get_ci_recipe', command: 'agent-onboard ci --json', output_schema: 'agent-onboard-public-ci-surface-001', mutates: false }),
@@ -1782,6 +1789,8 @@ const {
   formatTargetInventoryText,
   targetWorkItemsPreview,
   formatTargetWorkItemsPreviewText,
+  targetGovernancePreview,
+  formatTargetGovernancePreviewText,
   targetHandoffPreview,
   formatTargetHandoffPreviewText,
   agentsMdTemplate,
@@ -8285,6 +8294,26 @@ function runTargetWorkItems(args) {
 }
 
 
+function runTargetGovernance(args) {
+  const allowed = [TARGET_GOVERNANCE_COMMAND.mode.preview, TARGET_GOVERNANCE_COMMAND.flag.json, TARGET_GOVERNANCE_COMMAND.flag.text, TARGET_GOVERNANCE_COMMAND.flag.target];
+  const targetIndex = args.indexOf(TARGET_GOVERNANCE_COMMAND.flag.target);
+  const targetRoot = targetIndex >= 0 ? args[targetIndex + 1] : process.cwd();
+  const unknown = args.filter((arg, index) => {
+    if (targetIndex >= 0 && index === targetIndex + 1) return false;
+    return !allowed.includes(arg);
+  });
+  if (targetIndex >= 0 && (!targetRoot || targetRoot.startsWith('-'))) throw new Error(`target governance ${TARGET_GOVERNANCE_COMMAND.flag.target} requires a path`);
+  if (unknown.length > 0) throw new Error(`target governance does not support: ${unknown.join(', ')}`);
+  const modes = args.filter((arg) => [TARGET_GOVERNANCE_COMMAND.mode.preview, TARGET_GOVERNANCE_COMMAND.flag.json, TARGET_GOVERNANCE_COMMAND.flag.text].includes(arg));
+  if (modes.length > 1) throw new Error('target governance accepts only one output mode: --preview, --json, or --text');
+  const mode = modes[0] || TARGET_GOVERNANCE_COMMAND.mode.preview;
+  const result = targetGovernancePreview(targetRoot);
+  if (mode === TARGET_GOVERNANCE_COMMAND.flag.text) process.stdout.write(formatTargetGovernancePreviewText(result));
+  else json(result);
+  return result.status === 'ok' ? 0 : 1;
+}
+
+
 function runTargetHandoff(args) {
   const allowed = [TARGET_HANDOFF_COMMAND.mode.preview, TARGET_HANDOFF_COMMAND.flag.json, TARGET_HANDOFF_COMMAND.flag.text, TARGET_HANDOFF_COMMAND.flag.target];
   const targetIndex = args.indexOf(TARGET_HANDOFF_COMMAND.flag.target);
@@ -8355,9 +8384,10 @@ function runTargetCommand(args) {
   if (args[0] === TARGET_COMMAND.inventory) return runTargetInventory(args.slice(1));
   if (args[0] === TARGET_COMMAND.memory) return runTargetMemory(args.slice(1));
   if (args[0] === TARGET_COMMAND.workItems) return runTargetWorkItems(args.slice(1));
+  if (args[0] === TARGET_COMMAND.governance) return runTargetGovernance(args.slice(1));
   if (args[0] === TARGET_COMMAND.handoff) return runTargetHandoff(args.slice(1));
   if (args[0] === TARGET_COMMAND.onboarding) return runTargetOnboarding(args.slice(1));
-  if (args[0] !== TARGET_COMMAND.bootstrap) throw new Error(`target supports only: ${TARGET_DOCTOR_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_PROFILE_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_REPAIR_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_METADATA_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_MANIFEST_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_INVENTORY_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_MEMORY_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_WORK_ITEMS_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_HANDOFF_COMMAND.help.replace('agent-onboard target ', '')}, runtime --namespace|--check, onboarding --plan|--fixture|--trial [--target <path>]|--write [--force], bootstrap`);
+  if (args[0] !== TARGET_COMMAND.bootstrap) throw new Error(`target supports only: ${TARGET_DOCTOR_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_PROFILE_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_REPAIR_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_METADATA_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_MANIFEST_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_INVENTORY_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_MEMORY_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_WORK_ITEMS_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_GOVERNANCE_COMMAND.help.replace('agent-onboard target ', '')}, ${TARGET_HANDOFF_COMMAND.help.replace('agent-onboard target ', '')}, runtime --namespace|--check, onboarding --plan|--fixture|--trial [--target <path>]|--write [--force], bootstrap`);
   return runTargetBootstrap(args.slice(1));
 }
 
@@ -8395,6 +8425,7 @@ const DOMAIN_SERVICE_FACADES = Object.freeze({
     runTargetRuntime,
     runTargetInventory,
     runTargetMemory,
+    runTargetGovernance,
     runTargetHandoff,
     runTargetCommand,
     runTargetInstance
@@ -8627,6 +8658,8 @@ module.exports = {
   formatTargetInventoryText,
   targetWorkItemsPreview,
   formatTargetWorkItemsPreviewText,
+  targetGovernancePreview,
+  formatTargetGovernancePreviewText,
   targetHandoffPreview,
   formatTargetHandoffPreviewText,
   targetRuntimeNamespaceTemplate,

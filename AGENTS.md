@@ -53,6 +53,8 @@ node cli/agent-onboard.js target memory --text
 node cli/agent-onboard.js target memory --preview
 node cli/agent-onboard.js target work-items --text
 node cli/agent-onboard.js target work-items --preview
+node cli/agent-onboard.js target governance --text
+node cli/agent-onboard.js target governance --preview
 node cli/agent-onboard.js target handoff --text
 node cli/agent-onboard.js target handoff --preview
 node cli/agent-onboard.js issue --classify-dry-run --text
@@ -434,9 +436,13 @@ Use `node cli/agent-onboard.js discovery --llms`, `node cli/agent-onboard.js dis
 
 
 
+## Public target governance preview product surface
+
+Use `node cli/agent-onboard.js target governance --preview`, `node cli/agent-onboard.js target governance --json`, or `node cli/agent-onboard.js target governance --text` when a new human or agent needs a compact read-only view of target governance growth state. Target governance previews `.agent-onboard/work-items.index.json` and `.agent-onboard/claims.index.json` when present and derives bounded summaries from raw work-items/claims files only on explicit command invocation. It must not write indexes, inline raw growth files, admit or close work items, create claims, install dependencies, run managed project commands, publish, mutate Git, or perform network calls. Governance output is evidence and orientation only; it cannot grant authority.
+
 ## Public target handoff preview product surface
 
-Use `node cli/agent-onboard.js target handoff --preview`, `node cli/agent-onboard.js target handoff --json`, or `node cli/agent-onboard.js target handoff --text` when a new human or agent needs a compact read-only next-session handoff. Target handoff composes bounded target inventory, known memory/handoff surface presence, and target work-item summary. It must not import file contents, admit work items, close work items, synthesize a next id, write ledgers, install dependencies, run managed project commands, publish, mutate Git, or perform network calls. Handoff output is evidence and orientation only; it cannot grant authority.
+Use `node cli/agent-onboard.js target handoff --preview`, `node cli/agent-onboard.js target handoff --json`, or `node cli/agent-onboard.js target handoff --text` when a new human or agent needs a compact read-only next-session handoff. Target handoff composes bounded target inventory, known memory/handoff surface presence, target governance summary, and target work-item summary. It must not import file contents, admit work items, close work items, synthesize a next id, write ledgers, install dependencies, run managed project commands, publish, mutate Git, or perform network calls. Handoff output is evidence and orientation only; it cannot grant authority.
 
 ## Public target work-items preview product surface
 
