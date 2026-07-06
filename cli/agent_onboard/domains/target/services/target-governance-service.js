@@ -6,8 +6,10 @@ const path = require('path');
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_GOVERNANCE_SCHEMA = 'agent-onboard-public-target-governance-preview-001';
 const TARGET_GOVERNANCE_MATERIALIZATION_SCHEMA = 'agent-onboard-public-target-governance-index-materialization-dry-run-001';
+const TARGET_GOVERNANCE_MATERIALIZATION_WRITE_SCHEMA = 'agent-onboard-public-target-governance-index-materialization-write-001';
 const TARGET_GOVERNANCE_COMMAND = 'agent-onboard target governance --preview';
 const TARGET_GOVERNANCE_MATERIALIZATION_COMMAND = 'agent-onboard target governance --materialize-dry-run';
+const TARGET_GOVERNANCE_MATERIALIZATION_WRITE_COMMAND = 'agent-onboard target governance --materialize --write';
 const TARGET_GOVERNANCE_FAMILY = 'target governance';
 const WORK_ITEMS_PATH = '.agent-onboard/work-items.json';
 const CLAIMS_PATH = '.agent-onboard/claims.jsonl';
@@ -17,6 +19,7 @@ const DEFAULT_LATEST_LIMIT = 5;
 const MAX_LEDGER_BYTES = 128 * 1024;
 const MAX_INDEX_BYTES_EACH = 4096;
 const MAX_COMBINED_INDEX_BYTES = 8192;
+const ALLOWED_INDEX_WRITE_PATHS = Object.freeze([WORK_ITEMS_INDEX_PATH, CLAIMS_INDEX_PATH]);
 
 function isPlainObject(value) {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -219,9 +222,61 @@ function utf8Bytes(text) {
   return Buffer.byteLength(String(text || ''), 'utf8');
 }
 
+
+function isAllowedIndexWritePath(relPath) {
+  return ALLOWED_INDEX_WRITE_PATHS.includes(relPath);
+}
+
+function writePlannedIndexIfChanged(root, plannedWrite) {
+  const relPath = safeString(plannedWrite && plannedWrite.path);
+  if (!isAllowedIndexWritePath(relPath)) {
+    return Object.freeze({ path: relPath || 'unknown', action: 'blocked', wrote: false, error: 'path_not_allowlisted_for_governance_index_write' });
+  }
+  const absoluteRoot = path.resolve(root);
+  const absolute = path.resolve(absoluteRoot, relPath);
+  const rootPrefix = absoluteRoot + path.sep;
+  if (absolute !== absoluteRoot && !absolute.startsWith(rootPrefix)) {
+    return Object.freeze({ path: relPath, action: 'blocked', wrote: false, error: 'resolved_path_escapes_target_root' });
+  }
+  const observed = safeStat(absoluteRoot, relPath);
+  if (observed.present && observed.kind !== 'file') {
+    return Object.freeze({ path: relPath, action: 'blocked', wrote: false, error: `existing path is not a file: ${observed.kind}` });
+  }
+  const body = stableJson(plannedWrite.payload);
+  if (observed.present && fs.readFileSync(absolute, 'utf8') === body) {
+    return Object.freeze({ path: relPath, action: 'keep', wrote: false, bytes: utf8Bytes(body), schema: safeString(plannedWrite.payload && plannedWrite.payload.schema) });
+  }
+  fs.mkdirSync(path.dirname(absolute), { recursive: true });
+  fs.writeFileSync(absolute, body, 'utf8');
+  return Object.freeze({ path: relPath, action: observed.present ? 'replace' : 'create', wrote: true, bytes: utf8Bytes(body), schema: safeString(plannedWrite.payload && plannedWrite.payload.schema) });
+}
+
+
+function sameIndexPayloadExceptUpdatedAt(left, right) {
+  if (!isPlainObject(left) || !isPlainObject(right)) return false;
+  const normalize = (value) => {
+    const copy = Object.assign({}, value);
+    delete copy.updated_at;
+    return JSON.stringify(copy);
+  };
+  return normalize(left) === normalize(right);
+}
+
 function materializationPlan(root, relPath, payload) {
-  const body = stableJson(payload);
   const observed = safeStat(root, relPath);
+  let plannedPayload = payload;
+  if (observed.present && observed.kind === 'file') {
+    try {
+      const existingText = fs.readFileSync(path.join(root, relPath), 'utf8');
+      const existingPayload = JSON.parse(existingText);
+      if (sameIndexPayloadExceptUpdatedAt(existingPayload, payload) && safeString(existingPayload.updated_at)) {
+        plannedPayload = Object.freeze(Object.assign({}, payload, { updated_at: existingPayload.updated_at }));
+      }
+    } catch (_error) {
+      plannedPayload = payload;
+    }
+  }
+  const body = stableJson(plannedPayload);
   let existingMatches = false;
   if (observed.present && observed.kind === 'file') {
     try {
@@ -237,8 +292,8 @@ function materializationPlan(root, relPath, payload) {
     existing_present: observed.present,
     existing_kind: observed.kind,
     bytes: utf8Bytes(body),
-    schema: safeString(payload && payload.schema),
-    payload
+    schema: safeString(plannedPayload && plannedPayload.schema),
+    payload: plannedPayload
   });
 }
 
@@ -291,7 +346,7 @@ function governanceReadiness(workIndex, claimsIndex, rawWorkItems, rawClaims) {
 
 function targetGovernanceIndexMaterializationDryRun(targetRoot = process.cwd(), deps = {}) {
   const version = deps.version || '0.0.0';
-  const releaseLine = deps.releaseLine || 'public_target_governance_index_materialization_dry_run_gate';
+  const releaseLine = deps.releaseLine || 'public_target_governance_index_explicit_write_gate';
   const absoluteTargetRoot = path.resolve(targetRoot || process.cwd());
   const updatedAt = safeString(deps.updatedAt) || new Date().toISOString();
   const base = Object.freeze({
@@ -390,19 +445,24 @@ function targetGovernanceIndexMaterializationDryRun(targetRoot = process.cwd(), 
   });
 }
 
-function materializationBoundary(scansTargetRepository) {
+function materializationBoundary(scansTargetRepository, writesFiles = false) {
   return Object.freeze({
-    writes_files: false,
-    writes_target_repository_state: false,
-    creates_agent_onboard_runtime_state: false,
+    writes_files: Boolean(writesFiles),
+    writes_target_repository_state: Boolean(writesFiles),
+    creates_agent_onboard_runtime_state: Boolean(writesFiles),
     scans_target_repository: Boolean(scansTargetRepository),
     bounded_to_known_governance_files: true,
+    allowed_write_paths: writesFiles ? ALLOWED_INDEX_WRITE_PATHS.slice() : [],
     reads_target_work_items_metadata: Boolean(scansTargetRepository),
     reads_claims_ledger_metadata: Boolean(scansTargetRepository),
     plans_index_materialization: Boolean(scansTargetRepository),
+    writes_governance_indexes: Boolean(writesFiles),
+    compare_before_write: Boolean(writesFiles),
     inlines_planned_index_payloads: Boolean(scansTargetRepository),
     inlines_raw_work_items_file: false,
     inlines_raw_claims_ledger: false,
+    mutates_raw_work_items_file: false,
+    mutates_claims_ledger: false,
     admits_or_closes_work_items: false,
     creates_claims: false,
     installs_dependencies: false,
@@ -440,9 +500,134 @@ function targetGovernanceIndexMaterializationDryRunText(result) {
   ].join('\n') + '\n';
 }
 
+
+function targetGovernanceIndexMaterializationWrite(targetRoot = process.cwd(), deps = {}) {
+  const version = deps.version || '0.0.0';
+  const releaseLine = deps.releaseLine || 'public_target_governance_index_explicit_write_gate';
+  const force = deps.force === true;
+  const updatedAt = safeString(deps.updatedAt) || new Date().toISOString();
+  const plan = targetGovernanceIndexMaterializationDryRun(targetRoot, { version, releaseLine, updatedAt });
+  const base = Object.freeze({
+    schema: TARGET_GOVERNANCE_MATERIALIZATION_WRITE_SCHEMA,
+    package_name: PACKAGE_NAME,
+    version,
+    release_line: releaseLine,
+    command: force ? `${TARGET_GOVERNANCE_MATERIALIZATION_WRITE_COMMAND} --force` : TARGET_GOVERNANCE_MATERIALIZATION_WRITE_COMMAND,
+    command_family: TARGET_GOVERNANCE_FAMILY
+  });
+
+  if (!force) {
+    return Object.assign({}, base, {
+      status: 'error',
+      target: plan.target || { name: 'target-repo', root: path.resolve(targetRoot || process.cwd()), kind: 'unknown' },
+      errors: ['target governance materialize write requires --force'],
+      writes_performed: false,
+      boundary: materializationBoundary(Boolean(plan.target && plan.target.kind === 'target-repo'), false)
+    });
+  }
+
+  if (plan.status !== 'ok') {
+    return Object.assign({}, base, {
+      status: plan.status,
+      target: plan.target,
+      materialization: plan.materialization || null,
+      errors: plan.errors || [],
+      writes_performed: false,
+      boundary: materializationBoundary(Boolean(plan.target && plan.target.kind === 'target-repo'), false)
+    });
+  }
+
+  const invalidPlannedWrites = (plan.materialization.planned_writes || [])
+    .filter((item) => !isAllowedIndexWritePath(item.path) || (item.existing_present && item.existing_kind !== 'file'))
+    .map((item) => `${item.path}: ${!isAllowedIndexWritePath(item.path) ? 'not_allowlisted' : `existing_${item.existing_kind}`}`);
+  if (invalidPlannedWrites.length > 0) {
+    return Object.assign({}, base, {
+      status: 'blocked',
+      target: plan.target,
+      materialization: Object.assign({}, plan.materialization, {
+        mode: 'explicit_write_blocked',
+        write_results: [],
+        changed_path_count: 0
+      }),
+      errors: invalidPlannedWrites.map((item) => `cannot write governance index: ${item}`),
+      writes_performed: false,
+      boundary: materializationBoundary(true, false)
+    });
+  }
+
+  const writeResults = (plan.materialization.planned_writes || []).map((item) => writePlannedIndexIfChanged(plan.target.root, item));
+  const writeErrors = writeResults.filter((item) => item.error).map((item) => `${item.path}: ${item.error}`);
+  const changedPathCount = writeResults.filter((item) => item.wrote).length;
+
+  return Object.assign({}, base, {
+    status: writeErrors.length > 0 ? 'blocked' : 'ok',
+    target: plan.target,
+    materialization: {
+      purpose: 'explicit target governance index materialization write',
+      mode: 'explicit_write',
+      index_paths: ALLOWED_INDEX_WRITE_PATHS.slice(),
+      raw_growth_files_on_demand_only: [WORK_ITEMS_PATH, CLAIMS_PATH],
+      planned_writes: plan.materialization.planned_writes,
+      write_results: writeResults,
+      changed_path_count: changedPathCount,
+      max_index_bytes_each: MAX_INDEX_BYTES_EACH,
+      max_combined_index_bytes: MAX_COMBINED_INDEX_BYTES,
+      combined_index_bytes: plan.materialization.combined_index_bytes,
+      budget_status: plan.materialization.budget_status,
+      warnings: plan.materialization.warnings,
+      authority_policy: Object.assign({}, plan.materialization.authority_policy, {
+        indexes_are_written_as_first_read_cache_only: true,
+        raw_authority_files_are_not_modified: true
+      })
+    },
+    recommended_next_commands: [
+      'agent-onboard target governance --text',
+      'agent-onboard target handoff --text',
+      'agent-onboard check --fast --text'
+    ],
+    output_policy: {
+      compact_default: true,
+      raw_work_items_file_inlined: false,
+      raw_claims_ledger_inlined: false,
+      planned_index_payloads_inlined: true,
+      target_ai_memory_content_inlined: false,
+      provider_private_state_inlined: false
+    },
+    writes_performed: changedPathCount > 0,
+    boundary: materializationBoundary(true, true),
+    errors: writeErrors
+  });
+}
+
+function targetGovernanceIndexMaterializationWriteText(result) {
+  if (result.status !== 'ok') {
+    return [
+      'agent-onboard target governance materialization write',
+      `Status: ${result.status}`,
+      `Target: ${result.target ? result.target.root : 'unknown'}`,
+      `Errors: ${(result.errors || []).join('; ') || 'none'}`,
+      `Writes performed: ${result.writes_performed === true ? 'true' : 'false'}`
+    ].join('\n') + '\n';
+  }
+  const materialization = result.materialization;
+  return [
+    'agent-onboard target governance materialization write',
+    `Target: ${result.target.name}`,
+    `Root: ${result.target.root}`,
+    `Budget: ${materialization.budget_status}; ${materialization.combined_index_bytes}/${materialization.max_combined_index_bytes} bytes combined`,
+    `Changed paths: ${materialization.changed_path_count}`,
+    ...materialization.write_results.map((item) => `  - ${item.path}: ${item.action}, wrote ${item.wrote ? 'yes' : 'no'}, ${item.bytes || 0} bytes, schema ${item.schema || 'unknown'}`),
+    `Warnings: ${materialization.warnings.length > 0 ? materialization.warnings.join(', ') : 'none'}`,
+    'Boundary: explicit governance index write only; allowlisted index paths only; compare-before-write; raw work-items/claims remain authoritative; no admission, no claims, no Git mutation, no network.',
+    'Next commands:',
+    ...result.recommended_next_commands.map((command) => `  - ${command}`),
+    `Writes performed: ${result.writes_performed === true ? 'true' : 'false'}`
+  ].join('\n') + '\n';
+}
+
 function targetGovernancePreview(targetRoot = process.cwd(), deps = {}) {
   const version = deps.version || '0.0.0';
-  const releaseLine = deps.releaseLine || 'public_target_governance_index_materialization_dry_run_gate';
+  const releaseLine = deps.releaseLine || 'public_target_governance_index_explicit_write_gate';
   const absoluteTargetRoot = path.resolve(targetRoot || process.cwd());
   const base = Object.freeze({
     schema: TARGET_GOVERNANCE_SCHEMA,
@@ -583,6 +768,8 @@ function createTargetGovernanceService(deps = {}) {
     formatTargetGovernancePreviewText: targetGovernancePreviewText,
     targetGovernanceIndexMaterializationDryRun: (targetRoot) => targetGovernanceIndexMaterializationDryRun(targetRoot, { version: deps.version, releaseLine }),
     formatTargetGovernanceIndexMaterializationDryRunText: targetGovernanceIndexMaterializationDryRunText,
+    targetGovernanceIndexMaterializationWrite: (targetRoot, options = {}) => targetGovernanceIndexMaterializationWrite(targetRoot, { version: deps.version, releaseLine, force: options.force }),
+    formatTargetGovernanceIndexMaterializationWriteText: targetGovernanceIndexMaterializationWriteText,
     buildTargetGovernanceWorkItemsIndex: buildWorkItemsIndex,
     buildTargetGovernanceClaimsIndex: buildClaimsIndex
   });
@@ -594,6 +781,8 @@ module.exports = {
   targetGovernancePreviewText,
   targetGovernanceIndexMaterializationDryRun,
   targetGovernanceIndexMaterializationDryRunText,
+  targetGovernanceIndexMaterializationWrite,
+  targetGovernanceIndexMaterializationWriteText,
   buildWorkItemsIndex,
   buildClaimsIndex
 };

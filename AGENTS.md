@@ -55,8 +55,10 @@ node cli/agent-onboard.js target work-items --text
 node cli/agent-onboard.js target work-items --preview
 node cli/agent-onboard.js target governance --text
 node cli/agent-onboard.js target governance --materialize-dry-run --text
+node cli/agent-onboard.js target governance --materialize --write --force --text
 node cli/agent-onboard.js target governance --preview
 node cli/agent-onboard.js target governance --materialize-dry-run
+node cli/agent-onboard.js target governance --materialize --write --force
 node cli/agent-onboard.js target handoff --text
 node cli/agent-onboard.js target handoff --preview
 node cli/agent-onboard.js issue --classify-dry-run --text
@@ -438,9 +440,13 @@ Use `node cli/agent-onboard.js discovery --llms`, `node cli/agent-onboard.js dis
 
 
 
+## Public target governance index explicit write product surface
+
+Use `node cli/agent-onboard.js target governance --materialize --write --force`, `node cli/agent-onboard.js target governance --materialize --write --force --json`, or `node cli/agent-onboard.js target governance --materialize --write --force --text` only after explicit owner authorization to materialize compact first-read governance indexes. The command writes only `.agent-onboard/work-items.index.json` and `.agent-onboard/claims.index.json`, uses compare-before-write, and reports create/replace/keep actions. It must not mutate `.agent-onboard/work-items.json`, truncate or rewrite `.agent-onboard/claims.jsonl`, admit or close work items, create claims, install dependencies, run managed project commands, publish, mutate Git, or perform network calls. Index output is cache/orientation only; raw work-items and claims files remain authoritative.
+
 ## Public target governance index materialization dry-run product surface
 
-Use `node cli/agent-onboard.js target governance --materialize-dry-run`, `node cli/agent-onboard.js target governance --materialize-dry-run --json`, or `node cli/agent-onboard.js target governance --materialize-dry-run --text` when a new human or agent needs to see the exact compact governance index payloads that would be materialized. The command plans `.agent-onboard/work-items.index.json` and `.agent-onboard/claims.index.json` in memory, reports create/replace/keep actions, checks the compact first-read budget, and leaves the target unchanged. It must not write indexes without a separate admitted explicit-write gate, inline raw growth files, admit or close work items, create claims, install dependencies, run managed project commands, publish, mutate Git, or perform network calls. Materialization output is evidence and orientation only; it cannot grant authority.
+Use `node cli/agent-onboard.js target governance --materialize-dry-run`, `node cli/agent-onboard.js target governance --materialize-dry-run --json`, or `node cli/agent-onboard.js target governance --materialize-dry-run --text` when a new human or agent needs to see the exact compact governance index payloads that would be materialized. The command plans `.agent-onboard/work-items.index.json` and `.agent-onboard/claims.index.json` in memory, reports create/replace/keep actions, checks the compact first-read budget, and leaves the target unchanged. It must not write indexes without explicit owner authorization, inline raw growth files, admit or close work items, create claims, install dependencies, run managed project commands, publish, mutate Git, or perform network calls. Materialization output is evidence and orientation only; it cannot grant authority.
 
 ## Public target governance preview product surface
 

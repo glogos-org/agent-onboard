@@ -187,7 +187,7 @@ function commandSurfaceCatalog() {
       'agent-onboard target memory --text',
       'agent-onboard target governance --text',
       'agent-onboard target governance --materialize-dry-run --text',
-      'agent-onboard target work-items --text',
+              'agent-onboard target work-items --text',
       'agent-onboard target handoff --text',
       'agent-onboard work-items --next --text',
       'agent-onboard release --check'
@@ -1799,6 +1799,8 @@ const {
   formatTargetGovernancePreviewText,
   targetGovernanceIndexMaterializationDryRun,
   formatTargetGovernanceIndexMaterializationDryRunText,
+  targetGovernanceIndexMaterializationWrite,
+  formatTargetGovernanceIndexMaterializationWriteText,
   targetHandoffPreview,
   formatTargetHandoffPreviewText,
   agentsMdTemplate,
@@ -8303,7 +8305,7 @@ function runTargetWorkItems(args) {
 
 
 function runTargetGovernance(args) {
-  const allowed = [TARGET_GOVERNANCE_COMMAND.mode.preview, TARGET_GOVERNANCE_COMMAND.mode.materializeDryRun, TARGET_GOVERNANCE_COMMAND.flag.json, TARGET_GOVERNANCE_COMMAND.flag.text, TARGET_GOVERNANCE_COMMAND.flag.target];
+  const allowed = [TARGET_GOVERNANCE_COMMAND.mode.preview, TARGET_GOVERNANCE_COMMAND.mode.materializeDryRun, TARGET_GOVERNANCE_COMMAND.mode.materialize, TARGET_GOVERNANCE_COMMAND.flag.write, TARGET_GOVERNANCE_COMMAND.flag.force, TARGET_GOVERNANCE_COMMAND.flag.json, TARGET_GOVERNANCE_COMMAND.flag.text, TARGET_GOVERNANCE_COMMAND.flag.target];
   const targetIndex = args.indexOf(TARGET_GOVERNANCE_COMMAND.flag.target);
   const targetRoot = targetIndex >= 0 ? args[targetIndex + 1] : process.cwd();
   const unknown = args.filter((arg, index) => {
@@ -8312,17 +8314,25 @@ function runTargetGovernance(args) {
   });
   if (targetIndex >= 0 && (!targetRoot || targetRoot.startsWith('-'))) throw new Error(`target governance ${TARGET_GOVERNANCE_COMMAND.flag.target} requires a path`);
   if (unknown.length > 0) throw new Error(`target governance does not support: ${unknown.join(', ')}`);
-  const primaryModes = args.filter((arg) => [TARGET_GOVERNANCE_COMMAND.mode.preview, TARGET_GOVERNANCE_COMMAND.mode.materializeDryRun].includes(arg));
+  const primaryModes = args.filter((arg) => [TARGET_GOVERNANCE_COMMAND.mode.preview, TARGET_GOVERNANCE_COMMAND.mode.materializeDryRun, TARGET_GOVERNANCE_COMMAND.mode.materialize].includes(arg));
   const outputModes = args.filter((arg) => [TARGET_GOVERNANCE_COMMAND.flag.json, TARGET_GOVERNANCE_COMMAND.flag.text].includes(arg));
-  if (primaryModes.length > 1) throw new Error('target governance accepts only one primary mode: --preview or --materialize-dry-run');
+  if (primaryModes.length > 1) throw new Error('target governance accepts only one primary mode: --preview, --materialize-dry-run, or --materialize');
   if (outputModes.length > 1) throw new Error('target governance accepts only one output mode: --json or --text');
   const primaryMode = primaryModes[0] || TARGET_GOVERNANCE_COMMAND.mode.preview;
-  const outputMode = outputModes[0] || (primaryMode === TARGET_GOVERNANCE_COMMAND.mode.materializeDryRun ? TARGET_GOVERNANCE_COMMAND.flag.json : TARGET_GOVERNANCE_COMMAND.mode.preview);
+  const outputMode = outputModes[0] || (primaryMode === TARGET_GOVERNANCE_COMMAND.mode.preview ? TARGET_GOVERNANCE_COMMAND.mode.preview : TARGET_GOVERNANCE_COMMAND.flag.json);
+  const wantsWrite = args.includes(TARGET_GOVERNANCE_COMMAND.flag.write);
+  const force = args.includes(TARGET_GOVERNANCE_COMMAND.flag.force);
+  if (primaryMode !== TARGET_GOVERNANCE_COMMAND.mode.materialize && wantsWrite) throw new Error('target governance --write is only valid with --materialize');
+  if (!wantsWrite && force) throw new Error('target governance --force is only valid with --write');
+  if (primaryMode === TARGET_GOVERNANCE_COMMAND.mode.materialize && !wantsWrite) throw new Error('target governance --materialize requires --write');
   const result = primaryMode === TARGET_GOVERNANCE_COMMAND.mode.materializeDryRun
     ? targetGovernanceIndexMaterializationDryRun(targetRoot)
-    : targetGovernancePreview(targetRoot);
+    : (primaryMode === TARGET_GOVERNANCE_COMMAND.mode.materialize
+      ? targetGovernanceIndexMaterializationWrite(targetRoot, { force })
+      : targetGovernancePreview(targetRoot));
   if (outputMode === TARGET_GOVERNANCE_COMMAND.flag.text) {
     if (primaryMode === TARGET_GOVERNANCE_COMMAND.mode.materializeDryRun) process.stdout.write(formatTargetGovernanceIndexMaterializationDryRunText(result));
+    else if (primaryMode === TARGET_GOVERNANCE_COMMAND.mode.materialize) process.stdout.write(formatTargetGovernanceIndexMaterializationWriteText(result));
     else process.stdout.write(formatTargetGovernancePreviewText(result));
   } else json(result);
   return result.status === 'ok' ? 0 : 1;
@@ -8677,6 +8687,8 @@ module.exports = {
   formatTargetGovernancePreviewText,
   targetGovernanceIndexMaterializationDryRun,
   formatTargetGovernanceIndexMaterializationDryRunText,
+  targetGovernanceIndexMaterializationWrite,
+  formatTargetGovernanceIndexMaterializationWriteText,
   targetHandoffPreview,
   formatTargetHandoffPreviewText,
   targetRuntimeNamespaceTemplate,

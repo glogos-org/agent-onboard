@@ -2,7 +2,7 @@
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
-const RELEASE_LINE = 'public_target_governance_index_materialization_dry_run_gate';
+const RELEASE_LINE = 'public_target_governance_index_explicit_write_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
   agents: 'agents',
@@ -150,7 +150,9 @@ const TARGET_PROFILE_COMMAND = Object.freeze({
   flag: Object.freeze({
     json: OUTPUT_FLAG.json,
     text: OUTPUT_FLAG.text,
-    target: TARGET_OPTION.target
+    target: TARGET_OPTION.target,
+    write: '--write',
+    force: '--force'
   })
 });
 
@@ -249,15 +251,18 @@ const TARGET_WORK_ITEMS_COMMAND = Object.freeze({
 });
 
 const TARGET_GOVERNANCE_COMMAND = Object.freeze({
-  help: 'agent-onboard target governance --preview|--materialize-dry-run|--json|--text [--target <path>]',
+  help: 'agent-onboard target governance --preview|--materialize-dry-run|--materialize --write [--force]|--json|--text [--target <path>]',
   mode: Object.freeze({
     preview: '--preview',
-    materializeDryRun: '--materialize-dry-run'
+    materializeDryRun: '--materialize-dry-run',
+    materialize: '--materialize'
   }),
   flag: Object.freeze({
     json: OUTPUT_FLAG.json,
     text: OUTPUT_FLAG.text,
-    target: TARGET_OPTION.target
+    target: TARGET_OPTION.target,
+    write: '--write',
+    force: '--force'
   })
 });
 

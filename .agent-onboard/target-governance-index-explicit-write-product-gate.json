@@ -1,0 +1,92 @@
+{
+  "schema": "agent-onboard-public-work-item-closure-001",
+  "package_name": "agent-onboard",
+  "version": "0.0.128",
+  "release_line": "public_target_governance_index_explicit_write_gate",
+  "work_item": {
+    "id": "P1S3M5W21",
+    "milestone_id": "P1S3M5",
+    "title": "Public target governance index explicit write gate",
+    "status": "closed",
+    "claim": {
+      "actor": "gpt-5.5-thinking",
+      "claimed_at": "2026-07-04T23:57:00.000+07:00"
+    },
+    "closure": {
+      "actor": "gpt-5.5-thinking",
+      "closed_at": "2026-07-04T23:59:00.000+07:00",
+      "summary": "Closed by adding target governance --materialize --write --force with JSON and text output. The feature reuses the bounded governance index materialization plan, writes only .agent-onboard/work-items.index.json and .agent-onboard/claims.index.json, enforces explicit write plus force, preserves compare-before-write by retaining existing updated_at when payload content is unchanged, keeps raw work-items/claims authority files unmodified, and performs no claim admission, work-item admission or closure, dependency install, managed-project command, Git mutation, network call, publish, or authority grant; package candidate bumped to 0.0.128.",
+      "changed_files": [
+        "README.md",
+        "AGENTS.md",
+        "llms.txt",
+        "package.json",
+        "cli/agent_onboard/runtime-contracts.js",
+        "cli/agent_onboard/runtime-composer.js",
+        "cli/agent_onboard/domains/target/services/target-governance-service.js",
+        "test/agent-onboard.test.js",
+        "test/run-tests.js",
+        ".agent-onboard/work-items.json",
+        ".agent-onboard/target-governance-index-explicit-write-product-gate.json",
+        "SOURCE_OF_TRUTH.md",
+        "authority-map.json",
+        "manifest.json"
+      ],
+      "checks_run": [
+        "node -c cli/agent_onboard/domains/target/services/target-governance-service.js",
+        "node -c cli/agent_onboard/runtime-contracts.js",
+        "node -c cli/agent_onboard/runtime-composer.js",
+        "node -c test/agent-onboard.test.js",
+        "node -c test/run-tests.js",
+        "node cli/agent-onboard.js target governance --materialize-dry-run --json",
+        "node cli/agent-onboard.js target governance --materialize --write --force --json --target <temp-target>",
+        "node cli/agent-onboard.js target governance --materialize --write --force --json --target <temp-target> (compare-before-write keep)",
+        "node cli/agent-onboard.js target governance --materialize --write --target <temp-target> (expected force refusal)",
+        "node cli/agent-onboard.js target governance --preview",
+        "node cli/agent-onboard.js target handoff --text",
+        "node cli/agent-onboard.js commands --json",
+        "node cli/agent-onboard.js check --fast --json",
+        "npm test",
+        "npm run test:full"
+      ],
+      "checks_not_run": [],
+      "known_non_pass": []
+    }
+  },
+  "decision": {
+    "target_governance_index_explicit_write_surface_added": true,
+    "requires_write_flag": true,
+    "requires_force_flag": true,
+    "allowlisted_write_paths": [
+      ".agent-onboard/work-items.index.json",
+      ".agent-onboard/claims.index.json"
+    ],
+    "compare_before_write": true,
+    "raw_work_items_json_remains_authoritative": true,
+    "claims_jsonl_remains_authoritative": true,
+    "raw_authority_files_mutated": false,
+    "claim_admission": false,
+    "work_item_admission_or_closure": false,
+    "git_mutation": false,
+    "network": false,
+    "publishes_package": false
+  },
+  "checks": [
+    "node -c cli/agent_onboard/domains/target/services/target-governance-service.js",
+    "node -c cli/agent_onboard/runtime-contracts.js",
+    "node -c cli/agent_onboard/runtime-composer.js",
+    "node -c test/agent-onboard.test.js",
+    "node -c test/run-tests.js",
+    "node cli/agent-onboard.js target governance --materialize-dry-run --json",
+    "node cli/agent-onboard.js target governance --materialize --write --force --json --target <temp-target>",
+    "node cli/agent-onboard.js target governance --materialize --write --force --json --target <temp-target> (compare-before-write keep)",
+    "node cli/agent-onboard.js target governance --materialize --write --target <temp-target> (expected force refusal)",
+    "node cli/agent-onboard.js target governance --preview",
+    "node cli/agent-onboard.js target handoff --text",
+    "node cli/agent-onboard.js commands --json",
+    "node cli/agent-onboard.js check --fast --json",
+    "npm test",
+    "npm run test:full"
+  ],
+  "known_non_pass": []
+}
