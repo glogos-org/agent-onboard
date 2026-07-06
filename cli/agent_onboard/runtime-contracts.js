@@ -2,7 +2,7 @@
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
-const RELEASE_LINE = 'public_target_governance_preview_product_gate';
+const RELEASE_LINE = 'public_target_governance_index_materialization_dry_run_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
   agents: 'agents',
@@ -249,9 +249,10 @@ const TARGET_WORK_ITEMS_COMMAND = Object.freeze({
 });
 
 const TARGET_GOVERNANCE_COMMAND = Object.freeze({
-  help: 'agent-onboard target governance --preview|--json|--text [--target <path>]',
+  help: 'agent-onboard target governance --preview|--materialize-dry-run|--json|--text [--target <path>]',
   mode: Object.freeze({
-    preview: '--preview'
+    preview: '--preview',
+    materializeDryRun: '--materialize-dry-run'
   }),
   flag: Object.freeze({
     json: OUTPUT_FLAG.json,

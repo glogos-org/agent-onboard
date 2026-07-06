@@ -5,7 +5,9 @@ const path = require('path');
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_GOVERNANCE_SCHEMA = 'agent-onboard-public-target-governance-preview-001';
+const TARGET_GOVERNANCE_MATERIALIZATION_SCHEMA = 'agent-onboard-public-target-governance-index-materialization-dry-run-001';
 const TARGET_GOVERNANCE_COMMAND = 'agent-onboard target governance --preview';
+const TARGET_GOVERNANCE_MATERIALIZATION_COMMAND = 'agent-onboard target governance --materialize-dry-run';
 const TARGET_GOVERNANCE_FAMILY = 'target governance';
 const WORK_ITEMS_PATH = '.agent-onboard/work-items.json';
 const CLAIMS_PATH = '.agent-onboard/claims.jsonl';
@@ -13,6 +15,8 @@ const WORK_ITEMS_INDEX_PATH = '.agent-onboard/work-items.index.json';
 const CLAIMS_INDEX_PATH = '.agent-onboard/claims.index.json';
 const DEFAULT_LATEST_LIMIT = 5;
 const MAX_LEDGER_BYTES = 128 * 1024;
+const MAX_INDEX_BYTES_EACH = 4096;
+const MAX_COMBINED_INDEX_BYTES = 8192;
 
 function isPlainObject(value) {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -124,6 +128,8 @@ function pushUniqueBounded(list, value, limit = DEFAULT_LATEST_LIMIT) {
 
 function buildWorkItemsIndex(document, options = {}) {
   const latestLimit = options.latestLimit || DEFAULT_LATEST_LIMIT;
+  const status = safeString(options.status) || 'derived_preview';
+  const updatedAt = safeString(options.updatedAt);
   const items = workItemArray(document).filter(isPlainObject);
   const queue = admissionQueue(document).filter(isPlainObject);
   const latestClosed = [];
@@ -146,9 +152,9 @@ function buildWorkItemsIndex(document, options = {}) {
   }
   for (const item of queue) pushBounded(activeQueue, compactWorkItem(item), latestLimit);
 
-  return Object.freeze({
+  const index = {
     schema: 'agent-onboard-target-work-items-index-001',
-    status: 'derived_preview',
+    status,
     registry_path: WORK_ITEMS_PATH,
     raw_registry_loaded_by_default: false,
     item_count: items.length,
@@ -161,11 +167,15 @@ function buildWorkItemsIndex(document, options = {}) {
     active_admission_queue: activeQueue,
     latest_closed_limit: latestLimit,
     latest_closed_work_items: latestClosed
-  });
+  };
+  if (updatedAt) index.updated_at = updatedAt;
+  return Object.freeze(index);
 }
 
 function buildClaimsIndex(entries, options = {}) {
   const latestLimit = options.latestLimit || DEFAULT_LATEST_LIMIT;
+  const status = safeString(options.status) || 'derived_preview';
+  const updatedAt = safeString(options.updatedAt);
   const latestClaims = [];
   const activeWorkItemIds = [];
   const latestMergedWorkItemIds = [];
@@ -184,9 +194,9 @@ function buildClaimsIndex(entries, options = {}) {
     }
   }
 
-  return Object.freeze({
+  const index = {
     schema: 'agent-onboard-target-claims-index-001',
-    status: 'derived_preview',
+    status,
     ledger_path: CLAIMS_PATH,
     raw_ledger_loaded_by_default: false,
     claim_count: Array.isArray(entries) ? entries.length : 0,
@@ -196,6 +206,39 @@ function buildClaimsIndex(entries, options = {}) {
     latest_claims: latestClaims.filter(Boolean),
     active_work_item_ids: activeWorkItemIds,
     latest_merged_work_item_ids: latestMergedWorkItemIds
+  };
+  if (updatedAt) index.updated_at = updatedAt;
+  return Object.freeze(index);
+}
+
+function stableJson(value) {
+  return JSON.stringify(value, null, 2) + '\n';
+}
+
+function utf8Bytes(text) {
+  return Buffer.byteLength(String(text || ''), 'utf8');
+}
+
+function materializationPlan(root, relPath, payload) {
+  const body = stableJson(payload);
+  const observed = safeStat(root, relPath);
+  let existingMatches = false;
+  if (observed.present && observed.kind === 'file') {
+    try {
+      existingMatches = fs.readFileSync(path.join(root, relPath), 'utf8') === body;
+    } catch (_error) {
+      existingMatches = false;
+    }
+  }
+  return Object.freeze({
+    path: relPath,
+    action: existingMatches ? 'keep' : (observed.present ? 'replace' : 'create'),
+    would_write: existingMatches ? false : true,
+    existing_present: observed.present,
+    existing_kind: observed.kind,
+    bytes: utf8Bytes(body),
+    schema: safeString(payload && payload.schema),
+    payload
   });
 }
 
@@ -245,9 +288,161 @@ function governanceReadiness(workIndex, claimsIndex, rawWorkItems, rawClaims) {
   });
 }
 
+
+function targetGovernanceIndexMaterializationDryRun(targetRoot = process.cwd(), deps = {}) {
+  const version = deps.version || '0.0.0';
+  const releaseLine = deps.releaseLine || 'public_target_governance_index_materialization_dry_run_gate';
+  const absoluteTargetRoot = path.resolve(targetRoot || process.cwd());
+  const updatedAt = safeString(deps.updatedAt) || new Date().toISOString();
+  const base = Object.freeze({
+    schema: TARGET_GOVERNANCE_MATERIALIZATION_SCHEMA,
+    package_name: PACKAGE_NAME,
+    version,
+    release_line: releaseLine,
+    command: TARGET_GOVERNANCE_MATERIALIZATION_COMMAND,
+    command_family: TARGET_GOVERNANCE_FAMILY
+  });
+
+  if (!fs.existsSync(absoluteTargetRoot)) {
+    return Object.assign({}, base, {
+      status: 'error',
+      target: { name: path.basename(absoluteTargetRoot) || 'target-repo', root: absoluteTargetRoot, kind: 'missing' },
+      errors: [`target path does not exist: ${absoluteTargetRoot}`],
+      writes_performed: false,
+      boundary: materializationBoundary(false)
+    });
+  }
+  if (!fs.statSync(absoluteTargetRoot).isDirectory()) {
+    return Object.assign({}, base, {
+      status: 'error',
+      target: { name: path.basename(absoluteTargetRoot) || 'target-repo', root: absoluteTargetRoot, kind: 'file' },
+      errors: [`target path is not a directory: ${absoluteTargetRoot}`],
+      writes_performed: false,
+      boundary: materializationBoundary(false)
+    });
+  }
+
+  const rawWorkItemsRead = safeReadJson(absoluteTargetRoot, WORK_ITEMS_PATH);
+  const rawClaimsRead = parseClaimsLedger(absoluteTargetRoot, CLAIMS_PATH);
+  const errors = [];
+  const warnings = [];
+  if (!['ok', 'missing'].includes(rawWorkItemsRead.status)) errors.push(`cannot derive work-items index from ${WORK_ITEMS_PATH}: ${rawWorkItemsRead.status}`);
+  if (!['ok', 'missing', 'malformed_lines'].includes(rawClaimsRead.status)) errors.push(`cannot derive claims index from ${CLAIMS_PATH}: ${rawClaimsRead.status}`);
+  if (rawWorkItemsRead.status === 'missing') warnings.push('work_items_registry_missing_empty_index_planned');
+  if (rawClaimsRead.status === 'missing') warnings.push('claims_ledger_missing_empty_index_planned');
+  if (rawClaimsRead.status === 'malformed_lines') warnings.push('claims_ledger_has_malformed_lines_index_uses_parseable_entries_only');
+
+  const workItemsDocument = rawWorkItemsRead.status === 'ok' && isPlainObject(rawWorkItemsRead.value) ? rawWorkItemsRead.value : {};
+  const claimsEntries = rawClaimsRead.status === 'ok' || rawClaimsRead.status === 'malformed_lines' ? rawClaimsRead.entries : [];
+  const workItemsIndex = buildWorkItemsIndex(workItemsDocument, { status: 'active', updatedAt });
+  const claimsIndexBase = buildClaimsIndex(claimsEntries, { status: rawClaimsRead.status === 'malformed_lines' ? 'malformed_ledger' : 'active', updatedAt });
+  const claimsIndex = rawClaimsRead.malformed_line_count > 0
+    ? Object.freeze(Object.assign({}, claimsIndexBase, { malformed_line_count: rawClaimsRead.malformed_line_count }))
+    : claimsIndexBase;
+  const plannedWrites = [
+    materializationPlan(absoluteTargetRoot, WORK_ITEMS_INDEX_PATH, workItemsIndex),
+    materializationPlan(absoluteTargetRoot, CLAIMS_INDEX_PATH, claimsIndex)
+  ];
+  const totalBytes = plannedWrites.reduce((sum, item) => sum + item.bytes, 0);
+  const oversized = plannedWrites.filter((item) => item.bytes > MAX_INDEX_BYTES_EACH).map((item) => item.path);
+  if (oversized.length > 0) errors.push(`planned index exceeds ${MAX_INDEX_BYTES_EACH} byte per-file budget: ${oversized.join(', ')}`);
+  if (totalBytes > MAX_COMBINED_INDEX_BYTES) errors.push(`planned indexes exceed ${MAX_COMBINED_INDEX_BYTES} byte combined budget`);
+
+  return Object.assign({}, base, {
+    status: errors.length > 0 ? 'blocked' : 'ok',
+    target: { name: path.basename(absoluteTargetRoot) || 'target-repo', root: absoluteTargetRoot, kind: 'target-repo' },
+    materialization: {
+      purpose: 'dry-run target governance index materialization plan',
+      mode: 'dry_run',
+      index_paths: [WORK_ITEMS_INDEX_PATH, CLAIMS_INDEX_PATH],
+      raw_growth_files_on_demand_only: [WORK_ITEMS_PATH, CLAIMS_PATH],
+      planned_writes: plannedWrites,
+      changed_path_count: plannedWrites.filter((item) => item.would_write).length,
+      max_index_bytes_each: MAX_INDEX_BYTES_EACH,
+      max_combined_index_bytes: MAX_COMBINED_INDEX_BYTES,
+      combined_index_bytes: totalBytes,
+      budget_status: errors.length > 0 ? 'blocked' : 'within_budget',
+      warnings,
+      authority_policy: {
+        indexes_are_first_read_cache: true,
+        work_items_json_remains_authoritative: true,
+        claims_jsonl_remains_authoritative: true,
+        index_payloads_do_not_admit_or_close_work_items: true,
+        index_payloads_do_not_create_claims: true
+      }
+    },
+    recommended_next_commands: [
+      'agent-onboard target governance --text',
+      'agent-onboard target handoff --text',
+      'agent-onboard check --fast --text'
+    ],
+    output_policy: {
+      compact_default: true,
+      raw_work_items_file_inlined: false,
+      raw_claims_ledger_inlined: false,
+      planned_index_payloads_inlined: true,
+      target_ai_memory_content_inlined: false,
+      provider_private_state_inlined: false
+    },
+    writes_performed: false,
+    boundary: materializationBoundary(true),
+    errors
+  });
+}
+
+function materializationBoundary(scansTargetRepository) {
+  return Object.freeze({
+    writes_files: false,
+    writes_target_repository_state: false,
+    creates_agent_onboard_runtime_state: false,
+    scans_target_repository: Boolean(scansTargetRepository),
+    bounded_to_known_governance_files: true,
+    reads_target_work_items_metadata: Boolean(scansTargetRepository),
+    reads_claims_ledger_metadata: Boolean(scansTargetRepository),
+    plans_index_materialization: Boolean(scansTargetRepository),
+    inlines_planned_index_payloads: Boolean(scansTargetRepository),
+    inlines_raw_work_items_file: false,
+    inlines_raw_claims_ledger: false,
+    admits_or_closes_work_items: false,
+    creates_claims: false,
+    installs_dependencies: false,
+    runs_build_test_deploy: false,
+    runs_managed_project_commands: false,
+    publishes_package: false,
+    network: false,
+    git_mutation: false
+  });
+}
+
+function targetGovernanceIndexMaterializationDryRunText(result) {
+  if (result.status !== 'ok') {
+    return [
+      'agent-onboard target governance materialization dry-run',
+      `Status: ${result.status}`,
+      `Target: ${result.target ? result.target.root : 'unknown'}`,
+      `Errors: ${(result.errors || []).join('; ') || 'none'}`,
+      'Writes performed: false'
+    ].join('\n') + '\n';
+  }
+  const materialization = result.materialization;
+  return [
+    'agent-onboard target governance materialization dry-run',
+    `Target: ${result.target.name}`,
+    `Root: ${result.target.root}`,
+    `Budget: ${materialization.budget_status}; ${materialization.combined_index_bytes}/${materialization.max_combined_index_bytes} bytes combined`,
+    `Planned writes: ${materialization.changed_path_count}`,
+    ...materialization.planned_writes.map((item) => `  - ${item.path}: ${item.action}, ${item.bytes} bytes, schema ${item.schema}`),
+    `Warnings: ${materialization.warnings.length > 0 ? materialization.warnings.join(', ') : 'none'}`,
+    'Boundary: dry-run only; index payloads are first-read cache, raw work-items/claims remain authoritative; no admission, no claims, no Git mutation, no network, no writes.',
+    'Next commands:',
+    ...result.recommended_next_commands.map((command) => `  - ${command}`),
+    'Writes performed: false'
+  ].join('\n') + '\n';
+}
+
 function targetGovernancePreview(targetRoot = process.cwd(), deps = {}) {
   const version = deps.version || '0.0.0';
-  const releaseLine = deps.releaseLine || 'public_target_governance_preview_product_gate';
+  const releaseLine = deps.releaseLine || 'public_target_governance_index_materialization_dry_run_gate';
   const absoluteTargetRoot = path.resolve(targetRoot || process.cwd());
   const base = Object.freeze({
     schema: TARGET_GOVERNANCE_SCHEMA,
@@ -306,6 +501,7 @@ function targetGovernancePreview(targetRoot = process.cwd(), deps = {}) {
       }
     },
     recommended_next_commands: [
+      'agent-onboard target governance --materialize-dry-run --text',
       'agent-onboard target handoff --text',
       'agent-onboard target work-items --text',
       'agent-onboard target inventory --text',
@@ -385,6 +581,8 @@ function createTargetGovernanceService(deps = {}) {
   return Object.freeze({
     targetGovernancePreview: (targetRoot) => targetGovernancePreview(targetRoot, { version: deps.version, releaseLine }),
     formatTargetGovernancePreviewText: targetGovernancePreviewText,
+    targetGovernanceIndexMaterializationDryRun: (targetRoot) => targetGovernanceIndexMaterializationDryRun(targetRoot, { version: deps.version, releaseLine }),
+    formatTargetGovernanceIndexMaterializationDryRunText: targetGovernanceIndexMaterializationDryRunText,
     buildTargetGovernanceWorkItemsIndex: buildWorkItemsIndex,
     buildTargetGovernanceClaimsIndex: buildClaimsIndex
   });
@@ -394,6 +592,8 @@ module.exports = {
   createTargetGovernanceService,
   targetGovernancePreview,
   targetGovernancePreviewText,
+  targetGovernanceIndexMaterializationDryRun,
+  targetGovernanceIndexMaterializationDryRunText,
   buildWorkItemsIndex,
   buildClaimsIndex
 };

@@ -5313,6 +5313,68 @@
         "checks_not_run": [],
         "known_non_pass": []
       }
+    },
+    {
+      "id": "P1S3M5W20",
+      "milestone_id": "P1S3M5",
+      "title": "Public target governance index materialization dry-run gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-04T23:24:00.000+07:00"
+      },
+      "closure": {
+        "actor": "gpt-5.5-thinking",
+        "closed_at": "2026-07-04T23:56:00.000+07:00",
+        "summary": "Closed by adding target governance --materialize-dry-run with JSON and text output. The feature derives compact work-items and claims index payloads in memory, reports create/replace/keep actions, checks 4096-byte per-index and 8192-byte combined first-read budgets, preserves raw work-items/claims authority, and performs no index write, claim admission, work-item admission or closure, dependency install, managed-project command, Git mutation, network call, publish, or authority grant; package candidate bumped to 0.0.127.",
+        "changed_files": [
+          "README.md",
+          "AGENTS.md",
+          "llms.txt",
+          "package.json",
+          "cli/agent_onboard/runtime-contracts.js",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/domains/target/services/target-governance-service.js",
+          "test/agent-onboard.test.js",
+          "test/run-tests.js",
+          ".agent-onboard/work-items.json",
+          ".agent-onboard/target-governance-index-materialization-dry-run-product-gate.json",
+          "SOURCE_OF_TRUTH.md",
+          "authority-map.json",
+          "manifest.json"
+        ],
+        "checks_run": [
+          "node -c cli/agent_onboard/domains/target/services/target-governance-service.js",
+          "node -c cli/agent_onboard/runtime-contracts.js",
+          "node -c cli/agent_onboard/runtime-composer.js",
+          "node -c test/agent-onboard.test.js",
+          "node -c test/run-tests.js",
+          "node cli/agent-onboard.js target governance --materialize-dry-run",
+          "node cli/agent-onboard.js target governance --materialize-dry-run --json",
+          "node cli/agent-onboard.js target governance --materialize-dry-run --text",
+          "node cli/agent-onboard.js target governance --materialize-dry-run --write (expected unsupported)",
+          "node cli/agent-onboard.js target governance --preview",
+          "node cli/agent-onboard.js target handoff --text",
+          "node cli/agent-onboard.js commands --json",
+          "node cli/agent-onboard.js check --fast --json",
+          "npm test",
+          "npm run test:full",
+          "node cli/agent-onboard.js release --source-manifest-check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js target metadata --write --force --target .",
+          "node cli/agent-onboard.js target metadata --check --target .",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "npm pack --dry-run --json",
+          "node scripts/check-public-artifact-boundary.js",
+          "installed package target governance --materialize-dry-run --json smoke",
+          "installed package target governance --text smoke",
+          "installed package check --fast --json smoke",
+          "installed package release --check smoke"
+        ],
+        "checks_not_run": [],
+        "known_non_pass": []
+      }
     }
   ]
 }

@@ -236,6 +236,8 @@ function quickTasks() {
     cliTask('target work-items text', ['target', 'work-items', '--text'], expectTextIncludes(['agent-onboard target work-items', 'Boundary:', 'Writes performed: false'])),
     cliTask('target governance', ['target', 'governance', '--preview'], expectStatusOk),
     cliTask('target governance text', ['target', 'governance', '--text'], expectTextIncludes(['agent-onboard target governance', 'Boundary:', 'Writes performed: false'])),
+    cliTask('target governance materialization dry-run', ['target', 'governance', '--materialize-dry-run'], expectStatusOk),
+    cliTask('target governance materialization dry-run text', ['target', 'governance', '--materialize-dry-run', '--text'], expectTextIncludes(['agent-onboard target governance materialization dry-run', 'Boundary:', 'Writes performed: false'])),
     cliTask('target handoff', ['target', 'handoff', '--preview'], expectStatusOk),
     cliTask('target handoff text', ['target', 'handoff', '--text'], expectTextIncludes(['agent-onboard target handoff', 'Boundary:', 'Writes performed: false'])),
     cliTask('issue classify dry-run', ['issue', '--classify-dry-run'], expectStatusOk),

@@ -202,6 +202,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-target-command-adapter-extraction-json-47b189e2"
     },
     {
+      "file_path": ".agent-onboard/target-governance-index-materialization-dry-run-product-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-target-governance-index-materialization-dry-run-product-gate-json-a64ca318"
+    },
+    {
       "file_path": ".agent-onboard/target-governance-preview-product-gate.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-target-governance-preview-product-gate-json-eb89da54"
     },

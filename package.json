@@ -1,6 +1,6 @@
 {
   "name": "agent-onboard",
-  "version": "0.0.126",
+  "version": "0.0.127",
   "description": "CLI for onboarding and managing target repositories.",
   "license": "Apache-2.0",
   "author": "Thanh Le <vnlemanhthanh@gmail.com>",
@@ -384,7 +384,12 @@
     "claims-index",
     "work-items-index",
     "compact-first-read",
-    "raw-growth-budget"
+    "raw-growth-budget",
+    "governance-index-materialization",
+    "index-materialization-dry-run",
+    "target-governance-indexes",
+    "first-read-cache",
+    "governance-budget"
   ],
   "type": "commonjs",
   "engines": {
