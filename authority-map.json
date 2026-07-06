@@ -98,6 +98,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-architecture-m1-closure-m2-seed-json-2aa8e507"
     },
     {
+      "file_path": ".agent-onboard/public-contract-spine-readiness-output-contract-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-public-contract-spine-readiness-output-contract-gate-json-26f33d14"
+    },
+    {
       "file_path": ".agent-onboard/quickstart-product-gate.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-quickstart-product-gate-json-eb9f94bd"
     },
@@ -364,6 +368,10 @@
     {
       "file_path": "cli/agent_onboard/command-router.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-command-router-js-c4226b52"
+    },
+    {
+      "file_path": "cli/agent_onboard/contracts/public-contracts.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-contracts-public-contracts-js-88744470"
     },
     {
       "file_path": "cli/agent_onboard/domains/architecture/m3-runtime-catalog.js",

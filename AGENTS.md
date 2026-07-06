@@ -65,6 +65,8 @@ node cli/agent-onboard.js target governance --materialize --write --force
 node cli/agent-onboard.js target handoff --text
 node cli/agent-onboard.js target handoff --preview
 node cli/agent-onboard.js target handoff --readiness-check --text
+node cli/agent-onboard.js contracts --text
+node cli/agent-onboard.js contracts --check --json
 node cli/agent-onboard.js issue --classify-dry-run --text
 node cli/agent-onboard.js contributor --admission-dry-run --text
 node cli/agent-onboard.js check --plan --text
@@ -516,3 +518,7 @@ Use `node cli/agent-onboard.js mcp --plan`, `node cli/agent-onboard.js mcp --jso
 ## Public target handoff readiness check product surface
 
 Use `node cli/agent-onboard.js target handoff --readiness-check --json|--text` when CI or a next agent needs a compact pass/fail readiness gate over handoff reason codes. The check must fail closed on blocker reason codes, must not fail on warnings alone, and must not inline raw work-items, claims ledgers, planned governance-index payloads, memory contents, source evidence, or provider-private state. It must not write files, admit or close work items, create claims, install dependencies, run managed-project commands, mutate Git, publish, or use network access.
+
+## Public contract spine product surface
+
+Use `node cli/agent-onboard.js contracts --json|--text|--check` when a human, CI job, or agent needs the compact public contract/interface spine for stable JSON outputs. The command is read-only: it may describe and validate descriptor-based output contracts for handoff readiness, governance budget, and no-mutation runtime boundaries, but it must not export internal contract archives, require TypeScript or abstract classes, write files, install dependencies, run managed-project commands, mutate Git, publish, or use network access. Treat contract output as public product interface evidence, not as authority to mutate target state.

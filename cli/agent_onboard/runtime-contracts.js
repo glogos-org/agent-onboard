@@ -2,7 +2,7 @@
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
-const RELEASE_LINE = 'public_target_handoff_readiness_check_product_gate';
+const RELEASE_LINE = 'public_contract_spine_readiness_output_contract_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
   agents: 'agents',
@@ -23,7 +23,8 @@ const TOP_LEVEL_COMMAND = Object.freeze({
   ci: 'ci',
   mcp: 'mcp',
   version: 'version',
-  workItems: 'work-items'
+  workItems: 'work-items',
+  contracts: 'contracts'
 });
 
 const TOP_LEVEL_COMMAND_ALIAS = Object.freeze({
@@ -40,6 +41,7 @@ const ROUTER_COMMAND_ORDER = Object.freeze([
   TOP_LEVEL_COMMAND.create,
   TOP_LEVEL_COMMAND.issue,
   TOP_LEVEL_COMMAND.contributor,
+  TOP_LEVEL_COMMAND.contracts,
   TOP_LEVEL_COMMAND.check,
   TOP_LEVEL_COMMAND.ci,
   TOP_LEVEL_COMMAND.mcp,
@@ -63,6 +65,7 @@ const RUNTIME_COMMAND_GROUP = Object.freeze({
     TOP_LEVEL_COMMAND.create,
     TOP_LEVEL_COMMAND.issue,
     TOP_LEVEL_COMMAND.contributor,
+    TOP_LEVEL_COMMAND.contracts,
     TOP_LEVEL_COMMAND.check,
     TOP_LEVEL_COMMAND.ci,
     TOP_LEVEL_COMMAND.mcp
@@ -292,6 +295,7 @@ const PRODUCT_HELP_LINES = Object.freeze([
   'agent-onboard create --dry-run|--json|--text',
   'agent-onboard issue --classify-dry-run|--json|--text [--title <title>] [--label <label>] [--actor <kind>] [--source <kind>] [--repo <owner/name>] [--issue-number <number>]',
   'agent-onboard contributor --admission-dry-run|--json|--text [--actor <kind>] [--handle <handle>] [--email <email>] [--repo <owner/name>] [--identity-surface <surface>] [--agreement <surface>] [--ai-assisted yes|no] [--assisted-by <trailer>]',
+  'agent-onboard contracts --json|--text|--check',
   'agent-onboard check --plan|--fast [--json|--text]',
   'agent-onboard ci --github-action|--json|--text',
   'agent-onboard mcp --plan|--json|--text',
@@ -335,6 +339,7 @@ const PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES = Object.freeze([
   'cli/agent_onboard/adapters/commands/work-items.js',
   'cli/agent_onboard/adapters/compatibility-command-port.js',
   'cli/agent_onboard/command-router.js',
+  'cli/agent_onboard/contracts/public-contracts.js',
   'cli/agent_onboard/domains/architecture/m3-runtime-catalog.js',
   'cli/agent_onboard/domains/architecture/services/checks/architecture-check-service.js',
   'cli/agent_onboard/domains/architecture/services/runtime/architecture-runtime-service.js',

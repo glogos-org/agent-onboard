@@ -39,6 +39,7 @@ const {
   TOP_LEVEL_COMMAND,
   TOP_LEVEL_COMMAND_ALIAS
 } = require('./runtime-contracts');
+const publicContracts = require('./contracts/public-contracts');
 const VERSION = require('../../package.json').version;
 const COMMANDS_COMMAND = 'commands';
 const GUIDE_COMMAND = 'guide';
@@ -47,6 +48,7 @@ const DISCOVERY_COMMAND = 'discovery';
 const CREATE_COMMAND = 'create';
 const ISSUE_COMMAND = 'issue';
 const CONTRIBUTOR_COMMAND = 'contributor';
+const CONTRACTS_COMMAND = 'contracts';
 const CHECK_COMMAND = 'check';
 const CI_COMMAND = 'ci';
 const MCP_COMMAND = 'mcp';
@@ -177,6 +179,8 @@ function commandSurfaceCatalog() {
       'agent-onboard create --dry-run',
       'agent-onboard issue --classify-dry-run --text',
       'agent-onboard contributor --admission-dry-run --text',
+      'agent-onboard contracts --text',
+      'agent-onboard contracts --check --json',
       'agent-onboard check --plan --text',
       'agent-onboard check --fast --text',
       'agent-onboard ci --github-action',
@@ -523,6 +527,8 @@ function discoveryStableCommands() {
     'agent-onboard create --dry-run',
     'agent-onboard issue --classify-dry-run --text',
     'agent-onboard contributor --admission-dry-run --text',
+    'agent-onboard contracts --text',
+    'agent-onboard contracts --check --json',
     'agent-onboard check --plan --text',
     'agent-onboard check --fast --text',
     'agent-onboard ci --github-action',
@@ -1094,6 +1100,66 @@ const contributorAdmissionService = Object.freeze({
 });
 
 
+
+function publicContractsCatalog() {
+  return publicContracts.publicContractCatalog({
+    version: VERSION,
+    releaseLine: RELEASE_LINE
+  });
+}
+
+function publicContractsCheck() {
+  const catalog = publicContractsCatalog();
+  const catalogCheck = publicContracts.validatePublicContractCatalog(catalog);
+  const outputs = {
+    [publicContracts.PUBLIC_CONTRACT_IDS.targetHandoffPreview]: targetRuntimeService.targetHandoffPreview(process.cwd()),
+    [publicContracts.PUBLIC_CONTRACT_IDS.targetHandoffReadinessCheck]: targetRuntimeService.targetHandoffReadinessCheck(process.cwd()),
+    [publicContracts.PUBLIC_CONTRACT_IDS.governanceBudgetContract]: targetRuntimeService.targetGovernanceBudgetContract(),
+    [publicContracts.PUBLIC_CONTRACT_IDS.governanceBudgetCheck]: targetRuntimeService.targetGovernanceBudgetCheck(process.cwd())
+  };
+  const outputValidation = publicContracts.validatePublicContractOutputs(catalog, outputs);
+  const errors = [];
+  if (Array.isArray(catalogCheck.errors)) errors.push(...catalogCheck.errors);
+  if (Array.isArray(outputValidation.errors)) errors.push(...outputValidation.errors);
+  return Object.freeze(Object.assign({}, catalogCheck, {
+    status: errors.length === 0 ? 'ok' : 'error',
+    command: 'agent-onboard contracts --check --json',
+    checked_runtime_output_count: outputValidation.checked_output_count,
+    output_validation: outputValidation,
+    errors
+  }));
+}
+
+function runContracts(args = []) {
+  const allowed = new Set(['--json', '--text', '--check']);
+  for (const arg of args) {
+    if (!allowed.has(arg)) return json({ schema: 'agent-onboard-public-contracts-error-001', status: 'error', reason: 'contracts supports only --json, --text, or --check', writes_files: false }, 1);
+  }
+  const checkMode = args.includes('--check');
+  const text = args.includes('--text');
+  if (checkMode) {
+    const result = publicContractsCheck();
+    if (text) {
+      process.stdout.write(publicContracts.publicContractCheckText(result));
+      return result.status === 'ok' ? 0 : 1;
+    }
+    return json(result, result.status === 'ok' ? 0 : 1);
+  }
+  const catalog = publicContractsCatalog();
+  if (text) {
+    process.stdout.write(publicContracts.publicContractText(catalog));
+    return 0;
+  }
+  return json(catalog, 0);
+}
+
+const publicContractsService = Object.freeze({
+  catalog: publicContractsCatalog,
+  check: publicContractsCheck,
+  text: publicContracts.publicContractText,
+  checkText: publicContracts.publicContractCheckText
+});
+
 const CHECK_FAST_REGISTRY = Object.freeze([
   Object.freeze({ id: 'command-surface-catalog', command: 'agent-onboard commands --json', scope: 'product_discovery', slow: false }),
   Object.freeze({ id: 'operator-guide', command: 'agent-onboard guide --json', scope: 'operator_orientation', slow: false }),
@@ -1102,6 +1168,7 @@ const CHECK_FAST_REGISTRY = Object.freeze([
   Object.freeze({ id: 'create-dry-run', command: 'agent-onboard create --dry-run', scope: 'consumer_create_preview', slow: false }),
   Object.freeze({ id: 'issue-intake-dry-run', command: 'agent-onboard issue --classify-dry-run', scope: 'external_issue_preview', slow: false }),
   Object.freeze({ id: 'contributor-admission-dry-run', command: 'agent-onboard contributor --admission-dry-run', scope: 'contributor_preview', slow: false }),
+  Object.freeze({ id: 'public-contract-spine-check', command: 'agent-onboard contracts --check', scope: 'public_contract_spine', slow: false }),
   Object.freeze({ id: 'target-inventory-preview', command: 'agent-onboard target inventory --preview', scope: 'target_runtime_inventory', slow: false }),
   Object.freeze({ id: 'target-memory-preview', command: 'agent-onboard target memory --preview', scope: 'target_memory_descriptor', slow: false }),
   Object.freeze({ id: 'target-work-items-preview', command: 'agent-onboard target work-items --preview', scope: 'target_work_items_preview', slow: false }),
@@ -1250,6 +1317,7 @@ function runCheckFastPlan(root = packageRoot()) {
     'create-dry-run': () => createDryRunService.catalog(),
     'issue-intake-dry-run': () => issueIntakeService.classify(issueIntakeService.input(['--classify-dry-run']).input),
     'contributor-admission-dry-run': () => contributorAdmissionService.preview(contributorAdmissionService.input(['--admission-dry-run']).input),
+    'public-contract-spine-check': () => publicContractsService.check(),
     'target-inventory-preview': () => targetRuntimeService.targetInventory(targetRoot),
     'target-memory-preview': () => targetMemoryService.descriptor(targetRoot),
     'target-work-items-preview': () => targetRuntimeService.targetWorkItemsPreview(targetRoot),
@@ -1457,6 +1525,7 @@ const MCP_TOOL_CANDIDATES = Object.freeze([
   Object.freeze({ name: 'agent_onboard_preview_create', command: 'agent-onboard create --dry-run', output_schema: 'agent-onboard-public-create-dry-run-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_classify_issue', command: 'agent-onboard issue --classify-dry-run --json', output_schema: 'agent-onboard-public-issue-intake-classification-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_preview_contributor', command: 'agent-onboard contributor --admission-dry-run --json', output_schema: 'agent-onboard-public-contributor-admission-dry-run-001', mutates: false }),
+  Object.freeze({ name: 'agent_onboard_check_public_contracts', command: 'agent-onboard contracts --check --json', output_schema: 'agent-onboard-public-contract-check-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_preview_target_inventory', command: 'agent-onboard target inventory --json', output_schema: 'agent-onboard-public-target-runtime-inventory-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_preview_target_memory', command: 'agent-onboard target memory --json', output_schema: 'agent-onboard-public-target-memory-descriptor-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_preview_target_work_items', command: 'agent-onboard target work-items --json', output_schema: 'agent-onboard-public-target-work-items-preview-001', mutates: false }),
@@ -8504,6 +8573,7 @@ const DOMAIN_SERVICE_FACADES = Object.freeze({
     runCreate,
     runIssue,
     runContributor,
+    runContracts,
     runCheck,
     runCi,
     runMcp,
@@ -8550,6 +8620,8 @@ const COMMAND_ROUTE_HANDLERS = Object.freeze({
   [TOP_LEVEL_COMMAND.issue]: DOMAIN_SERVICE_FACADES.coreService.runIssue,
   [CONTRIBUTOR_COMMAND]: DOMAIN_SERVICE_FACADES.coreService.runContributor,
   [TOP_LEVEL_COMMAND.contributor]: DOMAIN_SERVICE_FACADES.coreService.runContributor,
+  [CONTRACTS_COMMAND]: DOMAIN_SERVICE_FACADES.coreService.runContracts,
+  [TOP_LEVEL_COMMAND.contracts]: DOMAIN_SERVICE_FACADES.coreService.runContracts,
   [CHECK_COMMAND]: DOMAIN_SERVICE_FACADES.coreService.runCheck,
   [TOP_LEVEL_COMMAND.check]: DOMAIN_SERVICE_FACADES.coreService.runCheck,
   [CI_COMMAND]: DOMAIN_SERVICE_FACADES.coreService.runCi,
@@ -8684,6 +8756,8 @@ module.exports = {
   appendWorkItemDryRun,
   claimWorkItemDryRun,
   closeWorkItemDryRun,
+  publicContractsCatalog,
+  publicContractsCheck,
   handoffEvidenceChecklist,
   participationLifecycleNextSteps,
   workItemsTemplate,

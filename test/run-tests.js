@@ -172,6 +172,7 @@ function syntaxTasks() {
   return [
     nodeTask('syntax: cli/agent-onboard.js', ['-c', CLI]),
     nodeTask('syntax: command-router', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'command-router.js')]),
+    nodeTask('syntax: public contracts', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'contracts', 'public-contracts.js')]),
     nodeTask('syntax: runtime contracts', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'runtime-contracts.js')]),
     nodeTask('syntax: compatibility-command-port adapter', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'adapters', 'compatibility-command-port.js')]),
     nodeTask('syntax: compatibility-command-port port', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'ports', 'compatibility-command-port.js')]),
@@ -246,6 +247,10 @@ function quickTasks() {
     cliTask('issue classify dry-run text', ['issue', '--classify-dry-run', '--text'], expectTextIncludes(['agent-onboard issue intake dry-run', 'Authority: external signal only', 'no GitHub API'])),
     cliTask('contributor admission dry-run', ['contributor', '--admission-dry-run'], expectStatusOk),
     cliTask('contributor admission dry-run text', ['contributor', '--admission-dry-run', '--text'], expectTextIncludes(['agent-onboard contributor admission dry-run', 'Authority: candidate only', 'no GitHub API'])),
+    cliTask('public contracts json', ['contracts', '--json'], expectStatusOk),
+    cliTask('public contracts text', ['contracts', '--text'], expectTextIncludes(['agent-onboard public contracts', 'target_handoff_readiness_check_output', 'Boundary: no files'])),
+    cliTask('public contracts check', ['contracts', '--check', '--json'], expectStatusOk),
+    cliTask('public contracts check text', ['contracts', '--check', '--text'], expectTextIncludes(['agent-onboard public contract check', 'Status: ok', 'Output contracts:'])),
     cliTask('check plan', ['check', '--plan', '--json'], expectStatusOk),
     cliTask('check plan text', ['check', '--plan', '--text'], expectTextIncludes(['agent-onboard check plan', 'release-check', 'no shell spawn'])),
     cliTask('check fast', ['check', '--fast', '--json'], expectStatusOk),

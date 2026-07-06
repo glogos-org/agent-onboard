@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_target_handoff_readiness_check_product_gate';
+const EXPECTED_RELEASE_LINE = 'public_contract_spine_readiness_output_contract_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -25,6 +25,7 @@ const EXPECTED_PACK_FILES = [
   'cli/agent_onboard/adapters/commands/work-items.js',
   'cli/agent_onboard/adapters/compatibility-command-port.js',
   'cli/agent_onboard/command-router.js',
+  'cli/agent_onboard/contracts/public-contracts.js',
   'cli/agent_onboard/domains/architecture/m3-runtime-catalog.js',
   'cli/agent_onboard/domains/architecture/services/checks/architecture-check-service.js',
   'cli/agent_onboard/domains/architecture/services/runtime/architecture-runtime-service.js',
@@ -220,6 +221,10 @@ fullSourceTest('public runtime contracts module centralizes command and package 
   const composer = require(path.join(ROOT, 'cli', 'agent_onboard', 'runtime-composer.js'));
   assert.strictEqual(contracts.RUNTIME_CONTRACTS.schema, 'agent-onboard-public-runtime-contracts-001');
   assert.strictEqual(contracts.RUNTIME_CONTRACTS.package_name, 'agent-onboard');
+  assert.strictEqual(contracts.RELEASE_LINE, EXPECTED_RELEASE_LINE);
+  assert.strictEqual(contracts.TOP_LEVEL_COMMAND.contracts, 'contracts');
+  assert.ok(contracts.PRODUCT_HELP_LINES.includes('agent-onboard contracts --json|--text|--check'));
+  assert.ok(contracts.PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES.includes('cli/agent_onboard/contracts/public-contracts.js'));
   assert.strictEqual(contracts.TARGET_CONFIG_FILE, '.agent-onboard/target.json');
   assert.strictEqual(contracts.TARGET_COMMAND.doctor, 'doctor');
   assert.strictEqual(contracts.TARGET_COMMAND.metadata, 'metadata');
@@ -234,7 +239,7 @@ fullSourceTest('public runtime contracts module centralizes command and package 
   assert.strictEqual(contracts.TARGET_PROFILE_COMMAND.flag.target, '--target');
   assert.ok(Object.isFrozen(contracts.TARGET_COMMAND));
   assert.ok(contracts.RUNTIME_CONTRACTS.top_level_commands.includes('target'));
-  assert.deepStrictEqual(contracts.ROUTER_COMMAND_ORDER, ['help', 'version', 'status', 'create', 'issue', 'contributor', 'check', 'ci', 'mcp', 'init', 'agents', 'guard', 'authority', 'architecture', 'release', 'target-config', 'work-items', 'target', 'target-instance']);
+  assert.deepStrictEqual(contracts.ROUTER_COMMAND_ORDER, ['help', 'version', 'status', 'create', 'issue', 'contributor', 'contracts', 'check', 'ci', 'mcp', 'init', 'agents', 'guard', 'authority', 'architecture', 'release', 'target-config', 'work-items', 'target', 'target-instance']);
   assert.strictEqual(contracts.TOP_LEVEL_COMMAND_ALIAS.helpLong, '--help');
   assert.deepStrictEqual(contracts.RUNTIME_COMMAND_GROUP.target, ['init', 'target-config', 'target', 'target-instance']);
   assert.deepStrictEqual(contracts.RUNTIME_ADAPTER_GROUP.core, ['help', '--help', '-h', 'version', '--version', '-v', 'status']);
@@ -488,6 +493,57 @@ fullSourceTest('public check plan and fast runner are directly usable', () => {
   assert.ok(missingFastText.stdout.includes('target-governance-index-stale-read (missing)'));
 
   const bad = run(['check', '--plan', '--fast']);
+  const badOutput = readJsonFailure(bad);
+  assert.strictEqual(bad.status, 1);
+  assert.strictEqual(badOutput.status, 'error');
+});
+
+
+fullSourceTest('public contract spine is directly usable and validates runtime outputs', () => {
+  const contractsModule = require(path.join(ROOT, 'cli', 'agent_onboard', 'contracts', 'public-contracts.js'));
+  const catalog = contractsModule.publicContractCatalog({ version: EXPECTED_VERSION, releaseLine: EXPECTED_RELEASE_LINE });
+  assert.strictEqual(catalog.schema, 'agent-onboard-public-contract-spine-001');
+  assert.strictEqual(catalog.status, 'ok');
+  assert.strictEqual(catalog.version, EXPECTED_VERSION);
+  assert.strictEqual(catalog.release_line, EXPECTED_RELEASE_LINE);
+  assert.strictEqual(catalog.contract_model.typescript_required, false);
+  assert.strictEqual(catalog.contract_model.abstract_classes_required, false);
+  assert.strictEqual(catalog.contract_model.source_contract_archive_exported, false);
+  assert.ok(catalog.contracts.some((entry) => entry.id === 'target_handoff_readiness_check_output'));
+  assert.ok(catalog.stable_reason_codes.includes('governance_budget_over_contract'));
+
+  const catalogCheck = contractsModule.validatePublicContractCatalog(catalog);
+  assert.strictEqual(catalogCheck.status, 'ok');
+  assert.strictEqual(catalogCheck.validated.required_contracts_present, true);
+  assert.strictEqual(catalogCheck.validated.no_mutation_boundaries_declared, true);
+
+  const jsonResult = run(['contracts', '--json']);
+  const output = readJsonOutput(jsonResult);
+  assert.strictEqual(output.schema, 'agent-onboard-public-contract-spine-001');
+  assert.strictEqual(output.contract_count, 6);
+  assert.strictEqual(output.boundary.writes_files, false);
+  assert.strictEqual(output.boundary.network, false);
+
+  const checkResult = run(['contracts', '--check', '--json']);
+  const check = readJsonOutput(checkResult);
+  assert.strictEqual(check.schema, 'agent-onboard-public-contract-check-001');
+  assert.strictEqual(check.status, 'ok');
+  assert.strictEqual(check.checked_runtime_output_count, 4);
+  assert.strictEqual(check.output_validation.status, 'ok');
+  assert.strictEqual(check.validated.readiness_reason_codes_stable, true);
+  assert.deepStrictEqual(check.errors, []);
+
+  const textResult = run(['contracts', '--text']);
+  assert.strictEqual(textResult.status, 0, textResult.stderr || textResult.stdout);
+  assert.ok(textResult.stdout.includes('agent-onboard public contracts'));
+  assert.ok(textResult.stdout.includes('target_handoff_readiness_check_output'));
+
+  const checkTextResult = run(['contracts', '--check', '--text']);
+  assert.strictEqual(checkTextResult.status, 0, checkTextResult.stderr || checkTextResult.stdout);
+  assert.ok(checkTextResult.stdout.includes('agent-onboard public contract check'));
+  assert.ok(checkTextResult.stdout.includes('Status: ok'));
+
+  const bad = run(['contracts', '--write']);
   const badOutput = readJsonFailure(bad);
   assert.strictEqual(bad.status, 1);
   assert.strictEqual(badOutput.status, 'error');
@@ -3921,10 +3977,12 @@ fullSourceTest('full source block line 2233', () => {
   assert.ok(readme.includes('Use `--text` on target-facing inspection commands'));
   assert.ok(readme.includes('npx agent-onboard check --plan --text'));
   assert.ok(readme.includes('npx agent-onboard check --fast --text'));
-  assert.ok(readme.includes('The current release adds `target handoff --readiness-check --json|--text` as a no-write machine-readable readiness gate'));
+  assert.ok(readme.includes('The current release adds `contracts --json|--text|--check` as a compact public contract/interface spine'));
+  assert.ok(readme.includes('The previous release added `target handoff --readiness-check --json|--text` as a no-write machine-readable readiness gate'));
+  assert.ok(readme.includes('without exporting the internal contract archive or requiring TypeScript/abstract classes'));
   assert.ok(readme.includes('The previous release added stable handoff readiness reason codes to `target handoff --json|--text`'));
-  assert.ok(readme.includes('The previous release added governance budget state to `target handoff --json|--text`'));
-  assert.ok(readme.includes('`target governance --budget-check --json|--text` remains the compact no-write target scan'));
+  assert.ok(readme.includes('The earlier governance budget gate remains available through `target governance --budget-check --json|--text`'));
+  assert.ok(readme.includes('The previous release added `target governance --budget-check --json|--text` as a compact no-write target scan'));
   assert.ok(readme.includes('4096-byte per-index and 8192-byte combined governance budget'));
   assert.ok(readme.includes('The previous release wires governance index drift into first-read surfaces'));
   assert.ok(readme.includes('`check --fast --json|--text` emits governance stale-read advisories when stored indexes are `stale`, `missing`, or blocked'));
