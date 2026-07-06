@@ -3,9 +3,9 @@
   "status": "active",
   "registry_path": ".agent-onboard/work-items.json",
   "raw_registry_loaded_by_default": false,
-  "item_count": 120,
+  "item_count": 121,
   "open_count": 0,
-  "closed_count": 120,
+  "closed_count": 121,
   "admission_queue_count": 0,
   "active_work_item_ids": [],
   "next_open_work_item": null,
@@ -13,13 +13,6 @@
   "active_admission_queue": [],
   "latest_closed_limit": 5,
   "latest_closed_work_items": [
-    {
-      "id": "P1S3M5W21",
-      "title": "Public target governance index explicit write gate",
-      "status": "closed",
-      "milestone_id": "P1S3M5",
-      "domain": null
-    },
     {
       "id": "P1S3M5W22",
       "title": "Public target governance index refresh integration gate",
@@ -47,7 +40,14 @@
       "status": "closed",
       "milestone_id": "P1S3M5",
       "domain": null
+    },
+    {
+      "id": "P1S3M5W26",
+      "title": "Public target governance budget check product gate",
+      "status": "closed",
+      "milestone_id": "P1S3M5",
+      "domain": null
     }
   ],
-  "updated_at": "2026-07-05T10:21:17.657Z"
+  "updated_at": "2026-07-05T11:04:43.163Z"
 }

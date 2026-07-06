@@ -1,0 +1,101 @@
+{
+  "schema": "agent-onboard-public-target-governance-budget-check-product-gate-001",
+  "package_name": "agent-onboard",
+  "version": "0.0.133",
+  "release_line": "public_target_governance_budget_check_product_gate",
+  "work_item": {
+    "id": "P1S3M5W26",
+    "milestone_id": "P1S3M5",
+    "title": "Public target governance budget check product gate",
+    "status": "closed",
+    "closure": {
+      "actor": "gpt-5.5-thinking",
+      "closed_at": "2026-07-05T10:45:00Z",
+      "summary": "Closed by adding target governance --budget-check as a compact no-write public target scan that validates governance index byte budgets without inlining planned index payloads. The command reports per-index and combined byte budgets, blocks unbounded raw-claims growth cases, is exposed through help, check --fast, MCP/tool discovery, README/AGENTS/llms, and keeps --budget-contract as the no-scan policy surface and --materialize-dry-run as the exact payload planning surface.",
+      "changed_files": [
+        "package.json",
+        "README.md",
+        "AGENTS.md",
+        "llms.txt",
+        "cli/agent_onboard/runtime-contracts.js",
+        "cli/agent_onboard/runtime-composer.js",
+        "cli/agent_onboard/domains/target/services/target-governance-service.js",
+        "test/agent-onboard.test.js",
+        ".agent-onboard/work-items.json",
+        ".agent-onboard/work-items.index.json",
+        ".agent-onboard/claims.index.json",
+        ".agent-onboard/target-governance-budget-check-product-gate.json",
+        "authority-map.json",
+        "manifest.json"
+      ],
+      "checks_run": [
+        "node -c cli/agent_onboard/domains/target/services/target-governance-service.js",
+        "node -c cli/agent_onboard/runtime-contracts.js",
+        "node -c cli/agent_onboard/runtime-composer.js",
+        "node -c test/agent-onboard.test.js",
+        "node cli/agent-onboard.js target governance --budget-check --json",
+        "node cli/agent-onboard.js target governance --budget-check --text",
+        "node cli/agent-onboard.js check --plan --json",
+        "node cli/agent-onboard.js check --fast --json",
+        "npm test",
+        "node test/agent-onboard.test.js --shard=0/8",
+        "node test/agent-onboard.test.js --shard=1/8",
+        "node test/agent-onboard.test.js --shard=2/8",
+        "node test/agent-onboard.test.js --shard=3/8",
+        "node test/agent-onboard.test.js --shard=4/8",
+        "node test/agent-onboard.test.js --shard=6/8",
+        "node test/agent-onboard.test.js --shard=7/8",
+        "node test/agent-onboard.test.js --shard=<each shard-5 individual index>/139"
+      ],
+      "checks_not_run": [
+        "node test/agent-onboard.test.js completed attempt not available within local tool timeout window"
+      ],
+      "known_non_pass": [
+        "Single-process unsharded full source test was attempted but exceeded the local tool timeout; all quick tests, direct budget-check commands, fast check, shards 0-4/8 and 6-7/8, plus each shard-5 individual test index, passed."
+      ]
+    }
+  },
+  "product_surface": {
+    "command": "agent-onboard target governance --budget-check --json|--text [--target <path>]",
+    "schema": "agent-onboard-public-target-governance-budget-check-001",
+    "purpose": "compact no-write validation of target governance index byte budgets without inlining planned index payloads",
+    "contract_source": "agent-onboard target governance --budget-contract",
+    "exact_payload_surface": "agent-onboard target governance --materialize-dry-run",
+    "first_read_indexes": [
+      ".agent-onboard/work-items.index.json",
+      ".agent-onboard/claims.index.json"
+    ],
+    "raw_authority_files_on_demand_only": [
+      ".agent-onboard/work-items.json",
+      ".agent-onboard/claims.jsonl"
+    ],
+    "max_index_bytes_each": 4096,
+    "max_combined_index_bytes": 8192,
+    "planned_index_payloads_inlined": false,
+    "writes_files": false,
+    "network": false,
+    "git_mutation": false
+  },
+  "acceptance": {
+    "budget_check_json_passes": true,
+    "budget_check_text_passes": true,
+    "check_fast_includes_budget_check": true,
+    "mcp_candidate_includes_budget_check": true,
+    "large_claims_ledger_regression_blocks_without_write": true,
+    "raw_authority_files_remain_authoritative": true
+  },
+  "boundary": {
+    "writes_consuming_repository_state": false,
+    "writes_target_repository_state": false,
+    "creates_agent_onboard_runtime_state": false,
+    "inlines_planned_index_payloads": false,
+    "inlines_raw_growth_files": false,
+    "admits_or_closes_work_items": false,
+    "creates_claims": false,
+    "git_mutation": false,
+    "installs_dependencies": false,
+    "runs_managed_project_commands": false,
+    "publishes_package": false,
+    "network": false
+  }
+}

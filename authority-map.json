@@ -206,6 +206,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-target-command-adapter-extraction-json-47b189e2"
     },
     {
+      "file_path": ".agent-onboard/target-governance-budget-check-product-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-target-governance-budget-check-product-gate-json-9c89fb26"
+    },
+    {
       "file_path": ".agent-onboard/target-governance-budget-contract-product-gate.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-target-governance-budget-contract-product-gate-json-50a51f46"
     },

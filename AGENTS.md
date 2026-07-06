@@ -55,6 +55,7 @@ node cli/agent-onboard.js target work-items --text
 node cli/agent-onboard.js target work-items --preview
 node cli/agent-onboard.js target governance --text
 node cli/agent-onboard.js target governance --budget-contract --text
+node cli/agent-onboard.js target governance --budget-check --text
 node cli/agent-onboard.js target governance --materialize-dry-run --text
 node cli/agent-onboard.js target governance --check --text
 node cli/agent-onboard.js target governance --materialize --write --force --text
@@ -443,6 +444,10 @@ Use `node cli/agent-onboard.js discovery --llms`, `node cli/agent-onboard.js dis
 
 
 
+
+## Public target governance budget check product gate
+
+Use `node cli/agent-onboard.js target governance --budget-check`, `node cli/agent-onboard.js target governance --budget-check --json`, or `node cli/agent-onboard.js target governance --budget-check --text` when a human or agent needs to validate compact governance index byte budgets on a target without seeing full planned payloads. The command scans only known governance files, reports per-index and combined bytes, and blocks over-budget states without writing indexes. It must not inline planned index payloads, import raw growth file contents into output, refresh indexes, admit or close work items, create claims, install dependencies, run managed project commands, publish, mutate Git, or perform network calls. Budget-check output is evidence/orientation only; it cannot grant authority or refresh indexes.
 
 ## Public target governance budget contract product gate
 
