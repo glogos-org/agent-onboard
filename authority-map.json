@@ -98,6 +98,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-architecture-m1-closure-m2-seed-json-2aa8e507"
     },
     {
+      "file_path": ".agent-onboard/public-contract-output-validator-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-public-contract-output-validator-gate-json-aa8ca966"
+    },
+    {
       "file_path": ".agent-onboard/public-contract-spine-readiness-output-contract-gate.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-contract-spine-readiness-output-contract-gate-json-26f33d14"
     },

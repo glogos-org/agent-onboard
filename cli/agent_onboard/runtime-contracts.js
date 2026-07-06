@@ -2,7 +2,7 @@
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
-const RELEASE_LINE = 'public_contract_spine_readiness_output_contract_gate';
+const RELEASE_LINE = 'public_contract_output_validator_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
   agents: 'agents',
@@ -295,7 +295,7 @@ const PRODUCT_HELP_LINES = Object.freeze([
   'agent-onboard create --dry-run|--json|--text',
   'agent-onboard issue --classify-dry-run|--json|--text [--title <title>] [--label <label>] [--actor <kind>] [--source <kind>] [--repo <owner/name>] [--issue-number <number>]',
   'agent-onboard contributor --admission-dry-run|--json|--text [--actor <kind>] [--handle <handle>] [--email <email>] [--repo <owner/name>] [--identity-surface <surface>] [--agreement <surface>] [--ai-assisted yes|no] [--assisted-by <trailer>]',
-  'agent-onboard contracts --json|--text|--check',
+  'agent-onboard contracts --json|--text|--check|--validate-output --contract <id> --file <path>',
   'agent-onboard check --plan|--fast [--json|--text]',
   'agent-onboard ci --github-action|--json|--text',
   'agent-onboard mcp --plan|--json|--text',

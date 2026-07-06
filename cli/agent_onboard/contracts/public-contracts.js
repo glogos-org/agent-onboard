@@ -3,6 +3,7 @@
 const PACKAGE_NAME = 'agent-onboard';
 const PUBLIC_CONTRACT_SPINE_SCHEMA = 'agent-onboard-public-contract-spine-001';
 const PUBLIC_CONTRACT_CHECK_SCHEMA = 'agent-onboard-public-contract-check-001';
+const PUBLIC_CONTRACT_OUTPUT_FILE_VALIDATION_SCHEMA = 'agent-onboard-public-contract-output-file-validation-001';
 
 const PUBLIC_CONTRACT_IDS = Object.freeze({
   targetHandoffPreview: 'target_handoff_preview_output',
@@ -196,6 +197,7 @@ function publicContractCatalog(options = {}) {
     release_line: releaseLine,
     command: 'agent-onboard contracts --json',
     check_command: 'agent-onboard contracts --check --json',
+    output_validation_command: 'agent-onboard contracts --validate-output --contract <id> --file <path> --json',
     purpose: 'compact public contract/interface spine for stable CLI JSON outputs without exposing internal contract archives',
     contract_model: {
       style: 'javascript_contract_descriptors_and_validators',
@@ -203,7 +205,8 @@ function publicContractCatalog(options = {}) {
       abstract_classes_required: false,
       source_contract_archive_exported: false,
       public_descriptor_layer_exported: true,
-      runtime_validation_supported: true
+      runtime_validation_supported: true,
+      output_file_validation_supported: true
     },
     contract_count: contracts.length,
     contracts,
@@ -295,22 +298,57 @@ function validatePublicContractCatalog(catalog) {
   });
 }
 
+function readinessReasonErrors(reason, pointer = 'readiness reason') {
+  const errors = [];
+  if (!reason || typeof reason !== 'object' || Array.isArray(reason)) {
+    return [`${pointer} must be an object`];
+  }
+  for (const requiredPath of ['code', 'severity', 'summary', 'next_command']) {
+    if (pathValue(reason, requiredPath) === undefined) errors.push(`${pointer} missing ${requiredPath}`);
+  }
+  if (!PUBLIC_READINESS_REASON_CODES.includes(reason.code)) errors.push(`${pointer} code not in public contract: ${reason.code}`);
+  if (!PUBLIC_READINESS_SEVERITIES.includes(reason.severity)) errors.push(`${pointer} severity not in public contract: ${reason.severity}`);
+  if (typeof reason.summary !== 'string' || reason.summary.trim() === '') errors.push(`${pointer} summary must be a non-empty string`);
+  if (typeof reason.next_command !== 'string' || reason.next_command.trim() === '') errors.push(`${pointer} next_command must be a non-empty string`);
+  return errors;
+}
+
+function validateNoMutationBoundary(contract, output) {
+  const errors = [];
+  const boundary = contract && contract.boundary && typeof contract.boundary === 'object' ? contract.boundary : {};
+  for (const [field, expected] of Object.entries(boundary)) {
+    if (expected !== false) continue;
+    const actual = pathValue(output, `boundary.${field}`);
+    if (actual !== false) errors.push(`${contract.id} output boundary.${field} must be false`);
+  }
+  return errors;
+}
+
 function validateContractOutput(contract, output) {
   const errors = [];
   if (!contract || typeof contract !== 'object') return ['contract must be an object'];
-  if (!output || typeof output !== 'object') return [`${contract.id || 'unknown contract'} output must be an object`];
+  if (!output || typeof output !== 'object' || Array.isArray(output)) return [`${contract.id || 'unknown contract'} output must be an object`];
   if (contract.schema && output.schema !== contract.schema) errors.push(`${contract.id} output schema must be ${contract.schema}`);
   if (Array.isArray(contract.allowed_status) && !contract.allowed_status.includes(output.status)) errors.push(`${contract.id} output status ${output.status || 'missing'} is not allowed`);
   for (const requiredPath of contract.required_paths || []) {
     if (pathValue(output, requiredPath) === undefined) errors.push(`${contract.id} output missing ${requiredPath}`);
   }
+  errors.push(...validateNoMutationBoundary(contract, output));
+  if (contract.id === PUBLIC_CONTRACT_IDS.targetHandoffReadinessReason) {
+    errors.push(...readinessReasonErrors(output));
+  }
+  const handoffReasons = pathValue(output, 'handoff.readiness.reasons');
+  if (contract.id === PUBLIC_CONTRACT_IDS.targetHandoffPreview && Array.isArray(handoffReasons)) {
+    handoffReasons.forEach((reason, index) => errors.push(...readinessReasonErrors(reason, `handoff.readiness.reasons[${index}]`)));
+  }
   if (contract.id === PUBLIC_CONTRACT_IDS.targetHandoffReadinessCheck && output.readiness_check) {
     if (output.readiness_check.stable_reason_code_surface !== true) errors.push('readiness check must declare stable_reason_code_surface true');
     if (output.readiness_check.fail_closed_on_blocker !== true) errors.push('readiness check must fail closed on blockers');
     const reasons = Array.isArray(output.readiness_check.reasons) ? output.readiness_check.reasons : [];
-    for (const reason of reasons) {
-      if (!PUBLIC_READINESS_REASON_CODES.includes(reason.code)) errors.push(`readiness reason code not in public contract: ${reason.code}`);
-      if (!PUBLIC_READINESS_SEVERITIES.includes(reason.severity)) errors.push(`readiness reason severity not in public contract: ${reason.severity}`);
+    reasons.forEach((reason, index) => errors.push(...readinessReasonErrors(reason, `readiness_check.reasons[${index}]`)));
+    const reasonCodes = Array.isArray(output.readiness_check.reason_codes) ? output.readiness_check.reason_codes : [];
+    for (const code of reasonCodes) {
+      if (!PUBLIC_READINESS_REASON_CODES.includes(code)) errors.push(`readiness_check.reason_codes entry not in public contract: ${code}`);
     }
   }
   if (contract.id === PUBLIC_CONTRACT_IDS.governanceBudgetCheck) {
@@ -345,6 +383,58 @@ function validatePublicContractOutputs(catalog, outputsByContractId = {}) {
   });
 }
 
+function publicContractById(catalog, contractId) {
+  const contracts = catalog && Array.isArray(catalog.contracts) ? catalog.contracts : [];
+  return contracts.find((contract) => contract.id === contractId) || null;
+}
+
+function validatePublicContractOutputFile(catalog, options = {}) {
+  const contractId = options.contractId;
+  const output = options.output;
+  const sourcePath = options.sourcePath || null;
+  const errors = [];
+  const contract = publicContractById(catalog, contractId);
+  if (!contractId) errors.push('contract id is required');
+  if (!contract) errors.push(`unknown public contract id: ${contractId}`);
+  let validationErrors = [];
+  if (contract) validationErrors = validateContractOutput(contract, output);
+  errors.push(...validationErrors);
+  return freezeDeep({
+    schema: PUBLIC_CONTRACT_OUTPUT_FILE_VALIDATION_SCHEMA,
+    status: errors.length === 0 ? 'ok' : 'error',
+    package_name: PACKAGE_NAME,
+    version: catalog && catalog.version ? catalog.version : '0.0.0',
+    release_line: catalog && catalog.release_line ? catalog.release_line : 'unknown',
+    command: 'agent-onboard contracts --validate-output --contract <id> --file <path> --json',
+    contract_id: contractId || null,
+    contract_schema: contract ? contract.schema : null,
+    contract_command: contract ? contract.command : null,
+    source: {
+      kind: 'json_file',
+      path: sourcePath,
+      file_contents_reemitted: false
+    },
+    validated: {
+      contract_id_known: Boolean(contract),
+      schema_matches: Boolean(contract) && output && output.schema === contract.schema,
+      required_paths_present: validationErrors.filter((error) => error.includes(' missing ')).length === 0,
+      allowed_status: validationErrors.filter((error) => error.includes('status') && error.includes('not allowed')).length === 0,
+      no_mutation_boundary: validationErrors.filter((error) => error.includes('boundary.')).length === 0,
+      readiness_reason_surface: validationErrors.filter((error) => error.includes('readiness')).length === 0
+    },
+    errors,
+    boundary: {
+      writes_files: false,
+      writes_target_repository_state: false,
+      installs_dependencies: false,
+      runs_managed_project_commands: false,
+      git_mutation: false,
+      network: false,
+      publishes_package: false
+    }
+  });
+}
+
 function publicContractText(catalog) {
   const lines = [
     `agent-onboard public contracts ${catalog.version}`,
@@ -362,7 +452,7 @@ function publicContractText(catalog) {
   lines.push('', 'Stable readiness reason codes:');
   for (const code of catalog.stable_reason_codes) lines.push(`- ${code}`);
   lines.push('', 'Boundary: no files, no target mutation, no dependency install, no managed-project commands, no Git, no network, no publish.');
-  lines.push('Use `agent-onboard contracts --check --json` to validate the compact public contract spine.');
+  lines.push('Use `agent-onboard contracts --check --json` to validate the compact public contract spine. Use `agent-onboard contracts --validate-output --contract <id> --file <path> --json` to validate a captured JSON output against one public contract.');
   return `${lines.join('\n')}\n`;
 }
 
@@ -387,19 +477,41 @@ function publicContractCheckText(result) {
   return `${lines.join('\n')}\n`;
 }
 
+function publicContractOutputValidationText(result) {
+  const lines = [
+    `agent-onboard public contract output validation ${result.version}`,
+    `Status: ${result.status}`,
+    `Contract: ${result.contract_id || 'unknown'}`,
+    `Source: ${result.source && result.source.path ? result.source.path : 'unknown'}`,
+    '',
+    'Validated:'
+  ];
+  for (const [key, value] of Object.entries(result.validated || {})) lines.push(`- ${key}: ${value}`);
+  if (Array.isArray(result.errors) && result.errors.length > 0) {
+    lines.push('', 'Errors:');
+    for (const error of result.errors) lines.push(`- ${error}`);
+  }
+  lines.push('', 'Boundary: no files, no target mutation, no dependency install, no managed-project commands, no Git, no network, no publish.');
+  return `${lines.join('\n')}\n`;
+}
+
 module.exports = Object.freeze({
   PACKAGE_NAME,
   PUBLIC_CONTRACT_CHECK_SCHEMA,
+  PUBLIC_CONTRACT_OUTPUT_FILE_VALIDATION_SCHEMA,
   PUBLIC_CONTRACT_IDS,
   PUBLIC_CONTRACT_SPINE_SCHEMA,
   PUBLIC_NO_MUTATION_BOUNDARY_FIELDS,
   PUBLIC_READINESS_REASON_CODES,
   PUBLIC_READINESS_SEVERITIES,
   publicContractCatalog,
+  publicContractById,
   publicContractCheckText,
   publicContractText,
+  publicContractOutputValidationText,
   publicOutputContracts,
   validateContractOutput,
   validatePublicContractCatalog,
+  validatePublicContractOutputFile,
   validatePublicContractOutputs
 });

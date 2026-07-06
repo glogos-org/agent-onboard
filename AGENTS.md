@@ -67,6 +67,7 @@ node cli/agent-onboard.js target handoff --preview
 node cli/agent-onboard.js target handoff --readiness-check --text
 node cli/agent-onboard.js contracts --text
 node cli/agent-onboard.js contracts --check --json
+node cli/agent-onboard.js contracts --validate-output --contract target_handoff_readiness_check_output --file ./handoff-readiness.json --json
 node cli/agent-onboard.js issue --classify-dry-run --text
 node cli/agent-onboard.js contributor --admission-dry-run --text
 node cli/agent-onboard.js check --plan --text

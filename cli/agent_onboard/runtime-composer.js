@@ -181,6 +181,7 @@ function commandSurfaceCatalog() {
       'agent-onboard contributor --admission-dry-run --text',
       'agent-onboard contracts --text',
       'agent-onboard contracts --check --json',
+      'agent-onboard contracts --validate-output --contract <id> --file <path> --json',
       'agent-onboard check --plan --text',
       'agent-onboard check --fast --text',
       'agent-onboard ci --github-action',
@@ -529,6 +530,7 @@ function discoveryStableCommands() {
     'agent-onboard contributor --admission-dry-run --text',
     'agent-onboard contracts --text',
     'agent-onboard contracts --check --json',
+    'agent-onboard contracts --validate-output --contract <id> --file <path> --json',
     'agent-onboard check --plan --text',
     'agent-onboard check --fast --text',
     'agent-onboard ci --github-action',
@@ -1130,13 +1132,57 @@ function publicContractsCheck() {
   }));
 }
 
+function readContractOutputFile(filePath) {
+  const resolved = path.resolve(process.cwd(), filePath);
+  const stat = fs.statSync(resolved);
+  if (!stat.isFile()) throw new Error('contracts --validate-output --file must point to a JSON file');
+  const maxBytes = 1024 * 1024;
+  if (stat.size > maxBytes) throw new Error(`contracts --validate-output --file exceeds ${maxBytes} bytes`);
+  return { resolved, output: readJson(resolved) };
+}
+
+function publicContractsOutputFileValidation(options = {}) {
+  const catalog = publicContractsCatalog();
+  const { resolved, output } = readContractOutputFile(options.file);
+  return publicContracts.validatePublicContractOutputFile(catalog, {
+    contractId: options.contractId,
+    sourcePath: resolved,
+    output
+  });
+}
+
 function runContracts(args = []) {
-  const allowed = new Set(['--json', '--text', '--check']);
-  for (const arg of args) {
-    if (!allowed.has(arg)) return json({ schema: 'agent-onboard-public-contracts-error-001', status: 'error', reason: 'contracts supports only --json, --text, or --check', writes_files: false }, 1);
+  const valueFlags = new Set(['--contract', '--file']);
+  const allowed = new Set(['--json', '--text', '--check', '--validate-output', '--contract', '--file']);
+  for (let index = 0; index < args.length; index += 1) {
+    const arg = args[index];
+    if (valueFlags.has(arg)) {
+      if (!args[index + 1] || args[index + 1].startsWith('-')) return json({ schema: 'agent-onboard-public-contracts-error-001', status: 'error', reason: `${arg} requires a value`, writes_files: false }, 1);
+      index += 1;
+      continue;
+    }
+    if (!allowed.has(arg)) return json({ schema: 'agent-onboard-public-contracts-error-001', status: 'error', reason: 'contracts supports only --json, --text, --check, or --validate-output --contract <id> --file <path>', writes_files: false }, 1);
   }
   const checkMode = args.includes('--check');
+  const validateOutputMode = args.includes('--validate-output');
   const text = args.includes('--text');
+  if (args.includes('--json') && text) return json({ schema: 'agent-onboard-public-contracts-error-001', status: 'error', reason: 'contracts accepts only one output mode: --json or --text', writes_files: false }, 1);
+  if (checkMode && validateOutputMode) return json({ schema: 'agent-onboard-public-contracts-error-001', status: 'error', reason: 'contracts accepts only one primary mode: --check or --validate-output', writes_files: false }, 1);
+  if (!validateOutputMode && (args.includes('--contract') || args.includes('--file'))) return json({ schema: 'agent-onboard-public-contracts-error-001', status: 'error', reason: '--contract and --file are only valid with --validate-output', writes_files: false }, 1);
+  if (validateOutputMode) {
+    const contractIndex = args.indexOf('--contract');
+    const fileIndex = args.indexOf('--file');
+    if (contractIndex < 0 || fileIndex < 0) return json({ schema: 'agent-onboard-public-contracts-error-001', status: 'error', reason: 'contracts --validate-output requires --contract <id> and --file <path>', writes_files: false }, 1);
+    const result = publicContractsOutputFileValidation({
+      contractId: args[contractIndex + 1],
+      file: args[fileIndex + 1]
+    });
+    if (text) {
+      process.stdout.write(publicContracts.publicContractOutputValidationText(result));
+      return result.status === 'ok' ? 0 : 1;
+    }
+    return json(result, result.status === 'ok' ? 0 : 1);
+  }
   if (checkMode) {
     const result = publicContractsCheck();
     if (text) {
@@ -1157,7 +1203,9 @@ const publicContractsService = Object.freeze({
   catalog: publicContractsCatalog,
   check: publicContractsCheck,
   text: publicContracts.publicContractText,
-  checkText: publicContracts.publicContractCheckText
+  checkText: publicContracts.publicContractCheckText,
+  validateOutputFile: publicContractsOutputFileValidation,
+  outputValidationText: publicContracts.publicContractOutputValidationText
 });
 
 const CHECK_FAST_REGISTRY = Object.freeze([
@@ -1526,6 +1574,7 @@ const MCP_TOOL_CANDIDATES = Object.freeze([
   Object.freeze({ name: 'agent_onboard_classify_issue', command: 'agent-onboard issue --classify-dry-run --json', output_schema: 'agent-onboard-public-issue-intake-classification-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_preview_contributor', command: 'agent-onboard contributor --admission-dry-run --json', output_schema: 'agent-onboard-public-contributor-admission-dry-run-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_check_public_contracts', command: 'agent-onboard contracts --check --json', output_schema: 'agent-onboard-public-contract-check-001', mutates: false }),
+  Object.freeze({ name: 'agent_onboard_validate_public_contract_output_file', command: 'agent-onboard contracts --validate-output --contract <id> --file <path> --json', output_schema: 'agent-onboard-public-contract-output-file-validation-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_preview_target_inventory', command: 'agent-onboard target inventory --json', output_schema: 'agent-onboard-public-target-runtime-inventory-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_preview_target_memory', command: 'agent-onboard target memory --json', output_schema: 'agent-onboard-public-target-memory-descriptor-001', mutates: false }),
   Object.freeze({ name: 'agent_onboard_preview_target_work_items', command: 'agent-onboard target work-items --json', output_schema: 'agent-onboard-public-target-work-items-preview-001', mutates: false }),

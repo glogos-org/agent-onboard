@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_contract_spine_readiness_output_contract_gate';
+const EXPECTED_RELEASE_LINE = 'public_contract_output_validator_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -542,6 +542,32 @@ fullSourceTest('public contract spine is directly usable and validates runtime o
   assert.strictEqual(checkTextResult.status, 0, checkTextResult.stderr || checkTextResult.stdout);
   assert.ok(checkTextResult.stdout.includes('agent-onboard public contract check'));
   assert.ok(checkTextResult.stdout.includes('Status: ok'));
+
+  const samplePath = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'aob-contract-output-')), 'readiness.json');
+  const readinessJson = run(['target', 'handoff', '--readiness-check', '--json']);
+  assert.strictEqual(readinessJson.status, 0, readinessJson.stderr || readinessJson.stdout);
+  fs.writeFileSync(samplePath, readinessJson.stdout);
+
+  const validationResult = run(['contracts', '--validate-output', '--contract', 'target_handoff_readiness_check_output', '--file', samplePath, '--json']);
+  const validation = readJsonOutput(validationResult);
+  assert.strictEqual(validation.schema, 'agent-onboard-public-contract-output-file-validation-001');
+  assert.strictEqual(validation.status, 'ok');
+  assert.strictEqual(validation.contract_id, 'target_handoff_readiness_check_output');
+  assert.strictEqual(validation.validated.no_mutation_boundary, true);
+  assert.strictEqual(validation.source.file_contents_reemitted, false);
+
+  const validationTextResult = run(['contracts', '--validate-output', '--contract', 'target_handoff_readiness_check_output', '--file', samplePath, '--text']);
+  assert.strictEqual(validationTextResult.status, 0, validationTextResult.stderr || validationTextResult.stdout);
+  assert.ok(validationTextResult.stdout.includes('agent-onboard public contract output validation'));
+  assert.ok(validationTextResult.stdout.includes('Status: ok'));
+
+  const badPath = path.join(path.dirname(samplePath), 'bad.json');
+  fs.writeFileSync(badPath, JSON.stringify({ schema: 'wrong', status: 'ok' }, null, 2));
+  const badValidationResult = run(['contracts', '--validate-output', '--contract', 'target_handoff_readiness_check_output', '--file', badPath, '--json']);
+  const badValidation = readJsonFailure(badValidationResult);
+  assert.strictEqual(badValidationResult.status, 1);
+  assert.strictEqual(badValidation.status, 'error');
+  assert.ok(badValidation.errors.some((error) => error.includes('output schema must be')));
 
   const bad = run(['contracts', '--write']);
   const badOutput = readJsonFailure(bad);

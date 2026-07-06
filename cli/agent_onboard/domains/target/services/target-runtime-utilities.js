@@ -21,8 +21,9 @@ function createTargetRuntimeUtilities(deps) {
   })) {
     if (value === undefined || value === null) throw new Error(`createTargetRuntimeUtilities missing dependency: ${name}`);
   }
-function json(value) {
+function json(value, exitCode) {
   process.stdout.write(`${JSON.stringify(value, null, 2)}\n`);
+  return Number.isInteger(exitCode) ? exitCode : 0;
 }
 
 function readJson(file) {
