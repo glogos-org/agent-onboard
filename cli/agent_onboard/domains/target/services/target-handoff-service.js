@@ -227,24 +227,67 @@ function governanceBudgetSummary(budgetResult) {
   });
 }
 
+function readinessReason(code, severity, summary, nextCommand) {
+  return Object.freeze({
+    code,
+    severity,
+    summary,
+    next_command: nextCommand || null
+  });
+}
+
 function readinessFromSummaries(surfaceSummary, inventory, workItems, governanceDrift, governanceBudget) {
   const blockers = [];
   const warnings = [];
-  if (!surfaceSummary.present_paths.includes('AGENTS.md') && !surfaceSummary.present_paths.includes('llms.txt')) warnings.push('no_target_agent_entrypoint_detected');
-  if (!surfaceSummary.present_paths.includes('.agent-onboard/work-items.json')) warnings.push('no_target_work_items_file_detected');
-  if (inventory.status !== 'ok') blockers.push('target_inventory_unavailable');
-  if (workItems.status !== 'ok') blockers.push('target_work_items_preview_unavailable');
-  if (workItems.open_work_item) warnings.push('open_target_work_item_should_be_continued_before_new_admission');
-  if (governanceDrift && governanceDrift.overall_state === 'missing') warnings.push('governance_index_missing_stale_read_risk');
-  if (governanceDrift && governanceDrift.overall_state === 'stale') warnings.push('governance_index_stale_read_risk');
-  if (governanceDrift && governanceDrift.overall_state === 'blocked') blockers.push('governance_index_drift_check_blocked');
-  if (governanceBudget && governanceBudget.overall_state === 'over_budget') blockers.push('governance_budget_over_contract');
-  if (governanceBudget && governanceBudget.status === 'blocked' && governanceBudget.overall_state !== 'over_budget') blockers.push('governance_budget_check_blocked');
-  if (governanceBudget && governanceBudget.status === 'unavailable') warnings.push('governance_budget_check_unavailable');
+  const reasons = [];
+  const addBlocker = (code, summary, nextCommand) => {
+    blockers.push(code);
+    reasons.push(readinessReason(code, 'blocker', summary, nextCommand));
+  };
+  const addWarning = (code, summary, nextCommand) => {
+    warnings.push(code);
+    reasons.push(readinessReason(code, 'warning', summary, nextCommand));
+  };
+
+  if (!surfaceSummary.present_paths.includes('AGENTS.md') && !surfaceSummary.present_paths.includes('llms.txt')) {
+    addWarning('no_target_agent_entrypoint_detected', 'No AGENTS.md or llms.txt target entrypoint was detected for the next agent first-read.', 'agent-onboard target memory --text');
+  }
+  if (!surfaceSummary.present_paths.includes('.agent-onboard/work-items.json')) {
+    addWarning('no_target_work_items_file_detected', 'No target work-items ledger was detected; new work should not be inferred from handoff alone.', 'agent-onboard target work-items --text');
+  }
+  if (inventory.status !== 'ok') {
+    addBlocker('target_inventory_unavailable', 'Target inventory could not be produced, so handoff cannot confirm the repository surface.', 'agent-onboard target inventory --text');
+  }
+  if (workItems.status !== 'ok') {
+    addBlocker('target_work_items_preview_unavailable', 'Target work-items preview could not be produced, so current/queued work cannot be confirmed.', 'agent-onboard target work-items --text');
+  }
+  if (workItems.open_work_item) {
+    addWarning('open_target_work_item_should_be_continued_before_new_admission', 'An open target work item is present and should be continued or closed before admitting new work.', 'agent-onboard target work-items --text');
+  }
+  if (governanceDrift && governanceDrift.overall_state === 'missing') {
+    addWarning('governance_index_missing_stale_read_risk', 'Compact governance first-read indexes are missing; raw authority files remain authoritative.', governanceDrift.materialize_command || 'agent-onboard target governance --materialize --write --force');
+  }
+  if (governanceDrift && governanceDrift.overall_state === 'stale') {
+    addWarning('governance_index_stale_read_risk', 'Compact governance first-read indexes are stale relative to raw authority files.', governanceDrift.materialize_command || 'agent-onboard target governance --materialize --write --force');
+  }
+  if (governanceDrift && governanceDrift.overall_state === 'blocked') {
+    addBlocker('governance_index_drift_check_blocked', 'Governance index drift check was blocked; next-agent readiness cannot rely on compact indexes.', 'agent-onboard target governance --check --text');
+  }
+  if (governanceBudget && governanceBudget.overall_state === 'over_budget') {
+    addBlocker('governance_budget_over_contract', 'Governance first-read indexes exceed the public byte budget contract.', 'agent-onboard target governance --budget-check --text');
+  }
+  if (governanceBudget && governanceBudget.status === 'blocked' && governanceBudget.overall_state !== 'over_budget') {
+    addBlocker('governance_budget_check_blocked', 'Governance budget check was blocked before safe compact payload validation.', 'agent-onboard target governance --budget-check --text');
+  }
+  if (governanceBudget && governanceBudget.status === 'unavailable') {
+    addWarning('governance_budget_check_unavailable', 'Governance budget check is unavailable; use the budget check before treating handoff as clean.', 'agent-onboard target governance --budget-check --text');
+  }
   return {
     status: blockers.length > 0 ? 'blocked' : (warnings.length > 0 ? 'usable_with_warnings' : 'ready'),
     blockers,
     warnings,
+    reason_codes: reasons.map((entry) => entry.code),
+    reasons,
     next_agent_ready: blockers.length === 0,
     authority_note: 'Use target-owned files and explicit owner instructions as authority; this preview is non-authoritative evidence only.'
   };
@@ -359,7 +402,8 @@ function targetHandoffPreview(targetRoot = process.cwd(), deps = {}) {
       file_contents_inlined: false,
       target_ai_memory_content_inlined: false,
       source_evidence_inlined: false,
-      provider_private_state_inlined: false
+      provider_private_state_inlined: false,
+      readiness_reasons_inlined: true
     },
     writes_performed: false,
     boundary: noMutationBoundary(),
@@ -411,6 +455,7 @@ function targetHandoffPreviewText(result) {
     `Target: ${result.target.name} (${result.target.ecosystem})`,
     `Root: ${result.target.root}`,
     `Readiness: ${result.handoff.readiness.status}`,
+    `Readiness reasons: ${result.handoff.readiness.reasons.length > 0 ? result.handoff.readiness.reasons.map((entry) => `${entry.severity}:${entry.code}`).join(', ') : 'none'}`,
     `Files seen: ${inventory.files_seen}`,
     `Source roots: ${roots}`,
     `Scripts: ${inventory.script_names.length > 0 ? inventory.script_names.join(', ') : 'none'}`,

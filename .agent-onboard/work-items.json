@@ -5750,6 +5750,64 @@
         "checks_not_run": [],
         "known_non_pass": []
       }
+    },
+    {
+      "id": "P1S3M5W28",
+      "milestone_id": "P1S3M5",
+      "title": "Public target handoff readiness reasons product gate",
+      "status": "closed",
+      "closure": {
+        "actor": "gpt-5.5-thinking",
+        "closed_at": "2026-07-05T13:18:00Z",
+        "summary": "Closed by adding structured readiness reason codes to target handoff. The handoff preview now exposes readiness.reason_codes and readiness.reasons[] with severity, summary, and suggested next command for budget, drift, missing-entrypoint, missing-ledger, and open-work-item states while preserving the read-only/no-inline handoff boundary.",
+        "changed_files": [
+          "package.json",
+          "README.md",
+          "AGENTS.md",
+          "llms.txt",
+          "cli/agent_onboard/runtime-contracts.js",
+          "cli/agent_onboard/domains/target/services/target-handoff-service.js",
+          "cli/agent_onboard/domains/target/services/target-governance-service.js",
+          "test/agent-onboard.test.js",
+          ".agent-onboard/work-items.json",
+          ".agent-onboard/work-items.index.json",
+          ".agent-onboard/claims.index.json",
+          ".agent-onboard/target-handoff-readiness-reasons-product-gate.json",
+          "authority-map.json",
+          "manifest.json"
+        ],
+        "checks_run": [
+          "node -c cli/agent_onboard/domains/target/services/target-handoff-service.js",
+          "node -c cli/agent_onboard/domains/target/services/target-governance-service.js",
+          "node -c cli/agent_onboard/runtime-contracts.js",
+          "node -c cli/agent_onboard/runtime-composer.js",
+          "node -c test/agent-onboard.test.js",
+          "node cli/agent-onboard.js target handoff --json",
+          "node cli/agent-onboard.js target handoff --text",
+          "node cli/agent-onboard.js check --fast --json",
+          "npm test",
+          "node test/agent-onboard.test.js --shard=0/139",
+          "node test/agent-onboard.test.js --shard=11/139",
+          "node test/agent-onboard.test.js --shard=111/139",
+          "node cli/agent-onboard.js target governance --materialize --write --force --target .",
+          "node cli/agent-onboard.js target metadata --write --force --target .",
+          "node cli/agent-onboard.js target metadata --check --target .",
+          "node cli/agent-onboard.js target governance --check --json",
+          "node cli/agent-onboard.js target governance --budget-check --json",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "node scripts/check-public-artifact-boundary.js",
+          "node cli/agent-onboard.js release --source-manifest-check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node cli/agent-onboard.js release --check",
+          "npm pack --dry-run --json"
+        ],
+        "checks_not_run": [
+          "npm run test:full completed attempt not available within local tool timeout window"
+        ],
+        "known_non_pass": [
+          "Full runner attempt started and passed early full-source shards but exceeded the local tool timeout before all shards completed; quick suite plus targeted runtime, handoff, and README/doc shards passed."
+        ]
+      }
     }
   ]
 }
