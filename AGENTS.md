@@ -55,6 +55,7 @@ node cli/agent-onboard.js target work-items --text
 node cli/agent-onboard.js target work-items --preview
 node cli/agent-onboard.js target governance --text
 node cli/agent-onboard.js target governance --materialize-dry-run --text
+node cli/agent-onboard.js target governance --check --text
 node cli/agent-onboard.js target governance --materialize --write --force --text
 node cli/agent-onboard.js target governance --preview
 node cli/agent-onboard.js target governance --materialize-dry-run
@@ -441,6 +442,11 @@ Use `node cli/agent-onboard.js discovery --llms`, `node cli/agent-onboard.js dis
 
 
 
+
+## Public target governance stale-read fast-check wiring gate
+
+`node cli/agent-onboard.js target handoff --json|--text` must surface `governance_index_drift_summary` so a new agent can see whether stored governance indexes are `fresh`, `stale`, or `missing` before relying on compact first-read cache. `node cli/agent-onboard.js check --fast --json|--text` must surface governance stale-read advisories without failing unrelated checks. This wiring is read-only: it must not refresh indexes, write files, mutate raw work-items or claims ledgers, admit or close work items, create claims, install dependencies, run managed project commands, publish, mutate Git, or perform network calls.
+
 ## Public target governance index drift check gate
 
 Use `node cli/agent-onboard.js target governance --check`, `node cli/agent-onboard.js target governance --check --json`, or `node cli/agent-onboard.js target governance --check --text` before trusting stored governance indexes in a target repository. The check compares `.agent-onboard/work-items.index.json` and `.agent-onboard/claims.index.json` with freshly derived payloads and reports `fresh`, `stale`, or `missing` without writing files. It must not refresh indexes, mutate raw work-items or claims ledgers, admit or close work items, create claims, install dependencies, run managed project commands, publish, mutate Git, or perform network calls.
@@ -464,7 +470,7 @@ Use `node cli/agent-onboard.js target governance --preview`, `node cli/agent-onb
 
 ## Public target handoff preview product surface
 
-Use `node cli/agent-onboard.js target handoff --preview`, `node cli/agent-onboard.js target handoff --json`, or `node cli/agent-onboard.js target handoff --text` when a new human or agent needs a compact read-only next-session handoff. Target handoff composes bounded target inventory, known memory/handoff surface presence, target governance summary, and target work-item summary. It must not import file contents, admit work items, close work items, synthesize a next id, write ledgers, install dependencies, run managed project commands, publish, mutate Git, or perform network calls. Handoff output is evidence and orientation only; it cannot grant authority.
+Use `node cli/agent-onboard.js target handoff --preview`, `node cli/agent-onboard.js target handoff --json`, or `node cli/agent-onboard.js target handoff --text` when a new human or agent needs a compact read-only next-session handoff. Target handoff composes bounded target inventory, known memory/handoff surface presence, target governance summary, governance index drift state, and target work-item summary. It must not import file contents, admit work items, close work items, synthesize a next id, write ledgers, install dependencies, run managed project commands, publish, mutate Git, or perform network calls. Handoff output is evidence and orientation only; it cannot grant authority.
 
 ## Public target work-items preview product surface
 

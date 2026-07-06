@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_target_governance_index_drift_check_gate';
+const EXPECTED_RELEASE_LINE = 'public_target_governance_stale_read_fast_check_wiring_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -445,6 +445,8 @@ fullSourceTest('public check plan and fast runner are directly usable', () => {
   assert.strictEqual(fast.command, 'agent-onboard check --fast');
   assert.strictEqual(fast.failed_count, 0);
   assert.strictEqual(fast.passed_count, fast.check_count);
+  assert.ok(Array.isArray(fast.advisories));
+  assert.ok(fast.advisories.some((item) => item.id === 'target-governance-index-stale-read'));
   assert.ok(fast.checks.some((item) => item.id === 'target-memory-preview'));
   assert.ok(fast.checks.some((item) => item.id === 'target-governance-materialization-dry-run'));
   assert.ok(fast.checks.some((item) => item.id === 'target-governance-index-drift-check'));
@@ -461,6 +463,26 @@ fullSourceTest('public check plan and fast runner are directly usable', () => {
   assert.strictEqual(fastText.status, 0, fastText.stderr || fastText.stdout);
   assert.ok(fastText.stdout.includes('agent-onboard check fast'));
   assert.ok(fastText.stdout.includes('Result: pass'));
+  assert.ok(fastText.stdout.includes('Advisories:'));
+
+  const missingIndexTarget = tempRepo();
+  fs.mkdirSync(path.join(missingIndexTarget, '.agent-onboard'), { recursive: true });
+  const missingIndexMilestoneId = ['P9', 'S1', 'M1'].join('');
+  fs.writeFileSync(path.join(missingIndexTarget, '.agent-onboard', 'work-items.json'), JSON.stringify({
+    schema: 'target-work-items-fixture',
+    work_items: [
+      { id: [missingIndexMilestoneId, 'W1'].join(''), title: 'Missing index fixture', status: 'open', milestone_id: missingIndexMilestoneId }
+    ],
+    admission_queue: []
+  }, null, 2) + '\n');
+  const missingFastResult = run(['check', '--fast', '--json'], { cwd: missingIndexTarget });
+  const missingFast = readJsonOutput(missingFastResult);
+  assert.strictEqual(missingFast.result, 'pass');
+  assert.strictEqual(missingFast.advisory_warning_count, 1);
+  assert.ok(missingFast.advisories.some((item) => item.id === 'target-governance-index-stale-read' && item.state === 'missing' && item.refresh_required === true));
+  const missingFastText = run(['check', '--fast', '--text'], { cwd: missingIndexTarget });
+  assert.strictEqual(missingFastText.status, 0, missingFastText.stderr || missingFastText.stdout);
+  assert.ok(missingFastText.stdout.includes('target-governance-index-stale-read (missing)'));
 
   const bad = run(['check', '--plan', '--fast']);
   const badOutput = readJsonFailure(bad);
@@ -869,7 +891,10 @@ fullSourceTest('public target handoff preview is directly usable', () => {
   assert.strictEqual(output.handoff.work_items_summary.open_work_item.id, openId);
   assert.strictEqual(output.handoff.work_items_summary.next_admission_candidate.id, queuedId);
   assert.strictEqual(output.handoff.readiness.next_agent_ready, true);
+  assert.strictEqual(output.handoff.governance_index_drift_summary.overall_state, 'missing');
+  assert.strictEqual(output.handoff.governance_index_drift_summary.refresh_required, true);
   assert.ok(output.handoff.readiness.warnings.includes('open_target_work_item_should_be_continued_before_new_admission'));
+  assert.ok(output.handoff.readiness.warnings.includes('governance_index_missing_stale_read_risk'));
   assert.strictEqual(output.output_policy.file_contents_inlined, false);
   assert.strictEqual(output.boundary.writes_files, false);
   assert.strictEqual(output.boundary.admits_or_closes_work_items, false);
@@ -882,6 +907,7 @@ fullSourceTest('public target handoff preview is directly usable', () => {
   assert.ok(textResult.stdout.includes('agent-onboard target handoff'));
   assert.ok(textResult.stdout.includes('Readiness: usable_with_warnings'));
   assert.ok(textResult.stdout.includes(`Next queued candidate: ${queuedId}`));
+  assert.ok(textResult.stdout.includes('Governance index drift: missing; refresh required true'));
   assert.ok(textResult.stdout.includes('no file content import'));
   assert.strictEqual(textResult.stdout.includes('target instructions must not be inlined'), false);
 
@@ -3763,7 +3789,9 @@ fullSourceTest('full source block line 2233', () => {
   assert.ok(readme.includes('Use `--text` on target-facing inspection commands'));
   assert.ok(readme.includes('npx agent-onboard check --plan --text'));
   assert.ok(readme.includes('npx agent-onboard check --fast --text'));
-  assert.ok(readme.includes('The current release adds the public target governance index drift check gate'));
+  assert.ok(readme.includes('The current release wires governance index drift into first-read surfaces'));
+  assert.ok(readme.includes('`check --fast --json|--text` emits governance stale-read advisories when stored indexes are `stale`, `missing`, or blocked'));
+  assert.ok(readme.includes('The previous release added the public target governance index drift check gate'));
   assert.ok(readme.includes('`target governance --check` compares stored governance indexes with freshly derived payloads and reports `fresh`, `stale`, or `missing` without writing files'));
   assert.ok(readme.includes('The previous release added the public target governance index refresh integration gate'));
   assert.ok(readme.includes('`work-items --init|--append|--claim|--close --write` now refreshes allowlisted governance indexes after a successful canonical `.agent-onboard/work-items.json` mutation'));

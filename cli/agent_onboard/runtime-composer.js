@@ -1180,11 +1180,33 @@ function checkPlanText(plan = checkPlanCatalog()) {
   return lines.join('\n') + '\n';
 }
 
+
+function checkFastAdvisories(id, output) {
+  if (id !== 'target-governance-index-drift-check' || !output || !output.drift_check) return [];
+  const drift = output.drift_check;
+  const state = drift.overall_state || 'unknown';
+  const severity = state === 'fresh' ? 'info' : (state === 'blocked' ? 'error' : 'warning');
+  const advisory = {
+    id: 'target-governance-index-stale-read',
+    source_check_id: id,
+    severity,
+    state,
+    refresh_required: drift.refresh_required === true,
+    message: state === 'fresh'
+      ? 'stored governance indexes are fresh against the derived payloads'
+      : `stored governance indexes are ${state}; do not treat them as fresh first-read state before refreshing or rechecking`,
+    materialize_command: drift.materialize_command || 'agent-onboard target governance --materialize --write --force',
+    no_write_check: true
+  };
+  return [Object.freeze(advisory)];
+}
+
 function timedCheck(id, command, fn) {
   const started = Date.now();
   try {
     const output = fn();
     const ok = output && (output.status === 'ok' || output.status === 'pass');
+    const advisories = checkFastAdvisories(id, output);
     return {
       id,
       command,
@@ -1192,7 +1214,8 @@ function timedCheck(id, command, fn) {
       elapsed_ms: Date.now() - started,
       output_schema: output && output.schema ? output.schema : null,
       output_status: output && output.status ? output.status : null,
-      errors: output && Array.isArray(output.errors) ? output.errors : []
+      errors: output && Array.isArray(output.errors) ? output.errors : [],
+      advisories
     };
   } catch (error) {
     return {
@@ -1202,7 +1225,8 @@ function timedCheck(id, command, fn) {
       elapsed_ms: Date.now() - started,
       output_schema: null,
       output_status: null,
-      errors: [error && error.message ? error.message : String(error)]
+      errors: [error && error.message ? error.message : String(error)],
+      advisories: []
     };
   }
 }
@@ -1233,6 +1257,7 @@ function runCheckFastPlan(root = packageRoot()) {
   const started = Date.now();
   const checks = CHECK_FAST_REGISTRY.map((entry) => timedCheck(entry.id, entry.command, runners[entry.id]));
   const errors = checks.flatMap((item) => item.status === 'ok' ? [] : item.errors.map((error) => `${item.id}: ${error}`));
+  const advisories = checks.flatMap((item) => Array.isArray(item.advisories) ? item.advisories : []);
   return {
     schema: 'agent-onboard-public-check-fast-result-001',
     status: errors.length === 0 ? 'ok' : 'error',
@@ -1250,6 +1275,10 @@ function runCheckFastPlan(root = packageRoot()) {
     passed_count: checks.filter((item) => item.status === 'ok').length,
     failed_count: checks.filter((item) => item.status !== 'ok').length,
     skipped_slow_check_count: CHECK_FAST_OMITTED_SLOW.length,
+    advisory_count: advisories.length,
+    advisory_warning_count: advisories.filter((item) => item.severity === 'warning').length,
+    advisory_error_count: advisories.filter((item) => item.severity === 'error').length,
+    advisories,
     deterministic_order: true,
     recursive_make_spawn: false,
     checks,
@@ -1265,10 +1294,15 @@ function checkFastText(result = runCheckFastPlan()) {
     `Result: ${result.result}`,
     `Checks: ${result.passed_count}/${result.check_count} passed`,
     `Skipped slow/external checks: ${result.skipped_slow_check_count}`,
+    `Advisories: ${result.advisory_count || 0}`,
     '',
     'Executed checks:'
   ];
   for (const item of result.checks) lines.push(`- ${item.status}: ${item.id} (${item.elapsed_ms}ms)`);
+  if (Array.isArray(result.advisories) && result.advisories.length > 0) {
+    lines.push('', 'Advisories:');
+    for (const advisory of result.advisories) lines.push(`- ${advisory.severity}: ${advisory.id} (${advisory.state}) - ${advisory.message}`);
+  }
   if (result.errors.length > 0) {
     lines.push('', 'Errors:');
     for (const error of result.errors) lines.push(`- ${error}`);

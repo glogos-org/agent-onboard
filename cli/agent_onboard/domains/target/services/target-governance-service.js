@@ -377,7 +377,7 @@ function indexDriftOverallState(entries, errors) {
 
 function targetGovernanceIndexDriftCheck(targetRoot = process.cwd(), deps = {}) {
   const version = deps.version || '0.0.0';
-  const releaseLine = deps.releaseLine || 'public_target_governance_index_drift_check_gate';
+  const releaseLine = deps.releaseLine || 'public_target_governance_stale_read_fast_check_wiring_gate';
   const plan = targetGovernanceIndexMaterializationDryRun(targetRoot, { version, releaseLine, updatedAt: safeString(deps.updatedAt) || new Date().toISOString() });
   const base = Object.freeze({
     schema: TARGET_GOVERNANCE_INDEX_DRIFT_CHECK_SCHEMA,
@@ -470,6 +470,40 @@ function targetGovernanceIndexDriftCheck(targetRoot = process.cwd(), deps = {}) 
   });
 }
 
+
+function targetGovernanceIndexDriftSummary(result) {
+  const drift = result && result.drift_check ? result.drift_check : null;
+  if (!drift) {
+    return Object.freeze({
+      status: result && result.status ? result.status : 'unavailable',
+      overall_state: 'unavailable',
+      refresh_required: false,
+      stale_read_risk: false,
+      index_states: [],
+      warnings: [],
+      materialize_command: 'agent-onboard target governance --materialize --write --force'
+    });
+  }
+  const overallState = safeString(drift.overall_state) || 'unavailable';
+  const refreshRequired = drift.refresh_required === true;
+  return Object.freeze({
+    status: result.status || 'unknown',
+    overall_state: overallState,
+    refresh_required: refreshRequired,
+    stale_read_risk: ['stale', 'missing', 'blocked'].includes(overallState),
+    index_states: Array.isArray(drift.index_states)
+      ? drift.index_states.map((item) => Object.freeze({
+        path: safeString(item.path) || 'unknown',
+        state: safeString(item.state) || 'unknown',
+        compare_action: safeString(item.compare_action) || 'unknown',
+        would_refresh_on_materialize: item.would_refresh_on_materialize === true
+      }))
+      : [],
+    warnings: Array.isArray(drift.warnings) ? drift.warnings.slice() : [],
+    materialize_command: safeString(drift.materialize_command) || 'agent-onboard target governance --materialize --write --force'
+  });
+}
+
 function targetGovernanceIndexDriftCheckText(result) {
   if (result.status !== 'ok') {
     return [
@@ -499,7 +533,7 @@ function targetGovernanceIndexDriftCheckText(result) {
 
 function targetGovernanceIndexMaterializationDryRun(targetRoot = process.cwd(), deps = {}) {
   const version = deps.version || '0.0.0';
-  const releaseLine = deps.releaseLine || 'public_target_governance_index_drift_check_gate';
+  const releaseLine = deps.releaseLine || 'public_target_governance_stale_read_fast_check_wiring_gate';
   const absoluteTargetRoot = path.resolve(targetRoot || process.cwd());
   const updatedAt = safeString(deps.updatedAt) || new Date().toISOString();
   const base = Object.freeze({
@@ -656,7 +690,7 @@ function targetGovernanceIndexMaterializationDryRunText(result) {
 
 function targetGovernanceIndexMaterializationWrite(targetRoot = process.cwd(), deps = {}) {
   const version = deps.version || '0.0.0';
-  const releaseLine = deps.releaseLine || 'public_target_governance_index_drift_check_gate';
+  const releaseLine = deps.releaseLine || 'public_target_governance_stale_read_fast_check_wiring_gate';
   const force = deps.force === true;
   const updatedAt = safeString(deps.updatedAt) || new Date().toISOString();
   const plan = targetGovernanceIndexMaterializationDryRun(targetRoot, { version, releaseLine, updatedAt });
@@ -781,7 +815,7 @@ function targetGovernanceIndexRefreshBoundary(writeBoundary, triggered) {
 
 function targetGovernanceIndexRefreshAfterMutation(targetRoot = process.cwd(), deps = {}) {
   const version = deps.version || '0.0.0';
-  const releaseLine = deps.releaseLine || 'public_target_governance_index_drift_check_gate';
+  const releaseLine = deps.releaseLine || 'public_target_governance_stale_read_fast_check_wiring_gate';
   const trigger = isPlainObject(deps.trigger) ? deps.trigger : {};
   const command = safeString(trigger.command) || 'unknown write command';
   const file = safeString(trigger.file) || WORK_ITEMS_PATH;
@@ -869,7 +903,7 @@ function targetGovernanceIndexMaterializationWriteText(result) {
 
 function targetGovernancePreview(targetRoot = process.cwd(), deps = {}) {
   const version = deps.version || '0.0.0';
-  const releaseLine = deps.releaseLine || 'public_target_governance_index_drift_check_gate';
+  const releaseLine = deps.releaseLine || 'public_target_governance_stale_read_fast_check_wiring_gate';
   const absoluteTargetRoot = path.resolve(targetRoot || process.cwd());
   const base = Object.freeze({
     schema: TARGET_GOVERNANCE_SCHEMA,
@@ -1014,6 +1048,8 @@ function createTargetGovernanceService(deps = {}) {
     targetGovernanceIndexRefreshAfterMutation: (targetRoot, options = {}) => targetGovernanceIndexRefreshAfterMutation(targetRoot, { version: deps.version, releaseLine, trigger: options.trigger, updatedAt: options.updatedAt }),
     formatTargetGovernanceIndexMaterializationWriteText: targetGovernanceIndexMaterializationWriteText,
     targetGovernanceIndexDriftCheck: (targetRoot) => targetGovernanceIndexDriftCheck(targetRoot, { version: deps.version, releaseLine }),
+    targetGovernanceIndexDriftSummary: (targetRoot) => targetGovernanceIndexDriftSummary(targetGovernanceIndexDriftCheck(targetRoot, { version: deps.version, releaseLine })),
+    summarizeTargetGovernanceIndexDriftCheck: targetGovernanceIndexDriftSummary,
     formatTargetGovernanceIndexDriftCheckText: targetGovernanceIndexDriftCheckText,
     buildTargetGovernanceWorkItemsIndex: buildWorkItemsIndex,
     buildTargetGovernanceClaimsIndex: buildClaimsIndex
@@ -1031,6 +1067,7 @@ module.exports = {
   targetGovernanceIndexRefreshAfterMutation,
   targetGovernanceIndexDriftCheck,
   targetGovernanceIndexDriftCheckText,
+  targetGovernanceIndexDriftSummary,
   buildWorkItemsIndex,
   buildClaimsIndex
 };
