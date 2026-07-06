@@ -441,6 +441,11 @@ Use `node cli/agent-onboard.js discovery --llms`, `node cli/agent-onboard.js dis
 
 
 
+## Public target governance index drift check gate
+
+Use `node cli/agent-onboard.js target governance --check`, `node cli/agent-onboard.js target governance --check --json`, or `node cli/agent-onboard.js target governance --check --text` before trusting stored governance indexes in a target repository. The check compares `.agent-onboard/work-items.index.json` and `.agent-onboard/claims.index.json` with freshly derived payloads and reports `fresh`, `stale`, or `missing` without writing files. It must not refresh indexes, mutate raw work-items or claims ledgers, admit or close work items, create claims, install dependencies, run managed project commands, publish, mutate Git, or perform network calls.
+
+
 ## Public target governance index refresh integration gate
 
 After successful canonical `node cli/agent-onboard.js work-items --init --write`, `--append --write`, `--claim --write`, or `--close --write`, the work-items response may include `governance_index_refresh`. That refresh writes only `.agent-onboard/work-items.index.json` and `.agent-onboard/claims.index.json`, uses compare-before-write, and is cache/orientation only. It must not treat the indexes as authority, mutate `.agent-onboard/claims.jsonl`, create claims, install dependencies, run managed project commands, publish, mutate Git, or perform network calls. If `--file` points away from the canonical `.agent-onboard/work-items.json`, the refresh is skipped.

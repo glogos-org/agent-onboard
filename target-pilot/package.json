@@ -1,0 +1,8 @@
+{
+  "name": "target-pilot",
+  "version": "1.0.0",
+  "description": "Mock pilot project for testing",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 0"
+  }
+}

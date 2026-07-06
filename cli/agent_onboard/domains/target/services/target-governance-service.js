@@ -8,9 +8,11 @@ const TARGET_GOVERNANCE_SCHEMA = 'agent-onboard-public-target-governance-preview
 const TARGET_GOVERNANCE_MATERIALIZATION_SCHEMA = 'agent-onboard-public-target-governance-index-materialization-dry-run-001';
 const TARGET_GOVERNANCE_MATERIALIZATION_WRITE_SCHEMA = 'agent-onboard-public-target-governance-index-materialization-write-001';
 const TARGET_GOVERNANCE_REFRESH_SCHEMA = 'agent-onboard-public-target-governance-index-refresh-after-mutation-001';
+const TARGET_GOVERNANCE_INDEX_DRIFT_CHECK_SCHEMA = 'agent-onboard-public-target-governance-index-drift-check-001';
 const TARGET_GOVERNANCE_COMMAND = 'agent-onboard target governance --preview';
 const TARGET_GOVERNANCE_MATERIALIZATION_COMMAND = 'agent-onboard target governance --materialize-dry-run';
 const TARGET_GOVERNANCE_MATERIALIZATION_WRITE_COMMAND = 'agent-onboard target governance --materialize --write';
+const TARGET_GOVERNANCE_INDEX_DRIFT_CHECK_COMMAND = 'agent-onboard target governance --check';
 const TARGET_GOVERNANCE_FAMILY = 'target governance';
 const WORK_ITEMS_PATH = '.agent-onboard/work-items.json';
 const CLAIMS_PATH = '.agent-onboard/claims.jsonl';
@@ -345,9 +347,159 @@ function governanceReadiness(workIndex, claimsIndex, rawWorkItems, rawClaims) {
 }
 
 
+function indexDriftCheckState(plannedWrite) {
+  if (!plannedWrite || plannedWrite.existing_present !== true) return 'missing';
+  if (plannedWrite.existing_kind !== 'file') return 'blocked';
+  return plannedWrite.action === 'keep' ? 'fresh' : 'stale';
+}
+
+function indexDriftCheckEntry(plannedWrite) {
+  const state = indexDriftCheckState(plannedWrite);
+  return Object.freeze({
+    path: plannedWrite.path,
+    state,
+    stored_index_present: plannedWrite.existing_present === true,
+    stored_index_kind: plannedWrite.existing_kind,
+    compare_action: plannedWrite.action,
+    would_refresh_on_materialize: plannedWrite.would_write === true,
+    derived_schema: plannedWrite.schema,
+    derived_bytes: plannedWrite.bytes
+  });
+}
+
+function indexDriftOverallState(entries, errors) {
+  if (Array.isArray(errors) && errors.length > 0) return 'blocked';
+  if (entries.some((entry) => entry.state === 'blocked')) return 'blocked';
+  if (entries.some((entry) => entry.state === 'stale')) return 'stale';
+  if (entries.some((entry) => entry.state === 'missing')) return 'missing';
+  return 'fresh';
+}
+
+function targetGovernanceIndexDriftCheck(targetRoot = process.cwd(), deps = {}) {
+  const version = deps.version || '0.0.0';
+  const releaseLine = deps.releaseLine || 'public_target_governance_index_drift_check_gate';
+  const plan = targetGovernanceIndexMaterializationDryRun(targetRoot, { version, releaseLine, updatedAt: safeString(deps.updatedAt) || new Date().toISOString() });
+  const base = Object.freeze({
+    schema: TARGET_GOVERNANCE_INDEX_DRIFT_CHECK_SCHEMA,
+    package_name: PACKAGE_NAME,
+    version,
+    release_line: releaseLine,
+    command: TARGET_GOVERNANCE_INDEX_DRIFT_CHECK_COMMAND,
+    command_family: TARGET_GOVERNANCE_FAMILY
+  });
+
+  if (plan.status !== 'ok') {
+    return Object.assign({}, base, {
+      status: plan.status,
+      target: plan.target || { name: 'target-repo', root: path.resolve(targetRoot || process.cwd()), kind: 'unknown' },
+      drift_check: {
+        purpose: 'no-write comparison of stored governance indexes against freshly derived target governance index payloads',
+        mode: 'no_write_check',
+        overall_state: 'blocked',
+        index_states: [],
+        refresh_required: true,
+        materialize_command: 'agent-onboard target governance --materialize --write --force'
+      },
+      recommended_next_commands: [
+        'agent-onboard target governance --materialize-dry-run --text',
+        'agent-onboard target governance --text',
+        'agent-onboard check --fast --text'
+      ],
+      writes_performed: false,
+      boundary: noMutationBoundary(Boolean(plan.target && plan.target.kind === 'target-repo')),
+      errors: plan.errors || []
+    });
+  }
+
+  const entries = (plan.materialization.planned_writes || []).map(indexDriftCheckEntry);
+  const overallState = indexDriftOverallState(entries, plan.errors || []);
+  const refreshRequired = overallState !== 'fresh';
+  const warnings = [];
+  if (overallState === 'missing') warnings.push('stored_governance_index_missing_materialization_available');
+  if (overallState === 'stale') warnings.push('stored_governance_index_stale_refresh_recommended');
+
+  return Object.assign({}, base, {
+    status: overallState === 'blocked' ? 'blocked' : 'ok',
+    target: plan.target,
+    drift_check: {
+      purpose: 'no-write comparison of stored governance indexes against freshly derived target governance index payloads',
+      mode: 'no_write_check',
+      overall_state: overallState,
+      index_paths: ALLOWED_INDEX_WRITE_PATHS.slice(),
+      raw_growth_files_on_demand_only: [WORK_ITEMS_PATH, CLAIMS_PATH],
+      index_states: entries,
+      refresh_required: refreshRequired,
+      materialize_command: 'agent-onboard target governance --materialize --write --force',
+      budget_status: plan.materialization.budget_status,
+      combined_index_bytes: plan.materialization.combined_index_bytes,
+      max_combined_index_bytes: plan.materialization.max_combined_index_bytes,
+      warnings,
+      authority_policy: {
+        indexes_are_first_read_cache: true,
+        work_items_json_remains_authoritative: true,
+        claims_jsonl_remains_authoritative: true,
+        drift_check_does_not_refresh_or_write_indexes: true,
+        stale_or_missing_index_is_not_authority_failure: true
+      }
+    },
+    recommended_next_commands: refreshRequired ? [
+      'agent-onboard target governance --materialize-dry-run --text',
+      'agent-onboard target governance --materialize --write --force --text',
+      'agent-onboard target governance --text',
+      'agent-onboard check --fast --text'
+    ] : [
+      'agent-onboard target governance --text',
+      'agent-onboard target handoff --text',
+      'agent-onboard check --fast --text'
+    ],
+    output_policy: {
+      compact_default: true,
+      raw_work_items_file_inlined: false,
+      raw_claims_ledger_inlined: false,
+      planned_index_payloads_inlined: false,
+      target_ai_memory_content_inlined: false,
+      provider_private_state_inlined: false
+    },
+    writes_performed: false,
+    boundary: Object.assign({}, noMutationBoundary(true), {
+      compares_stored_indexes_with_derived_payloads: true,
+      refreshes_governance_indexes: false,
+      writes_governance_indexes: false
+    }),
+    errors: plan.errors || []
+  });
+}
+
+function targetGovernanceIndexDriftCheckText(result) {
+  if (result.status !== 'ok') {
+    return [
+      'agent-onboard target governance drift check',
+      `Status: ${result.status}`,
+      `Target: ${result.target ? result.target.root : 'unknown'}`,
+      `Errors: ${(result.errors || []).join('; ') || 'none'}`,
+      'Writes performed: false'
+    ].join('\n') + '\n';
+  }
+  const drift = result.drift_check;
+  return [
+    'agent-onboard target governance drift check',
+    `Target: ${result.target.name}`,
+    `Root: ${result.target.root}`,
+    `Index state: ${drift.overall_state}`,
+    `Refresh required: ${drift.refresh_required ? 'true' : 'false'}`,
+    ...drift.index_states.map((item) => `  - ${item.path}: ${item.state}; compare ${item.compare_action}; would refresh ${item.would_refresh_on_materialize ? 'yes' : 'no'}; schema ${item.derived_schema || 'unknown'}`),
+    `Budget: ${drift.budget_status}; ${drift.combined_index_bytes}/${drift.max_combined_index_bytes} bytes combined`,
+    `Warnings: ${drift.warnings.length > 0 ? drift.warnings.join(', ') : 'none'}`,
+    'Boundary: no-write drift check only; stored indexes are compared against derived payloads; raw work-items/claims remain authoritative; no refresh, no admission, no claims, no Git mutation, no network.',
+    'Next commands:',
+    ...result.recommended_next_commands.map((command) => `  - ${command}`),
+    'Writes performed: false'
+  ].join('\n') + '\n';
+}
+
 function targetGovernanceIndexMaterializationDryRun(targetRoot = process.cwd(), deps = {}) {
   const version = deps.version || '0.0.0';
-  const releaseLine = deps.releaseLine || 'public_target_governance_index_refresh_integration_gate';
+  const releaseLine = deps.releaseLine || 'public_target_governance_index_drift_check_gate';
   const absoluteTargetRoot = path.resolve(targetRoot || process.cwd());
   const updatedAt = safeString(deps.updatedAt) || new Date().toISOString();
   const base = Object.freeze({
@@ -504,7 +656,7 @@ function targetGovernanceIndexMaterializationDryRunText(result) {
 
 function targetGovernanceIndexMaterializationWrite(targetRoot = process.cwd(), deps = {}) {
   const version = deps.version || '0.0.0';
-  const releaseLine = deps.releaseLine || 'public_target_governance_index_refresh_integration_gate';
+  const releaseLine = deps.releaseLine || 'public_target_governance_index_drift_check_gate';
   const force = deps.force === true;
   const updatedAt = safeString(deps.updatedAt) || new Date().toISOString();
   const plan = targetGovernanceIndexMaterializationDryRun(targetRoot, { version, releaseLine, updatedAt });
@@ -629,7 +781,7 @@ function targetGovernanceIndexRefreshBoundary(writeBoundary, triggered) {
 
 function targetGovernanceIndexRefreshAfterMutation(targetRoot = process.cwd(), deps = {}) {
   const version = deps.version || '0.0.0';
-  const releaseLine = deps.releaseLine || 'public_target_governance_index_refresh_integration_gate';
+  const releaseLine = deps.releaseLine || 'public_target_governance_index_drift_check_gate';
   const trigger = isPlainObject(deps.trigger) ? deps.trigger : {};
   const command = safeString(trigger.command) || 'unknown write command';
   const file = safeString(trigger.file) || WORK_ITEMS_PATH;
@@ -717,7 +869,7 @@ function targetGovernanceIndexMaterializationWriteText(result) {
 
 function targetGovernancePreview(targetRoot = process.cwd(), deps = {}) {
   const version = deps.version || '0.0.0';
-  const releaseLine = deps.releaseLine || 'public_target_governance_index_refresh_integration_gate';
+  const releaseLine = deps.releaseLine || 'public_target_governance_index_drift_check_gate';
   const absoluteTargetRoot = path.resolve(targetRoot || process.cwd());
   const base = Object.freeze({
     schema: TARGET_GOVERNANCE_SCHEMA,
@@ -861,6 +1013,8 @@ function createTargetGovernanceService(deps = {}) {
     targetGovernanceIndexMaterializationWrite: (targetRoot, options = {}) => targetGovernanceIndexMaterializationWrite(targetRoot, { version: deps.version, releaseLine, force: options.force }),
     targetGovernanceIndexRefreshAfterMutation: (targetRoot, options = {}) => targetGovernanceIndexRefreshAfterMutation(targetRoot, { version: deps.version, releaseLine, trigger: options.trigger, updatedAt: options.updatedAt }),
     formatTargetGovernanceIndexMaterializationWriteText: targetGovernanceIndexMaterializationWriteText,
+    targetGovernanceIndexDriftCheck: (targetRoot) => targetGovernanceIndexDriftCheck(targetRoot, { version: deps.version, releaseLine }),
+    formatTargetGovernanceIndexDriftCheckText: targetGovernanceIndexDriftCheckText,
     buildTargetGovernanceWorkItemsIndex: buildWorkItemsIndex,
     buildTargetGovernanceClaimsIndex: buildClaimsIndex
   });
@@ -875,6 +1029,8 @@ module.exports = {
   targetGovernanceIndexMaterializationWrite,
   targetGovernanceIndexMaterializationWriteText,
   targetGovernanceIndexRefreshAfterMutation,
+  targetGovernanceIndexDriftCheck,
+  targetGovernanceIndexDriftCheckText,
   buildWorkItemsIndex,
   buildClaimsIndex
 };

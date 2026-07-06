@@ -5484,6 +5484,64 @@
         "checks_not_run": [],
         "known_non_pass": []
       }
+    },
+    {
+      "id": "P1S3M5W23",
+      "milestone_id": "P1S3M5",
+      "title": "Public target governance index drift check gate",
+      "status": "closed",
+      "closure": {
+        "actor": "gpt-5.5-thinking",
+        "closed_at": "2026-07-05T09:30:43.191Z",
+        "summary": "Closed by adding target governance --check with JSON and text output. The command compares stored work-items and claims governance indexes with freshly derived payloads, reports fresh/stale/missing, ignores updated_at churn when semantic payloads match, recommends explicit materialization only when refresh is required, and performs no writes, index refresh, raw ledger mutation, claim creation, work-item admission or closure, dependency install, managed-project command, Git mutation, network call, publish, or authority grant; package candidate bumped to 0.0.130.",
+        "changed_files": [
+          "package.json",
+          "README.md",
+          "AGENTS.md",
+          "llms.txt",
+          ".gitignore",
+          ".gitattributes",
+          "cli/agent_onboard/runtime-contracts.js",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/domains/target/services/target-governance-service.js",
+          "test/agent-onboard.test.js",
+          "test/run-tests.js",
+          ".agent-onboard/work-items.json",
+          ".agent-onboard/work-items.index.json",
+          ".agent-onboard/claims.index.json",
+          ".agent-onboard/target-governance-index-drift-check-product-gate.json",
+          "authority-map.json",
+          "manifest.json"
+        ],
+        "checks_run": [
+          "node -c cli/agent_onboard/domains/target/services/target-governance-service.js",
+          "node -c cli/agent_onboard/runtime-contracts.js",
+          "node -c cli/agent_onboard/runtime-composer.js",
+          "node -c test/agent-onboard.test.js",
+          "node -c test/run-tests.js",
+          "node cli/agent-onboard.js target governance --check --json",
+          "node cli/agent-onboard.js target governance --check --text",
+          "npm test",
+          "npm run test:full",
+          "node cli/agent-onboard.js target metadata --write --force --target .",
+          "node cli/agent-onboard.js target metadata --check --target .",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "node cli/agent-onboard.js release --source-manifest-check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node cli/agent-onboard.js release --check",
+          "node scripts/check-public-artifact-boundary.js",
+          "npm pack --dry-run --json",
+          "npm pack --pack-destination /tmp/w23pkg --json",
+          "npm install --no-audit --no-fund <local agent-onboard-0.0.130.tgz> (temp installed package)",
+          "npx agent-onboard status (installed package)",
+          "npx agent-onboard target governance --check --json (installed package)",
+          "npx agent-onboard target governance --check --text (installed package)",
+          "npx agent-onboard check --fast --json (installed package)",
+          "npx agent-onboard release --check (installed package)"
+        ],
+        "checks_not_run": [],
+        "known_non_pass": []
+      }
     }
   ]
 }

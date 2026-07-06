@@ -1,36 +1,6 @@
-# Dependencies
 node_modules/
-
-# Package/build/test output
-dist/
-build/
 coverage/
-*.tgz
-agent-onboard-*.tgz
-.agent-onboard-pack-*
-
-# Local/runtime state
-.env
-.env.*
-*.log
-.npm/
-.cache/
-.tmp/
-tmp/
-.scratch/
-scratch/
 .agent-onboard/tmp/
 .agent-onboard/cache/
 .agent-onboard/local/
-.agent-onboard/*.local.json
-.agent-onboard/*.tmp.json
-.agent-onboard/*.log
-
-# OS/editor noise
 .DS_Store
-Thumbs.db
-.vscode/
-.idea/
-
-# Testing pilots
-target-pilot/

@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_target_governance_index_refresh_integration_gate';
+const EXPECTED_RELEASE_LINE = 'public_target_governance_index_drift_check_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -274,7 +274,7 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.ok(output.help_lines.includes('agent-onboard target inventory --preview|--json|--text [--target <path>]'));
   assert.ok(output.help_lines.includes('agent-onboard target memory --preview|--json|--text [--target <path>]'));
   assert.ok(output.help_lines.includes('agent-onboard target work-items --preview|--json|--text [--target <path>]'));
-  assert.ok(output.help_lines.includes('agent-onboard target governance --preview|--materialize-dry-run|--materialize --write [--force]|--json|--text [--target <path>]'));
+  assert.ok(output.help_lines.includes('agent-onboard target governance --preview|--check|--materialize-dry-run|--materialize --write [--force]|--json|--text [--target <path>]'));
   assert.ok(output.help_lines.includes('agent-onboard target handoff --preview|--json|--text [--target <path>]'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard commands --text'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard guide --text'));
@@ -311,7 +311,7 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.ok(textResult.stdout.includes('agent-onboard target inventory --preview|--json|--text [--target <path>]'));
   assert.ok(textResult.stdout.includes('agent-onboard target memory --preview|--json|--text [--target <path>]'));
   assert.ok(textResult.stdout.includes('agent-onboard target work-items --preview|--json|--text [--target <path>]'));
-  assert.ok(textResult.stdout.includes('agent-onboard target governance --preview|--materialize-dry-run|--materialize --write [--force]|--json|--text [--target <path>]'));
+  assert.ok(textResult.stdout.includes('agent-onboard target governance --preview|--check|--materialize-dry-run|--materialize --write [--force]|--json|--text [--target <path>]'));
   assert.ok(textResult.stdout.includes('agent-onboard target handoff --preview|--json|--text [--target <path>]'));
 });
 
@@ -447,6 +447,7 @@ fullSourceTest('public check plan and fast runner are directly usable', () => {
   assert.strictEqual(fast.passed_count, fast.check_count);
   assert.ok(fast.checks.some((item) => item.id === 'target-memory-preview'));
   assert.ok(fast.checks.some((item) => item.id === 'target-governance-materialization-dry-run'));
+  assert.ok(fast.checks.some((item) => item.id === 'target-governance-index-drift-check'));
   assert.ok(fast.checks.some((item) => item.id === 'target-handoff-preview'));
   assert.ok(fast.checks.some((item) => item.id === 'release-source-manifest-check'));
   assert.ok(fast.checks.some((item) => item.id === 'release-check'));
@@ -520,6 +521,7 @@ fullSourceTest('public MCP bridge plan surface is directly usable', () => {
   assert.ok(output.tool_candidates.some((tool) => tool.name === 'agent_onboard_get_discovery'));
   assert.ok(output.tool_candidates.some((tool) => tool.name === 'agent_onboard_preview_target_inventory'));
   assert.ok(output.tool_candidates.some((tool) => tool.name === 'agent_onboard_dry_run_target_governance_indexes'));
+  assert.ok(output.tool_candidates.some((tool) => tool.name === 'agent_onboard_check_target_governance_index_drift'));
   assert.ok(output.tool_candidates.some((tool) => tool.name === 'agent_onboard_run_fast_check'));
   assert.ok(output.tool_candidates.some((tool) => tool.command === 'agent-onboard release --check'));
   assert.strictEqual(output.client_guidance.authority_rule.includes('cannot admit claims'), true);
@@ -735,6 +737,24 @@ fullSourceTest('public target governance preview is directly usable', () => {
   assert.strictEqual(fs.existsSync(path.join(dir, '.agent-onboard', 'work-items.index.json')), false);
   assert.strictEqual(fs.existsSync(path.join(dir, '.agent-onboard', 'claims.index.json')), false);
 
+  const missingDriftResult = run(['target', 'governance', '--check', '--target', dir]);
+  const missingDriftOutput = readJsonOutput(missingDriftResult);
+  assert.strictEqual(missingDriftOutput.schema, 'agent-onboard-public-target-governance-index-drift-check-001');
+  assert.strictEqual(missingDriftOutput.status, 'ok');
+  assert.strictEqual(missingDriftOutput.command, 'agent-onboard target governance --check');
+  assert.strictEqual(missingDriftOutput.drift_check.overall_state, 'missing');
+  assert.strictEqual(missingDriftOutput.drift_check.refresh_required, true);
+  assert.deepStrictEqual(missingDriftOutput.drift_check.index_states.map((item) => item.state), ['missing', 'missing']);
+  assert.strictEqual(missingDriftOutput.boundary.compares_stored_indexes_with_derived_payloads, true);
+  assert.strictEqual(missingDriftOutput.boundary.writes_files, false);
+  assert.strictEqual(missingDriftOutput.writes_performed, false);
+
+  const missingDriftText = run(['target', 'governance', '--check', '--text', '--target', dir]);
+  assert.strictEqual(missingDriftText.status, 0, missingDriftText.stderr || missingDriftText.stdout);
+  assert.ok(missingDriftText.stdout.includes('agent-onboard target governance drift check'));
+  assert.ok(missingDriftText.stdout.includes('Index state: missing'));
+  assert.ok(missingDriftText.stdout.includes('no-write drift check only'));
+
   const materializeText = run(['target', 'governance', '--materialize-dry-run', '--text', '--target', dir]);
   assert.strictEqual(materializeText.status, 0, materializeText.stderr || materializeText.stdout);
   assert.ok(materializeText.stdout.includes('agent-onboard target governance materialization dry-run'));
@@ -784,11 +804,30 @@ fullSourceTest('public target governance preview is directly usable', () => {
   assert.deepStrictEqual(writeAgainOutput.materialization.write_results.map((item) => item.wrote), [false, false]);
   assert.strictEqual(writeAgainOutput.writes_performed, false);
 
+  const freshDriftResult = run(['target', 'governance', '--check', '--target', dir]);
+  const freshDriftOutput = readJsonOutput(freshDriftResult);
+  assert.strictEqual(freshDriftOutput.status, 'ok');
+  assert.strictEqual(freshDriftOutput.drift_check.overall_state, 'fresh');
+  assert.strictEqual(freshDriftOutput.drift_check.refresh_required, false);
+  assert.deepStrictEqual(freshDriftOutput.drift_check.index_states.map((item) => item.state), ['fresh', 'fresh']);
+
+  const mutatedWorkItems = JSON.parse(fs.readFileSync(path.join(dir, '.agent-onboard', 'work-items.json'), 'utf8'));
+  mutatedWorkItems.work_items.push({ id: [milestoneId, 'W3'].join(''), title: 'Late raw governance fixture', status: 'open', milestone_id: milestoneId });
+  fs.writeFileSync(path.join(dir, '.agent-onboard', 'work-items.json'), JSON.stringify(mutatedWorkItems, null, 2) + '\n');
+  const staleDriftResult = run(['target', 'governance', '--check', '--target', dir]);
+  const staleDriftOutput = readJsonOutput(staleDriftResult);
+  assert.strictEqual(staleDriftOutput.status, 'ok');
+  assert.strictEqual(staleDriftOutput.drift_check.overall_state, 'stale');
+  assert.strictEqual(staleDriftOutput.drift_check.refresh_required, true);
+  assert.strictEqual(staleDriftOutput.drift_check.index_states[0].state, 'stale');
+  assert.strictEqual(staleDriftOutput.drift_check.index_states[0].would_refresh_on_materialize, true);
+  assert.strictEqual(staleDriftOutput.drift_check.authority_policy.drift_check_does_not_refresh_or_write_indexes, true);
+
   const writeText = run(['target', 'governance', '--materialize', '--write', '--force', '--text', '--target', dir]);
   assert.strictEqual(writeText.status, 0, writeText.stderr || writeText.stdout);
   assert.ok(writeText.stdout.includes('agent-onboard target governance materialization write'));
   assert.ok(writeText.stdout.includes('allowlisted index paths only'));
-  assert.ok(writeText.stdout.includes('Writes performed: false'));
+  assert.ok(writeText.stdout.includes('Writes performed: true'));
 });
 
 
@@ -3724,7 +3763,9 @@ fullSourceTest('full source block line 2233', () => {
   assert.ok(readme.includes('Use `--text` on target-facing inspection commands'));
   assert.ok(readme.includes('npx agent-onboard check --plan --text'));
   assert.ok(readme.includes('npx agent-onboard check --fast --text'));
-  assert.ok(readme.includes('The current release adds the public target governance index refresh integration gate'));
+  assert.ok(readme.includes('The current release adds the public target governance index drift check gate'));
+  assert.ok(readme.includes('`target governance --check` compares stored governance indexes with freshly derived payloads and reports `fresh`, `stale`, or `missing` without writing files'));
+  assert.ok(readme.includes('The previous release added the public target governance index refresh integration gate'));
   assert.ok(readme.includes('`work-items --init|--append|--claim|--close --write` now refreshes allowlisted governance indexes after a successful canonical `.agent-onboard/work-items.json` mutation'));
   assert.ok(readme.includes('The previous release added the public target governance index explicit write product surface'));
   assert.ok(readme.includes('The previous release added the public target governance index materialization dry-run product surface'));
@@ -3754,7 +3795,7 @@ fullSourceTest('full source block line 2323', () => {
   assert.ok(help.stdout.includes('target inventory --preview|--json|--text [--target <path>]'));
   assert.ok(help.stdout.includes('target memory --preview|--json|--text [--target <path>]'));
   assert.ok(help.stdout.includes('target work-items --preview|--json|--text [--target <path>]'));
-  assert.ok(help.stdout.includes('target governance --preview|--materialize-dry-run|--materialize --write [--force]|--json|--text [--target <path>]'));
+  assert.ok(help.stdout.includes('target governance --preview|--check|--materialize-dry-run|--materialize --write [--force]|--json|--text [--target <path>]'));
   assert.ok(help.stdout.includes('target handoff --preview|--json|--text [--target <path>]'));
   assert.ok(help.stdout.includes('target metadata --plan|--check|--write [--profile default] [--policy <path>] [--adopt-existing] [--force] [--target <path>]'));
   assert.ok(help.stdout.includes('target manifest --check-drift|--init|--refresh [--dry-run|--write] [--target <path>]'));
@@ -3825,6 +3866,7 @@ assert.ok(agents.includes('node cli/agent-onboard.js target runtime --check'));
   assert.ok(agents.includes('node cli/agent-onboard.js target memory --preview'));
   assert.ok(agents.includes('node cli/agent-onboard.js target governance --preview'));
   assert.ok(agents.includes('node cli/agent-onboard.js target governance --materialize-dry-run'));
+  assert.ok(agents.includes('node cli/agent-onboard.js target governance --check'));
   assert.ok(agents.includes('node cli/agent-onboard.js target governance --materialize --write --force'));
   assert.ok(agents.includes('node cli/agent-onboard.js target handoff --preview'));
   assert.ok(agents.includes('node cli/agent-onboard.js target onboarding --plan'));
