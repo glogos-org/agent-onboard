@@ -1,0 +1,109 @@
+{
+  "schema": "agent-onboard-public-target-handoff-governance-budget-summary-product-gate-001",
+  "package_name": "agent-onboard",
+  "version": "0.0.134",
+  "release_line": "public_target_handoff_governance_budget_summary_product_gate",
+  "work_item": {
+    "id": "P1S3M5W27",
+    "milestone_id": "P1S3M5",
+    "title": "Public target handoff governance budget summary product gate",
+    "status": "closed",
+    "closure": {
+      "actor": "gpt-5.5-thinking",
+      "closed_at": "2026-07-05T12:24:47Z",
+      "summary": "Closed by composing the governance budget check into target handoff. The handoff preview now exposes governance_budget_summary, includes budget-contract and budget-check next commands, blocks next-agent readiness when budget validation is blocked or over contract, and preserves the no-write/no-inline boundary for raw work-items, claims ledgers, planned index payloads, memory content, source evidence, and provider-private state.",
+      "changed_files": [
+        "package.json",
+        "README.md",
+        "AGENTS.md",
+        "llms.txt",
+        "cli/agent_onboard/runtime-contracts.js",
+        "cli/agent_onboard/runtime-composer.js",
+        "cli/agent_onboard/domains/target/services/target-handoff-service.js",
+        "cli/agent_onboard/domains/target/services/target-governance-service.js",
+        "test/agent-onboard.test.js",
+        ".agent-onboard/work-items.json",
+        ".agent-onboard/work-items.index.json",
+        ".agent-onboard/claims.index.json",
+        ".agent-onboard/target-handoff-governance-budget-summary-product-gate.json",
+        "authority-map.json",
+        "manifest.json"
+      ],
+      "checks_run": [
+        "node -c cli/agent_onboard/domains/target/services/target-handoff-service.js",
+        "node -c cli/agent_onboard/domains/target/services/target-governance-service.js",
+        "node -c cli/agent_onboard/runtime-contracts.js",
+        "node -c cli/agent_onboard/runtime-composer.js",
+        "node -c test/agent-onboard.test.js",
+        "node cli/agent-onboard.js target handoff --json",
+        "node cli/agent-onboard.js target handoff --text",
+        "node cli/agent-onboard.js target governance --budget-check --json",
+        "node cli/agent-onboard.js check --plan --json",
+        "node cli/agent-onboard.js check --fast --json",
+        "npm test",
+        "npm run test:full",
+        "node cli/agent-onboard.js target metadata --write --force --target .",
+        "node cli/agent-onboard.js target metadata --check --target .",
+        "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+        "node scripts/check-public-artifact-boundary.js",
+        "node cli/agent-onboard.js release --source-manifest-check",
+        "node cli/agent-onboard.js release --surface-check",
+        "node cli/agent-onboard.js release --check",
+        "npm pack --dry-run --json"
+      ],
+      "checks_not_run": [],
+      "known_non_pass": []
+    }
+  },
+  "product_surface": {
+    "command": "agent-onboard target handoff --preview|--json|--text [--target <path>]",
+    "schema": "agent-onboard-public-target-handoff-preview-001",
+    "purpose": "compact next-session handoff that includes governance budget state and governance index drift state without importing raw target contents",
+    "composed_budget_surface": "agent-onboard target governance --budget-check --json",
+    "contract_source": "agent-onboard target governance --budget-contract --json",
+    "budget_summary_field": "handoff.governance_budget_summary",
+    "readiness_blockers": [
+      "governance_budget_over_contract",
+      "governance_budget_check_blocked"
+    ],
+    "first_read_indexes": [
+      ".agent-onboard/work-items.index.json",
+      ".agent-onboard/claims.index.json"
+    ],
+    "raw_authority_files_on_demand_only": [
+      ".agent-onboard/work-items.json",
+      ".agent-onboard/claims.jsonl"
+    ],
+    "max_index_bytes_each": 4096,
+    "max_combined_index_bytes": 8192,
+    "file_contents_inlined": false,
+    "planned_index_payloads_inlined": false,
+    "writes_files": false,
+    "network": false,
+    "git_mutation": false
+  },
+  "acceptance": {
+    "handoff_json_reports_governance_budget_summary": true,
+    "handoff_text_reports_governance_budget_state": true,
+    "handoff_recommends_budget_contract_and_budget_check": true,
+    "over_budget_or_blocked_budget_state_blocks_next_agent_readiness": true,
+    "raw_authority_files_remain_authoritative": true,
+    "no_raw_claim_payloads_are_inlined": true,
+    "check_fast_handoff_probe_remains_pass": true
+  },
+  "boundary": {
+    "writes_consuming_repository_state": false,
+    "writes_target_repository_state": false,
+    "creates_agent_onboard_runtime_state": false,
+    "inlines_planned_index_payloads": false,
+    "inlines_raw_growth_files": false,
+    "imports_memory_file_contents": false,
+    "admits_or_closes_work_items": false,
+    "creates_claims": false,
+    "git_mutation": false,
+    "installs_dependencies": false,
+    "runs_managed_project_commands": false,
+    "publishes_package": false,
+    "network": false
+  }
+}

@@ -381,7 +381,7 @@ function indexDriftOverallState(entries, errors) {
 
 function targetGovernanceIndexDriftCheck(targetRoot = process.cwd(), deps = {}) {
   const version = deps.version || '0.0.0';
-  const releaseLine = deps.releaseLine || 'public_target_governance_budget_check_product_gate';
+  const releaseLine = deps.releaseLine || 'public_target_handoff_governance_budget_summary_product_gate';
   const plan = targetGovernanceIndexMaterializationDryRun(targetRoot, { version, releaseLine, updatedAt: safeString(deps.updatedAt) || new Date().toISOString() });
   const base = Object.freeze({
     schema: TARGET_GOVERNANCE_INDEX_DRIFT_CHECK_SCHEMA,
@@ -537,7 +537,7 @@ function targetGovernanceIndexDriftCheckText(result) {
 
 function targetGovernanceIndexMaterializationDryRun(targetRoot = process.cwd(), deps = {}) {
   const version = deps.version || '0.0.0';
-  const releaseLine = deps.releaseLine || 'public_target_governance_budget_check_product_gate';
+  const releaseLine = deps.releaseLine || 'public_target_handoff_governance_budget_summary_product_gate';
   const absoluteTargetRoot = path.resolve(targetRoot || process.cwd());
   const updatedAt = safeString(deps.updatedAt) || new Date().toISOString();
   const base = Object.freeze({
@@ -694,7 +694,7 @@ function targetGovernanceIndexMaterializationDryRunText(result) {
 
 function targetGovernanceIndexMaterializationWrite(targetRoot = process.cwd(), deps = {}) {
   const version = deps.version || '0.0.0';
-  const releaseLine = deps.releaseLine || 'public_target_governance_budget_check_product_gate';
+  const releaseLine = deps.releaseLine || 'public_target_handoff_governance_budget_summary_product_gate';
   const force = deps.force === true;
   const updatedAt = safeString(deps.updatedAt) || new Date().toISOString();
   const plan = targetGovernanceIndexMaterializationDryRun(targetRoot, { version, releaseLine, updatedAt });
@@ -819,7 +819,7 @@ function targetGovernanceIndexRefreshBoundary(writeBoundary, triggered) {
 
 function targetGovernanceIndexRefreshAfterMutation(targetRoot = process.cwd(), deps = {}) {
   const version = deps.version || '0.0.0';
-  const releaseLine = deps.releaseLine || 'public_target_governance_budget_check_product_gate';
+  const releaseLine = deps.releaseLine || 'public_target_handoff_governance_budget_summary_product_gate';
   const trigger = isPlainObject(deps.trigger) ? deps.trigger : {};
   const command = safeString(trigger.command) || 'unknown write command';
   const file = safeString(trigger.file) || WORK_ITEMS_PATH;
@@ -907,7 +907,7 @@ function targetGovernanceIndexMaterializationWriteText(result) {
 
 function targetGovernancePreview(targetRoot = process.cwd(), deps = {}) {
   const version = deps.version || '0.0.0';
-  const releaseLine = deps.releaseLine || 'public_target_governance_budget_check_product_gate';
+  const releaseLine = deps.releaseLine || 'public_target_handoff_governance_budget_summary_product_gate';
   const absoluteTargetRoot = path.resolve(targetRoot || process.cwd());
   const base = Object.freeze({
     schema: TARGET_GOVERNANCE_SCHEMA,
@@ -1044,7 +1044,7 @@ function targetGovernancePreviewText(result) {
 
 function targetGovernanceBudgetContract(deps = {}) {
   const version = deps.version || '0.0.0';
-  const releaseLine = deps.releaseLine || 'public_target_governance_budget_check_product_gate';
+  const releaseLine = deps.releaseLine || 'public_target_handoff_governance_budget_summary_product_gate';
   return Object.freeze({
     schema: TARGET_GOVERNANCE_BUDGET_CONTRACT_SCHEMA,
     status: 'ok',
@@ -1140,7 +1140,7 @@ function budgetCheckEntry(plannedWrite) {
 
 function targetGovernanceBudgetCheck(targetRoot = process.cwd(), deps = {}) {
   const version = deps.version || '0.0.0';
-  const releaseLine = deps.releaseLine || 'public_target_governance_budget_check_product_gate';
+  const releaseLine = deps.releaseLine || 'public_target_handoff_governance_budget_summary_product_gate';
   const plan = targetGovernanceIndexMaterializationDryRun(targetRoot, { version, releaseLine, updatedAt: safeString(deps.updatedAt) || new Date().toISOString() });
   const base = Object.freeze({
     schema: TARGET_GOVERNANCE_BUDGET_CHECK_SCHEMA,

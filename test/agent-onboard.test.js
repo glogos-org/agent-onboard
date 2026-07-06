@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_target_governance_budget_check_product_gate';
+const EXPECTED_RELEASE_LINE = 'public_target_handoff_governance_budget_summary_product_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -962,6 +962,10 @@ fullSourceTest('public target handoff preview is directly usable', () => {
   assert.strictEqual(output.handoff.work_items_summary.open_work_item.id, openId);
   assert.strictEqual(output.handoff.work_items_summary.next_admission_candidate.id, queuedId);
   assert.strictEqual(output.handoff.readiness.next_agent_ready, true);
+  assert.strictEqual(output.handoff.governance_budget_summary.overall_state, 'within_budget');
+  assert.strictEqual(output.handoff.governance_budget_summary.budget_within_contract, true);
+  assert.strictEqual(output.handoff.governance_budget_summary.combined_index_bytes <= output.handoff.governance_budget_summary.max_combined_index_bytes, true);
+  assert.strictEqual(output.handoff.governance_budget_summary.index_states.every((item) => item.within_budget === true), true);
   assert.strictEqual(output.handoff.governance_index_drift_summary.overall_state, 'missing');
   assert.strictEqual(output.handoff.governance_index_drift_summary.refresh_required, true);
   assert.ok(output.handoff.readiness.warnings.includes('open_target_work_item_should_be_continued_before_new_admission'));
@@ -978,12 +982,26 @@ fullSourceTest('public target handoff preview is directly usable', () => {
   assert.ok(textResult.stdout.includes('agent-onboard target handoff'));
   assert.ok(textResult.stdout.includes('Readiness: usable_with_warnings'));
   assert.ok(textResult.stdout.includes(`Next queued candidate: ${queuedId}`));
+  assert.ok(textResult.stdout.includes('Governance budget: within_budget'));
   assert.ok(textResult.stdout.includes('Governance index drift: missing; refresh required true'));
+  assert.ok(textResult.stdout.includes('target governance --budget-check --text'));
   assert.ok(textResult.stdout.includes('no file content import'));
   assert.strictEqual(textResult.stdout.includes('target instructions must not be inlined'), false);
 
   const previewResult = run(['target', 'handoff', '--preview', '--target', dir]);
   assert.strictEqual(readJsonOutput(previewResult).schema, 'agent-onboard-public-target-handoff-preview-001');
+
+  const largeLedgerDir = tempRepo();
+  fs.mkdirSync(path.join(largeLedgerDir, '.agent-onboard'), { recursive: true });
+  fs.writeFileSync(path.join(largeLedgerDir, '.agent-onboard', 'work-items.json'), JSON.stringify({ schema: 'target-work-items-fixture', work_items: [] }, null, 2) + '\n');
+  const largeClaimsLine = JSON.stringify({ schema: 'claim-fixture', claim_status: 'proposed', work_item_id: 'fixture-oversized-work-item', claim_id: 'oversized', actor: 'fixture', note: 'x'.repeat(4096) }) + '\n';
+  fs.writeFileSync(path.join(largeLedgerDir, '.agent-onboard', 'claims.jsonl'), largeClaimsLine.repeat(40));
+  const blockedBudgetHandoff = readJsonOutput(run(['target', 'handoff', '--json', '--target', largeLedgerDir]));
+  assert.strictEqual(blockedBudgetHandoff.status, 'ok');
+  assert.strictEqual(blockedBudgetHandoff.handoff.governance_budget_summary.status, 'blocked');
+  assert.strictEqual(blockedBudgetHandoff.handoff.governance_budget_summary.budget_within_contract, false);
+  assert.ok(blockedBudgetHandoff.handoff.readiness.blockers.includes('governance_budget_check_blocked') || blockedBudgetHandoff.handoff.readiness.blockers.includes('governance_budget_over_contract'));
+  assert.strictEqual(JSON.stringify(blockedBudgetHandoff).includes('oversized'), false);
 
   const refused = run(['target', 'handoff', '--write', '--target', dir]);
   const refusedOutput = readJsonFailure(refused);
@@ -3860,8 +3878,8 @@ fullSourceTest('full source block line 2233', () => {
   assert.ok(readme.includes('Use `--text` on target-facing inspection commands'));
   assert.ok(readme.includes('npx agent-onboard check --plan --text'));
   assert.ok(readme.includes('npx agent-onboard check --fast --text'));
-  assert.ok(readme.includes('The current release adds `target governance --budget-check --json|--text` as a compact no-write target scan'));
-  assert.ok(readme.includes('`--budget-contract` remains the no-scan policy surface'));
+  assert.ok(readme.includes('The current release adds governance budget state to `target handoff --json|--text`'));
+  assert.ok(readme.includes('`target governance --budget-check --json|--text` remains the compact no-write target scan'));
   assert.ok(readme.includes('4096-byte per-index and 8192-byte combined governance budget'));
   assert.ok(readme.includes('The previous release wires governance index drift into first-read surfaces'));
   assert.ok(readme.includes('`check --fast --json|--text` emits governance stale-read advisories when stored indexes are `stale`, `missing`, or blocked'));

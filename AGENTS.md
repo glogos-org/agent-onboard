@@ -72,6 +72,8 @@ node cli/agent-onboard.js commands --text
 node cli/agent-onboard.js commands --json
 ```
 
+Target handoff includes governance budget state and governance index drift state for next-session readiness, while remaining read-only and non-authoritative.
+
 Run the target onboarding plan before expanding target-surface behavior:
 
 ```sh

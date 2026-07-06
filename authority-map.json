@@ -238,6 +238,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-target-governance-stale-read-fast-check-wiring-product-gate-json-2eacae04"
     },
     {
+      "file_path": ".agent-onboard/target-handoff-governance-budget-summary-product-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-target-handoff-governance-budget-summary-product-gate-json-29d42bbb"
+    },
+    {
       "file_path": ".agent-onboard/target-handoff-preview-product-gate.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-target-handoff-preview-product-gate-json-fcfbf502"
     },

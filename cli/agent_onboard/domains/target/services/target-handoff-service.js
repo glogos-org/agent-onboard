@@ -193,7 +193,41 @@ function governanceDriftSummary(driftResult) {
   });
 }
 
-function readinessFromSummaries(surfaceSummary, inventory, workItems, governanceDrift) {
+function governanceBudgetSummary(budgetResult) {
+  if (!budgetResult || !budgetResult.budget_check) {
+    return Object.freeze({
+      status: budgetResult && budgetResult.status ? budgetResult.status : 'unavailable',
+      overall_state: 'unavailable',
+      budget_within_contract: false,
+      combined_index_bytes: null,
+      max_combined_index_bytes: null,
+      index_states: [],
+      warnings: [],
+      materialize_command: 'agent-onboard target governance --materialize --write --force'
+    });
+  }
+  const budget = budgetResult.budget_check;
+  return Object.freeze({
+    status: budgetResult.status || 'unknown',
+    overall_state: budget.overall_state || 'unavailable',
+    budget_within_contract: budget.budget_within_contract === true,
+    combined_index_bytes: typeof budget.combined_index_bytes === 'number' ? budget.combined_index_bytes : null,
+    max_combined_index_bytes: typeof budget.max_combined_index_bytes === 'number' ? budget.max_combined_index_bytes : null,
+    index_states: Array.isArray(budget.index_states)
+      ? budget.index_states.map((entry) => Object.freeze({
+        path: entry.path || 'unknown',
+        bytes: typeof entry.bytes === 'number' ? entry.bytes : null,
+        max_bytes: typeof entry.max_bytes === 'number' ? entry.max_bytes : null,
+        within_budget: entry.within_budget === true,
+        compare_action: entry.compare_action || 'unknown'
+      }))
+      : [],
+    warnings: Array.isArray(budget.warnings) ? budget.warnings.slice() : [],
+    materialize_command: budget.materialize_command || 'agent-onboard target governance --materialize --write --force'
+  });
+}
+
+function readinessFromSummaries(surfaceSummary, inventory, workItems, governanceDrift, governanceBudget) {
   const blockers = [];
   const warnings = [];
   if (!surfaceSummary.present_paths.includes('AGENTS.md') && !surfaceSummary.present_paths.includes('llms.txt')) warnings.push('no_target_agent_entrypoint_detected');
@@ -204,6 +238,9 @@ function readinessFromSummaries(surfaceSummary, inventory, workItems, governance
   if (governanceDrift && governanceDrift.overall_state === 'missing') warnings.push('governance_index_missing_stale_read_risk');
   if (governanceDrift && governanceDrift.overall_state === 'stale') warnings.push('governance_index_stale_read_risk');
   if (governanceDrift && governanceDrift.overall_state === 'blocked') blockers.push('governance_index_drift_check_blocked');
+  if (governanceBudget && governanceBudget.overall_state === 'over_budget') blockers.push('governance_budget_over_contract');
+  if (governanceBudget && governanceBudget.status === 'blocked' && governanceBudget.overall_state !== 'over_budget') blockers.push('governance_budget_check_blocked');
+  if (governanceBudget && governanceBudget.status === 'unavailable') warnings.push('governance_budget_check_unavailable');
   return {
     status: blockers.length > 0 ? 'blocked' : (warnings.length > 0 ? 'usable_with_warnings' : 'ready'),
     blockers,
@@ -261,12 +298,16 @@ function targetHandoffPreview(targetRoot = process.cwd(), deps = {}) {
   const governanceDrift = typeof deps.targetGovernanceIndexDriftCheck === 'function'
     ? deps.targetGovernanceIndexDriftCheck(absoluteTargetRoot)
     : { status: 'unavailable' };
+  const governanceBudget = typeof deps.targetGovernanceBudgetCheck === 'function'
+    ? deps.targetGovernanceBudgetCheck(absoluteTargetRoot)
+    : { status: 'unavailable' };
   const surfaces = targetHandoffSurfaces(absoluteTargetRoot);
   const inventoryCompact = inventorySummary(inventory);
   const workItemsCompact = workItemsSummary(workItems);
   const governanceCompact = governanceSummary(governance);
   const governanceDriftCompact = governanceDriftSummary(governanceDrift);
-  const readiness = readinessFromSummaries(surfaces, inventoryCompact, workItemsCompact, governanceDriftCompact);
+  const governanceBudgetCompact = governanceBudgetSummary(governanceBudget);
+  const readiness = readinessFromSummaries(surfaces, inventoryCompact, workItemsCompact, governanceDriftCompact, governanceBudgetCompact);
 
   return Object.freeze({
     schema: TARGET_HANDOFF_SCHEMA,
@@ -290,6 +331,7 @@ function targetHandoffPreview(targetRoot = process.cwd(), deps = {}) {
       work_items_summary: workItemsCompact,
       governance_summary: governanceCompact,
       governance_index_drift_summary: governanceDriftCompact,
+      governance_budget_summary: governanceBudgetCompact,
       memory_surface_summary: surfaces,
       readiness,
       recommended_next_commands: [
@@ -297,6 +339,8 @@ function targetHandoffPreview(targetRoot = process.cwd(), deps = {}) {
         'agent-onboard target inventory --text',
         'agent-onboard target memory --text',
         'agent-onboard target governance --text',
+        'agent-onboard target governance --budget-contract --text',
+        'agent-onboard target governance --budget-check --text',
         'agent-onboard target governance --check --text',
         'agent-onboard target work-items --text',
         'agent-onboard check --fast --text'
@@ -357,6 +401,7 @@ function targetHandoffPreviewText(result) {
   const memory = result.handoff.memory_surface_summary;
   const governance = result.handoff.governance_summary || {};
   const governanceDrift = result.handoff.governance_index_drift_summary || {};
+  const governanceBudget = result.handoff.governance_budget_summary || {};
   const roots = inventory.source_roots.map((entry) => `${entry.path}(${entry.role}:${entry.file_count})`).join(', ') || 'none';
   const present = memory.present_paths.length > 0 ? memory.present_paths.join(', ') : 'none';
   const open = workItems.open_work_item ? `${workItems.open_work_item.id} — ${workItems.open_work_item.title || 'untitled'}` : 'none';
@@ -371,6 +416,7 @@ function targetHandoffPreviewText(result) {
     `Scripts: ${inventory.script_names.length > 0 ? inventory.script_names.join(', ') : 'none'}`,
     `Memory/handoff surfaces: ${present}`,
     `Governance indexes: work-items ${governance.work_items_index_present ? 'present' : (governance.work_items_index_source || 'unavailable')}, claims ${governance.claims_index_present ? 'present' : (governance.claims_index_source || 'unavailable')}`,
+    `Governance budget: ${governanceBudget.overall_state || 'unavailable'}; combined ${governanceBudget.combined_index_bytes === null || governanceBudget.combined_index_bytes === undefined ? 'unknown' : governanceBudget.combined_index_bytes}/${governanceBudget.max_combined_index_bytes || 'unknown'} bytes`,
     `Governance index drift: ${governanceDrift.overall_state || 'unavailable'}; refresh required ${governanceDrift.refresh_required ? 'true' : 'false'}`,
     `Work-items present: ${workItems.present}`,
     `Open item: ${open}`,
@@ -392,7 +438,8 @@ function createTargetHandoffService(deps = {}) {
       targetInventory: deps.targetInventory,
       targetWorkItemsPreview: deps.targetWorkItemsPreview,
       targetGovernancePreview: deps.targetGovernancePreview,
-      targetGovernanceIndexDriftCheck: deps.targetGovernanceIndexDriftCheck
+      targetGovernanceIndexDriftCheck: deps.targetGovernanceIndexDriftCheck,
+      targetGovernanceBudgetCheck: deps.targetGovernanceBudgetCheck
     }),
     formatTargetHandoffPreviewText: targetHandoffPreviewText,
     targetHandoffSurfaces
@@ -404,5 +451,6 @@ module.exports = {
   targetHandoffPreview,
   targetHandoffPreviewText,
   targetHandoffSurfaces,
-  governanceDriftSummary
+  governanceDriftSummary,
+  governanceBudgetSummary
 };
