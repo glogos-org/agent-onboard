@@ -124,11 +124,18 @@ function createTargetTemplatesService(deps) {
   Before proposing or making changes, read these files when present:
   
   1. \`AGENTS.md\`
-  2. \`llms.txt\`
+  2. \`SOURCE_OF_TRUTH.md\`
   3. \`.agent-onboard/authority-path.json\`
-  4. \`${TARGET_CONFIG_FILE}\`
-  5. \`.agent-onboard/project.json\`
-  6. \`.agent-onboard/work-items.json\`
+  4. \`llms.txt\`
+  5. \`package.json\`
+  6. \`authority-map.json\`
+  7. \`manifest.json\`
+  8. \`${TARGET_CONFIG_FILE}\`
+  9. \`.agent-onboard/runtime-namespace.json\`
+  10. \`.agent-onboard/project.json\`
+  11. \`.agent-onboard/work-items.json\`
+  12. \`README.md\`
+  13. raw evidence/source files on demand only after the authority and scope files above.
   
   If \`node_modules\` is missing, do not assume the package is installed locally. Prefer \`npx ${PACKAGE_NAME}@${VERSION} status\` or the package version requested by the repository owner.
   
@@ -234,15 +241,19 @@ function createTargetTemplatesService(deps) {
   
   First-read order:
   
-  1. AGENTS.md ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â human and agent operating rules.
-  2. llms.txt ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â AI-readable public entrypoint.
-  3. .agent-onboard/authority-path.json ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â machine-readable authority path index.
-  4. ${TARGET_CONFIG_FILE} ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â target boundary declaration.
-  5. .agent-onboard/runtime-namespace.json ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â target runtime namespace declaration.
-  6. .agent-onboard/project.json ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â target runtime identity.
-  7. .agent-onboard/work-items.json ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â public work item ledger.
-  8. README.md ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â public package or repository documentation.
-  9. Raw evidence/source files ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â on demand only after the authority files above.
+  1. AGENTS.md — human and agent operating rules.
+  2. SOURCE_OF_TRUTH.md — human-readable authority precedence.
+  3. .agent-onboard/authority-path.json — machine-readable authority path index.
+  4. llms.txt — AI-readable command and orientation entrypoint.
+  5. package.json — package identity, scripts, and pack surface.
+  6. authority-map.json — stable file URN and authority registry.
+  7. manifest.json — content identity and file coverage index.
+  8. .agent-onboard/target.json — target boundary declaration.
+  9. .agent-onboard/runtime-namespace.json — target runtime namespace declaration.
+  10. .agent-onboard/project.json — target runtime identity.
+  11. .agent-onboard/work-items.json — public work item ledger.
+  12. README.md — public package or repository documentation.
+  13. raw evidence/source files — on demand only after the authority and scope files above.
   
   Default boundary: start read-only. Do not install dependencies, run builds/tests/deploys, publish, push, or overwrite non-identical files unless the repository owner explicitly authorizes that action.
   `;

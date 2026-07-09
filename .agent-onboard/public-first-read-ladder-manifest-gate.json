@@ -1,0 +1,155 @@
+{
+  "schema": "agent-onboard-public-work-item-closure-record-001",
+  "id": "P1S3M5W33",
+  "title": "Public first-read ladder manifest gate",
+  "status": "closed",
+  "release_line": "public_first_read_ladder_manifest_gate",
+  "package_version_source": "package.json#version",
+  "purpose": "Normalize the public first-read ladder after reviewing authority, manifest, source-of-truth, AI entrypoint, package, and work-item surfaces.",
+  "read_order": [
+    {
+      "order": 1,
+      "path": "AGENTS.md",
+      "role": "operating_rules_and_default_boundary",
+      "required_when_present": true
+    },
+    {
+      "order": 2,
+      "path": "SOURCE_OF_TRUTH.md",
+      "role": "human_readable_authority_precedence",
+      "required_when_present": true
+    },
+    {
+      "order": 3,
+      "path": ".agent-onboard/authority-path.json",
+      "role": "machine_readable_authority_index",
+      "required_when_present": true
+    },
+    {
+      "order": 4,
+      "path": "llms.txt",
+      "role": "ai_readable_command_and_orientation_entrypoint",
+      "required_when_present": true
+    },
+    {
+      "order": 5,
+      "path": "package.json",
+      "role": "package_identity_scripts_and_pack_surface",
+      "required_when_present": true
+    },
+    {
+      "order": 6,
+      "path": "authority-map.json",
+      "role": "stable_file_urn_and_authority_registry",
+      "required_when_present": true
+    },
+    {
+      "order": 7,
+      "path": "manifest.json",
+      "role": "content_identity_and_file_coverage_index",
+      "required_when_present": true
+    },
+    {
+      "order": 8,
+      "path": ".agent-onboard/target.json",
+      "role": "target_boundary_declaration",
+      "required_when_present": true
+    },
+    {
+      "order": 9,
+      "path": ".agent-onboard/runtime-namespace.json",
+      "role": "target_runtime_namespace_declaration",
+      "required_when_present": true
+    },
+    {
+      "order": 10,
+      "path": ".agent-onboard/project.json",
+      "role": "target_runtime_project_identity",
+      "required_when_present": true
+    },
+    {
+      "order": 11,
+      "path": ".agent-onboard/work-items.json",
+      "role": "public_work_item_ledger",
+      "required_when_present": true
+    },
+    {
+      "order": 12,
+      "path": "README.md",
+      "role": "public_package_documentation",
+      "required_when_present": false
+    },
+    {
+      "order": 13,
+      "path": "raw evidence/source files",
+      "role": "on_demand_only_after_authority_and_scope_files",
+      "required_when_present": false
+    }
+  ],
+  "manifest_role": {
+    "first_read_map": true,
+    "content_identity_index": true,
+    "sole_filesystem_authority": false,
+    "actual_filesystem_or_package_listing_remains_existence_authority": true
+  },
+  "boundary": {
+    "writes_files": false,
+    "installs_dependencies": false,
+    "runs_package_manager": false,
+    "publishes_package": false,
+    "git_mutation": false,
+    "mutates_registry": false
+  },
+  "closure": {
+    "actor": "gpt-5.5-thinking",
+    "closed_at": "2026-07-05T19:08:00.000Z",
+    "summary": "Closed by researching and normalizing the public first-read ladder. The new order separates operating boundary, authority precedence, machine authority index, AI command entrypoint, package identity, stable authority map, content manifest, target runtime state, work-item scope, docs, and on-demand source reads. manifest.json is promoted into first-read as a content identity and coverage map, but the actual filesystem/package listing remains the authority for existence and drift checks.",
+    "changed_files": [
+      "package.json",
+      "AGENTS.md",
+      "SOURCE_OF_TRUTH.md",
+      "llms.txt",
+      ".agent-onboard/authority-path.json",
+      "cli/agent_onboard/runtime-contracts.js",
+      "cli/agent_onboard/runtime-composer.js",
+      "cli/agent_onboard/domains/architecture/static-catalog.js",
+      "cli/agent_onboard/domains/architecture/services/runtime/architecture-runtime-service.js",
+      "cli/agent_onboard/domains/target/services/target-templates-service.js",
+      "cli/agent_onboard/domains/target/services/target-governance-service.js",
+      "src/domains/authority.js",
+      "test/agent-onboard.test.js",
+      ".agent-onboard/work-items.json",
+      ".agent-onboard/work-items.index.json",
+      ".agent-onboard/public-first-read-ladder-manifest-gate.json",
+      "authority-map.json",
+      "manifest.json"
+    ],
+    "checks_run": [
+      "node -c cli/agent_onboard/runtime-composer.js",
+      "node -c cli/agent_onboard/domains/target/services/target-templates-service.js",
+      "node -c cli/agent_onboard/domains/architecture/static-catalog.js",
+      "node -c cli/agent_onboard/domains/architecture/services/runtime/architecture-runtime-service.js",
+      "node -c src/domains/authority.js",
+      "node cli/agent-onboard.js authority --first-read",
+      "node cli/agent-onboard.js authority --check",
+      "node cli/agent-onboard.js release --version-sprawl-check",
+      "node cli/agent-onboard.js release --source-manifest-check",
+      "node cli/agent-onboard.js release --surface-check",
+      "node cli/agent-onboard.js release --check",
+      "node cli/agent-onboard.js check --fast --json",
+      "node cli/agent-onboard.js target governance --check --target .",
+      "node cli/agent-onboard.js target metadata --write --force --target .",
+      "node cli/agent-onboard.js target metadata --check --target .",
+      "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+      "npm test",
+      "npm run check:public-artifact-boundary",
+      "npm pack --dry-run --json"
+    ],
+    "checks_not_run": [
+      "npm run test:full was not run end-to-end in this local tool window"
+    ],
+    "known_non_pass": [
+      "Full runner was not executed end-to-end; quick suite and release/authority checks passed."
+    ]
+  }
+}

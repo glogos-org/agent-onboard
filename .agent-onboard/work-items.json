@@ -6031,6 +6031,64 @@
         "checks_not_run": [],
         "known_non_pass": []
       }
+    },
+    {
+      "id": "P1S3M5W33",
+      "milestone_id": "P1S3M5",
+      "title": "Public first-read ladder manifest gate",
+      "status": "closed",
+      "closure": {
+        "actor": "gpt-5.5-thinking",
+        "closed_at": "2026-07-05T19:08:00.000Z",
+        "summary": "Closed by researching and normalizing the public first-read ladder. The new order separates operating boundary, authority precedence, machine authority index, AI command entrypoint, package identity, stable authority map, content manifest, target runtime state, work-item scope, docs, and on-demand source reads. manifest.json is promoted into first-read as a content identity and coverage map, but the actual filesystem/package listing remains the authority for existence and drift checks.",
+        "changed_files": [
+          "package.json",
+          "AGENTS.md",
+          "SOURCE_OF_TRUTH.md",
+          "llms.txt",
+          ".agent-onboard/authority-path.json",
+          "cli/agent_onboard/runtime-contracts.js",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/domains/architecture/static-catalog.js",
+          "cli/agent_onboard/domains/architecture/services/runtime/architecture-runtime-service.js",
+          "cli/agent_onboard/domains/target/services/target-templates-service.js",
+          "cli/agent_onboard/domains/target/services/target-governance-service.js",
+          "src/domains/authority.js",
+          "test/agent-onboard.test.js",
+          ".agent-onboard/work-items.json",
+          ".agent-onboard/work-items.index.json",
+          ".agent-onboard/public-first-read-ladder-manifest-gate.json",
+          "authority-map.json",
+          "manifest.json"
+        ],
+        "checks_run": [
+          "node -c cli/agent_onboard/runtime-composer.js",
+          "node -c cli/agent_onboard/domains/target/services/target-templates-service.js",
+          "node -c cli/agent_onboard/domains/architecture/static-catalog.js",
+          "node -c cli/agent_onboard/domains/architecture/services/runtime/architecture-runtime-service.js",
+          "node -c src/domains/authority.js",
+          "node cli/agent-onboard.js authority --first-read",
+          "node cli/agent-onboard.js authority --check",
+          "node cli/agent-onboard.js release --version-sprawl-check",
+          "node cli/agent-onboard.js release --source-manifest-check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js check --fast --json",
+          "node cli/agent-onboard.js target governance --check --target .",
+          "node cli/agent-onboard.js target metadata --write --force --target .",
+          "node cli/agent-onboard.js target metadata --check --target .",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "npm test",
+          "npm run check:public-artifact-boundary",
+          "npm pack --dry-run --json"
+        ],
+        "checks_not_run": [
+          "npm run test:full was not run end-to-end in this local tool window"
+        ],
+        "known_non_pass": [
+          "Full runner was not executed end-to-end; quick suite and release/authority checks passed."
+        ]
+      }
     }
   ]
 }

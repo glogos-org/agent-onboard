@@ -9,12 +9,18 @@ This repository dogfoods `agent-onboard` as a target repository for public agent
 Before proposing or making changes, read:
 
 1. `AGENTS.md`
-2. `llms.txt`
+2. `SOURCE_OF_TRUTH.md`
 3. `.agent-onboard/authority-path.json`
-4. `agent-onboard.target.json`
-5. `.agent-onboard/runtime-namespace.json`
-6. `.agent-onboard/project.json`
-7. `.agent-onboard/work-items.json`
+4. `llms.txt`
+5. `package.json`
+6. `authority-map.json`
+7. `manifest.json`
+8. `.agent-onboard/target.json`
+9. `.agent-onboard/runtime-namespace.json`
+10. `.agent-onboard/project.json`
+11. `.agent-onboard/work-items.json`
+12. `README.md`
+13. Raw evidence/source files on demand only after the authority and scope files above.
 
 ## Default boundary
 

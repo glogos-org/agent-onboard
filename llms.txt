@@ -11,11 +11,14 @@ Target:
 Canonical AI-readable files:
 
 - AGENTS.md
-- llms.txt
-- README.md
 - SOURCE_OF_TRUTH.md
 - .agent-onboard/authority-path.json
+- llms.txt
+- package.json
+- authority-map.json
+- manifest.json
 - .agent-onboard/work-items.json
+- README.md
 
 Stable commands:
 
@@ -60,12 +63,18 @@ Default safety:
 First-read order:
 
 1. AGENTS.md — human and agent operating rules.
-2. llms.txt — AI-readable public entrypoint.
-3. README.md — public package and repository documentation.
-4. SOURCE_OF_TRUTH.md — public authority summary.
-5. .agent-onboard/authority-path.json — machine-readable authority path index.
-6. .agent-onboard/work-items.json — public work item ledger.
-7. Raw evidence/source files — on demand only after the authority files above.
+2. SOURCE_OF_TRUTH.md — human-readable authority precedence.
+3. .agent-onboard/authority-path.json — machine-readable authority path index.
+4. llms.txt — AI-readable command and orientation entrypoint.
+5. package.json — package identity, scripts, and pack surface.
+6. authority-map.json — stable file URN and authority registry.
+7. manifest.json — content identity and file coverage index.
+8. .agent-onboard/target.json — target boundary declaration.
+9. .agent-onboard/runtime-namespace.json — target runtime namespace declaration.
+10. .agent-onboard/project.json — target runtime identity.
+11. .agent-onboard/work-items.json — public work item ledger.
+12. README.md — public package or repository documentation.
+13. raw evidence/source files — on demand only after the authority and scope files above.
 
 Source of truth order for agents: follow the First-read order above before raw evidence/source files.
 

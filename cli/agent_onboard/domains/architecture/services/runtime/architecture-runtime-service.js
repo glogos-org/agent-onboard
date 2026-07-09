@@ -398,7 +398,7 @@ function publicAuthorityFirstRead(root = packageRoot()) {
 
 function publicAuthorityFirstReadCheck(root = packageRoot()) {
   const result = publicAuthorityFirstRead(root);
-  const expectedOrder = ['AGENTS.md', 'llms.txt', '.agent-onboard/authority-path.json', '.agent-onboard/target.json', '.agent-onboard/runtime-namespace.json', '.agent-onboard/project.json', '.agent-onboard/work-items.json', 'README.md', 'raw evidence/source files'];
+  const expectedOrder = PUBLIC_AUTHORITY_FIRST_READ_INDEX.read_order.map((entry) => entry.path);
   const actualOrder = result.read_order.map((entry) => entry.path);
   const expectedPackFiles = PUBLIC_RELEASE_CONTRACT.expected_pack_files.slice().sort();
   const projectedPackFiles = packageJsonProjectedPackFiles(readJson(path.join(root, 'package.json')));
@@ -416,6 +416,8 @@ function publicAuthorityFirstReadCheck(root = packageRoot()) {
       const llms = fs.readFileSync(llmsPath, 'utf8');
       if (!llms.includes('First-read order')) errors.push('llms.txt must contain First-read order');
       if (!llms.includes('.agent-onboard/authority-path.json')) errors.push('llms.txt must reference .agent-onboard/authority-path.json');
+      if (!llms.includes('manifest.json')) errors.push('llms.txt must reference manifest.json');
+      if (!llms.includes('SOURCE_OF_TRUTH.md')) errors.push('llms.txt must reference SOURCE_OF_TRUTH.md');
     }
     if (fs.existsSync(authorityPath)) {
       try {

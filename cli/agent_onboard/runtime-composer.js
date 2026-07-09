@@ -244,14 +244,7 @@ function operatorGuideCatalog() {
     release_line: RELEASE_LINE,
     command: 'agent-onboard guide --json',
     purpose: 'compact operator and agent orientation guide for choosing the next public workflow',
-    first_read_order: [
-      'README.md',
-      'llms.txt',
-      'AGENTS.md',
-      'SOURCE_OF_TRUTH.md',
-      '.agent-onboard/authority-path.json',
-      '.agent-onboard/work-items.json'
-    ],
+    first_read_order: discoveryFirstReadOrder(),
     workflows: {
       new_agent_orientation: {
         goal: 'discover the CLI surface and repository authority before editing',
@@ -512,11 +505,17 @@ const quickstartService = Object.freeze({
 function discoveryFirstReadOrder() {
   return [
     'AGENTS.md',
-    'llms.txt',
-    'README.md',
     'SOURCE_OF_TRUTH.md',
     '.agent-onboard/authority-path.json',
-    '.agent-onboard/work-items.json'
+    'llms.txt',
+    'package.json',
+    'authority-map.json',
+    'manifest.json',
+    '.agent-onboard/target.json',
+    '.agent-onboard/runtime-namespace.json',
+    '.agent-onboard/project.json',
+    '.agent-onboard/work-items.json',
+    'README.md'
   ];
 }
 
@@ -558,11 +557,14 @@ function embeddedDiscoveryLlmsText() {
     '',
     'Canonical AI-readable files:',
     '- AGENTS.md',
-    '- llms.txt',
-    '- README.md',
     '- SOURCE_OF_TRUTH.md',
     '- .agent-onboard/authority-path.json',
+    '- llms.txt',
+    '- package.json',
+    '- authority-map.json',
+    '- manifest.json',
     '- .agent-onboard/work-items.json',
+    '- README.md',
     '',
     'Stable commands:',
     ...discoveryStableCommands().map((command) => `- ${command}`),
@@ -572,8 +574,11 @@ function embeddedDiscoveryLlmsText() {
     '- Do not write files, install dependencies, publish, push, mutate Git, run managed project commands, or use network calls unless the repository owner explicitly authorizes that action.',
     '- Use explicit --write commands only after previewing the plan and receiving owner authorization.',
     '',
-    'Source of truth order for agents:',
+    'First-read order:',
     ...discoveryFirstReadOrder().map((entry, index) => `${index + 1}. ${entry}`),
+    '13. raw evidence/source files',
+    '',
+    'Source of truth order for agents: follow the First-read order above before raw evidence/source files.',
     '',
     'Use `agent-onboard discovery --llms` to print this AI-readable entrypoint from either the source repository or an installed package.'
   ];
@@ -602,10 +607,15 @@ function discoveryCatalog() {
     llms_txt_path: 'llms.txt',
     first_read_order: discoveryFirstReadOrder(),
     ai_readable_files: [
-      'llms.txt',
       'AGENTS.md',
-      'README.md',
-      'SOURCE_OF_TRUTH.md'
+      'SOURCE_OF_TRUTH.md',
+      '.agent-onboard/authority-path.json',
+      'llms.txt',
+      'package.json',
+      'authority-map.json',
+      'manifest.json',
+      '.agent-onboard/work-items.json',
+      'README.md'
     ],
     stable_commands: discoveryStableCommands(),
     output_modes: ['--llms', '--json', '--text'],

@@ -106,6 +106,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-contract-spine-readiness-output-contract-gate-json-26f33d14"
     },
     {
+      "file_path": ".agent-onboard/public-first-read-ladder-manifest-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-public-first-read-ladder-manifest-gate-json-379e683b"
+    },
+    {
       "file_path": ".agent-onboard/public-release-surface-vocabulary-gate.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-release-surface-vocabulary-gate-json-ca7d6fb4"
     },
