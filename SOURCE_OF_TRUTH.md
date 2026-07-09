@@ -22,6 +22,6 @@ Authority order:
 12. `README.md` — public package or repository documentation
 13. Raw evidence/source files — on demand only after the authority and scope files above
 
-`authority-map.json` owns stable authority and file URNs. `manifest.json` records content identity and file coverage with `file_urn`, `file_path`, and `file_id` fields; it is a first-read map, not the only source of filesystem truth. Administrative markdown metadata belongs in leading HTML comment headers or registry metadata, not visible front matter.
+`authority-map.json` owns stable authority and file URNs. `manifest.json` records content identity and file coverage with `file_urn`, `file_path`, and `file_id` fields; it is a first-read map, not the only source of filesystem truth. Package source-manifest cache state, when present, is source-only acceleration and not authority for file existence. Administrative markdown metadata belongs in leading HTML comment headers or registry metadata, not visible front matter.
 
 Work-item semantics remain delegated to `agent-onboard`.

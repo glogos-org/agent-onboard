@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_first_read_ladder_manifest_gate';
+const EXPECTED_RELEASE_LINE = 'public_source_manifest_hash_cache_budget_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -223,7 +223,7 @@ fullSourceTest('public runtime contracts module centralizes command and package 
   assert.strictEqual(contracts.RUNTIME_CONTRACTS.package_name, 'agent-onboard');
   assert.strictEqual(contracts.RELEASE_LINE, EXPECTED_RELEASE_LINE);
   assert.strictEqual(contracts.TOP_LEVEL_COMMAND.contracts, 'contracts');
-  assert.ok(contracts.PRODUCT_HELP_LINES.includes('agent-onboard contracts --json|--text|--check'));
+  assert.ok(contracts.PRODUCT_HELP_LINES.includes('agent-onboard contracts --json|--text|--check|--validate-output --contract <id> --file <path>'));
   assert.ok(contracts.PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES.includes('cli/agent_onboard/contracts/public-contracts.js'));
   assert.strictEqual(contracts.TARGET_CONFIG_FILE, '.agent-onboard/target.json');
   assert.strictEqual(contracts.TARGET_COMMAND.doctor, 'doctor');
@@ -256,7 +256,7 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.strictEqual(output.status, 'ok');
   assert.strictEqual(output.version, EXPECTED_VERSION);
   assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
-  assert.deepStrictEqual(output.top_level_commands, ['help', 'version', 'status', 'commands', 'guide', 'quickstart', 'discovery', 'create', 'issue', 'contributor', 'check', 'ci', 'mcp', 'init', 'agents', 'guard', 'authority', 'architecture', 'release', 'target-config', 'work-items', 'target', 'target-instance']);
+  assert.deepStrictEqual(output.top_level_commands, ['help', 'version', 'status', 'commands', 'guide', 'quickstart', 'discovery', 'create', 'issue', 'contributor', 'contracts', 'check', 'ci', 'mcp', 'init', 'agents', 'guard', 'authority', 'architecture', 'release', 'target-config', 'work-items', 'target', 'target-instance']);
   assert.ok(output.runtime_command_groups.core.includes('commands'));
   assert.ok(output.runtime_command_groups.core.includes('quickstart'));
   assert.ok(output.runtime_command_groups.core.includes('discovery'));
@@ -1592,7 +1592,7 @@ fullSourceTest('full source block line 535', () => {
   assert.strictEqual(output.version, EXPECTED_VERSION);
   assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
   assert.strictEqual(output.command, 'agent-onboard authority --first-read');
-  assert.deepStrictEqual(output.read_order.map((entry) => entry.path), ['AGENTS.md', 'llms.txt', '.agent-onboard/authority-path.json', '.agent-onboard/target.json', '.agent-onboard/runtime-namespace.json', '.agent-onboard/project.json', '.agent-onboard/work-items.json', 'README.md', 'raw evidence/source files']);
+  assert.deepStrictEqual(output.read_order.map((entry) => entry.path), ['AGENTS.md', 'SOURCE_OF_TRUTH.md', '.agent-onboard/authority-path.json', 'llms.txt', 'package.json', 'authority-map.json', 'manifest.json', '.agent-onboard/target.json', '.agent-onboard/runtime-namespace.json', '.agent-onboard/project.json', '.agent-onboard/work-items.json', 'README.md', 'raw evidence/source files']);
   assert.strictEqual(output.boundary.writes_files, false);
 });
 
@@ -1693,6 +1693,9 @@ fullSourceTest('package source manifest command is explicit, content-addressed, 
   assert.ok(output.files.every((entry) => entry.file_id.startsWith('ni:///sha-256;')));
   assert.ok(output.files.every((entry) => !Object.prototype.hasOwnProperty.call(entry, 'sha256')));
   assert.strictEqual(output.hash_cache.cache_file_projected_into_pack, false);
+  assert.strictEqual(output.hash_cache_budget.status, 'ok');
+  assert.strictEqual(output.hash_cache_budget.required_for_public_package_manifest, false);
+  assert.strictEqual(output.hash_cache_budget.authority_for_file_existence, false);
   assert.strictEqual(output.boundary.writes_files, false);
   assert.strictEqual(output.boundary.runs_package_manager, false);
 });
@@ -1709,8 +1712,50 @@ fullSourceTest('package source manifest check command validates drift guard shap
   assert.strictEqual(output.validated.package_files_are_content_addressed, true);
   assert.strictEqual(output.validated.raw_sha256_not_exposed, true);
   assert.strictEqual(output.validated.hash_cache_not_projected_into_package, true);
+  assert.strictEqual(output.validated.hash_cache_budget_enforced, true);
+  assert.strictEqual(output.validated.hash_cache_is_not_existence_authority, true);
+  assert.strictEqual(output.hash_cache_budget.status, 'ok');
   assert.strictEqual(output.validated.command_is_read_only, true);
   assert.deepStrictEqual(output.errors, []);
+});
+
+
+fullSourceTest('package source manifest hash cache budget is optional, strict, and source-only', () => {
+  const sourceManifestModule = require(path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'package', 'services', 'source-manifest-service.js'));
+  const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'agent-onboard-hash-cache-'));
+  copyExpectedPackFiles(tempRoot);
+  fs.mkdirSync(path.join(tempRoot, '.agent-onboard'), { recursive: true });
+  const service = sourceManifestModule.createPackageSourceManifestService({
+    packageName: 'agent-onboard',
+    version: EXPECTED_VERSION,
+    releaseLine: EXPECTED_RELEASE_LINE,
+    expectedPackFiles: EXPECTED_PACK_FILES,
+    sourceOnlyFiles: ['.agent-onboard/source-manifest.hash-cache.json']
+  });
+  const absent = service.check(tempRoot);
+  assert.strictEqual(absent.status, 'ok');
+  assert.strictEqual(absent.hash_cache_budget.cache_present, false);
+  assert.strictEqual(absent.hash_cache_budget.cache_absent_is_valid, true);
+  const cache = sourceManifestModule.buildHashCache(tempRoot, EXPECTED_PACK_FILES);
+  const cachePath = path.join(tempRoot, '.agent-onboard', 'source-manifest.hash-cache.json');
+  fs.writeFileSync(cachePath, `${JSON.stringify(cache, null, 2)}\n`);
+  const cached = service.check(tempRoot);
+  assert.strictEqual(cached.status, 'ok');
+  assert.strictEqual(cached.hash_cache_budget.cache_present, true);
+  assert.strictEqual(cached.hash_cache_budget.entry_count, EXPECTED_PACK_FILES.length);
+  assert.strictEqual(cached.hash_cache.hits, EXPECTED_PACK_FILES.length);
+  assert.strictEqual(cached.hash_cache.misses, 0);
+  assert.strictEqual(cached.hash_cache_budget.cache_file_projected_into_pack, false);
+  const stale = JSON.parse(fs.readFileSync(cachePath, 'utf8'));
+  stale.entries['__extra__/not-a-package-file.txt'] = {
+    file_id: 'ni:///sha-256;AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+    stat: { bytes: 1, mtime_ms: '1', ctime_ms: '1', dev: '1', ino: '1' }
+  };
+  fs.writeFileSync(cachePath, `${JSON.stringify(stale, null, 2)}\n`);
+  const failed = service.check(tempRoot);
+  assert.strictEqual(failed.status, 'error');
+  assert.ok(failed.errors.some((error) => error.includes('source manifest hash cache budget failed')));
+  assert.deepStrictEqual(failed.hash_cache_budget.extra_paths, ['__extra__/not-a-package-file.txt']);
 });
 
 fullSourceTest('full source block line 622', () => {
@@ -4751,7 +4796,11 @@ fullSourceTest('package runtime service partition seed admits release package do
   assert.strictEqual(sourceManifest.entry_count, EXPECTED_PACK_FILES.length);
   assert.strictEqual(sourceManifest.validated.raw_sha256_not_exposed, true);
   assert.strictEqual(sourceManifest.validated.hash_cache_not_projected_into_package, true);
+  assert.strictEqual(sourceManifest.validated.hash_cache_budget_enforced, true);
+  assert.strictEqual(sourceManifest.validated.hash_cache_is_not_existence_authority, true);
   assert.strictEqual(typeof packageDomain.sourceManifest.digestBytes(Buffer.from('agent-onboard')).file_id, 'string');
+  assert.strictEqual(typeof packageDomain.sourceManifest.buildHashCache, 'function');
+  assert.strictEqual(typeof packageDomain.sourceManifest.validateHashCacheBudget, 'function');
   assert.strictEqual(typeof packageDomain.coordinate.describePackageCoordinateServiceSeed, 'function');
   assert.strictEqual(typeof packageDomain.firstReadContract.describeInstalledFirstReadContractSeed, 'function');
 });

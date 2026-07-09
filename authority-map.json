@@ -114,6 +114,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-release-surface-vocabulary-gate-json-ca7d6fb4"
     },
     {
+      "file_path": ".agent-onboard/public-source-manifest-hash-cache-budget-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-public-source-manifest-hash-cache-budget-gate-json-17e3c676"
+    },
+    {
       "file_path": ".agent-onboard/quickstart-product-gate.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-quickstart-product-gate-json-eb9f94bd"
     },

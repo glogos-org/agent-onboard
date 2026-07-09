@@ -17,6 +17,7 @@ const PUBLIC_CONTRACT_IDS = Object.freeze({
 const PUBLIC_READINESS_SEVERITIES = Object.freeze(['blocker', 'warning']);
 const PUBLIC_READINESS_REASON_CODES = Object.freeze([
   'agent_entrypoint_missing',
+  'no_target_agent_entrypoint_detected',
   'target_inventory_unavailable',
   'target_work_items_preview_unavailable',
   'open_target_work_item_should_be_continued_before_new_admission',

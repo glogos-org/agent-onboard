@@ -449,6 +449,7 @@ const PUBLIC_PACKAGE_SURFACE_PRESERVATION = Object.freeze({
     '.agent-onboard/work-items.json',
     '.agent-onboard/authority-path.json',
     '.agent-onboard/runtime-namespace.json',
+    '.agent-onboard/source-manifest.hash-cache.json',
     '.agent-onboard/source-partition-plan.json',
     '.agent-onboard/source-extraction-rehearsal.json',
     '.agent-onboard/source-extraction-golden-outputs.json',

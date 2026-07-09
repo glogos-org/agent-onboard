@@ -429,7 +429,7 @@ The public line extracts the aggregate `architecture --check` coordinator into `
 
 The public line admits `release_package` as a packaged domain service partition under `cli/agent_onboard/domains/package/`. Keep `package-service.js` as a thin release command coordinator, keep package surface, source manifest, package coordinate, and installed first-read responsibilities in separate service modules, and do not grow `cli/agent-onboard.js` with new release/package logic.
 
-The package source manifest service is now an active read-only package surface guard and explicit release command surface. Keep `release --source-manifest` and `release --source-manifest-check` side-effect-free: they may hash projected package files and report `file_id` values, but they must not write cache files, expose raw `sha256`, run npm, or pull source-only state into `package.json#files`.
+The package source manifest service is now an active read-only package surface guard and explicit release command surface. Keep `release --source-manifest` and `release --source-manifest-check` side-effect-free: they may hash projected package files, may consume an optional source-only `.agent-onboard/source-manifest.hash-cache.json` accelerator, and must report `file_id` values. The actual package projection remains the authority for file existence. Cache entries have a zero stale/extra/missing/invalid budget and must stay out of `package.json#files`; the commands must not write cache files, expose raw `sha256`, run npm, or pull source-only state into the package projection.
 
 ## Public core config guard service extraction
 

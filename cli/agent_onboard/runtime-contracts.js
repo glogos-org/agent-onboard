@@ -2,7 +2,7 @@
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
-const RELEASE_LINE = 'public_first_read_ladder_manifest_gate';
+const RELEASE_LINE = 'public_source_manifest_hash_cache_budget_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
   agents: 'agents',
