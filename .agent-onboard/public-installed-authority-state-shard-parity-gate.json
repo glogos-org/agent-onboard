@@ -1,0 +1,56 @@
+{
+  "schema": "agent-onboard-public-installed-authority-state-shard-parity-gate-001",
+  "package_name": "agent-onboard",
+  "package_version": "0.0.148",
+  "release_line": "public_installed_authority_state_shard_parity_gate",
+  "work_item_id": "P1S3M5W41",
+  "title": "Public installed authority state shard parity gate",
+  "status": "closed",
+  "closed_at": "2026-07-06T08:10:00.000Z",
+  "admitted_commands": [
+    "agent-onboard release --authority-state-parity",
+    "agent-onboard release --authority-state-parity-check"
+  ],
+  "installed_smoke_commands": [
+    "node node_modules/agent-onboard/cli/agent-onboard.js authority --state-check",
+    "node node_modules/agent-onboard/cli/agent-onboard.js release --authority-state-parity-check"
+  ],
+  "state_shard_paths": [
+    ".agent-onboard/state/live-authority.json",
+    ".agent-onboard/state/policies.json",
+    ".agent-onboard/state/indexes.json",
+    ".agent-onboard/state/closed-gates.jsonl"
+  ],
+  "boundary": {
+    "writes_files": false,
+    "writes_package_root": false,
+    "writes_target_repository_state": false,
+    "creates_temp_files": false,
+    "git_mutation": false,
+    "runs_package_manager": false,
+    "publishes_package": false,
+    "mutates_registry": false,
+    "network_required": false,
+    "raw_authority_loaded_by_default": false,
+    "file_contents_inlined": false,
+    "state_shards_packaged_in_npm_tarball": false
+  },
+  "summary": "Closed by adding release --authority-state-parity and release --authority-state-parity-check, integrating exact artifact oracle fresh-install smoke for authority --state-check and authority-state parity, and validating that source-only authority state shards remain absent from the npm package projection while installed package context still passes compact state checks.",
+  "checks": [
+    "node cli/agent-onboard.js release --authority-state-parity-check",
+    "node cli/agent-onboard.js release --artifact-oracle-check",
+    "node cli/agent-onboard.js authority --state-check",
+    "node cli/agent-onboard.js authority --index-check",
+    "node cli/agent-onboard.js authority --check",
+    "node cli/agent-onboard.js release --source-manifest-check",
+    "node cli/agent-onboard.js release --surface-check",
+    "node cli/agent-onboard.js release --check",
+    "node cli/agent-onboard.js check --fast --json",
+    "node cli/agent-onboard.js claim --validate-ledger --json",
+    "node cli/agent-onboard.js target metadata --check --target .",
+    "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+    "npm test",
+    "npm run check:public-artifact-boundary",
+    "npm pack --dry-run --json"
+  ]
+}
