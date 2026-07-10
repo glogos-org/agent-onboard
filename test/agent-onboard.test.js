@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_readme_first_read_history_split_planning_gate';
+const EXPECTED_RELEASE_LINE = 'public_readme_history_archive_split_dry_run_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -5221,6 +5221,39 @@ fullSourceTest('public README first-read history split planning is read-only and
   assert.strictEqual(check.validated.all_first_read_markers_present, true);
   assert.strictEqual(check.validated.future_archive_not_created, true);
   assert.strictEqual(check.validated.no_archive_delete_move_or_rewrite, true);
+  assert.strictEqual(check.validated.current_work_item_closed, true);
+  assert.strictEqual(check.boundary.check_command_writes_files, false);
+});
+
+fullSourceTest('public README history archive split dry-run is exact and read-only', () => {
+  const dryRun = readJsonOutput(run(['release', '--readme-dry-run']));
+  assert.strictEqual(dryRun.schema, 'agent-onboard-public-readme-history-archive-split-dry-run-result-001');
+  assert.strictEqual(dryRun.status, 'ok');
+  assert.strictEqual(dryRun.version, EXPECTED_VERSION);
+  assert.strictEqual(dryRun.release_line, EXPECTED_RELEASE_LINE);
+  assert.strictEqual(dryRun.command, 'agent-onboard release --readme-dry-run');
+  assert.strictEqual(dryRun.plan_gate_check, 'ok');
+  assert.ok(dryRun.archive_preview.section_count >= 5);
+  assert.ok(dryRun.archive_preview.source_sections.every((section) => section.start_line > 0 && section.end_line >= section.start_line));
+  assert.ok(dryRun.archive_preview.file_id.startsWith('ni:///sha-256;'));
+  assert.ok(dryRun.live_readme_preview.file_id.startsWith('ni:///sha-256;'));
+  assert.ok(dryRun.index_preview.file_id.startsWith('ni:///sha-256;'));
+  assert.strictEqual(dryRun.current.history_archive_present, false);
+  assert.strictEqual(dryRun.current.history_index_present, false);
+  assert.strictEqual(dryRun.diff_preview.writes_files_now, false);
+  assert.deepStrictEqual(dryRun.diff_preview.would_write_files_after_future_admission, ['README.md', 'docs/release-history.md', '.agent-onboard/readme-history.index.json']);
+  assert.strictEqual(dryRun.live_readme_preview.retained_first_read_markers.every((marker) => marker.present_in_live_candidate), true);
+
+  const check = readJsonOutput(run(['release', '--readme-dry-run-check']));
+  assert.strictEqual(check.schema, 'agent-onboard-public-readme-history-archive-split-dry-run-check-result-001');
+  assert.strictEqual(check.status, 'ok');
+  assert.strictEqual(check.command, 'agent-onboard release --readme-dry-run-check');
+  assert.strictEqual(check.validated.plan_gate_check_passes, true);
+  assert.strictEqual(check.validated.enough_history_sections_identified, true);
+  assert.strictEqual(check.validated.future_archive_not_created, true);
+  assert.strictEqual(check.validated.future_index_not_created, true);
+  assert.strictEqual(check.validated.live_readme_candidate_retains_first_read_markers, true);
+  assert.strictEqual(check.validated.no_archive_index_readme_write, true);
   assert.strictEqual(check.validated.current_work_item_closed, true);
   assert.strictEqual(check.boundary.check_command_writes_files, false);
 });

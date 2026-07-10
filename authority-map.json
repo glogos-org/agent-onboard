@@ -166,6 +166,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-readme-first-read-history-split-plan-gate-json-3746dbf4"
     },
     {
+      "file_path": ".agent-onboard/public-readme-history-archive-split-dry-run-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-public-readme-history-archive-split-dry-run-gate-json-1ba9dab3"
+    },
+    {
       "file_path": ".agent-onboard/public-release-surface-vocabulary-gate.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-release-surface-vocabulary-gate-json-ca7d6fb4"
     },

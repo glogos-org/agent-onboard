@@ -226,6 +226,7 @@ function quickTasks() {
     cliTask('release clean catalog check', ['release', '--clean-catalog-check'], expectStatusOk),
     cliTask('release keyword taxonomy check', ['release', '--keyword-taxonomy-check'], expectStatusOk),
     cliTask('release README plan check', ['release', '--readme-plan-check'], expectStatusOk),
+    cliTask('release README history archive split dry-run check', ['release', '--readme-dry-run-check'], expectStatusOk),
     cliTask('release version sprawl check', ['release', '--version-sprawl-check'], expectStatusOk),
     cliTask('release architecture parity smoke', ['release', '--architecture-parity-smoke'], expectStatusOk),
     cliTask('release check', ['release', '--check'], expectStatusOk),

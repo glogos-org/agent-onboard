@@ -6901,6 +6901,76 @@
           "No README history archive, README history index, file deletion, file movement, history rewrite, npm publication, registry mutation, dependency install, work-items archival split, closed-gate evidence compaction, or runtime/test module extraction is authorized by this planning gate."
         ]
       }
+    },
+    {
+      "id": "P1S3M6W5",
+      "milestone_id": "P1S3M6",
+      "title": "Public README history archive split dry-run gate",
+      "status": "closed",
+      "closure": {
+        "actor": "gpt-5.5-thinking",
+        "closed_at": "2026-07-06T16:35:00.000Z",
+        "summary": "Closed by adding read-only README history archive split dry-run and check commands that compute exact in-memory archive, history-index, and live README candidates with source line ranges and digests, without creating docs/release-history.md, creating a history index, moving files, deleting files, or rewriting README history.",
+        "changed_files": [
+          "package.json",
+          "README.md",
+          "AGENTS.md",
+          "SOURCE_OF_TRUTH.md",
+          "llms.txt",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/runtime-contracts.js",
+          "cli/agent_onboard/domains/architecture/static-catalog.js",
+          "cli/agent_onboard/domains/package/services/package-service.js",
+          "test/agent-onboard.test.js",
+          "test/run-tests.js",
+          ".agent-onboard/work-items.json",
+          ".agent-onboard/work-items.index.json",
+          ".agent-onboard/claims.jsonl",
+          ".agent-onboard/claims.index.json",
+          ".agent-onboard/public-readme-history-archive-split-dry-run-gate.json",
+          ".agent-onboard/authority-index.json",
+          ".agent-onboard/state/live-authority.json",
+          ".agent-onboard/state/policies.json",
+          ".agent-onboard/state/indexes.json",
+          ".agent-onboard/state/closed-gates.jsonl",
+          "authority-map.json",
+          "manifest.json"
+        ],
+        "checks_run": [
+          "node -c cli/agent_onboard/runtime-composer.js",
+          "node -c cli/agent_onboard/runtime-contracts.js",
+          "node -c cli/agent_onboard/domains/architecture/static-catalog.js",
+          "node -c cli/agent_onboard/domains/package/services/package-service.js",
+          "node -c test/agent-onboard.test.js",
+          "node -c test/run-tests.js",
+          "node cli/agent-onboard.js release --readme-dry-run",
+          "node cli/agent-onboard.js release --readme-dry-run-check",
+          "node cli/agent-onboard.js release --readme-plan-check",
+          "node cli/agent-onboard.js release --keyword-taxonomy-check",
+          "node cli/agent-onboard.js release --clean-catalog-check",
+          "node cli/agent-onboard.js release --clean-check",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js check --fast --json",
+          "node cli/agent-onboard.js claim --lifecycle-check --json",
+          "node cli/agent-onboard.js claim --validate-ledger --json",
+          "node cli/agent-onboard.js release --source-manifest-check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node cli/agent-onboard.js authority --state-check",
+          "node cli/agent-onboard.js authority --index-check",
+          "node cli/agent-onboard.js authority --check",
+          "node cli/agent-onboard.js target metadata --check --target .",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "npm test",
+          "npm run check:public-artifact-boundary",
+          "npm pack --dry-run --json"
+        ],
+        "checks_not_run": [
+          "npm publish"
+        ],
+        "known_non_pass": [
+          "No README history archive, README history index, file deletion, file movement, README rewrite, npm publication, registry mutation, dependency install, work-items archival split, closed-gate evidence compaction, or runtime/test module extraction is authorized by this dry-run gate."
+        ]
+      }
     }
   ]
 }
