@@ -463,6 +463,10 @@ Use `node cli/agent-onboard.js discovery --llms`, `node cli/agent-onboard.js dis
 
 
 
+## Public exact artifact oracle gate
+
+Use `node cli/agent-onboard.js release --artifact-oracle` or `node cli/agent-onboard.js release --artifact-oracle-check` when a release candidate needs local exact artifact evidence rather than source-tree projection alone. The command may run `npm pack` into a temporary directory, compute an exact tarball SHA-256, fresh-install the local tarball into a temporary project, and smoke-test the installed CLI. It must remove temporary artifacts, must not write the package root, must not mutate target repository state, must not publish or mutate registry state, and must not require network access. Keep this command outside `check --fast`; the fast runner must continue to list it as an omitted package-manager check.
+
 ## Public target governance budget check product gate
 
 Use `node cli/agent-onboard.js target governance --budget-check`, `node cli/agent-onboard.js target governance --budget-check --json`, or `node cli/agent-onboard.js target governance --budget-check --text` when a human or agent needs to validate compact governance index byte budgets on a target without seeing full planned payloads. The command scans only known governance files, reports per-index and combined bytes, and blocks over-budget states without writing indexes. It must not inline planned index payloads, import raw growth file contents into output, refresh indexes, admit or close work items, create claims, install dependencies, run managed project commands, publish, mutate Git, or perform network calls. Budget-check output is evidence/orientation only; it cannot grant authority or refresh indexes.

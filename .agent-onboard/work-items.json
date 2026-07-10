@@ -6392,6 +6392,59 @@
           "full unsharded source test was not run end-to-end in this pass; quick suite and targeted package-fast/authority/release checks were run"
         ]
       }
+    },
+    {
+      "id": "P1S3M5W39",
+      "milestone_id": "P1S3M5",
+      "title": "Public exact artifact oracle gate",
+      "status": "closed",
+      "closure": {
+        "actor": "gpt-5.5-thinking",
+        "closed_at": "2026-07-06T06:45:00.000Z",
+        "summary": "Closed by adding release --artifact-oracle and release --artifact-oracle-check as local exact npm artifact evidence. The oracle runs npm pack into a temporary directory, records the exact tarball/file-list/integrity metadata, computes a tarball SHA-256, fresh-installs the local tgz into a temporary project, smoke-tests installed --version and release --check, cleans up temporary artifacts, and keeps the in-process check --fast runner free of package-manager execution by listing the oracle as an omitted slow check.",
+        "changed_files": [
+          "package.json",
+          "README.md",
+          "AGENTS.md",
+          "SOURCE_OF_TRUTH.md",
+          "llms.txt",
+          ".agent-onboard/authority-path.json",
+          ".agent-onboard/authority-index.json",
+          ".agent-onboard/claims.jsonl",
+          ".agent-onboard/claims.index.json",
+          ".agent-onboard/work-items.json",
+          ".agent-onboard/work-items.index.json",
+          ".agent-onboard/public-exact-artifact-oracle-gate.json",
+          "authority-map.json",
+          "manifest.json",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/runtime-contracts.js",
+          "cli/agent_onboard/domains/architecture/static-catalog.js",
+          "cli/agent_onboard/domains/package/services/package-service.js",
+          "cli/agent_onboard/domains/package/services/package-surface-service.js",
+          "test/agent-onboard.test.js"
+        ],
+        "checks_run": [
+          "node -c cli/agent_onboard/runtime-composer.js",
+          "node -c cli/agent_onboard/runtime-contracts.js",
+          "node -c cli/agent_onboard/domains/architecture/static-catalog.js",
+          "node -c cli/agent_onboard/domains/package/services/package-service.js",
+          "node -c cli/agent_onboard/domains/package/services/package-surface-service.js",
+          "node -c test/agent-onboard.test.js",
+          "node cli/agent-onboard.js release --artifact-oracle-check",
+          "node cli/agent-onboard.js check --plan --json",
+          "node cli/agent-onboard.js check --fast --json",
+          "node cli/agent-onboard.js release --check",
+          "npm test",
+          "node test/agent-onboard.test.js --shard=38/200"
+        ],
+        "checks_not_run": [
+          "npm run test:full"
+        ],
+        "known_non_pass": [
+          "full unsharded source test was not run end-to-end in this pass; quick suite and targeted exact-artifact full-source shard were run"
+        ]
+      }
     }
   ]
 }

@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_package_fast_runner_engine_gate';
+const EXPECTED_RELEASE_LINE = 'public_exact_artifact_oracle_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -274,6 +274,7 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.ok(output.help_lines.some((line) => line.startsWith('agent-onboard issue --classify-dry-run|--json|--text')));
   assert.ok(output.help_lines.some((line) => line.startsWith('agent-onboard contributor --admission-dry-run|--json|--text')));
   assert.ok(output.help_lines.includes('agent-onboard claim --validate-ledger [--file <path>] [--json|--text]'));
+  assert.ok(output.help_lines.some((line) => line.includes('--artifact-oracle|--artifact-oracle-check')));
   assert.ok(output.help_lines.some((line) => line.startsWith('agent-onboard claim --append --dry-run|--write')));
   assert.ok(output.help_lines.includes('agent-onboard check --plan|--fast [--json|--text]'));
   assert.ok(output.help_lines.includes('agent-onboard ci --github-action|--json|--text'));
@@ -481,6 +482,7 @@ fullSourceTest('public check plan and fast runner are directly usable', () => {
   assert.ok(plan.omitted_slow_checks.every((item) => typeof item.reason_key === 'string'));
   assert.ok(plan.checks.some((item) => item.id === 'release-check'));
   assert.ok(plan.omitted_slow_checks.some((item) => item.id === 'npm-pack-dry-run'));
+  assert.ok(plan.omitted_slow_checks.some((item) => item.id === 'release-artifact-oracle' && item.command === 'agent-onboard release --artifact-oracle'));
   assert.strictEqual(plan.boundary.writes_files, false);
   assert.strictEqual(plan.boundary.child_process_spawn, false);
   assert.strictEqual(plan.boundary.runs_package_manager, false);
@@ -1814,6 +1816,41 @@ fullSourceTest('package source manifest check command validates drift guard shap
   assert.strictEqual(output.validated.hash_cache_is_not_existence_authority, true);
   assert.strictEqual(output.hash_cache_budget.status, 'ok');
   assert.strictEqual(output.validated.command_is_read_only, true);
+  assert.deepStrictEqual(output.errors, []);
+});
+
+
+fullSourceTest('exact artifact oracle packs and fresh-installs the local candidate without registry mutation', () => {
+  const result = run(['release', '--artifact-oracle-check']);
+  const output = readJsonOutput(result);
+  assert.strictEqual(output.schema, 'agent-onboard-public-exact-artifact-oracle-result-001');
+  assert.strictEqual(output.status, 'ok');
+  assert.strictEqual(output.version, EXPECTED_VERSION);
+  assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
+  assert.strictEqual(output.command, 'agent-onboard release --artifact-oracle');
+  assert.strictEqual(output.check_command, 'agent-onboard release --artifact-oracle-check');
+  assert.strictEqual(output.npm_pack.status, 'ok');
+  assert.strictEqual(output.npm_pack.name, 'agent-onboard');
+  assert.strictEqual(output.npm_pack.npm_version, EXPECTED_VERSION);
+  assert.strictEqual(output.npm_pack.filename, `agent-onboard-${EXPECTED_VERSION}.tgz`);
+  assert.strictEqual(output.npm_pack.file_count, EXPECTED_PACK_FILES.length);
+  assert.strictEqual(output.npm_pack.exact_file_list_matches_contract, true);
+  assert.deepStrictEqual(output.exact_pack_files, EXPECTED_PACK_FILES);
+  assert.strictEqual(output.oracle.exact_tgz_sha256_present, true);
+  assert.strictEqual(output.oracle.npm_integrity_present, true);
+  assert.strictEqual(output.oracle.raw_pack_stdout_inlined, false);
+  assert.strictEqual(output.fresh_install_smoke.install.status, 'ok');
+  assert.strictEqual(output.fresh_install_smoke.cli_entrypoint_present, true);
+  assert.strictEqual(output.fresh_install_smoke.version_smoke.status, 'ok');
+  assert.strictEqual(output.fresh_install_smoke.release_check_smoke.status, 'ok');
+  assert.strictEqual(output.validated.exact_pack_file_list_matches_contract, true);
+  assert.strictEqual(output.validated.fresh_install_from_exact_tgz, true);
+  assert.strictEqual(output.validated.fresh_installed_release_check, true);
+  assert.strictEqual(output.boundary.writes_package_root, false);
+  assert.strictEqual(output.boundary.writes_temp_files, true);
+  assert.strictEqual(output.boundary.runs_package_manager, true);
+  assert.strictEqual(output.boundary.mutates_registry, false);
+  assert.strictEqual(output.boundary.network_required, false);
   assert.deepStrictEqual(output.errors, []);
 });
 

@@ -15,6 +15,8 @@ const PACKAGE_SERVICE_SEED = Object.freeze({
     'release --surface-check',
     'release --source-manifest',
     'release --source-manifest-check',
+    'release --artifact-oracle',
+    'release --artifact-oracle-check',
     'release --version-sprawl-check',
     'release --parity-smoke',
     'release --architecture-parity-smoke',

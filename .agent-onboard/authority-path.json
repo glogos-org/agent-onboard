@@ -2,7 +2,7 @@
   "schema": "agent-onboard-authority-path-001",
   "package_name": "agent-onboard",
   "package_version_source": "package.json#version",
-  "release_line": "public_package_fast_runner_engine_gate",
+  "release_line": "public_exact_artifact_oracle_gate",
   "target": {
     "name": "agent-onboard",
     "root": ".",

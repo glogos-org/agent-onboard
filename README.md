@@ -262,6 +262,7 @@ npx agent-onboard release --surface
 npx agent-onboard release --surface-check
 npx agent-onboard release --source-manifest
 npx agent-onboard release --source-manifest-check
+npx agent-onboard release --artifact-oracle-check
 npx agent-onboard release --target-onboarding-smoke
 npx agent-onboard release --real-target-trial
 npx agent-onboard release --check
@@ -559,6 +560,7 @@ Print or validate the content-addressed package source manifest without writing 
 ```sh
 npx agent-onboard release --source-manifest
 npx agent-onboard release --source-manifest-check
+npx agent-onboard release --artifact-oracle-check
 ```
 
 The source manifest command reports every projected npm package file with `file_path`, byte count, and `file_id` using `ni:///sha-256;...`. It may use a source-only `.agent-onboard/source-manifest.hash-cache.json` workspace cache when one exists, but the actual package file projection remains authority for file existence. The check enforces a zero stale/extra/missing/invalid cache-entry budget, keeps the cache out of the npm package projection, does not expose raw `sha256`, does not write hash-cache state, publish, install dependencies, or mutate the package root.
@@ -1265,9 +1267,13 @@ The previous release added `target governance --budget-contract --json|--text` a
 
 The previous release wires governance index drift into first-read surfaces: `target handoff --json|--text` now includes a compact `governance_index_drift_summary`, and `check --fast --json|--text` emits governance stale-read advisories when stored indexes are `stale`, `missing`, or blocked. The wiring is read-only and advisory: it does not refresh indexes, write files, mutate raw ledgers, admit or close work items, create claims, install dependencies, run managed project commands, publish, mutate Git, or use network access.
 
+## Current release: exact artifact oracle gate
+
+The current release adds `agent-onboard release --artifact-oracle` and `agent-onboard release --artifact-oracle-check` as a local exact artifact oracle. The oracle runs `npm pack` into a temporary directory, records the exact package file list, integrity metadata, and tarball SHA-256, then fresh-installs that local tarball into a temporary project and smoke-tests the installed CLI with `--version` and `release --check`. It removes temporary artifacts after the run. The oracle does not write the package root, mutate target repositories, publish, mutate registry state, or require network access. Because it runs npm and creates temporary files, `check --fast` reports it as an omitted slow/package-manager check instead of executing it in the in-process fast runner.
+
 ## Previous release: check plan / fast runner product gate
 
-The previous release added the public check plan and fast runner product surface: `agent-onboard check --plan`, `agent-onboard check --plan --json`, `agent-onboard check --plan --text`, `agent-onboard check --fast`, `agent-onboard check --fast --json`, and `agent-onboard check --fast --text`. The plan command exposes a deterministic default-fast registry of packaged public probes. The fast command runs the registry in process against command discovery, guide, quickstart, discovery, create dry-run, issue intake, contributor admission, target inventory preview, target memory preview, target work-items preview, target governance preview, target governance budget contract, target governance budget check, target governance index materialization dry-run, target governance index drift check, target handoff preview, target handoff readiness check, source manifest, package surface, and release integrity. It does not write files, spawn shell commands, run npm, mutate Git, publish, or use network access.
+The previous release added the public check plan and fast runner product surface: `agent-onboard check --plan`, `agent-onboard check --plan --json`, `agent-onboard check --plan --text`, `agent-onboard check --fast`, `agent-onboard check --fast --json`, and `agent-onboard check --fast --text`. The plan command exposes a deterministic default-fast registry of packaged public probes. The fast command runs the registry in process against command discovery, guide, quickstart, discovery, create dry-run, issue intake, contributor admission, target inventory preview, target memory preview, target work-items preview, target governance preview, target governance budget contract, target governance budget check, target governance index materialization dry-run, target governance index drift check, target handoff preview, target handoff readiness check, source manifest, package surface, and release integrity. It omits `release --artifact-oracle` because that command intentionally runs npm in temporary directories. It does not write files, spawn shell commands, run npm, mutate Git, publish, or use network access.
 
 
 ## Previous release: GitHub Action / CI surface product gate

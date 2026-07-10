@@ -32,3 +32,7 @@ Work-item semantics remain delegated to `agent-onboard`.
 ## Claim ledger JSONL boundary
 
 `agent-onboard claim --validate-ledger` validates `.agent-onboard/claims.jsonl` as compact JSONL coordination state without inlining raw entries. `agent-onboard claim --append --write` may append exactly one claim event to that ledger only when the repository owner explicitly authorizes the write; it does not mutate the work-item ledger, Git, dependencies, build/test/deploy state, publication state, registry state, or network state.
+
+## Exact artifact oracle
+
+`release --artifact-oracle-check` runs local exact artifact evidence using temporary npm pack and fresh install smoke. It must not publish, mutate registry state, require network access, write the package root, or mutate target repositories.

@@ -126,6 +126,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-contract-spine-readiness-output-contract-gate-json-26f33d14"
     },
     {
+      "file_path": ".agent-onboard/public-exact-artifact-oracle-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-public-exact-artifact-oracle-gate-json-74a925f0"
+    },
+    {
       "file_path": ".agent-onboard/public-first-read-ladder-manifest-gate.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-first-read-ladder-manifest-gate-json-379e683b"
     },

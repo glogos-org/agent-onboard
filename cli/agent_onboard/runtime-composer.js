@@ -3,6 +3,8 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
+const crypto = require('crypto');
+const { spawnSync } = require('child_process');
 const { route: routeCommand } = require('./command-router');
 const { createCompatibilityCommandPort } = require('./adapters/compatibility-command-port');
 const { createCoreCommandAdapter } = require('./adapters/commands/core');
@@ -1283,6 +1285,7 @@ const CHECK_FAST_REGISTRY = Object.freeze([
 const CHECK_FAST_OMITTED_SLOW = Object.freeze([
   Object.freeze({ id: 'npm-test', command: 'npm test', reason_key: 'external_test_runner', reason: CHECK_FAST_SLOW_REASON_TAXONOMY.external_test_runner }),
   Object.freeze({ id: 'npm-pack-dry-run', command: 'npm pack --dry-run --json', reason_key: 'package_manager_projection', reason: CHECK_FAST_SLOW_REASON_TAXONOMY.package_manager_projection }),
+  Object.freeze({ id: 'release-artifact-oracle', command: 'agent-onboard release --artifact-oracle', reason_key: 'package_manager_projection', reason: CHECK_FAST_SLOW_REASON_TAXONOMY.package_manager_projection }),
   Object.freeze({ id: 'git-diff-check', command: 'git diff --check', reason_key: 'git_worktree_audit', reason: CHECK_FAST_SLOW_REASON_TAXONOMY.git_worktree_audit }),
   Object.freeze({ id: 'publish', command: 'npm publish --access public', reason_key: 'registry_mutation', reason: CHECK_FAST_SLOW_REASON_TAXONOMY.registry_mutation })
 ]);
@@ -6406,6 +6409,242 @@ function publicPackageSurfaceCheck(root = packageRoot()) {
   };
 }
 
+const PUBLIC_EXACT_ARTIFACT_ORACLE = Object.freeze({
+  schema: 'agent-onboard-public-exact-artifact-oracle-contract-001',
+  package_name: PACKAGE_NAME,
+  release_line: RELEASE_LINE,
+  command: 'agent-onboard release --artifact-oracle',
+  check_command: 'agent-onboard release --artifact-oracle-check',
+  role: 'local exact npm artifact projection and fresh installed CLI smoke oracle',
+  pack_command: 'npm pack --json --pack-destination <temp>',
+  install_command: 'npm install --no-audit --no-fund --ignore-scripts <local-tgz>',
+  smoke_commands: Object.freeze([
+    'node node_modules/agent-onboard/cli/agent-onboard.js --version',
+    'node node_modules/agent-onboard/cli/agent-onboard.js release --check'
+  ]),
+  boundary: Object.freeze({
+    writes_package_root: false,
+    writes_target_repository_state: false,
+    writes_temp_files: true,
+    removes_temp_files: true,
+    child_process_spawn: true,
+    runs_package_manager: true,
+    package_manager_uses_local_tgz_only: true,
+    publishes_package: false,
+    mutates_registry: false,
+    network_required: false,
+    raw_stdout_inlined: false,
+    raw_stderr_inlined: false
+  })
+});
+
+function npmExecutable() {
+  return process.platform === 'win32' ? 'npm.cmd' : 'npm';
+}
+
+function compactSpawnSummary(result) {
+  const stdout = typeof result.stdout === 'string' ? result.stdout : '';
+  const stderr = typeof result.stderr === 'string' ? result.stderr : '';
+  return {
+    status: result.status === 0 ? 'ok' : 'error',
+    exit_code: typeof result.status === 'number' ? result.status : null,
+    signal: result.signal || null,
+    error: result.error && result.error.message ? result.error.message : null,
+    stdout_bytes: Buffer.byteLength(stdout, 'utf8'),
+    stderr_bytes: Buffer.byteLength(stderr, 'utf8'),
+    raw_stdout_inlined: false,
+    raw_stderr_inlined: false
+  };
+}
+
+function sha256File(filePath) {
+  return crypto.createHash('sha256').update(fs.readFileSync(filePath)).digest('hex');
+}
+
+function parseNpmPackJson(stdout) {
+  const parsed = JSON.parse(stdout);
+  if (!Array.isArray(parsed) || parsed.length !== 1 || typeof parsed[0] !== 'object' || parsed[0] === null) {
+    throw new Error('npm pack JSON must contain exactly one package entry');
+  }
+  return parsed[0];
+}
+
+function exactArtifactPackFiles(packEntry) {
+  return Array.isArray(packEntry.files)
+    ? packEntry.files.map((entry) => entry.path).filter((rel) => typeof rel === 'string').sort()
+    : [];
+}
+
+function removeTempRoot(tempRoot) {
+  if (!tempRoot || !tempRoot.startsWith(os.tmpdir())) return;
+  fs.rmSync(tempRoot, { recursive: true, force: true });
+}
+
+function publicExactArtifactOracle(root = packageRoot()) {
+  const pkg = readJson(path.join(root, 'package.json'));
+  const expectedPackFiles = PUBLIC_RELEASE_CONTRACT.expected_pack_files.slice().sort();
+  const errors = [];
+  let tempRoot = null;
+  let packSummary = null;
+  let installSummary = null;
+  let versionSmokeSummary = null;
+  let releaseSmokeSummary = null;
+  let packEntry = null;
+  let tarball = null;
+  let tarballSha256 = null;
+  let installedCli = null;
+  let cliEntrypointPresent = false;
+  let cleanupStatus = 'not_started';
+
+  try {
+    tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'agent-onboard-artifact-oracle-'));
+    const packDir = path.join(tempRoot, 'pack');
+    const installRoot = path.join(tempRoot, 'install');
+    fs.mkdirSync(packDir, { recursive: true });
+    fs.mkdirSync(installRoot, { recursive: true });
+
+    const packResult = spawnSync(npmExecutable(), ['pack', '--json', '--pack-destination', packDir], {
+      cwd: root,
+      encoding: 'utf8',
+      timeout: 120000,
+      maxBuffer: 20 * 1024 * 1024
+    });
+    packSummary = compactSpawnSummary(packResult);
+    if (packResult.status !== 0) {
+      errors.push('npm pack exact artifact projection must exit 0');
+    } else {
+      try {
+        packEntry = parseNpmPackJson(packResult.stdout);
+        tarball = path.join(packDir, packEntry.filename || '');
+        if (!fs.existsSync(tarball)) errors.push('npm pack exact tarball must exist in temp pack directory');
+        else tarballSha256 = sha256File(tarball);
+      } catch (error) {
+        errors.push(`npm pack JSON parse failed: ${error.message}`);
+      }
+    }
+
+    const actualPackFiles = packEntry ? exactArtifactPackFiles(packEntry) : [];
+    if (packEntry) {
+      if (packEntry.name !== PACKAGE_NAME) errors.push(`npm pack name must be ${PACKAGE_NAME}`);
+      if (packEntry.version !== VERSION) errors.push(`npm pack version must be ${VERSION}`);
+      if (packEntry.filename !== `${PACKAGE_NAME}-${VERSION}.tgz`) errors.push(`npm pack filename must be ${PACKAGE_NAME}-${VERSION}.tgz`);
+      if (!arrayEquals(actualPackFiles, expectedPackFiles)) errors.push(`npm pack file list must match ${expectedPackFiles.join(', ')}`);
+      if (typeof packEntry.integrity !== 'string' || !packEntry.integrity.startsWith('sha512-')) errors.push('npm pack integrity must be present');
+      if (typeof packEntry.shasum !== 'string' || packEntry.shasum.length === 0) errors.push('npm pack shasum must be present');
+    }
+
+    if (tarball && fs.existsSync(tarball)) {
+      fs.writeFileSync(path.join(installRoot, 'package.json'), JSON.stringify({ private: true, name: 'agent-onboard-artifact-oracle-smoke' }, null, 2) + '\n');
+      const installResult = spawnSync(npmExecutable(), ['install', '--no-audit', '--no-fund', '--ignore-scripts', tarball], {
+        cwd: installRoot,
+        encoding: 'utf8',
+        timeout: 120000,
+        maxBuffer: 20 * 1024 * 1024
+      });
+      installSummary = compactSpawnSummary(installResult);
+      if (installResult.status !== 0) errors.push('fresh install smoke from exact local tgz must exit 0');
+
+      installedCli = path.join(installRoot, 'node_modules', PACKAGE_NAME, 'cli', 'agent-onboard.js');
+      cliEntrypointPresent = fs.existsSync(installedCli);
+      if (!cliEntrypointPresent) errors.push('fresh install smoke must include CLI entrypoint');
+      else {
+        const versionSmoke = spawnSync(process.execPath, [installedCli, '--version'], {
+          cwd: installRoot,
+          encoding: 'utf8',
+          timeout: 60000,
+          maxBuffer: 5 * 1024 * 1024
+        });
+        versionSmokeSummary = compactSpawnSummary(versionSmoke);
+        if (versionSmoke.status !== 0 || versionSmoke.stdout.trim() !== VERSION) errors.push('fresh installed CLI --version must match package version');
+
+        const releaseSmoke = spawnSync(process.execPath, [installedCli, 'release', '--check'], {
+          cwd: installRoot,
+          encoding: 'utf8',
+          timeout: 120000,
+          maxBuffer: 20 * 1024 * 1024
+        });
+        releaseSmokeSummary = compactSpawnSummary(releaseSmoke);
+        if (releaseSmoke.status !== 0) errors.push('fresh installed CLI release --check must exit 0');
+        else {
+          try {
+            const releaseOutput = JSON.parse(releaseSmoke.stdout);
+            if (releaseOutput.status !== 'ok') errors.push('fresh installed CLI release --check must return ok');
+            if (releaseOutput.version !== VERSION) errors.push('fresh installed CLI release --check version must match package version');
+          } catch (error) {
+            errors.push(`fresh installed CLI release --check JSON parse failed: ${error.message}`);
+          }
+        }
+      }
+    }
+  } catch (error) {
+    errors.push(error && error.message ? error.message : String(error));
+  } finally {
+    try {
+      removeTempRoot(tempRoot);
+      cleanupStatus = 'ok';
+    } catch (error) {
+      cleanupStatus = 'error';
+      errors.push(`temp cleanup failed: ${error.message}`);
+    }
+  }
+
+  const actualPackFiles = packEntry ? exactArtifactPackFiles(packEntry) : [];
+  return {
+    schema: 'agent-onboard-public-exact-artifact-oracle-result-001',
+    status: errors.length === 0 ? 'ok' : 'error',
+    package_name: PACKAGE_NAME,
+    version: VERSION,
+    release_line: RELEASE_LINE,
+    command: PUBLIC_EXACT_ARTIFACT_ORACLE.command,
+    check_command: PUBLIC_EXACT_ARTIFACT_ORACLE.check_command,
+    package_root: root,
+    source_context: sourceContext(root),
+    oracle: {
+      schema: PUBLIC_EXACT_ARTIFACT_ORACLE.schema,
+      role: PUBLIC_EXACT_ARTIFACT_ORACLE.role,
+      exact_tgz_created_in_temp: !!tarball,
+      exact_tgz_sha256: tarballSha256,
+      exact_tgz_sha256_present: typeof tarballSha256 === 'string' && tarballSha256.length === 64,
+      npm_integrity_present: !!(packEntry && typeof packEntry.integrity === 'string' && packEntry.integrity.startsWith('sha512-')),
+      npm_shasum_present: !!(packEntry && typeof packEntry.shasum === 'string' && packEntry.shasum.length > 0),
+      raw_pack_stdout_inlined: false,
+      raw_install_stdout_inlined: false,
+      temp_cleanup_status: cleanupStatus
+    },
+    npm_pack: Object.assign({
+      package_id: packEntry ? packEntry.id : null,
+      name: packEntry ? packEntry.name : null,
+      npm_version: packEntry ? packEntry.version : null,
+      filename: packEntry ? packEntry.filename : null,
+      size: packEntry ? packEntry.size : null,
+      unpacked_size: packEntry ? packEntry.unpackedSize : null,
+      file_count: actualPackFiles.length,
+      expected_file_count: expectedPackFiles.length,
+      exact_file_list_matches_contract: arrayEquals(actualPackFiles, expectedPackFiles)
+    }, packSummary || { status: 'not_run' }),
+    fresh_install_smoke: {
+      install: installSummary || { status: 'not_run' },
+      cli_entrypoint_present: cliEntrypointPresent,
+      version_smoke: versionSmokeSummary || { status: 'not_run' },
+      release_check_smoke: releaseSmokeSummary || { status: 'not_run' }
+    },
+    expected_pack_files: expectedPackFiles,
+    exact_pack_files: actualPackFiles,
+    validated: {
+      package_version_matches_runtime: pkg.version === VERSION,
+      exact_pack_command_exited_zero: packSummary && packSummary.status === 'ok',
+      exact_tgz_sha256_present: typeof tarballSha256 === 'string' && tarballSha256.length === 64,
+      exact_pack_file_list_matches_contract: arrayEquals(actualPackFiles, expectedPackFiles),
+      fresh_install_from_exact_tgz: installSummary && installSummary.status === 'ok',
+      fresh_installed_cli_version: versionSmokeSummary && versionSmokeSummary.status === 'ok',
+      fresh_installed_release_check: releaseSmokeSummary && releaseSmokeSummary.status === 'ok',
+      temp_artifacts_removed: cleanupStatus === 'ok'
+    },
+    boundary: PUBLIC_EXACT_ARTIFACT_ORACLE.boundary,
+    errors
+  };
+}
+
 function publicReleaseTargetRepoProductCheck(root = packageRoot()) {
   const targetDoctorResult = targetDoctor(root);
   const targetProfileResult = targetProfile(root);
@@ -7805,6 +8044,11 @@ function runRelease(args) {
     json(result);
     return result.status === 'ok' ? 0 : 1;
   }
+  if (args.length === 1 && (args[0] === '--artifact-oracle' || args[0] === '--artifact-oracle-check')) {
+    const result = publicExactArtifactOracle();
+    json(result);
+    return result.status === 'ok' ? 0 : 1;
+  }
   if (args.length === 1 && args[0] === '--version-sprawl-check') {
     const result = publicVersionReferencePolicyCheck();
     json(result);
@@ -7849,7 +8093,7 @@ function runRelease(args) {
     schema: 'agent-onboard-release-command-error-001',
     status: 'error',
     command_family: 'release',
-    message: 'release requires --plan, --contract, --fixture, --surface, --surface-check, --source-manifest, --source-manifest-check, --version-sprawl-check, --parity-smoke, --architecture-parity-smoke, --target-onboarding-smoke, --post-publish-handoff, --published-acceptance, --real-target-trial, or --check',
+    message: 'release requires --plan, --contract, --fixture, --surface, --surface-check, --source-manifest, --source-manifest-check, --artifact-oracle, --artifact-oracle-check, --version-sprawl-check, --parity-smoke, --architecture-parity-smoke, --target-onboarding-smoke, --post-publish-handoff, --published-acceptance, --real-target-trial, or --check',
     writes_files: false,
     publishes_package: false
   });

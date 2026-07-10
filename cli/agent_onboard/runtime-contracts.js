@@ -2,7 +2,7 @@
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
-const RELEASE_LINE = 'public_package_fast_runner_engine_gate';
+const RELEASE_LINE = 'public_exact_artifact_oracle_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
   agents: 'agents',
@@ -335,7 +335,7 @@ const PRODUCT_HELP_LINES = Object.freeze([
   'agent-onboard guard --plan|--check-boundary',
   'agent-onboard authority --first-read|--check|--index|--index-check',
   'agent-onboard architecture --map|--router|--facades|--check',
-  'agent-onboard release --plan|--surface|--surface-check|--source-manifest|--source-manifest-check|--target-onboarding-smoke|--real-target-trial|--check',
+  'agent-onboard release --plan|--surface|--surface-check|--source-manifest|--source-manifest-check|--artifact-oracle|--artifact-oracle-check|--target-onboarding-smoke|--real-target-trial|--check',
   'agent-onboard target-config --schema|--template|--validate-template|--validate [.agent-onboard/target.json]'
 ]);
 
