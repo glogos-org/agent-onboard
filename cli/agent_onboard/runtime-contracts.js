@@ -2,7 +2,7 @@
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
-const RELEASE_LINE = 'public_claim_ledger_jsonl_gate';
+const RELEASE_LINE = 'public_package_fast_runner_engine_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
   agents: 'agents',

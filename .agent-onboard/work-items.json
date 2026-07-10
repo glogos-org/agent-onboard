@@ -6343,6 +6343,55 @@
         ],
         "known_non_pass": []
       }
+    },
+    {
+      "id": "P1S3M5W38",
+      "milestone_id": "P1S3M5",
+      "title": "Public package fast runner engine gate",
+      "status": "closed",
+      "closure": {
+        "actor": "gpt-5.5-thinking",
+        "closed_at": "2026-07-06T06:11:17.277Z",
+        "summary": "Closed after upgrading check --fast from a compact probe list into a public-safe package-fast runner engine with plan metadata, command dedupe accounting, timeout guards, progress JSONL on stderr, slow reason keys, and output budget metadata.",
+        "changed_files": [
+          "package.json",
+          "AGENTS.md",
+          "README.md",
+          "SOURCE_OF_TRUTH.md",
+          "llms.txt",
+          ".agent-onboard/authority-index.json",
+          ".agent-onboard/authority-path.json",
+          ".agent-onboard/claims.jsonl",
+          ".agent-onboard/claims.index.json",
+          ".agent-onboard/work-items.json",
+          ".agent-onboard/work-items.index.json",
+          ".agent-onboard/public-package-fast-runner-engine-gate.json",
+          "authority-map.json",
+          "manifest.json",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/runtime-contracts.js",
+          "test/agent-onboard.test.js"
+        ],
+        "checks_run": [
+          "node -c cli/agent_onboard/runtime-composer.js",
+          "node -c cli/agent_onboard/runtime-contracts.js",
+          "node cli/agent-onboard.js check --plan --json",
+          "node cli/agent-onboard.js check --fast --json",
+          "node cli/agent-onboard.js check --fast --json --progress-jsonl",
+          "node cli/agent-onboard.js release --version-sprawl-check",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js authority --index-check",
+          "npm test",
+          "npm run check:public-artifact-boundary",
+          "npm pack --dry-run --json"
+        ],
+        "checks_not_run": [
+          "npm run test:full"
+        ],
+        "known_non_pass": [
+          "full unsharded source test was not run end-to-end in this pass; quick suite and targeted package-fast/authority/release checks were run"
+        ]
+      }
     }
   ]
 }

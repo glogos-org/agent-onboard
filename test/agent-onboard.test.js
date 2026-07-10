@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_claim_ledger_jsonl_gate';
+const EXPECTED_RELEASE_LINE = 'public_package_fast_runner_engine_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -239,7 +239,7 @@ fullSourceTest('public runtime contracts module centralizes command and package 
   assert.strictEqual(contracts.TARGET_PROFILE_COMMAND.flag.target, '--target');
   assert.ok(Object.isFrozen(contracts.TARGET_COMMAND));
   assert.ok(contracts.RUNTIME_CONTRACTS.top_level_commands.includes('target'));
-  assert.deepStrictEqual(contracts.ROUTER_COMMAND_ORDER, ['help', 'version', 'status', 'create', 'issue', 'contributor', 'claim', 'contracts', 'check', 'ci', 'mcp', 'init', 'agents', 'guard', 'authority', 'architecture', 'release', 'target-config', 'work-items', 'target', 'target-instance']);
+  assert.deepStrictEqual(contracts.ROUTER_COMMAND_ORDER, ['help', 'version', 'status', 'create', 'issue', 'contributor', 'claim', 'contracts', 'check', 'ci', 'mcp', 'init', 'agents', 'bridge', 'guard', 'authority', 'architecture', 'release', 'target-config', 'work-items', 'target', 'target-instance']);
   assert.strictEqual(contracts.TOP_LEVEL_COMMAND_ALIAS.helpLong, '--help');
   assert.deepStrictEqual(contracts.RUNTIME_COMMAND_GROUP.target, ['init', 'target-config', 'target', 'target-instance']);
   assert.deepStrictEqual(contracts.RUNTIME_ADAPTER_GROUP.core, ['help', '--help', '-h', 'version', '--version', '-v', 'status']);
@@ -256,7 +256,7 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.strictEqual(output.status, 'ok');
   assert.strictEqual(output.version, EXPECTED_VERSION);
   assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
-  assert.deepStrictEqual(output.top_level_commands, ['help', 'version', 'status', 'commands', 'guide', 'quickstart', 'discovery', 'create', 'issue', 'contributor', 'claim', 'contracts', 'check', 'ci', 'mcp', 'init', 'agents', 'guard', 'authority', 'architecture', 'release', 'target-config', 'work-items', 'target', 'target-instance']);
+  assert.deepStrictEqual(output.top_level_commands, ['help', 'version', 'status', 'commands', 'guide', 'quickstart', 'discovery', 'create', 'issue', 'contributor', 'claim', 'contracts', 'check', 'ci', 'mcp', 'init', 'agents', 'bridge', 'guard', 'authority', 'architecture', 'release', 'target-config', 'work-items', 'target', 'target-instance']);
   assert.ok(output.runtime_command_groups.core.includes('commands'));
   assert.ok(output.runtime_command_groups.core.includes('quickstart'));
   assert.ok(output.runtime_command_groups.core.includes('discovery'));
@@ -473,6 +473,12 @@ fullSourceTest('public check plan and fast runner are directly usable', () => {
   assert.strictEqual(plan.command, 'agent-onboard check --plan');
   assert.strictEqual(plan.plan_mode, 'default-fast');
   assert.strictEqual(plan.runner_type, 'in_process_public_runtime_runner');
+  assert.strictEqual(plan.runner_engine.engine_id, 'public-package-fast-runner-engine');
+  assert.strictEqual(plan.runner_engine.command_dedupe_enabled, true);
+  assert.strictEqual(plan.runner_engine.progress_jsonl_supported, true);
+  assert.strictEqual(plan.runner_engine.output_budget.shape, 'agent-onboard-public-package-fast-runner-output-budget-v1');
+  assert.strictEqual(plan.unique_command_count, plan.runnable_command_count);
+  assert.ok(plan.omitted_slow_checks.every((item) => typeof item.reason_key === 'string'));
   assert.ok(plan.checks.some((item) => item.id === 'release-check'));
   assert.ok(plan.omitted_slow_checks.some((item) => item.id === 'npm-pack-dry-run'));
   assert.strictEqual(plan.boundary.writes_files, false);
@@ -493,6 +499,12 @@ fullSourceTest('public check plan and fast runner are directly usable', () => {
   assert.strictEqual(fast.version, EXPECTED_VERSION);
   assert.strictEqual(fast.release_line, EXPECTED_RELEASE_LINE);
   assert.strictEqual(fast.command, 'agent-onboard check --fast');
+  assert.strictEqual(fast.runner_engine.engine_id, 'public-package-fast-runner-engine');
+  assert.strictEqual(fast.compact_result_shape_enabled, true);
+  assert.strictEqual(fast.executed_command_count, fast.unique_command_count);
+  assert.strictEqual(fast.reused_command_count, 0);
+  assert.strictEqual(fast.output_budget.stdout_json_budget_status, 'ok');
+  assert.strictEqual(fast.progress.progress_jsonl_enabled, false);
   assert.strictEqual(fast.failed_count, 0);
   assert.strictEqual(fast.passed_count, fast.check_count);
   assert.ok(Array.isArray(fast.advisories));
@@ -516,7 +528,16 @@ fullSourceTest('public check plan and fast runner are directly usable', () => {
   assert.strictEqual(fastText.status, 0, fastText.stderr || fastText.stdout);
   assert.ok(fastText.stdout.includes('agent-onboard check fast'));
   assert.ok(fastText.stdout.includes('Result: pass'));
+  assert.ok(fastText.stdout.includes('Runner engine: public-package-fast-runner-engine'));
+  assert.ok(fastText.stdout.includes('Output budget:'));
   assert.ok(fastText.stdout.includes('Advisories:'));
+
+  const progressResult = run(['check', '--fast', '--json', '--progress-jsonl']);
+  const progressFast = readJsonOutput(progressResult);
+  assert.strictEqual(progressFast.status, 'ok');
+  assert.strictEqual(progressFast.progress.progress_jsonl_enabled, true);
+  assert.ok(progressResult.stderr.includes('agent-onboard-public-check-fast-progress-jsonl-001'));
+  assert.ok(progressResult.stderr.includes('runner_start'));
 
   const missingIndexTarget = tempRepo();
   fs.mkdirSync(path.join(missingIndexTarget, '.agent-onboard'), { recursive: true });

@@ -2,7 +2,7 @@
   "schema": "agent-onboard-public-authority-compact-index-001",
   "package_name": "agent-onboard",
   "package_version_source": "package.json#version",
-  "release_line": "public_claim_ledger_jsonl_gate",
+  "release_line": "public_package_fast_runner_engine_gate",
   "index_file": ".agent-onboard/authority-index.json",
   "first_read_command": "agent-onboard authority --first-read",
   "check_command": "agent-onboard authority --check",
@@ -120,8 +120,8 @@
       "file_path": ".agent-onboard/authority-path.json",
       "present": true,
       "kind": "file",
-      "bytes": 3795,
-      "file_id": "ni:///sha-256;qo6S0RtOIMrvFTzJyInlSzvljXwT35btShW13PEDl7I",
+      "bytes": 3803,
+      "file_id": "ni:///sha-256;VzpW46OXSK8ch1ktsna8HnWgLcGUl_A4hmbXP-GBxzk",
       "content_inlined": false
     },
     {
@@ -136,8 +136,8 @@
       "file_path": "package.json",
       "present": true,
       "kind": "file",
-      "bytes": 16305,
-      "file_id": "ni:///sha-256;K8HNrUbw4wd-TBOOfbdtq1DFT9gNEO0C9bSlvOC-NTQ",
+      "bytes": 16473,
+      "file_id": "ni:///sha-256;TY0_yB8AoKtjsQHFHQRtMigOYMdYBCi2YAaB4OhEqZc",
       "content_inlined": false
     },
     {
@@ -168,8 +168,8 @@
       "file_path": ".agent-onboard/work-items.json",
       "present": true,
       "kind": "file",
-      "bytes": 314214,
-      "file_id": "ni:///sha-256;U2fpXC7rwgbPNWUhcGGJVGwRI4apkw92hrn_O5I2G9Y",
+      "bytes": 316363,
+      "file_id": "ni:///sha-256;gAYQei2pxbpq8dws4oEdyWuQpndeFl7jv6DtQxPOeK0",
       "content_inlined": false
     }
   ],
@@ -191,7 +191,7 @@
     "indexed_file_count": 9,
     "present_file_count": 9,
     "missing_file_count": 0,
-    "present_bytes": 387489,
+    "present_bytes": 389814,
     "missing_files": [],
     "excluded_file_count": 3,
     "raw_evidence_is_on_demand_only": true
