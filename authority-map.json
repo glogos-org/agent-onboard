@@ -142,6 +142,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-clean-compaction-catalog-gate-json-f6ddd2b5"
     },
     {
+      "file_path": ".agent-onboard/public-closed-gate-archive-reader-full-test-hardening-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-public-closed-gate-archive-reader-full-test-hardening-gate-json-da2a864a"
+    },
+    {
       "file_path": ".agent-onboard/public-closed-gate-artifact-compaction-apply-gate.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-closed-gate-artifact-compaction-apply-gate-json-96a4cd2b"
     },

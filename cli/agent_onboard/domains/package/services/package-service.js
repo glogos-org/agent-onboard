@@ -37,6 +37,8 @@ const PACKAGE_SERVICE_SEED = Object.freeze({
     'release --closed-gates-dry-run-check',
     'release --closed-gates-apply',
     'release --closed-gates-apply-check',
+    'release --closed-gates-read',
+    'release --closed-gates-read-check',
     'release --version-sprawl-check',
     'release --parity-smoke',
     'release --architecture-parity-smoke',

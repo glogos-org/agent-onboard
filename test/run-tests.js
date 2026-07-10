@@ -10,21 +10,25 @@ const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_PACK_FILES = Array.from(new Set(PACKAGE_JSON.files.concat(['package.json']))).sort();
 const MAX_OUTPUT_BYTES = 20 * 1024 * 1024;
 const DEFAULT_CONCURRENCY = 8;
+const DEFAULT_FULL_CONCURRENCY = 4;
 const DEFAULT_FULL_SOURCE_TEST_SHARDS = DEFAULT_CONCURRENCY * 4;
+const DEFAULT_TASK_TIMEOUT_MS = 120000;
+const DEFAULT_FULL_SOURCE_TEST_TASK_TIMEOUT_MS = 180000;
 const FULL_SOURCE_TEST = path.join(ROOT, 'test', 'agent-onboard.test.js');
 const APPEND_SMOKE_WORK_ITEM_ID = ['P8', 'S8', 'M8', 'W8'].join('');
 
-function nodeTask(name, args, validate) {
+function nodeTask(name, args, validate, options = {}) {
   return {
     name,
     command: process.execPath,
     args,
-    validate
+    validate,
+    timeoutMs: options.timeoutMs || DEFAULT_TASK_TIMEOUT_MS
   };
 }
 
-function cliTask(name, args, validate) {
-  return nodeTask(name, [CLI, ...args], validate);
+function cliTask(name, args, validate, options = {}) {
+  return nodeTask(name, [CLI, ...args], validate, options);
 }
 
 function npmTask(name, args, validate) {
@@ -33,14 +37,16 @@ function npmTask(name, args, validate) {
       name,
       command: 'cmd.exe',
       args: ['/d', '/s', '/c', ['npm', ...args].join(' ')],
-      validate
+      validate,
+      timeoutMs: DEFAULT_TASK_TIMEOUT_MS
     };
   }
   return {
     name,
     command: 'npm',
     args,
-    validate
+    validate,
+    timeoutMs: DEFAULT_TASK_TIMEOUT_MS
   };
 }
 
@@ -99,6 +105,16 @@ function runTask(task) {
     let stdout = '';
     let stderr = '';
     let outputTooLarge = false;
+    let timedOut = false;
+    const timeoutMs = Number.isInteger(task.timeoutMs) && task.timeoutMs > 0 ? task.timeoutMs : DEFAULT_TASK_TIMEOUT_MS;
+    const timeout = setTimeout(() => {
+      timedOut = true;
+      child.kill('SIGTERM');
+      setTimeout(() => {
+        if (child.exitCode === null && child.signalCode === null) child.kill('SIGKILL');
+      }, 1000).unref();
+    }, timeoutMs);
+    timeout.unref();
 
     child.stdout.on('data', (chunk) => {
       stdout += chunk.toString();
@@ -115,6 +131,7 @@ function runTask(task) {
       }
     });
     child.on('error', (error) => {
+      clearTimeout(timeout);
       resolve({
         task,
         ok: false,
@@ -125,9 +142,14 @@ function runTask(task) {
       });
     });
     child.on('close', (status, signal) => {
+      clearTimeout(timeout);
       const durationMs = Date.now() - startedAt;
       if (outputTooLarge) {
         resolve({ task, ok: false, durationMs, error: 'output exceeded runner buffer limit', stdout, stderr });
+        return;
+      }
+      if (timedOut) {
+        resolve({ task, ok: false, durationMs, error: `task timeout after ${timeoutMs}ms`, stdout, stderr });
         return;
       }
       if (status !== 0) {
@@ -231,6 +253,7 @@ function quickTasks() {
     cliTask('release closed gate artifact compaction plan check', ['release', '--closed-gates-plan-check'], expectStatusOk),
     cliTask('release closed gate artifact compaction dry-run check', ['release', '--closed-gates-dry-run-check'], expectStatusOk),
     cliTask('release closed gate artifact compaction apply check', ['release', '--closed-gates-apply-check'], expectStatusOk),
+    cliTask('release closed gate archive reader check', ['release', '--closed-gates-read-check'], expectStatusOk),
     cliTask('release version sprawl check', ['release', '--version-sprawl-check'], expectStatusOk),
     cliTask('release architecture parity smoke', ['release', '--architecture-parity-smoke'], expectStatusOk),
     cliTask('release check', ['release', '--check'], expectStatusOk),
@@ -294,13 +317,14 @@ function quickTasks() {
 }
 
 function fullTasks(shards) {
+  const timeoutMs = Number.parseInt(process.env.AGENT_ONBOARD_FULL_TEST_TASK_TIMEOUT_MS || '', 10) || DEFAULT_FULL_SOURCE_TEST_TASK_TIMEOUT_MS;
   return Array.from({ length: shards }, (_, index) => (
-    nodeTask(`full source test shard ${index}/${shards}`, [FULL_SOURCE_TEST, `--shard=${index}/${shards}`])
+    nodeTask(`full source test shard ${index}/${shards}`, [FULL_SOURCE_TEST, `--shard=${index}/${shards}`], null, { timeoutMs })
   ));
 }
 
-function testConcurrency() {
-  return Number.parseInt(process.env.AGENT_ONBOARD_TEST_CONCURRENCY || '', 10) || DEFAULT_CONCURRENCY;
+function testConcurrency(defaultValue = DEFAULT_CONCURRENCY) {
+  return Number.parseInt(process.env.AGENT_ONBOARD_TEST_CONCURRENCY || '', 10) || defaultValue;
 }
 
 async function runQuick() {
@@ -351,7 +375,7 @@ async function runSuite(label, tasks, concurrency) {
 }
 
 async function runFull() {
-  const concurrency = testConcurrency();
+  const concurrency = testConcurrency(DEFAULT_FULL_CONCURRENCY);
   const shardCount = Number.parseInt(process.env.AGENT_ONBOARD_FULL_TEST_SHARDS || '', 10) || DEFAULT_FULL_SOURCE_TEST_SHARDS;
   const tasks = fullTasks(Math.max(1, shardCount));
   await runSuite('full', tasks, concurrency);

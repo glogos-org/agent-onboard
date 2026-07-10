@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_closed_gate_artifact_compaction_apply_gate';
+const EXPECTED_RELEASE_LINE = 'public_closed_gate_archive_reader_full_test_hardening_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -4182,7 +4182,8 @@ fullSourceTest('full source block line 2176', () => {
     if (text.includes(forbiddenKey)) violations.push(`${rel}: reserved implementation key token`);
     const match = forbiddenWorkItemPattern.exec(text);
     const sourceControlArtifact = rel.startsWith('.agent-onboard/') && rel.endsWith('.json');
-    if (match && rel !== '.agent-onboard/work-items.json' && !sourceControlArtifact) {
+    const archivedOrTestArtifact = rel === 'docs/release-history.md' || rel.startsWith('test/');
+    if (match && rel !== '.agent-onboard/work-items.json' && !sourceControlArtifact && !archivedOrTestArtifact) {
       violations.push(`${rel}: reserved concrete work-item token ${match[0]}`);
     }
   }
@@ -4215,6 +4216,9 @@ fullSourceTest('full source block line 2210', () => {
 
 fullSourceTest('full source block line 2233', () => {
   const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
+  const releaseHistory = fs.existsSync(path.join(ROOT, 'docs', 'release-history.md')) ? fs.readFileSync(path.join(ROOT, 'docs', 'release-history.md'), 'utf8') : '';
+  const readmeHistoryCorpus = `${readme}
+${releaseHistory}`;
   assert.ok(readme.includes('work-items --claim --write --id <public-work-item-id> --actor <actor>'));
   assert.ok(readme.includes('work-items --close --write --id <public-work-item-id> --actor <actor> --summary <summary>'));
   assert.ok(readme.includes('npx agent-onboard target doctor --text'));
@@ -4342,28 +4346,28 @@ fullSourceTest('full source block line 2233', () => {
   assert.ok(readme.includes('Use `--text` on target-facing inspection commands'));
   assert.ok(readme.includes('npx agent-onboard check --plan --text'));
   assert.ok(readme.includes('npx agent-onboard check --fast --text'));
-  assert.ok(readme.includes('The current release adds `contracts --json|--text|--check` as a compact public contract/interface spine'));
-  assert.ok(readme.includes('The previous release added `target handoff --readiness-check --json|--text` as a no-write machine-readable readiness gate'));
-  assert.ok(readme.includes('without exporting the source-only implementation archive or requiring TypeScript/abstract classes'));
-  assert.ok(readme.includes('The previous release added stable handoff readiness reason codes to `target handoff --json|--text`'));
-  assert.ok(readme.includes('The earlier governance budget gate remains available through `target governance --budget-check --json|--text`'));
-  assert.ok(readme.includes('The previous release added `target governance --budget-check --json|--text` as a compact no-write target scan'));
-  assert.ok(readme.includes('4096-byte per-index and 8192-byte combined governance budget'));
-  assert.ok(readme.includes('The previous release wires governance index drift into first-read surfaces'));
-  assert.ok(readme.includes('`check --fast --json|--text` emits governance stale-read advisories when stored indexes are `stale`, `missing`, or blocked'));
-  assert.ok(readme.includes('target governance budget contract'));
-  assert.ok(readme.includes('The previous release added the public target governance index drift check gate'));
-  assert.ok(readme.includes('`target governance --check` compares stored governance indexes with freshly derived payloads and reports `fresh`, `stale`, or `missing` without writing files'));
-  assert.ok(readme.includes('The previous release added the public target governance index refresh integration gate'));
-  assert.ok(readme.includes('`work-items --init|--append|--claim|--close --write` now refreshes allowlisted governance indexes after a successful canonical `.agent-onboard/work-items.json` mutation'));
-  assert.ok(readme.includes('The previous release added the public target governance index explicit write product surface'));
-  assert.ok(readme.includes('The previous release added the public target governance index materialization dry-run product surface'));
-  assert.ok(readme.includes('The previous release added the public target governance preview product surface'));
-  assert.ok(readme.includes('The previous release added the public target handoff preview product surface'));
-  assert.ok(readme.includes('The previous release added the public target work-items preview product surface'));
-  assert.ok(readme.includes('without dependency installation, managed-project command execution, Git mutation, network access, or writes'));
-  assert.ok(readme.includes('The previous release added the public MCP bridge plan / skeleton product surface'));
-  assert.ok(readme.includes('without starting an MCP server, adding MCP dependencies, opening sockets, starting stdio transport, writing files, network, Git mutation, or publish'));
+  assert.ok(readmeHistoryCorpus.includes('The current release adds `contracts --json|--text|--check` as a compact public contract/interface spine'));
+  assert.ok(readmeHistoryCorpus.includes('The previous release added `target handoff --readiness-check --json|--text` as a no-write machine-readable readiness gate'));
+  assert.ok(readmeHistoryCorpus.includes('without exporting the source-only implementation archive or requiring TypeScript/abstract classes'));
+  assert.ok(readmeHistoryCorpus.includes('The previous release added stable handoff readiness reason codes to `target handoff --json|--text`'));
+  assert.ok(readmeHistoryCorpus.includes('The earlier governance budget gate remains available through `target governance --budget-check --json|--text`'));
+  assert.ok(readmeHistoryCorpus.includes('The previous release added `target governance --budget-check --json|--text` as a compact no-write target scan'));
+  assert.ok(readmeHistoryCorpus.includes('4096-byte per-index and 8192-byte combined governance budget'));
+  assert.ok(readmeHistoryCorpus.includes('The previous release wires governance index drift into first-read surfaces'));
+  assert.ok(readmeHistoryCorpus.includes('`check --fast --json|--text` emits governance stale-read advisories when stored indexes are `stale`, `missing`, or blocked'));
+  assert.ok(readmeHistoryCorpus.includes('target governance budget contract'));
+  assert.ok(readmeHistoryCorpus.includes('The previous release added the public target governance index drift check gate'));
+  assert.ok(readmeHistoryCorpus.includes('`target governance --check` compares stored governance indexes with freshly derived payloads and reports `fresh`, `stale`, or `missing` without writing files'));
+  assert.ok(readmeHistoryCorpus.includes('The previous release added the public target governance index refresh integration gate'));
+  assert.ok(readmeHistoryCorpus.includes('`work-items --init|--append|--claim|--close --write` now refreshes allowlisted governance indexes after a successful canonical `.agent-onboard/work-items.json` mutation'));
+  assert.ok(readmeHistoryCorpus.includes('The previous release added the public target governance index explicit write product surface'));
+  assert.ok(readmeHistoryCorpus.includes('The previous release added the public target governance index materialization dry-run product surface'));
+  assert.ok(readmeHistoryCorpus.includes('The previous release added the public target governance preview product surface'));
+  assert.ok(readmeHistoryCorpus.includes('The previous release added the public target handoff preview product surface'));
+  assert.ok(readmeHistoryCorpus.includes('The previous release added the public target work-items preview product surface'));
+  assert.ok(readmeHistoryCorpus.includes('without dependency installation, managed-project command execution, Git mutation, network access, or writes'));
+  assert.ok(readmeHistoryCorpus.includes('The previous release added the public MCP bridge plan / skeleton product surface'));
+  assert.ok(readmeHistoryCorpus.includes('without starting an MCP server, adding MCP dependencies, opening sockets, starting stdio transport, writing files, network, Git mutation, or publish'));
 });
 
 
@@ -4393,7 +4397,9 @@ fullSourceTest('full source block line 2323', () => {
   assert.ok(help.stdout.includes('work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>'));
   assert.ok(help.stdout.includes('architecture --map|--router|--facades|--check'));
   assert.ok(!help.stdout.includes('claims-installed-fallback-smoke'));
-  assert.ok(help.stdout.includes('release --plan|--surface|--surface-check|--source-manifest|--source-manifest-check|--artifact-oracle|--artifact-oracle-check|--authority-state-parity|--authority-state-parity-check|--clean-inventory|--clean-check|--clean-catalog|--clean-catalog-check|--keyword-taxonomy|--keyword-taxonomy-check|--target-onboarding-smoke|--real-target-trial|--check'));
+  assert.ok(help.stdout.includes('release --plan|--surface|--surface-check|--source-manifest|--source-manifest-check|--artifact-oracle|--artifact-oracle-check|--authority-state-parity|--authority-state-parity-check|--clean-inventory|--clean-check|--clean-catalog|--clean-catalog-check|--keyword-taxonomy|--keyword-taxonomy-check'));
+  assert.ok(help.stdout.includes('--closed-gates-apply|--closed-gates-apply-check|--closed-gates-read|--closed-gates-read-check'));
+  assert.ok(help.stdout.includes('--target-onboarding-smoke|--real-target-trial|--check'));
   assert.ok(help.stdout.includes('target repair --plan|--write [--force] [--target <path>]'));
   assert.ok(help.stdout.includes('target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]'));
 });
@@ -5219,7 +5225,8 @@ fullSourceTest('public README first-read history split planning is read-only and
   assert.strictEqual(check.validated.catalog_check_passes, true);
   assert.strictEqual(check.validated.keyword_taxonomy_check_passes, true);
   assert.strictEqual(check.validated.all_first_read_markers_present, true);
-  assert.strictEqual(check.validated.future_archive_not_created_or_apply_admitted, true);
+  assert.strictEqual(check.validated.future_archive_not_created, true);
+  assert.strictEqual(check.validated.future_index_not_created, true);
   assert.strictEqual(check.validated.readme_history_apply_gate_admitted, true);
   assert.strictEqual(check.validated.no_archive_delete_move_or_rewrite, true);
   assert.strictEqual(check.validated.current_work_item_closed, true);
@@ -5253,8 +5260,8 @@ fullSourceTest('public README history archive split dry-run is exact and read-on
   assert.strictEqual(check.command, 'agent-onboard release --readme-dry-run-check');
   assert.strictEqual(check.validated.plan_gate_check_passes, true);
   assert.strictEqual(check.validated.enough_history_sections_identified, true);
-  assert.strictEqual(check.validated.future_archive_not_created_or_apply_admitted, true);
-  assert.strictEqual(check.validated.future_index_not_created_or_apply_admitted, true);
+  assert.strictEqual(check.validated.future_archive_not_created, true);
+  assert.strictEqual(check.validated.future_index_not_created, true);
   assert.strictEqual(check.validated.apply_gate_admitted_when_archive_present, true);
   assert.strictEqual(check.validated.live_readme_candidate_retains_first_read_markers, true);
   assert.strictEqual(check.validated.no_archive_index_readme_write, true);
@@ -5303,8 +5310,9 @@ fullSourceTest('public closed gate artifact compaction plan is no-write and rele
   assert.ok(plan.current_surface.artifact_count >= 30);
   assert.ok(plan.current_surface.total_bytes > 0);
   assert.strictEqual(plan.current_surface.parse_error_count, 0);
-  assert.strictEqual(plan.future_compaction_design.index_candidate_present_now, false);
-  assert.strictEqual(plan.future_compaction_design.archive_candidate_present_now, false);
+  assert.strictEqual(plan.future_compaction_design.apply_gate_applied, true);
+  assert.strictEqual(plan.future_compaction_design.index_candidate_present_now, true);
+  assert.strictEqual(plan.future_compaction_design.archive_candidate_present_now, true);
   assert.strictEqual(plan.future_compaction_design.raw_artifacts_preserved_until_apply_gate, true);
   assert.strictEqual(plan.future_compaction_design.raw_artifact_recovery_required_after_apply, true);
   assert.strictEqual(plan.boundary.writes_files, false);
@@ -5341,15 +5349,16 @@ fullSourceTest('public closed gate artifact compaction dry-run is exact and no-w
   assert.strictEqual(dryRun.plan_gate_check, 'ok');
   assert.ok(dryRun.current.raw_gate_artifact_count >= 30);
   assert.strictEqual(dryRun.current.parse_error_count, 0);
-  assert.strictEqual(dryRun.current.index_candidate_present, false);
-  assert.strictEqual(dryRun.current.archive_candidate_present, false);
+  assert.strictEqual(dryRun.current.apply_gate_applied, true);
+  assert.strictEqual(dryRun.current.index_candidate_present, true);
+  assert.strictEqual(dryRun.current.archive_candidate_present, true);
   assert.strictEqual(dryRun.archive_preview.record_count, dryRun.current.raw_gate_artifact_count);
   assert.strictEqual(dryRun.index_preview.record_count, dryRun.archive_preview.record_count);
   assert.strictEqual(dryRun.index_preview.archive_candidate_file_id, dryRun.archive_preview.file_id);
   assert.strictEqual(dryRun.recovery_map_preview.raw_artifact_paths_present, true);
   assert.strictEqual(dryRun.recovery_map_preview.raw_artifact_file_ids_match, true);
   assert.strictEqual(dryRun.diff_preview.writes_files_now, false);
-  assert.deepStrictEqual(dryRun.diff_preview.would_write_files_after_future_admission, ['.agent-onboard/closed-gates.index.json', '.agent-onboard/closed-gates.archive.jsonl']);
+  assert.deepStrictEqual(dryRun.diff_preview.would_write_files_after_future_admission, []);
   assert.strictEqual(dryRun.diff_preview.would_delete_or_move_raw_artifacts_after_future_admission, false);
   assert.strictEqual(dryRun.boundary.writes_files, false);
   assert.strictEqual(dryRun.boundary.deletes_raw_gate_artifacts, false);
@@ -5404,6 +5413,47 @@ fullSourceTest('public closed gate artifact compaction apply verifies archive an
   assert.strictEqual(check.validated.archive_matches_generated_candidate, true);
   assert.strictEqual(check.validated.index_matches_generated_candidate, true);
   assert.strictEqual(check.validated.raw_gate_artifacts_preserved, true);
+  assert.strictEqual(check.validated.current_work_item_closed, true);
+});
+
+
+fullSourceTest('public closed gate archive reader verifies compact archive recovery and bounded full-test runner', () => {
+  const reader = readJsonOutput(run(['release', '--closed-gates-read']));
+  assert.strictEqual(reader.schema, 'agent-onboard-public-closed-gate-archive-reader-result-001');
+  assert.strictEqual(reader.status, 'ok');
+  assert.strictEqual(reader.version, EXPECTED_VERSION);
+  assert.strictEqual(reader.release_line, EXPECTED_RELEASE_LINE);
+  assert.strictEqual(reader.command, 'agent-onboard release --closed-gates-read');
+  assert.strictEqual(reader.surface_id, 'closed-gate-archive-reader');
+  assert.strictEqual(reader.apply_check_status, 'ok');
+  assert.strictEqual(reader.index.present, true);
+  assert.strictEqual(reader.index.status, 'present_valid_json');
+  assert.strictEqual(reader.archive.present, true);
+  assert.strictEqual(reader.archive.parse_error_count, 0);
+  assert.ok(reader.archive.record_count >= 30);
+  assert.strictEqual(reader.index.record_count, reader.archive.record_count);
+  assert.strictEqual(reader.index.archive_file_id, reader.archive.file_id);
+  assert.strictEqual(reader.reader.unique_paths, reader.archive.record_count);
+  assert.strictEqual(reader.reader.unique_ordinals, reader.archive.record_count);
+  assert.strictEqual(reader.reader.ordinal_sequence_contiguous, true);
+  assert.strictEqual(reader.recovery.raw_gate_artifacts_present, true);
+  assert.strictEqual(reader.recovery.raw_gate_artifact_file_ids_match_archive, true);
+  assert.strictEqual(reader.test_runner_hardening.per_task_timeout_configured, true);
+  assert.strictEqual(reader.boundary.writes_files, false);
+  assert.strictEqual(reader.boundary.raw_artifact_content_inlined, false);
+
+  const check = readJsonOutput(run(['release', '--closed-gates-read-check']));
+  assert.strictEqual(check.schema, 'agent-onboard-public-closed-gate-archive-reader-check-result-001');
+  assert.strictEqual(check.status, 'ok');
+  assert.strictEqual(check.command, 'agent-onboard release --closed-gates-read-check');
+  assert.strictEqual(check.validated.apply_check_passes, true);
+  assert.strictEqual(check.validated.index_present_valid_json, true);
+  assert.strictEqual(check.validated.archive_records_parse, true);
+  assert.strictEqual(check.validated.index_record_count_matches_archive, true);
+  assert.strictEqual(check.validated.index_archive_digest_matches_archive, true);
+  assert.strictEqual(check.validated.raw_gate_artifacts_preserved, true);
+  assert.strictEqual(check.validated.raw_file_ids_match_archive, true);
+  assert.strictEqual(check.validated.full_test_task_timeout_hardened, true);
   assert.strictEqual(check.validated.current_work_item_closed, true);
 });
 

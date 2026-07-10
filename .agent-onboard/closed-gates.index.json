@@ -2,16 +2,16 @@
   "schema": "agent-onboard-public-closed-gates-index-001",
   "status": "applied",
   "package_name": "agent-onboard",
-  "version": "0.0.158",
-  "release_line": "public_closed_gate_artifact_compaction_apply_gate",
+  "version": "0.0.159",
+  "release_line": "public_closed_gate_archive_reader_full_test_hardening_gate",
   "surface_id": "closed-gate-artifacts",
   "source_context": "source_repository",
   "source_root_inlined": false,
   "index_path": ".agent-onboard/closed-gates.index.json",
   "archive_candidate_path": ".agent-onboard/closed-gates.archive.jsonl",
-  "archive_candidate_file_id": "ni:///sha-256;L9BZ28nJzMUX8LX3u_KQHgdqHxODyqv5Xttmw699tTQ",
-  "record_count": 49,
-  "raw_artifact_count": 49,
+  "archive_candidate_file_id": "ni:///sha-256;v-MH3UWY5dQUCOrV7UXTfWQ-cvbCrEdPvdc4gwsnjy0",
+  "record_count": 50,
+  "raw_artifact_count": 50,
   "raw_artifacts_preserved": true,
   "raw_artifact_paths": [
     ".agent-onboard/ai-discovery-product-gate.json",
@@ -32,6 +32,7 @@
     ".agent-onboard/public-claim-lifecycle-conflict-hardening-gate.json",
     ".agent-onboard/public-clean-compaction-baseline-gate.json",
     ".agent-onboard/public-clean-compaction-catalog-gate.json",
+    ".agent-onboard/public-closed-gate-archive-reader-full-test-hardening-gate.json",
     ".agent-onboard/public-closed-gate-artifact-compaction-apply-gate.json",
     ".agent-onboard/public-closed-gate-artifact-compaction-dry-run-gate.json",
     ".agent-onboard/public-closed-gate-artifact-compaction-planning-gate.json",
@@ -83,6 +84,7 @@
     "ni:///sha-256;yjqTYUeWnZFd3f7wIqooMv1OATIk5kujkEUT0WAnxsA",
     "ni:///sha-256;AxafRLA_AOZWFxpqn5bVNln4RevvP4SoZUK8lWD5Vv8",
     "ni:///sha-256;eeWKzlhaBiYTSZkKRLOx_kZFni-KBfCR620jSrClBzI",
+    "ni:///sha-256;W8BOTKpdxEUrK5jDXvbUZwhgpNBlajrVlDX-nnbCQuU",
     "ni:///sha-256;PcB9RjGOJfT2mCciV9AwpyLQ0qvcUx4nFl-Gb_PdCEA",
     "ni:///sha-256;tFbd9yPwTFyZhBj-VOfh6vP61tUIqPkPdi8PQRVR9ns",
     "ni:///sha-256;l-Su7X29w-I1RuCtRFtVZjvXigSTCnVM4Cosqgn1MSI",
@@ -118,7 +120,7 @@
   "by_milestone": {
     "unknown": 43,
     "P1S3M5": 1,
-    "P1S3M6": 5
+    "P1S3M6": 6
   },
   "recovery": {
     "replay_from_archive_jsonl": true,

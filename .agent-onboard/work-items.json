@@ -7223,6 +7223,21 @@
         "checks_not_run": [],
         "known_non_pass": []
       }
+    },
+    {
+      "id": "P1S3M6W10",
+      "milestone_id": "P1S3M6",
+      "title": "Public closed gate archive reader and full-test timeout hardening gate",
+      "status": "closed",
+      "closure": {
+        "actor": "gpt-5.5-thinking",
+        "closed_at": "2026-07-07T06:48:47.519Z",
+        "summary": "Closed by adding closed-gates-read/read-check archive reader commands, validating compact archive/index recovery against raw gate file IDs, refreshing the compact archive/index, and bounding full-source test runner tasks with explicit timeout failures.",
+        "changed_files": [],
+        "checks_run": [],
+        "checks_not_run": [],
+        "known_non_pass": []
+      }
     }
   ]
 }

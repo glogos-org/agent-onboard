@@ -1,7 +1,7 @@
 {
   "schema": "agent-onboard-public-authority-policies-state-shard-001",
   "package_name": "agent-onboard",
-  "release_line": "public_closed_gate_artifact_compaction_apply_gate",
+  "release_line": "public_closed_gate_archive_reader_full_test_hardening_gate",
   "policies": {
     "first_read": {
       "default_first_read": true,

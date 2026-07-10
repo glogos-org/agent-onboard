@@ -3,9 +3,9 @@
   "status": "active",
   "registry_path": ".agent-onboard/work-items.json",
   "raw_registry_loaded_by_default": false,
-  "item_count": 146,
+  "item_count": 147,
   "open_count": 0,
-  "closed_count": 146,
+  "closed_count": 147,
   "admission_queue_count": 0,
   "active_work_item_ids": [],
   "next_open_work_item": null,
@@ -13,13 +13,6 @@
   "active_admission_queue": [],
   "latest_closed_limit": 5,
   "latest_closed_work_items": [
-    {
-      "id": "P1S3M6W5",
-      "title": "Public README history archive split dry-run gate",
-      "status": "closed",
-      "milestone_id": "P1S3M6",
-      "domain": null
-    },
     {
       "id": "P1S3M6W6",
       "title": "Public README history archive split apply gate",
@@ -47,7 +40,14 @@
       "status": "closed",
       "milestone_id": "P1S3M6",
       "domain": null
+    },
+    {
+      "id": "P1S3M6W10",
+      "title": "Public closed gate archive reader and full-test timeout hardening gate",
+      "status": "closed",
+      "milestone_id": "P1S3M6",
+      "domain": null
     }
   ],
-  "updated_at": "2026-07-07T04:26:39.588Z"
+  "updated_at": "2026-07-07T06:48:47.529Z"
 }

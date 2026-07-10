@@ -2,7 +2,11 @@
 
 Historical release prose archived from README.md by P1S3M6W6.
 README.md remains the live first-read surface for install, quickstart, current commands, and no-mutation boundary material.
-## Current release: public contract spine readiness output contract gate
+## Current release: closed gate archive reader and full-test timeout hardening gate
+
+The current release adds `release --closed-gates-read` and `release --closed-gates-read-check` as the compact reader/check surface for `.agent-onboard/closed-gates.archive.jsonl` and `.agent-onboard/closed-gates.index.json`. The reader verifies archive parseability, index/archive digest parity, contiguous ordinals, unique raw artifact paths, raw gate artifact file-id parity, and the no-delete/no-move/no-rewrite boundary. The release also hardens `test/run-tests.js` so full-source test runner tasks have explicit bounded timeouts and fail with a visible timeout error instead of hanging indefinitely. Raw `*-gate.json` artifacts remain preserved; no prune, move, registry mutation, publish, or network operation is admitted.
+
+## Previous release: public contract spine readiness output contract gate
 
 The current release adds `contracts --json|--text|--check` as a compact public contract/interface spine for stable CLI JSON outputs. The spine declares descriptor-based contracts for target handoff preview, handoff readiness checks, readiness reason entries, governance budget contract/check outputs, and the shared no-mutation runtime boundary. It validates the catalog and live runtime outputs through `contracts --check` and `check --fast` without writing files, exporting source-only implementation archives, requiring TypeScript, requiring abstract classes, installing dependencies, mutating Git, publishing, or using network access.
 
