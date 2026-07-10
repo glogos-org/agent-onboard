@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_authority_compact_index_drift_guard_gate';
+const EXPECTED_RELEASE_LINE = 'public_agents_bridge_marker_block_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -2987,6 +2987,66 @@ fullSourceTest('full source block line 1303', () => {
   assert.ok(fs.readFileSync(path.join(dir, 'AGENTS.md'), 'utf8').includes('Agent-Onboard target repository rules'));
 });
 
+
+fullSourceTest('bridge dry-run previews marker block without writing AGENTS.md', () => {
+  const dir = tempRepo();
+  const result = run(['bridge', '--dry-run', '--target', dir]);
+  const output = readJsonOutput(result);
+  assert.strictEqual(output.status, 'ok');
+  assert.strictEqual(output.mode, 'dry-run');
+  assert.strictEqual(output.writes_performed, false);
+  assert.strictEqual(output.canonical_file, 'AGENTS.md');
+  assert.ok(output.bridge_block.includes('agent-onboard:bridge:start'));
+  assert.ok(output.bridge_block.includes('node_modules/agent-onboard/AGENTS.md'));
+  assert.ok(output.bridge_block.includes('does not grant write authority'));
+  assert.ok(output.validation.valid);
+  assert.strictEqual(fs.existsSync(path.join(dir, 'AGENTS.md')), false);
+});
+
+fullSourceTest('bridge write appends marker block and preserves existing AGENTS.md content', () => {
+  const dir = tempRepo();
+  fs.writeFileSync(path.join(dir, 'AGENTS.md'), '# Existing target instructions\n');
+  const result = run(['bridge', '--write', '--target', dir]);
+  const output = readJsonOutput(result);
+  assert.strictEqual(output.status, 'ok');
+  assert.strictEqual(output.writes_performed, true);
+  assert.strictEqual(output.planned_writes[0].action, 'append_marker_block');
+  const agents = fs.readFileSync(path.join(dir, 'AGENTS.md'), 'utf8');
+  assert.ok(agents.startsWith('# Existing target instructions'));
+  assert.strictEqual((agents.match(/agent-onboard:bridge:start/g) || []).length, 1);
+  assert.strictEqual((agents.match(/agent-onboard:bridge:end/g) || []).length, 1);
+  assert.ok(agents.includes('Forbidden by default'));
+  assert.ok(agents.includes('do not install or fetch packages solely for this bridge'));
+});
+
+fullSourceTest('bridge write is idempotent and bridge check validates exactly one marker block', () => {
+  const dir = tempRepo();
+  fs.writeFileSync(path.join(dir, 'AGENTS.md'), '# Existing target instructions\n');
+  readJsonOutput(run(['bridge', '--write', '--target', dir]));
+  const first = fs.readFileSync(path.join(dir, 'AGENTS.md'), 'utf8');
+  const secondOutput = readJsonOutput(run(['bridge', '--write', '--target', dir]));
+  const second = fs.readFileSync(path.join(dir, 'AGENTS.md'), 'utf8');
+  assert.strictEqual(secondOutput.planned_writes[0].action, 'keep');
+  assert.strictEqual(secondOutput.writes_performed, false);
+  assert.strictEqual(second, first);
+  const check = readJsonOutput(run(['bridge', '--check', '--target', dir]));
+  assert.strictEqual(check.status, 'ok');
+  assert.strictEqual(check.validation.start_count, 1);
+  assert.strictEqual(check.validation.end_count, 1);
+  assert.strictEqual(check.validation.valid, true);
+});
+
+fullSourceTest('bridge write refuses malformed duplicate marker blocks', () => {
+  const dir = tempRepo();
+  fs.writeFileSync(path.join(dir, 'AGENTS.md'), '<!-- agent-onboard:bridge:start -->\npartial\n');
+  const result = run(['bridge', '--write', '--target', dir]);
+  const output = readJsonFailure(result);
+  assert.strictEqual(output.status, 'error');
+  assert.strictEqual(output.writes_performed, false);
+  assert.ok(output.errors.some((error) => error.includes('missing required text') || error.includes('missing')));
+  assert.strictEqual(fs.readFileSync(path.join(dir, 'AGENTS.md'), 'utf8'), '<!-- agent-onboard:bridge:start -->\npartial\n');
+});
+
 fullSourceTest('full source block line 1313', () => {
   const dir = tempRepo();
   const result = run(['init', '--dry-run'], { cwd: dir });
@@ -4791,7 +4851,7 @@ fullSourceTest('full source block line 2950', () => {
   assert.ok(output.validated.delegation_file_present_or_installed_context_allowed);
   assert.ok(output.validated.work_item_closed_or_installed_context_allowed);
   assert.ok(output.validated.next_gate_open_or_installed_context_allowed);
-  assert.deepStrictEqual(output.compatibility_port.delegated_commands, ['--help', '--version', '-h', '-v', 'agents', 'architecture', 'authority', 'guard', 'help', 'init', 'release', 'status', 'target', 'target-config', 'target-instance', 'version', 'work-items']);
+  assert.deepStrictEqual(output.compatibility_port.delegated_commands, ['--help', '--version', '-h', '-v', 'agents', 'architecture', 'authority', 'bridge', 'guard', 'help', 'init', 'release', 'status', 'target', 'target-config', 'target-instance', 'version', 'work-items']);
   assert.deepStrictEqual(output.expected_pack_files, EXPECTED_PACK_FILES);
   assert.deepStrictEqual(output.projected_pack_files, EXPECTED_PACK_FILES);
   assert.strictEqual(output.source_router_command_adapter_delegation_file.path, '.agent-onboard/router-command-adapter-delegation-expansion.json');

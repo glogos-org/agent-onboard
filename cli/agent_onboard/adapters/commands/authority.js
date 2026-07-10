@@ -6,11 +6,12 @@ const AUTHORITY_COMMAND_ADAPTER_EXTRACTION = Object.freeze({
   role: 'packaged_runtime_authority_command_adapter',
   planned_adapter_path: 'cli/agent_onboard/adapters/commands/authority.js',
   compatibility_port_group: 'authority',
-  owned_top_level_commands: Object.freeze(['authority', 'agents', 'guard']),
+  owned_top_level_commands: Object.freeze(['authority', 'agents', 'bridge', 'guard']),
   excluded_top_level_commands: Object.freeze(['help', 'version', 'status', 'commands', 'architecture', 'release', 'work-items', 'target', 'target-instance', 'init', 'target-config']),
   output_contract: Object.freeze({
     authority: 'delegates to packaged CLI authority command family through injected bundled handler',
     agents: 'agents remains bundled CLI output behind the command adapter',
+    bridge: 'bridge remains bounded AGENTS.md marker-block output behind the command adapter',
     guard: 'guard remains bundled CLI output behind the command adapter'
   }),
   boundary: Object.freeze({

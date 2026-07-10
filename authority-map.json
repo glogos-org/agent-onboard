@@ -98,6 +98,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-project-json-8a439734"
     },
     {
+      "file_path": ".agent-onboard/public-agents-bridge-marker-block-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-public-agents-bridge-marker-block-gate-json-2cf8eb39"
+    },
+    {
       "file_path": ".agent-onboard/public-architecture-m1-closure-m2-seed.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-architecture-m1-closure-m2-seed-json-2aa8e507"
     },

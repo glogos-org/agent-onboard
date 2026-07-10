@@ -2,7 +2,7 @@
   "schema": "agent-onboard-authority-path-001",
   "package_name": "agent-onboard",
   "package_version_source": "package.json#version",
-  "release_line": "public_authority_compact_index_drift_guard_gate",
+  "release_line": "public_agents_bridge_marker_block_gate",
   "target": {
     "name": "agent-onboard",
     "root": ".",
@@ -119,5 +119,8 @@
     "build_test_deploy_requires_owner_authorization": true,
     "publish_push_requires_owner_authorization": true,
     "raw_evidence_is_on_demand_only": true
-  }
+  },
+  "agents_bridge_marker_block_command": "agent-onboard bridge --dry-run",
+  "agents_bridge_marker_block_check_command": "agent-onboard bridge --check",
+  "agents_bridge_marker_block_write_command": "agent-onboard bridge --write"
 }

@@ -17,11 +17,17 @@
     "agents",
     "architecture",
     "authority",
+    "bridge",
     "guard",
     "help",
+    "init",
     "release",
     "status",
-    "version"
+    "target",
+    "target-config",
+    "target-instance",
+    "version",
+    "work-items"
   ],
   "adapter_groups": {
     "core": [
@@ -42,7 +48,17 @@
     "authority": [
       "authority",
       "agents",
+      "bridge",
       "guard"
+    ],
+    "target": [
+      "init",
+      "target-config",
+      "target",
+      "target-instance"
+    ],
+    "work_items": [
+      "work-items"
     ]
   },
   "adapter_modules": [

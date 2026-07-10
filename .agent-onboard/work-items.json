@@ -6217,6 +6217,81 @@
           "Full unsharded source-test runner was not run; quick suite plus authority, architecture, release, fast-check, metadata, package boundary, and npm pack checks were run."
         ]
       }
+    },
+    {
+      "id": "P1S3M5W36",
+      "milestone_id": "P1S3M5",
+      "title": "Public AGENTS bridge marker block gate",
+      "status": "closed",
+      "closure": {
+        "actor": "gpt-5.5-thinking",
+        "closed_at": "2026-07-06T03:50:00.000Z",
+        "summary": "Closed by adding a bounded public AGENTS.md bridge marker-block surface. bridge --dry-run previews the marker block and planned action, bridge --check validates exactly one valid marker block, and bridge --write idempotently creates, appends, or replaces only that marker block while preserving repository-owned instructions and refusing malformed duplicate markers.",
+        "changed_files": [
+          "package.json",
+          "README.md",
+          "AGENTS.md",
+          "SOURCE_OF_TRUTH.md",
+          "llms.txt",
+          ".agent-onboard/authority-path.json",
+          ".agent-onboard/authority-index.json",
+          ".agent-onboard/router-command-adapter-delegation-expansion.json",
+          ".agent-onboard/core-command-adapter-extraction.json",
+          ".agent-onboard/package-command-adapter-extraction.json",
+          ".agent-onboard/architecture-command-adapter-extraction.json",
+          ".agent-onboard/authority-command-adapter-extraction.json",
+          "cli/agent_onboard/runtime-contracts.js",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/adapters/commands/authority.js",
+          "cli/agent_onboard/adapters/commands/core.js",
+          "cli/agent_onboard/adapters/commands/release-package.js",
+          "cli/agent_onboard/adapters/commands/architecture.js",
+          "cli/agent_onboard/adapters/commands/target.js",
+          "cli/agent_onboard/adapters/commands/work-items.js",
+          "cli/agent_onboard/domains/architecture/m3-runtime-catalog.js",
+          "cli/agent_onboard/domains/target/services/target-templates-service.js",
+          "test/agent-onboard.test.js",
+          ".agent-onboard/work-items.json",
+          ".agent-onboard/work-items.index.json",
+          ".agent-onboard/public-agents-bridge-marker-block-gate.json",
+          "authority-map.json",
+          "manifest.json"
+        ],
+        "checks_run": [
+          "node -c cli/agent_onboard/runtime-composer.js",
+          "node -c cli/agent_onboard/runtime-contracts.js",
+          "node -c cli/agent_onboard/adapters/commands/authority.js",
+          "node -c cli/agent_onboard/adapters/commands/core.js",
+          "node -c cli/agent_onboard/adapters/commands/release-package.js",
+          "node -c cli/agent_onboard/adapters/commands/architecture.js",
+          "node -c cli/agent_onboard/adapters/commands/target.js",
+          "node -c cli/agent_onboard/adapters/commands/work-items.js",
+          "node -c cli/agent_onboard/domains/architecture/m3-runtime-catalog.js",
+          "node -c cli/agent_onboard/domains/target/services/target-templates-service.js",
+          "node -c test/agent-onboard.test.js",
+          "node cli/agent-onboard.js bridge --dry-run --json",
+          "node cli/agent-onboard.js bridge --check --json",
+          "node cli/agent-onboard.js bridge --write --target <tempdir>",
+          "node cli/agent-onboard.js bridge --check --target <tempdir>",
+          "node cli/agent-onboard.js release --version-sprawl-check",
+          "node cli/agent-onboard.js architecture --router-adapter-delegation-check",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js authority --index-check",
+          "node cli/agent-onboard.js authority --check",
+          "node cli/agent-onboard.js release --source-manifest-check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node cli/agent-onboard.js check --fast --json",
+          "node cli/agent-onboard.js target metadata --check --target .",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "npm test",
+          "npm run check:public-artifact-boundary",
+          "npm pack --dry-run --json"
+        ],
+        "checks_not_run": [
+          "npm run test:full was not run end-to-end in this local tool window"
+        ],
+        "known_non_pass": []
+      }
     }
   ]
 }

@@ -27,6 +27,7 @@
     "target-instance",
     "init",
     "agents",
+    "bridge",
     "guard",
     "target-config"
   ],

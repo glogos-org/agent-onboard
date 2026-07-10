@@ -207,10 +207,23 @@ function createTargetTemplatesService(deps) {
   npx ${PACKAGE_NAME}@${VERSION} agents --preview
   \`\`\`
   
+  Preview or validate the bounded bridge marker block without replacing repository-owned instructions:
+  
+  \`\`\`sh
+  npx ${PACKAGE_NAME}@${VERSION} bridge --dry-run --text
+  npx ${PACKAGE_NAME}@${VERSION} bridge --check --text
+  \`\`\`
+  
   Write this file when explicitly requested:
   
   \`\`\`sh
   npx ${PACKAGE_NAME}@${VERSION} agents --write
+  \`\`\`
+  
+  Write or refresh only the bridge marker block when explicitly requested:
+  
+  \`\`\`sh
+  npx ${PACKAGE_NAME}@${VERSION} bridge --write --text
   \`\`\`
   
   ## Scope note

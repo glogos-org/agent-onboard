@@ -16,6 +16,7 @@
   "owned_top_level_commands": [
     "authority",
     "agents",
+    "bridge",
     "guard"
   ],
   "excluded_command_groups": [

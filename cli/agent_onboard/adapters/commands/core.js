@@ -7,7 +7,7 @@ const CORE_COMMAND_ADAPTER_EXTRACTION = Object.freeze({
   planned_adapter_path: 'cli/agent_onboard/adapters/commands/core.js',
   compatibility_port_group: 'core',
   owned_top_level_commands: Object.freeze(['help', 'version', 'status']),
-  excluded_top_level_commands: Object.freeze(['architecture', 'release', 'authority', 'work-items', 'target', 'target-instance', 'init', 'agents', 'guard', 'target-config']),
+  excluded_top_level_commands: Object.freeze(['architecture', 'release', 'authority', 'work-items', 'target', 'target-instance', 'init', 'agents', 'bridge', 'guard', 'target-config']),
   output_contract: Object.freeze({
     help: 'delegates to packaged CLI help output through injected bundled handler',
     version: 'delegates to packaged CLI version output through injected bundled handler',

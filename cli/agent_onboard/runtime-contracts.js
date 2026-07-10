@@ -2,10 +2,11 @@
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
-const RELEASE_LINE = 'public_authority_compact_index_drift_guard_gate';
+const RELEASE_LINE = 'public_agents_bridge_marker_block_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
   agents: 'agents',
+  bridge: 'bridge',
   architecture: 'architecture',
   authority: 'authority',
   guard: 'guard',
@@ -47,6 +48,7 @@ const ROUTER_COMMAND_ORDER = Object.freeze([
   TOP_LEVEL_COMMAND.mcp,
   TOP_LEVEL_COMMAND.init,
   TOP_LEVEL_COMMAND.agents,
+  TOP_LEVEL_COMMAND.bridge,
   TOP_LEVEL_COMMAND.guard,
   TOP_LEVEL_COMMAND.authority,
   TOP_LEVEL_COMMAND.architecture,
@@ -79,10 +81,12 @@ const RUNTIME_COMMAND_GROUP = Object.freeze({
   authority: Object.freeze([
     TOP_LEVEL_COMMAND.authority,
     TOP_LEVEL_COMMAND.agents,
+    TOP_LEVEL_COMMAND.bridge,
     TOP_LEVEL_COMMAND.guard
   ]),
   onboarding: Object.freeze([
     TOP_LEVEL_COMMAND.agents,
+    TOP_LEVEL_COMMAND.bridge,
     TOP_LEVEL_COMMAND.guard
   ]),
   target: Object.freeze([
@@ -320,6 +324,7 @@ const PRODUCT_HELP_LINES = Object.freeze([
   'agent-onboard work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>',
   'agent-onboard init --dry-run|--write [--force]',
   'agent-onboard agents --preview|--write [--force]',
+  'agent-onboard bridge --dry-run|--check|--write [--target <path>] [--json|--text]',
   'agent-onboard guard --plan|--check-boundary',
   'agent-onboard authority --first-read|--check|--index|--index-check',
   'agent-onboard architecture --map|--router|--facades|--check',

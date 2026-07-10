@@ -92,7 +92,7 @@ const PUBLIC_THIN_CLI_ROUTER_SEED = Object.freeze({
   entrypoint: 'cli/agent-onboard.js',
   router_seed_max_lines: 500,
   expected_router_export_names: Object.freeze(['ROUTER_SEED', 'describeRouterSeed', 'route']),
-  expected_top_level_commands: Object.freeze(['help', 'version', 'status', 'init', 'agents', 'guard', 'authority', 'architecture', 'release', 'target-config', 'work-items', 'target', 'target-instance']),
+  expected_top_level_commands: Object.freeze(['help', 'version', 'status', 'init', 'agents', 'bridge', 'guard', 'authority', 'architecture', 'release', 'target-config', 'work-items', 'target', 'target-instance']),
   acceptance_criteria: Object.freeze([
     'Create the public source-only command router module at cli/agent_onboard/command-router.js.',
     'Keep cli/agent-onboard.js as the packaged runtime entrypoint for this seed gate.',
@@ -189,7 +189,7 @@ const PUBLIC_CORE_COMMAND_ADAPTER_EXTRACTION = Object.freeze({
   adapter_seed_max_lines: 220,
   expected_adapter_export_names: Object.freeze(['CORE_COMMAND_ADAPTER_EXTRACTION', 'describeCoreCommandAdapterExtraction', 'createCoreCommandAdapter']),
   owned_top_level_commands: Object.freeze(['help', 'version', 'status']),
-  excluded_top_level_commands: Object.freeze(['architecture', 'release', 'authority', 'work-items', 'target', 'target-instance', 'init', 'agents', 'guard', 'target-config']),
+  excluded_top_level_commands: Object.freeze(['architecture', 'release', 'authority', 'work-items', 'target', 'target-instance', 'init', 'agents', 'bridge', 'guard', 'target-config']),
   acceptance_criteria: Object.freeze([
     'Create the public source-only core command adapter module at cli/agent_onboard/adapters/commands/core.js.',
     'Bind the core adapter contract to the compatibility port group without changing the packaged runtime entrypoint.',
@@ -238,7 +238,7 @@ const PUBLIC_PACKAGE_COMMAND_ADAPTER_EXTRACTION = Object.freeze({
   adapter_seed_max_lines: 220,
   expected_adapter_export_names: Object.freeze(['PACKAGE_COMMAND_ADAPTER_EXTRACTION', 'describePackageCommandAdapterExtraction', 'createPackageCommandAdapter']),
   owned_top_level_commands: Object.freeze(['release']),
-  excluded_top_level_commands: Object.freeze(['help', 'version', 'status', 'architecture', 'authority', 'work-items', 'target', 'target-instance', 'init', 'agents', 'guard', 'target-config']),
+  excluded_top_level_commands: Object.freeze(['help', 'version', 'status', 'architecture', 'authority', 'work-items', 'target', 'target-instance', 'init', 'agents', 'bridge', 'guard', 'target-config']),
   acceptance_criteria: Object.freeze([
     'Create the public source-only package command adapter module at cli/agent_onboard/adapters/commands/release-package.js.',
     'Bind the release package adapter contract to the compatibility port group without changing the packaged runtime entrypoint.',
@@ -286,7 +286,7 @@ const PUBLIC_ARCHITECTURE_COMMAND_ADAPTER_EXTRACTION = Object.freeze({
   adapter_seed_max_lines: 220,
   expected_adapter_export_names: Object.freeze(['ARCHITECTURE_COMMAND_ADAPTER_EXTRACTION', 'describeArchitectureCommandAdapterExtraction', 'createArchitectureCommandAdapter']),
   owned_top_level_commands: Object.freeze(['architecture']),
-  excluded_top_level_commands: Object.freeze(['help', 'version', 'status', 'release', 'authority', 'work-items', 'target', 'target-instance', 'init', 'agents', 'guard', 'target-config']),
+  excluded_top_level_commands: Object.freeze(['help', 'version', 'status', 'release', 'authority', 'work-items', 'target', 'target-instance', 'init', 'agents', 'bridge', 'guard', 'target-config']),
   acceptance_criteria: Object.freeze([
     'Create the public source-only architecture command adapter module at cli/agent_onboard/adapters/commands/architecture.js.',
     'Bind the architecture adapter contract to the compatibility port group without changing the packaged runtime entrypoint.',
@@ -333,7 +333,7 @@ const PUBLIC_AUTHORITY_COMMAND_ADAPTER_EXTRACTION = Object.freeze({
   package_strategy: 'controlled_source_module_inclusion',
   adapter_seed_max_lines: 220,
   expected_adapter_export_names: Object.freeze(['AUTHORITY_COMMAND_ADAPTER_EXTRACTION', 'describeAuthorityCommandAdapterExtraction', 'createAuthorityCommandAdapter']),
-  owned_top_level_commands: Object.freeze(['authority', 'agents', 'guard']),
+  owned_top_level_commands: Object.freeze(['authority', 'agents', 'bridge', 'guard']),
   excluded_top_level_commands: Object.freeze(['help', 'version', 'status', 'architecture', 'release', 'work-items', 'target', 'target-instance', 'init', 'target-config']),
   acceptance_criteria: Object.freeze([
     'Create the public source-only authority command adapter module at cli/agent_onboard/adapters/commands/authority.js.',
@@ -600,7 +600,7 @@ const PUBLIC_ROUTER_COMMAND_ADAPTER_DELEGATION_EXPANSION = Object.freeze({
       path: 'cli/agent_onboard/adapters/commands/authority.js',
       factory: 'createAuthorityCommandAdapter',
       describe: 'describeAuthorityCommandAdapterExtraction',
-      commands: Object.freeze(['authority', 'agents', 'guard'])
+      commands: Object.freeze(['authority', 'agents', 'bridge', 'guard'])
     }),
     Object.freeze({
       group: 'target',
@@ -617,7 +617,7 @@ const PUBLIC_ROUTER_COMMAND_ADAPTER_DELEGATION_EXPANSION = Object.freeze({
       commands: Object.freeze(['work-items'])
     })
   ]),
-  delegated_commands: Object.freeze(['--help', '--version', '-h', '-v', 'agents', 'architecture', 'authority', 'guard', 'help', 'init', 'release', 'status', 'target', 'target-config', 'target-instance', 'version', 'work-items']),
+  delegated_commands: Object.freeze(['--help', '--version', '-h', '-v', 'agents', 'architecture', 'authority', 'bridge', 'guard', 'help', 'init', 'release', 'status', 'target', 'target-config', 'target-instance', 'version', 'work-items']),
   legacy_fallback_commands: Object.freeze([]),
   smoke_vectors: Object.freeze([
     Object.freeze({ id: 'status', argv: Object.freeze(['node', 'cli/agent-onboard.js', 'status']), expected_exit_code: 0 }),

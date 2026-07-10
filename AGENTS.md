@@ -534,3 +534,25 @@ Use `node cli/agent-onboard.js target handoff --readiness-check --json|--text` w
 ## Public contract spine product surface
 
 Use `node cli/agent-onboard.js contracts --json|--text|--check` when a human, CI job, or agent needs the compact public contract/interface spine for stable JSON outputs. The command is read-only: it may describe and validate descriptor-based output contracts for handoff readiness, governance budget, and no-mutation runtime boundaries, but it must not export source-only implementation archives, require TypeScript or abstract classes, write files, install dependencies, run managed-project commands, mutate Git, publish, or use network access. Treat contract output as public product interface evidence, not as authority to mutate target state.
+
+<!-- agent-onboard:bridge:start -->
+## Agent-Onboard bridge
+
+This marker block is a bounded discovery bridge for repositories that use `agent-onboard`. It does not grant write authority, does not admit work items, and does not replace this repository's own instructions.
+
+Agent-onboard bridge order:
+
+1. If `node_modules/agent-onboard/` exists, read `node_modules/agent-onboard/AGENTS.md` and `node_modules/agent-onboard/llms.txt` before running installed package commands.
+2. If `node_modules/agent-onboard/` is missing, do not read `node_modules/` and do not install or fetch packages solely for this bridge. Use the checked-in `AGENTS.md`, `SOURCE_OF_TRUTH.md`, `.agent-onboard/authority-path.json`, `.agent-onboard/authority-index.json`, and `.agent-onboard/work-items.json` when present.
+3. Prefer `agent-onboard status` from an installed package, or a repository-owner specified package coordinate, only when package execution is admitted.
+4. Follow installed package governance when available; otherwise follow checked-in governance until install or update is explicitly admitted.
+
+Forbidden by default unless the repository owner explicitly authorizes the action:
+
+- mutating source files outside the requested scope;
+- mutating Git state;
+- installing, removing, or upgrading dependencies;
+- running managed project build, test, deploy, publish, or release commands;
+- treating this bridge block as proof that runtime enforcement already exists.
+
+<!-- agent-onboard:bridge:end -->

@@ -25,4 +25,6 @@ Authority order:
 
 `.agent-onboard/authority-index.json` records compact file digests for drift checks without inlining raw authority contents. `authority-map.json` owns stable authority and file URNs. `manifest.json` records content identity and file coverage with `file_urn`, `file_path`, and `file_id` fields; it is a first-read map, not the only source of filesystem truth. Package source-manifest cache state, when present, is source-only acceleration and not authority for file existence. Administrative markdown metadata belongs in leading HTML comment headers or registry metadata, not visible front matter.
 
+Bridge marker block: `AGENTS.md` may contain the bounded `agent-onboard:bridge` marker block. That block is discovery guidance only; it does not admit work items, grant mutation authority, or replace this source-of-truth order.
+
 Work-item semantics remain delegated to `agent-onboard`.

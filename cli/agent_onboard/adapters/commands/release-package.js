@@ -7,7 +7,7 @@ const PACKAGE_COMMAND_ADAPTER_EXTRACTION = Object.freeze({
   planned_adapter_path: 'cli/agent_onboard/adapters/commands/release-package.js',
   compatibility_port_group: 'release_package',
   owned_top_level_commands: Object.freeze(['release']),
-  excluded_top_level_commands: Object.freeze(['help', 'version', 'status', 'commands', 'architecture', 'authority', 'work-items', 'target', 'target-instance', 'init', 'agents', 'guard', 'target-config']),
+  excluded_top_level_commands: Object.freeze(['help', 'version', 'status', 'commands', 'architecture', 'authority', 'work-items', 'target', 'target-instance', 'init', 'agents', 'bridge', 'guard', 'target-config']),
   output_contract: Object.freeze({
     release: 'delegates to packaged CLI release command family through injected bundled handler',
     plan: 'release --plan remains bundled CLI output behind the command adapter',
