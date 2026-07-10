@@ -1,6 +1,6 @@
 {
   "name": "agent-onboard",
-  "version": "0.0.149",
+  "version": "0.0.150",
   "description": "CLI for onboarding and managing target repositories.",
   "license": "Apache-2.0",
   "author": "Thanh Le <vnlemanhthanh@gmail.com>",
@@ -452,7 +452,10 @@
     "installed-authority-state-parity",
     "authority-state-parity",
     "installed-state-shard-parity",
-    "source-only-state-shards"
+    "source-only-state-shards",
+    "public-clean-compaction",
+    "clean-compaction-baseline",
+    "repo-compaction"
   ],
   "type": "commonjs",
   "engines": {

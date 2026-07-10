@@ -97,6 +97,12 @@
       "id": "P1S3M5",
       "stage_id": "P1S3",
       "title": "Public target policy adapter milestone",
+      "status": "closed"
+    },
+    {
+      "id": "P1S3M6",
+      "stage_id": "P1S3",
+      "title": "Public clean and compaction milestone",
       "status": "open"
     }
   ],
@@ -6637,6 +6643,67 @@
         ],
         "known_non_pass": [
           "npm run test:full was not run end-to-end in this pass; quick suite, exact artifact oracle, release/authority/claim/metadata checks, public artifact boundary, npm pack dry-run, and targeted claim lifecycle shards passed."
+        ]
+      }
+    },
+    {
+      "id": "P1S3M6W1",
+      "milestone_id": "P1S3M6",
+      "title": "Public clean and compaction baseline gate",
+      "status": "closed",
+      "closure": {
+        "actor": "gpt-5.5-thinking",
+        "closed_at": "2026-07-06T14:55:00.000Z",
+        "summary": "Closed by ending M5, seeding P1S3M6 as the public clean and compaction milestone, and adding release --clean-inventory/--clean-check as a read-only source surface baseline before any deletion, movement, archival, or compaction write.",
+        "changed_files": [
+          "package.json",
+          "README.md",
+          "SOURCE_OF_TRUTH.md",
+          "AGENTS.md",
+          "llms.txt",
+          ".agent-onboard/work-items.json",
+          ".agent-onboard/work-items.index.json",
+          ".agent-onboard/claims.jsonl",
+          ".agent-onboard/claims.index.json",
+          ".agent-onboard/public-clean-compaction-baseline-gate.json",
+          ".agent-onboard/authority-index.json",
+          ".agent-onboard/state/live-authority.json",
+          ".agent-onboard/state/policies.json",
+          ".agent-onboard/state/indexes.json",
+          "authority-map.json",
+          "manifest.json",
+          "cli/agent_onboard/runtime-contracts.js",
+          "cli/agent_onboard/runtime-composer.js",
+          "test/run-tests.js",
+          "test/agent-onboard.test.js"
+        ],
+        "checks_run": [
+          "node -c cli/agent_onboard/runtime-contracts.js",
+          "node -c cli/agent_onboard/runtime-composer.js",
+          "node -c test/run-tests.js",
+          "node -c test/agent-onboard.test.js",
+          "node cli/agent-onboard.js release --clean-inventory",
+          "node cli/agent-onboard.js release --clean-check",
+          "node cli/agent-onboard.js claim --lifecycle-check --json",
+          "node cli/agent-onboard.js claim --validate-ledger --json",
+          "node cli/agent-onboard.js release --source-manifest-check",
+          "node cli/agent-onboard.js authority --state-check",
+          "node cli/agent-onboard.js authority --index-check",
+          "node cli/agent-onboard.js authority --check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js check --fast --json",
+          "node cli/agent-onboard.js target metadata --check --target .",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "npm test",
+          "npm run check:public-artifact-boundary",
+          "npm pack --dry-run --json"
+        ],
+        "checks_not_run": [
+          "npm run test:full"
+        ],
+        "known_non_pass": [
+          "npm run test:full was not run end-to-end in this pass; quick suite, release clean check, release/authority/claim/metadata checks, public artifact boundary, npm pack dry-run, and targeted full-source shard coverage passed."
         ]
       }
     }

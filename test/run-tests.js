@@ -222,6 +222,7 @@ function quickTasks() {
     cliTask('architecture router adapter delegation check', ['architecture', '--router-adapter-delegation-check'], expectStatusOk),
     cliTask('architecture check', ['architecture', '--check'], expectStatusOk),
     cliTask('release surface check', ['release', '--surface-check'], expectStatusOk),
+    cliTask('release clean check', ['release', '--clean-check'], expectStatusOk),
     cliTask('release version sprawl check', ['release', '--version-sprawl-check'], expectStatusOk),
     cliTask('release architecture parity smoke', ['release', '--architecture-parity-smoke'], expectStatusOk),
     cliTask('release check', ['release', '--check'], expectStatusOk),

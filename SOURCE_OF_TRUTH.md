@@ -44,3 +44,8 @@ Work-item semantics remain delegated to `agent-onboard`.
 
 
 `release --authority-state-parity-check` is the current installed authority-state shard parity gate. It validates that `.agent-onboard/state/*` shards remain source-only, remain outside the npm package projection, and are tolerated as absent in installed package context while `authority --state-check` still passes. It is read-only and does not run package managers, publish, mutate registry state, mutate Git, or load raw authority content by default.
+
+## Clean and compaction baseline
+
+`P1S3M6` is the current public clean and compaction milestone. `agent-onboard release --clean-inventory` and `agent-onboard release --clean-check` provide the read-only baseline for that line. They may identify compaction candidates, but they do not delete, move, archive, rewrite, or compact files. Any future compaction write requires a separate admitted work item and explicit owner authorization.
+

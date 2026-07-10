@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_claim_lifecycle_conflict_hardening_gate';
+const EXPECTED_RELEASE_LINE = 'public_clean_compaction_baseline_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -5118,6 +5118,29 @@ fullSourceTest('core config guard service partition seed admits guard runtime se
   assert.strictEqual(seed.boundary.no_legacy_core_config_guard_fallback_commands, true);
   assert.strictEqual(typeof coreDomain.configGuard.createCoreConfigGuardService, 'function');
   assert.strictEqual(typeof coreDomain.configGuard.describeConfigGuardServiceSeed, 'function');
+});
+
+
+fullSourceTest('public clean compaction baseline inventory and check are read-only', () => {
+  const inventory = readJsonOutput(run(['release', '--clean-inventory']));
+  assert.strictEqual(inventory.schema, 'agent-onboard-public-clean-compaction-baseline-result-001');
+  assert.strictEqual(inventory.status, 'ok');
+  assert.strictEqual(inventory.version, EXPECTED_VERSION);
+  assert.strictEqual(inventory.release_line, EXPECTED_RELEASE_LINE);
+  assert.strictEqual(inventory.command, 'agent-onboard release --clean-inventory');
+  assert.strictEqual(inventory.boundary.writes_files, false);
+  assert.ok(inventory.inventory.total_files >= EXPECTED_PACK_FILES.length);
+  assert.ok(inventory.inventory.package.projected_pack_file_count >= EXPECTED_PACK_FILES.length);
+  assert.ok(inventory.compaction_candidates.some((candidate) => candidate.surface === 'README.md'));
+
+  const check = readJsonOutput(run(['release', '--clean-check']));
+  assert.strictEqual(check.schema, 'agent-onboard-public-clean-compaction-baseline-check-result-001');
+  assert.strictEqual(check.status, 'ok');
+  assert.strictEqual(check.command, 'agent-onboard release --clean-check');
+  assert.strictEqual(check.validated.no_write_boundary, true);
+  assert.strictEqual(check.validated.m5_closed_m6_open, true);
+  assert.strictEqual(check.validated.current_work_item_closed, true);
+  assert.strictEqual(check.boundary.writes_files, false);
 });
 
 runSelectedFullSourceTests();

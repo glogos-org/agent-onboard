@@ -571,3 +571,7 @@ Forbidden by default unless the repository owner explicitly authorizes the actio
 
 
 Installed authority state shard parity: use `node cli/agent-onboard.js release --authority-state-parity-check` before packaging or handoff. The check keeps `.agent-onboard/state/*` source-only while requiring installed-package parity to pass without loading raw authority state, writing files, installing dependencies, mutating Git, publishing, or using network access.
+
+## Clean and compaction boundary
+
+`P1S3M6` is the current public clean and compaction milestone. Start with `agent-onboard release --clean-inventory` and `agent-onboard release --clean-check`. These commands are read-only baselines; they do not authorize deletion, movement, archival, history rewrite, package publication, dependency installation, Git mutation, claim mutation, or work-item mutation. Future compaction writes require a separate admitted work item and explicit owner authorization.
