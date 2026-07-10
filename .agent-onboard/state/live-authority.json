@@ -1,17 +1,21 @@
 {
-  "schema": "agent-onboard-target-work-items-index-001",
-  "status": "active",
-  "registry_path": ".agent-onboard/work-items.json",
-  "raw_registry_loaded_by_default": false,
-  "item_count": 135,
-  "open_count": 0,
-  "closed_count": 135,
-  "admission_queue_count": 0,
-  "active_work_item_ids": [],
-  "next_open_work_item": null,
-  "next_admission_candidate": null,
-  "active_admission_queue": [],
-  "latest_closed_limit": 5,
+  "schema": "agent-onboard-public-authority-live-state-shard-001",
+  "package_name": "agent-onboard",
+  "package_version_source": "package.json#version",
+  "release_line": "public_authority_state_sharding_seed_gate",
+  "authority_state_source_layout": "sharded_seed",
+  "state_root": ".agent-onboard/state",
+  "current_work_item": "P1S3M5W40",
+  "current_work_item_title": "Public authority state sharding seed gate",
+  "last_closed_work_item": "P1S3M5W40",
+  "last_closed_title": "Public authority state sharding seed gate",
+  "default_first_read": true,
+  "compact_authority_index_file": ".agent-onboard/authority-index.json",
+  "state_command": "agent-onboard authority --state",
+  "state_check_command": "agent-onboard authority --state-check",
+  "raw_authority_loaded_by_default": false,
+  "raw_growth_files_loaded_by_default": false,
+  "file_contents_inlined": false,
   "latest_closed_work_items": [
     {
       "id": "P1S3M5W36",
@@ -48,6 +52,5 @@
       "milestone_id": "P1S3M5",
       "domain": null
     }
-  ],
-  "updated_at": "2026-07-06T07:25:00.000Z"
+  ]
 }

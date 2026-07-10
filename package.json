@@ -1,6 +1,6 @@
 {
   "name": "agent-onboard",
-  "version": "0.0.146",
+  "version": "0.0.147",
   "description": "CLI for onboarding and managing target repositories.",
   "license": "Apache-2.0",
   "author": "Thanh Le <vnlemanhthanh@gmail.com>",
@@ -443,7 +443,12 @@
     "command-dedupe",
     "output-budget",
     "global-timeout",
-    "slow-reason-taxonomy"
+    "slow-reason-taxonomy",
+    "authority-state-sharding",
+    "authority-state-shards",
+    "state-shard-drift",
+    "live-authority-shard",
+    "closed-gates-jsonl"
   ],
   "type": "commonjs",
   "engines": {

@@ -27,8 +27,8 @@ const PUBLIC_ARCHITECTURE_MAP = Object.freeze({
       id: 'authority',
       title: 'Authority and first-read domain',
       owns: Object.freeze(['read order', 'operator boundary language', 'first-read authority index', 'AI-readable repository entrypoint']),
-      public_surface: Object.freeze(['authority --first-read', 'authority --check', 'authority --index', 'authority --index-check', 'AGENTS.md read order', 'llms.txt', '.agent-onboard/authority-path.json', '.agent-onboard/authority-index.json', '.agent-onboard/target.json authority level']),
-      state_files: Object.freeze(['AGENTS.md', 'llms.txt', '.agent-onboard/authority-path.json', '.agent-onboard/authority-index.json', '.agent-onboard/target.json', '.agent-onboard/runtime-namespace.json'])
+      public_surface: Object.freeze(['authority --first-read', 'authority --check', 'authority --index', 'authority --index-check', 'authority --state', 'authority --state-check', 'AGENTS.md read order', 'llms.txt', '.agent-onboard/authority-path.json', '.agent-onboard/authority-index.json', '.agent-onboard/state/live-authority.json', '.agent-onboard/state/policies.json', '.agent-onboard/state/indexes.json', '.agent-onboard/state/closed-gates.jsonl', '.agent-onboard/target.json authority level']),
+      state_files: Object.freeze(['AGENTS.md', 'llms.txt', '.agent-onboard/authority-path.json', '.agent-onboard/authority-index.json', '.agent-onboard/state/live-authority.json', '.agent-onboard/state/policies.json', '.agent-onboard/state/indexes.json', '.agent-onboard/state/closed-gates.jsonl', '.agent-onboard/target.json', '.agent-onboard/runtime-namespace.json'])
     }),
     Object.freeze({
       id: 'work_items',
@@ -277,7 +277,7 @@ const PUBLIC_COMMAND_ROUTER = Object.freeze({
     Object.freeze({ command: 'init', domain: 'target', facade: 'targetService', handler: 'runInit', aliases: Object.freeze([]), nested: false, writes_files: true }),
     Object.freeze({ command: 'agents', domain: 'authority', facade: 'authorityService', handler: 'runAgents', aliases: Object.freeze([]), nested: false, writes_files: true }),
     Object.freeze({ command: 'guard', domain: 'authority', facade: 'authorityService', handler: 'runGuard', aliases: Object.freeze([]), nested: false, writes_files: false }),
-    Object.freeze({ command: 'authority', domain: 'authority', facade: 'authorityService', handler: 'runAuthority', aliases: Object.freeze([]), nested: true, nested_commands: Object.freeze(['--first-read', '--check', '--index', '--index-check']), writes_files: false }),
+    Object.freeze({ command: 'authority', domain: 'authority', facade: 'authorityService', handler: 'runAuthority', aliases: Object.freeze([]), nested: true, nested_commands: Object.freeze(['--first-read', '--check', '--index', '--index-check', '--state', '--state-check']), writes_files: false }),
     Object.freeze({ command: 'architecture', domain: 'core', facade: 'coreService', handler: 'runArchitecture', aliases: Object.freeze([]), nested: false, writes_files: false }),
     Object.freeze({ command: 'release', domain: 'release_package', facade: 'releasePackageService', handler: 'runRelease', aliases: Object.freeze([]), nested: false, writes_files: false }),
     Object.freeze({ command: 'target-config', domain: 'target', facade: 'targetService', handler: 'runTargetConfig', aliases: Object.freeze([]), nested: false, writes_files: false }),
@@ -317,7 +317,7 @@ const PUBLIC_DOMAIN_SERVICE_FACADES = Object.freeze({
   ]),
   facades: Object.freeze([
     Object.freeze({ id: 'core', service: 'coreService', owns_commands: Object.freeze(['help', 'version', 'status', 'architecture']), writes_files: false, state_writer: false }),
-    Object.freeze({ id: 'authority', service: 'authorityService', owns_commands: Object.freeze(['agents', 'guard', 'authority --first-read', 'authority --check', 'authority --index', 'authority --index-check']), writes_files: true, state_writer: true }),
+    Object.freeze({ id: 'authority', service: 'authorityService', owns_commands: Object.freeze(['agents', 'guard', 'authority --first-read', 'authority --check', 'authority --index', 'authority --index-check', 'authority --state', 'authority --state-check']), writes_files: true, state_writer: true }),
     Object.freeze({ id: 'work_items', service: 'workItemsService', owns_commands: Object.freeze(['work-items']), writes_files: true, state_writer: true }),
     Object.freeze({ id: 'claims', service: 'claimsService', owns_commands: Object.freeze(['work-items --claim', 'work-items --close']), writes_files: true, state_writer: true, shares_ledger_with: 'work_items' }),
     Object.freeze({ id: 'target', service: 'targetService', owns_commands: Object.freeze(['init', 'target-config', 'target runtime --namespace', 'target runtime --check', 'target metadata --plan', 'target metadata --check', 'target metadata --write', 'target onboarding', 'target bootstrap', 'target-instance takeover']), writes_files: true, state_writer: true }),
@@ -346,6 +346,10 @@ const PUBLIC_AUTHORITY_FIRST_READ_INDEX = Object.freeze({
   check_command: 'agent-onboard authority --check',
   compact_index_command: 'agent-onboard authority --index',
   compact_index_check_command: 'agent-onboard authority --index-check',
+  state_command: 'agent-onboard authority --state',
+  state_check_command: 'agent-onboard authority --state-check',
+  state_root: '.agent-onboard/state',
+  state_shard_paths: Object.freeze(['.agent-onboard/state/live-authority.json', '.agent-onboard/state/policies.json', '.agent-onboard/state/indexes.json', '.agent-onboard/state/closed-gates.jsonl']),
   compact_index_file: '.agent-onboard/authority-index.json',
   purpose: 'Declare the canonical first-read order and compact authority index for human and AI operators before target repository writes, package publication, dependency changes, build/test/deploy runs, or Git mutation.',
   source_files: Object.freeze(['AGENTS.md', 'SOURCE_OF_TRUTH.md', '.agent-onboard/authority-path.json', 'llms.txt', 'package.json', 'authority-map.json', 'manifest.json', '.agent-onboard/target.json', '.agent-onboard/runtime-namespace.json', '.agent-onboard/project.json', '.agent-onboard/work-items.json']),
@@ -353,7 +357,11 @@ const PUBLIC_AUTHORITY_FIRST_READ_INDEX = Object.freeze({
   compact_index_excluded_files: Object.freeze([
     Object.freeze({ file_path: '.agent-onboard/authority-index.json', reason: 'self_referential_compact_index' }),
     Object.freeze({ file_path: 'authority-map.json', reason: 'authority_map_can_reference_compact_index_file_urn' }),
-    Object.freeze({ file_path: 'manifest.json', reason: 'content_manifest_can_reference_compact_index_file_id' })
+    Object.freeze({ file_path: 'manifest.json', reason: 'content_manifest_can_reference_compact_index_file_id' }),
+    Object.freeze({ file_path: '.agent-onboard/state/live-authority.json', reason: 'state_shard_checked_by_authority_state_check' }),
+    Object.freeze({ file_path: '.agent-onboard/state/policies.json', reason: 'state_shard_checked_by_authority_state_check' }),
+    Object.freeze({ file_path: '.agent-onboard/state/indexes.json', reason: 'state_shard_can_reference_compact_index_digest' }),
+    Object.freeze({ file_path: '.agent-onboard/state/closed-gates.jsonl', reason: 'state_shard_checked_by_authority_state_check' })
   ]),
   machine_index_file: '.agent-onboard/authority-path.json',
   compact_machine_index_file: '.agent-onboard/authority-index.json',
@@ -1104,7 +1112,7 @@ const PUBLIC_SOURCE_MODULE_EXTRACTION_SECOND_SLICE_FIRST_SLICE = Object.freeze({
   }),
   expected_module_export_names: Object.freeze(['AUTHORITY_DOMAIN_SECOND_SLICE', 'getAuthorityDomainSecondSlice']),
   expected_read_order_paths: Object.freeze(PUBLIC_AUTHORITY_FIRST_READ_INDEX.read_order.map((item) => item.path)),
-  expected_owned_commands: Object.freeze(['authority --first-read', 'authority --check', 'authority --index', 'authority --index-check', 'guard --plan', 'guard --check-boundary']),
+  expected_owned_commands: Object.freeze(['authority --first-read', 'authority --check', 'authority --index', 'authority --index-check', 'authority --state', 'authority --state-check', 'guard --plan', 'guard --check-boundary']),
   boundary: Object.freeze({
     second_slice_first_slice_command_writes_files: false,
     second_slice_first_slice_check_command_writes_files: false,
@@ -2243,6 +2251,8 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
     'node cli/agent-onboard.js authority --check',
     'node cli/agent-onboard.js authority --index',
     'node cli/agent-onboard.js authority --index-check',
+    'node cli/agent-onboard.js authority --state',
+    'node cli/agent-onboard.js authority --state-check',
     'node cli/agent-onboard.js target runtime --namespace',
     'node cli/agent-onboard.js target runtime --check',
     'node cli/agent-onboard.js release --surface',
@@ -2343,6 +2353,8 @@ const PUBLIC_RELEASE_CONTRACT = Object.freeze({
     'npx agent-onboard@<version> authority --check',
     'npx agent-onboard@<version> authority --index',
     'npx agent-onboard@<version> authority --index-check',
+    'npx agent-onboard@<version> authority --state',
+    'npx agent-onboard@<version> authority --state-check',
     'npx agent-onboard@<version> target runtime --namespace',
     'npx agent-onboard@<version> target runtime --check',
     'npx agent-onboard@<version> release --surface',
@@ -2458,7 +2470,7 @@ const PUBLIC_RELEASE_FIXTURE_MATRIX = Object.freeze({
       id: 'public_authority_first_read_index',
       expected_status: 'ok',
       validates: Object.freeze(['canonical first-read order', 'AI-readable llms.txt entrypoint', 'machine-readable authority path index', 'compact authority digest index', 'raw authority on-demand boundary', 'source files stay outside npm package allowlist']),
-      boundary: 'authority --first-read, authority --check, authority --index, and authority --index-check are read-only; target onboarding may write first-read authority files only under explicit --write authorization'
+      boundary: 'authority --first-read, authority --check, authority --index, authority --index-check, authority --state, and authority --state-check are read-only; target onboarding may write first-read authority files only under explicit --write authorization'
     }),
     Object.freeze({
       id: 'public_target_runtime_namespace',

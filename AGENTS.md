@@ -23,6 +23,8 @@ Before proposing or making changes, read:
 13. `README.md`
 14. Raw evidence/source files on demand only after the authority and scope files above.
 
+Authority state shard note: `.agent-onboard/state/live-authority.json`, `.agent-onboard/state/policies.json`, `.agent-onboard/state/indexes.json`, and `.agent-onboard/state/closed-gates.jsonl` are compact source-only shards. Validate them with `node cli/agent-onboard.js authority --state-check`; do not treat them as permission to read raw growth files by default.
+
 ## Default boundary
 
 Forbidden by default unless the repository owner explicitly authorizes the action:
@@ -58,6 +60,10 @@ node cli/agent-onboard.js discovery --text
 node cli/agent-onboard.js discovery --json
 node cli/agent-onboard.js authority --index
 node cli/agent-onboard.js authority --index-check
+node cli/agent-onboard.js authority --state
+node cli/agent-onboard.js authority --state-check
+node cli/agent-onboard.js authority --state
+node cli/agent-onboard.js authority --state-check
 node cli/agent-onboard.js target memory --text
 node cli/agent-onboard.js target memory --preview
 node cli/agent-onboard.js target work-items --text

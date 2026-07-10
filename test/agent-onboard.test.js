@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_exact_artifact_oracle_gate';
+const EXPECTED_RELEASE_LINE = 'public_authority_state_sharding_seed_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -275,6 +275,7 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.ok(output.help_lines.some((line) => line.startsWith('agent-onboard contributor --admission-dry-run|--json|--text')));
   assert.ok(output.help_lines.includes('agent-onboard claim --validate-ledger [--file <path>] [--json|--text]'));
   assert.ok(output.help_lines.some((line) => line.includes('--artifact-oracle|--artifact-oracle-check')));
+  assert.ok(output.help_lines.some((line) => line.includes('authority --first-read|--check|--index|--index-check|--state|--state-check')));
   assert.ok(output.help_lines.some((line) => line.startsWith('agent-onboard claim --append --dry-run|--write')));
   assert.ok(output.help_lines.includes('agent-onboard check --plan|--fast [--json|--text]'));
   assert.ok(output.help_lines.includes('agent-onboard ci --github-action|--json|--text'));
@@ -316,6 +317,7 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.ok(textResult.stdout.includes('agent-onboard contributor --admission-dry-run|--json|--text'));
   assert.ok(textResult.stdout.includes('agent-onboard claim --validate-ledger [--file <path>] [--json|--text]'));
   assert.ok(textResult.stdout.includes('agent-onboard check --plan|--fast [--json|--text]'));
+  assert.ok(textResult.stdout.includes('agent-onboard authority --first-read|--check|--index|--index-check|--state|--state-check'));
   assert.ok(textResult.stdout.includes('agent-onboard ci --github-action|--json|--text'));
   assert.ok(textResult.stdout.includes('agent-onboard mcp --plan|--json|--text'));
   assert.ok(textResult.stdout.includes('agent-onboard target inventory --preview|--json|--text [--target <path>]'));
@@ -1679,7 +1681,9 @@ fullSourceTest('full source block line 547', () => {
   assert.ok(output.source_files_present.includes('llms.txt'));
   assert.ok(output.source_files_present.includes('.agent-onboard/authority-path.json'));
   assert.strictEqual(output.validated.compact_authority_index, true);
+  assert.strictEqual(output.validated.authority_state_shards, true);
   assert.strictEqual(output.compact_authority_index_check.index_file_status, 'fresh');
+  assert.strictEqual(output.authority_state_sharding_check.status, 'ok');
 });
 
 fullSourceTest('public authority compact index command reports digest-only drift guard', () => {
@@ -1706,6 +1710,30 @@ fullSourceTest('public authority compact index check validates stored index fres
   assert.strictEqual(output.validated.raw_authority_loaded_by_default, true);
   assert.strictEqual(output.validated.file_contents_not_inlined, true);
   assert.strictEqual(output.validated.within_budget, true);
+});
+
+
+fullSourceTest('public authority state sharding seed validates compact shards', () => {
+  const state = readJsonOutput(run(['authority', '--state']));
+  assert.strictEqual(state.schema, 'agent-onboard-public-authority-state-sharding-seed-result-001');
+  assert.strictEqual(state.status, 'ok');
+  assert.strictEqual(state.command, 'agent-onboard authority --state');
+  assert.strictEqual(state.check_command, 'agent-onboard authority --state-check');
+  assert.ok(state.shard_paths.includes('.agent-onboard/state/live-authority.json'));
+  assert.ok(state.shard_paths.includes('.agent-onboard/state/closed-gates.jsonl'));
+  assert.strictEqual(state.summary.raw_authority_loaded_by_default, false);
+  assert.strictEqual(state.summary.file_contents_inlined, false);
+  assert.strictEqual(state.boundary.writes_files, false);
+  assert.strictEqual(state.boundary.state_shards_packaged_in_npm_tarball, false);
+
+  const check = readJsonOutput(run(['authority', '--state-check']));
+  assert.strictEqual(check.schema, 'agent-onboard-public-authority-state-sharding-seed-check-result-001');
+  assert.strictEqual(check.status, 'ok');
+  assert.strictEqual(check.command, 'agent-onboard authority --state-check');
+  assert.strictEqual(check.validated.stored_shards_fresh_or_installed_context_allowed, true);
+  assert.strictEqual(check.validated.source_shards_present_or_installed_context_allowed, true);
+  assert.ok(check.shard_files.every((entry) => entry.status === 'fresh'));
+  assert.deepStrictEqual(check.errors, []);
 });
 
 fullSourceTest('full source block line 559', () => {
@@ -4199,6 +4227,9 @@ fullSourceTest('full source block line 2233', () => {
   assert.ok(readme.includes('npx agent-onboard authority --check'));
   assert.ok(readme.includes('npx agent-onboard authority --index'));
   assert.ok(readme.includes('npx agent-onboard authority --index-check'));
+  assert.ok(readme.includes('npx agent-onboard authority --state'));
+  assert.ok(readme.includes('npx agent-onboard authority --state-check'));
+  assert.ok(readme.includes('Current release: `authority --state` previews compact authority state shards'));
   assert.ok(readme.includes('npx agent-onboard target doctor --json'));
   assert.ok(readme.includes('npx agent-onboard target profile --json'));
   assert.ok(readme.includes('npx agent-onboard target work-items --preview'));
@@ -4282,6 +4313,7 @@ fullSourceTest('full source block line 2323', () => {
   assert.ok(help.stdout.includes('work-items --mine [.agent-onboard/work-items.json] --actor <actor> [--text]'));
   assert.ok(help.stdout.includes('create --dry-run|--json|--text'));
   assert.ok(help.stdout.includes('check --plan|--fast [--json|--text]'));
+  assert.ok(help.stdout.includes('authority --first-read|--check|--index|--index-check|--state|--state-check'));
   assert.ok(help.stdout.includes('ci --github-action|--json|--text'));
   assert.ok(help.stdout.includes('mcp --plan|--json|--text'));
   assert.ok(help.stdout.includes('target doctor --json|--text [--target <path>]'));
@@ -4290,14 +4322,14 @@ fullSourceTest('full source block line 2323', () => {
   assert.ok(help.stdout.includes('target memory --preview|--json|--text [--target <path>]'));
   assert.ok(help.stdout.includes('target work-items --preview|--json|--text [--target <path>]'));
   assert.ok(help.stdout.includes('target governance --preview|--check|--budget-contract|--budget-check|--materialize-dry-run|--materialize --write [--force]|--json|--text [--target <path>]'));
-  assert.ok(help.stdout.includes('target handoff --preview|--json|--text [--target <path>]'));
+  assert.ok(help.stdout.includes('target handoff --preview|--readiness-check|--json|--text [--target <path>]'));
   assert.ok(help.stdout.includes('target metadata --plan|--check|--write [--profile default] [--policy <path>] [--adopt-existing] [--force] [--target <path>]'));
   assert.ok(help.stdout.includes('target manifest --check-drift|--init|--refresh [--dry-run|--write] [--target <path>]'));
   assert.ok(help.stdout.includes('work-items --claim --dry-run|--write --id <public-work-item-id> --actor <actor>'));
   assert.ok(help.stdout.includes('work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>'));
   assert.ok(help.stdout.includes('architecture --map|--router|--facades|--check'));
   assert.ok(!help.stdout.includes('claims-installed-fallback-smoke'));
-  assert.ok(help.stdout.includes('release --plan|--surface|--surface-check|--source-manifest|--source-manifest-check|--target-onboarding-smoke|--real-target-trial|--check'));
+  assert.ok(help.stdout.includes('release --plan|--surface|--surface-check|--source-manifest|--source-manifest-check|--artifact-oracle|--artifact-oracle-check|--target-onboarding-smoke|--real-target-trial|--check'));
   assert.ok(help.stdout.includes('target repair --plan|--write [--force] [--target <path>]'));
   assert.ok(help.stdout.includes('target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]'));
 });
@@ -4342,6 +4374,8 @@ fullSourceTest('full source block line 2333', () => {
 assert.ok(agents.includes('node cli/agent-onboard.js target runtime --namespace'));
 assert.ok(agents.includes('node cli/agent-onboard.js target runtime --check'));
   assert.ok(agents.includes('node cli/agent-onboard.js check --plan --text'));
+  assert.ok(agents.includes('node cli/agent-onboard.js authority --state'));
+  assert.ok(agents.includes('node cli/agent-onboard.js authority --state-check'));
   assert.ok(agents.includes('node cli/agent-onboard.js check --fast --text'));
   assert.ok(agents.includes('node cli/agent-onboard.js release --check'));
   assert.ok(agents.includes('node cli/agent-onboard.js release --contract'));

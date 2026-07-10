@@ -2,12 +2,21 @@
   "schema": "agent-onboard-public-authority-compact-index-001",
   "package_name": "agent-onboard",
   "package_version_source": "package.json#version",
-  "release_line": "public_exact_artifact_oracle_gate",
+  "release_line": "public_authority_state_sharding_seed_gate",
   "index_file": ".agent-onboard/authority-index.json",
   "first_read_command": "agent-onboard authority --first-read",
   "check_command": "agent-onboard authority --check",
   "compact_index_command": "agent-onboard authority --index",
   "compact_index_check_command": "agent-onboard authority --index-check",
+  "state_command": "agent-onboard authority --state",
+  "state_check_command": "agent-onboard authority --state-check",
+  "state_shard_root": ".agent-onboard/state",
+  "state_shard_paths": [
+    ".agent-onboard/state/live-authority.json",
+    ".agent-onboard/state/policies.json",
+    ".agent-onboard/state/indexes.json",
+    ".agent-onboard/state/closed-gates.jsonl"
+  ],
   "default_first_read": true,
   "raw_authority_loaded_by_default": false,
   "file_contents_inlined": false,
@@ -104,40 +113,40 @@
       "file_path": "AGENTS.md",
       "present": true,
       "kind": "file",
-      "bytes": 39869,
-      "file_id": "ni:///sha-256;m99x8wBIT3mQBLkVGyLuQnA7B6XbJ_FLi7CCpHkeKCk",
+      "bytes": 40424,
+      "file_id": "ni:///sha-256;fg5KaMxM8d-eNuh2bPBQ4TouWWJ8Tlt2kGTMo2Ott_c",
       "content_inlined": false
     },
     {
       "file_path": "SOURCE_OF_TRUTH.md",
       "present": true,
       "kind": "file",
-      "bytes": 2832,
-      "file_id": "ni:///sha-256;wYlf-QqHejNjoyJTdJVFXeia-_efUzpFAlfzr-HJMvo",
+      "bytes": 3343,
+      "file_id": "ni:///sha-256;86VddgWADd-0n80rwScsgNjJgJXJPL_PS_QFqtY_-XM",
       "content_inlined": false
     },
     {
       "file_path": ".agent-onboard/authority-path.json",
       "present": true,
       "kind": "file",
-      "bytes": 3798,
-      "file_id": "ni:///sha-256;Nl127lBR2tzoeMTF6H49E9-k16-LIVhgqwgZqpBbH3E",
+      "bytes": 4199,
+      "file_id": "ni:///sha-256;Gvd8pkOgiB2R0Uz5HQdgvnn-fYIPRYO4rMcQXYXMB7c",
       "content_inlined": false
     },
     {
       "file_path": "llms.txt",
       "present": true,
       "kind": "file",
-      "bytes": 8108,
-      "file_id": "ni:///sha-256;XDKdU4WQtMlOqdH9nf9gjvGZqBz0llZa0FIoeMY9ZsE",
+      "bytes": 8340,
+      "file_id": "ni:///sha-256;SrqdAWAglBZLn4bwsy9eDbMy-7H8e-fSZRzFZacjntw",
       "content_inlined": false
     },
     {
       "file_path": "package.json",
       "present": true,
       "kind": "file",
-      "bytes": 16473,
-      "file_id": "ni:///sha-256;ZbbW-6TVw_IHtgzNnwm5L6gJ-f00SpoV7clT-vR01aA",
+      "bytes": 16614,
+      "file_id": "ni:///sha-256;BK4-DYzbSY3QFAqIpFgZhJ6M4ub-8Onzu_Gzn3qgfpY",
       "content_inlined": false
     },
     {
@@ -168,8 +177,8 @@
       "file_path": ".agent-onboard/work-items.json",
       "present": true,
       "kind": "file",
-      "bytes": 319133,
-      "file_id": "ni:///sha-256;z_OFX371oUDdwrzWmQdYu5eMHa_vp_8vyLMKW0pHx7I",
+      "bytes": 322454,
+      "file_id": "ni:///sha-256;YzX50tci0gS1_ZAxhTn7-n2gjA4dQD2PtjjbKTjycBU",
       "content_inlined": false
     }
   ],
@@ -185,15 +194,32 @@
     {
       "file_path": "manifest.json",
       "reason": "content_manifest_can_reference_compact_index_file_id"
+    },
+    {
+      "file_path": ".agent-onboard/state/live-authority.json",
+      "reason": "state_shard_checked_by_authority_state_check"
+    },
+    {
+      "file_path": ".agent-onboard/state/policies.json",
+      "reason": "state_shard_checked_by_authority_state_check"
+    },
+    {
+      "file_path": ".agent-onboard/state/indexes.json",
+      "reason": "state_shard_can_reference_compact_index_digest"
+    },
+    {
+      "file_path": ".agent-onboard/state/closed-gates.jsonl",
+      "reason": "state_shard_checked_by_authority_state_check"
     }
   ],
   "summary": {
     "indexed_file_count": 9,
     "present_file_count": 9,
     "missing_file_count": 0,
-    "present_bytes": 393950,
+    "present_bytes": 399111,
     "missing_files": [],
-    "excluded_file_count": 3,
+    "excluded_file_count": 7,
+    "state_shard_count": 4,
     "raw_evidence_is_on_demand_only": true
   },
   "drift_guard": {
@@ -202,7 +228,8 @@
     "raw_file_contents_inlined": false,
     "raw_authority_loaded_by_default": false,
     "self_and_cross_index_files_excluded": true,
-    "index_file_is_source_only": true
+    "index_file_is_source_only": true,
+    "state_shards_checked_by_authority_state_check": true
   },
   "boundary": {
     "writes_files": false,

@@ -27,12 +27,12 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-authority-command-adapter-extraction-json-d836eacf"
     },
     "urn:agent-onboard:file:agent-onboard-authority-index-json-0bcd2304": {
-      "file_id": "ni:///sha-256;zzoWX0_gOb_sReEfk_1560zWvOo7HJ7lE6I6F3ObW9o",
+      "file_id": "ni:///sha-256;1g0EBBSrgTOh2BMmPB7QWo8c17L7sEUksZ_PALoFWjU",
       "file_path": ".agent-onboard/authority-index.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-authority-index-json-0bcd2304"
     },
     "urn:agent-onboard:file:agent-onboard-authority-path-json-9c1fc126": {
-      "file_id": "ni:///sha-256;Nl127lBR2tzoeMTF6H49E9-k16-LIVhgqwgZqpBbH3E",
+      "file_id": "ni:///sha-256;Gvd8pkOgiB2R0Uz5HQdgvnn-fYIPRYO4rMcQXYXMB7c",
       "file_path": ".agent-onboard/authority-path.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-authority-path-json-9c1fc126"
     },
@@ -42,12 +42,12 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-check-plan-fast-runner-product-gate-json-994f46b2"
     },
     "urn:agent-onboard:file:agent-onboard-claims-index-json-30119f4c": {
-      "file_id": "ni:///sha-256;ZOIkdhgDfEHV19DuVAvRt6h8PsucX6aes0VK8hdEP98",
+      "file_id": "ni:///sha-256;g5Fxs-ccgAdyH0d2HarUUHFB8Il-dD6IafEujQjEGg8",
       "file_path": ".agent-onboard/claims.index.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-claims-index-json-30119f4c"
     },
     "urn:agent-onboard:file:agent-onboard-claims-jsonl-dd87ff59": {
-      "file_id": "ni:///sha-256;sTUQJM4t1cn5Ve4AGoWEjfAkgSMYQGvf30INJSJg4DM",
+      "file_id": "ni:///sha-256;kxPJn_MrKRx9PzEdP06MqtbofIFILwAF8wewwbHPkB4",
       "file_path": ".agent-onboard/claims.jsonl",
       "file_urn": "urn:agent-onboard:file:agent-onboard-claims-jsonl-dd87ff59"
     },
@@ -150,6 +150,11 @@
       "file_id": "ni:///sha-256;Gugh1opgI2OTmFKt0lMgunL-ufLjukNPAiRz8yybg_E",
       "file_path": ".agent-onboard/public-authority-compact-index-drift-guard-gate.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-authority-compact-index-drift-guard-gate-json-b7fd1cfb"
+    },
+    "urn:agent-onboard:file:agent-onboard-public-authority-state-sharding-seed-gate-json-601275ed": {
+      "file_id": "ni:///sha-256;_rMbFUbvJRSGaB2rRYYnkZveL1u2Pmfxv8rWhom9Gu8",
+      "file_path": ".agent-onboard/public-authority-state-sharding-seed-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-public-authority-state-sharding-seed-gate-json-601275ed"
     },
     "urn:agent-onboard:file:agent-onboard-public-claim-ledger-jsonl-gate-json-7a768ba3": {
       "file_id": "ni:///sha-256;aRAPPO2sSu-_LSbM8SwzLQOQlUT08uy6sTli-Qum1s8",
@@ -321,6 +326,26 @@
       "file_path": ".agent-onboard/source-partition-plan.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-source-partition-plan-json-d9bbb1e5"
     },
+    "urn:agent-onboard:file:agent-onboard-state-closed-gates-jsonl-b6b6876e": {
+      "file_id": "ni:///sha-256;v4p7R5PgZgSpJzyfXqLcsU44dshOirsLMkdzWVTi-eY",
+      "file_path": ".agent-onboard/state/closed-gates.jsonl",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-state-closed-gates-jsonl-b6b6876e"
+    },
+    "urn:agent-onboard:file:agent-onboard-state-indexes-json-1f8ab4d4": {
+      "file_id": "ni:///sha-256;_6ESXSe2LMcKCRA9Rlk2BFOuunNK4OYwpt0d_UlDn1g",
+      "file_path": ".agent-onboard/state/indexes.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-state-indexes-json-1f8ab4d4"
+    },
+    "urn:agent-onboard:file:agent-onboard-state-live-authority-json-aadb77a0": {
+      "file_id": "ni:///sha-256;IVEHlmUfbkmTIDuj2tleYfVSk8mo1DWmuBKLkE2K-H4",
+      "file_path": ".agent-onboard/state/live-authority.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-state-live-authority-json-aadb77a0"
+    },
+    "urn:agent-onboard:file:agent-onboard-state-policies-json-59cfb4e7": {
+      "file_id": "ni:///sha-256;70a6GauUUJKfhy_3mSV-FcjGZrMzhZSCt5hABIXk2vo",
+      "file_path": ".agent-onboard/state/policies.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-state-policies-json-59cfb4e7"
+    },
     "urn:agent-onboard:file:agent-onboard-target-command-adapter-extraction-json-47b189e2": {
       "file_id": "ni:///sha-256;PXEdxtrJAfVMbG7AD7B2zepV1_MeT2j87N9RzA2lRz4",
       "file_path": ".agent-onboard/target-command-adapter-extraction.json",
@@ -432,7 +457,7 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-work-items-runtime-service-partition-seed-json-a5319c9c"
     },
     "urn:agent-onboard:file:agent-onboard-work-items-index-json-e4fde6be": {
-      "file_id": "ni:///sha-256;tOQAptOirI59Q5LmiJcwdcVLw5pX5tgKqWn-OjkenHg",
+      "file_id": "ni:///sha-256;55LXE-H29PrFg18wvMw2mhDvy7i08igTIFuRqoE_U-E",
       "file_path": ".agent-onboard/work-items.index.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-work-items-index-json-e4fde6be"
     },
@@ -457,7 +482,7 @@
       "file_urn": "urn:agent-onboard:file:prettierrc-json-979a4a52"
     },
     "urn:agent-onboard:file:agents-md-a54ff182": {
-      "file_id": "ni:///sha-256;m99x8wBIT3mQBLkVGyLuQnA7B6XbJ_FLi7CCpHkeKCk",
+      "file_id": "ni:///sha-256;fg5KaMxM8d-eNuh2bPBQ4TouWWJ8Tlt2kGTMo2Ott_c",
       "file_path": "AGENTS.md",
       "file_urn": "urn:agent-onboard:file:agents-md-a54ff182"
     },
@@ -467,17 +492,17 @@
       "file_urn": "urn:agent-onboard:file:license-c6932796"
     },
     "urn:agent-onboard:file:readme-md-b3356305": {
-      "file_id": "ni:///sha-256;1nH1-LKLDLAiCyemJ5VwaOntHSvCvw-O_14-_ucUIjc",
+      "file_id": "ni:///sha-256;wEq909IpSDfJ02JKlhTjDdfNrNGqn_Uoqj0iGTYg0eo",
       "file_path": "README.md",
       "file_urn": "urn:agent-onboard:file:readme-md-b3356305"
     },
     "urn:agent-onboard:file:source-of-truth-md-2e8b8fb6": {
-      "file_id": "ni:///sha-256;wYlf-QqHejNjoyJTdJVFXeia-_efUzpFAlfzr-HJMvo",
+      "file_id": "ni:///sha-256;86VddgWADd-0n80rwScsgNjJgJXJPL_PS_QFqtY_-XM",
       "file_path": "SOURCE_OF_TRUTH.md",
       "file_urn": "urn:agent-onboard:file:source-of-truth-md-2e8b8fb6"
     },
     "urn:agent-onboard:file:authority-map-json-ecf765f6": {
-      "file_id": "ni:///sha-256;iZ5E03JHffgqcJIVqvxCvf1rxlwLtUcXVbKU4i0tcIo",
+      "file_id": "ni:///sha-256;V1u-6YGNGviMwGQR_zXTDfPo9b030anz3vgW79rHHYU",
       "file_path": "authority-map.json",
       "file_urn": "urn:agent-onboard:file:authority-map-json-ecf765f6"
     },
@@ -492,7 +517,7 @@
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-adapters-commands-architecture-js-1b7b6afe"
     },
     "urn:agent-onboard:file:cli-agent-onboard-adapters-commands-authority-js-9ef694d6": {
-      "file_id": "ni:///sha-256;mc1nj_QcDuYCLFnWtsY2HgU4yCiht_WffpzOgkzTFuc",
+      "file_id": "ni:///sha-256;ThvCyDmPp13V5LxZAV_rNTyF6HPjT-cnevgGEwF-SjE",
       "file_path": "cli/agent_onboard/adapters/commands/authority.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-adapters-commands-authority-js-9ef694d6"
     },
@@ -542,7 +567,7 @@
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-services-checks-architecture-check-service-js-8411236e"
     },
     "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-services-runtime-architecture-runtime-service-js-c6bf2de8": {
-      "file_id": "ni:///sha-256;61sKVuISk83CekNhTGsTBEv5v2AV8BltJyvzWzwuA6A",
+      "file_id": "ni:///sha-256;qojRgbNgu3XPehl596vCm3Ms6O8cuvo-f7JwdG074pk",
       "file_path": "cli/agent_onboard/domains/architecture/services/runtime/architecture-runtime-service.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-services-runtime-architecture-runtime-service-js-c6bf2de8"
     },
@@ -572,7 +597,7 @@
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-services-source-extraction-architecture-source-extraction-service-js-67f7bffd"
     },
     "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-static-catalog-js-040a2a1a": {
-      "file_id": "ni:///sha-256;dOxl44zwnidOW9XDiKHgWY7JFH-SyAC4qhHocUklZVc",
+      "file_id": "ni:///sha-256;O_TVQXbmcKc0DY_OBCDGHZhU1tWpuF2GcpNreGq1U7U",
       "file_path": "cli/agent_onboard/domains/architecture/static-catalog.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-static-catalog-js-040a2a1a"
     },
@@ -727,22 +752,22 @@
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-ports-compatibility-command-port-js-a85c0f79"
     },
     "urn:agent-onboard:file:cli-agent-onboard-runtime-composer-js-4b05f961": {
-      "file_id": "ni:///sha-256;4bUAAFqP-AJVIPMdgY4arVc1VFzuweFAymR2Yf7Qu2I",
+      "file_id": "ni:///sha-256;xxf_1Vv3xPnC57kflw26f9ECx8dbzR4mPklbwEuHBDo",
       "file_path": "cli/agent_onboard/runtime-composer.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-runtime-composer-js-4b05f961"
     },
     "urn:agent-onboard:file:cli-agent-onboard-runtime-contracts-js-3253ce5e": {
-      "file_id": "ni:///sha-256;v6chsC7CsomTyjACW69iEqyHSr3IZzs1YqksB5x8K9Q",
+      "file_id": "ni:///sha-256;Uqjuvi4p4xNGImeJzoYarHWwEGsOXQqI9rkbtsDhA6s",
       "file_path": "cli/agent_onboard/runtime-contracts.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-runtime-contracts-js-3253ce5e"
     },
     "urn:agent-onboard:file:llms-txt-f43a9e2f": {
-      "file_id": "ni:///sha-256;XDKdU4WQtMlOqdH9nf9gjvGZqBz0llZa0FIoeMY9ZsE",
+      "file_id": "ni:///sha-256;SrqdAWAglBZLn4bwsy9eDbMy-7H8e-fSZRzFZacjntw",
       "file_path": "llms.txt",
       "file_urn": "urn:agent-onboard:file:llms-txt-f43a9e2f"
     },
     "urn:agent-onboard:file:package-json-7ae45ad1": {
-      "file_id": "ni:///sha-256;ZbbW-6TVw_IHtgzNnwm5L6gJ-f00SpoV7clT-vR01aA",
+      "file_id": "ni:///sha-256;BK4-DYzbSY3QFAqIpFgZhJ6M4ub-8Onzu_Gzn3qgfpY",
       "file_path": "package.json",
       "file_urn": "urn:agent-onboard:file:package-json-7ae45ad1"
     },
@@ -772,7 +797,7 @@
       "file_urn": "urn:agent-onboard:file:src-domains-work-items-js-88eba391"
     },
     "urn:agent-onboard:file:test-agent-onboard-test-js-17cbc29b": {
-      "file_id": "ni:///sha-256;1yG1rNT_XH0BLd46VElJW8s5XRXJK6W8QR2F-eEKllw",
+      "file_id": "ni:///sha-256;IK1T1Z7M5h5S7K2iaTutfkZWN9ol94AGK6USUQb0QtA",
       "file_path": "test/agent-onboard.test.js",
       "file_urn": "urn:agent-onboard:file:test-agent-onboard-test-js-17cbc29b"
     },

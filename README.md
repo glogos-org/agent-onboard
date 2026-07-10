@@ -225,6 +225,8 @@ npx agent-onboard authority --first-read
 npx agent-onboard authority --check
 npx agent-onboard authority --index
 npx agent-onboard authority --index-check
+npx agent-onboard authority --state
+npx agent-onboard authority --state-check
 npx agent-onboard target doctor --json
 npx agent-onboard target doctor --text
 npx agent-onboard target profile --json
@@ -425,7 +427,11 @@ Previous release: `authority --index` emits the compact authority digest index, 
 
 Previous release: `bridge --dry-run`, `bridge --check`, and `bridge --write` provide a bounded `AGENTS.md` marker-block bridge. The write path is explicit and marker-block-only; it preserves existing repository instructions, avoids duplicate markers, and performs no dependency install, package-manager execution, Git mutation, managed project command, publish, registry mutation, or network access.
 
-Current release: `claim --validate-ledger` validates `.agent-onboard/claims.jsonl` as a compact JSONL claim-event ledger without inlining raw entries, and `claim --append --dry-run|--write` appends exactly one claim event only under explicit `--write`. The command does not mutate `.agent-onboard/work-items.json`, Git, dependencies, build/test/deploy state, publication state, registry state, or network state.
+Previous release: `claim --validate-ledger` validates `.agent-onboard/claims.jsonl` as a compact JSONL claim-event ledger without inlining raw entries, and `claim --append --dry-run|--write` appends exactly one claim event only under explicit `--write`. The command does not mutate `.agent-onboard/work-items.json`, Git, dependencies, build/test/deploy state, publication state, registry state, or network state.
+
+Previous release: `release --artifact-oracle-check` validates the exact local npm artifact with npm pack, tarball SHA-256, file-list contract, and fresh installed CLI smoke while keeping `check --fast` free of package-manager execution.
+
+Current release: `authority --state` previews compact authority state shards, and `authority --state-check` validates `.agent-onboard/state/live-authority.json`, `.agent-onboard/state/policies.json`, `.agent-onboard/state/indexes.json`, and `.agent-onboard/state/closed-gates.jsonl` against generated state without loading raw growth files by default. The state shards are source-only and remain outside the npm package projection.
 
 Print the public authority read order without writing files:
 

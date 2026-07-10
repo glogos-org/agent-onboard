@@ -14,6 +14,10 @@ Canonical AI-readable files:
 - SOURCE_OF_TRUTH.md
 - .agent-onboard/authority-path.json
 - .agent-onboard/authority-index.json
+- .agent-onboard/state/live-authority.json
+- .agent-onboard/state/policies.json
+- .agent-onboard/state/indexes.json
+- .agent-onboard/state/closed-gates.jsonl
 - llms.txt
 - package.json
 - authority-map.json
@@ -56,6 +60,8 @@ Stable commands:
 - agent-onboard release --artifact-oracle-check
 - agent-onboard authority --index
 - agent-onboard authority --index-check
+- agent-onboard authority --state
+- agent-onboard authority --state-check
 - agent-onboard bridge --dry-run --text
 - agent-onboard claim --validate-ledger --text
 - agent-onboard bridge --check --text

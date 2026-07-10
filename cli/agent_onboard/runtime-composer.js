@@ -555,6 +555,8 @@ function discoveryStableCommands() {
     'agent-onboard release --source-manifest',
     'agent-onboard authority --index',
     'agent-onboard authority --index-check',
+    'agent-onboard authority --state',
+    'agent-onboard authority --state-check',
     'agent-onboard release --check'
   ];
 }
@@ -2448,6 +2450,8 @@ const {
   publicAuthorityFirstReadCheck,
   publicAuthorityCompactIndexResult,
   publicAuthorityCompactIndexCheck,
+  publicAuthorityStateShardingSeed,
+  publicAuthorityStateShardingSeedCheck,
   publicTargetRuntimeNamespace,
   publicTargetRuntimeNamespaceCheck,
   publicSourceDomainExtractionRehearsal,
@@ -7752,11 +7756,20 @@ function runAuthority(args) {
     json(result);
     return result.status === 'ok' ? 0 : 1;
   }
+  if (args.length === 1 && args[0] === '--state') {
+    json(publicAuthorityStateShardingSeed());
+    return 0;
+  }
+  if (args.length === 1 && args[0] === '--state-check') {
+    const result = publicAuthorityStateShardingSeedCheck();
+    json(result);
+    return result.status === 'ok' ? 0 : 1;
+  }
   json({
     schema: 'agent-onboard-authority-command-error-001',
     status: 'error',
     command_family: 'authority',
-    message: 'authority requires --first-read, --check, --index, or --index-check',
+    message: 'authority requires --first-read, --check, --index, --index-check, --state, or --state-check',
     writes_files: false,
     publishes_package: false
   });

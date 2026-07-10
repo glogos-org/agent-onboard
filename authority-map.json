@@ -114,6 +114,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-authority-compact-index-drift-guard-gate-json-b7fd1cfb"
     },
     {
+      "file_path": ".agent-onboard/public-authority-state-sharding-seed-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-public-authority-state-sharding-seed-gate-json-601275ed"
+    },
+    {
       "file_path": ".agent-onboard/public-claim-ledger-jsonl-gate.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-claim-ledger-jsonl-gate-json-7a768ba3"
     },
@@ -248,6 +252,22 @@
     {
       "file_path": ".agent-onboard/source-partition-plan.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-source-partition-plan-json-d9bbb1e5"
+    },
+    {
+      "file_path": ".agent-onboard/state/closed-gates.jsonl",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-state-closed-gates-jsonl-b6b6876e"
+    },
+    {
+      "file_path": ".agent-onboard/state/indexes.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-state-indexes-json-1f8ab4d4"
+    },
+    {
+      "file_path": ".agent-onboard/state/live-authority.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-state-live-authority-json-aadb77a0"
+    },
+    {
+      "file_path": ".agent-onboard/state/policies.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-state-policies-json-59cfb4e7"
     },
     {
       "file_path": ".agent-onboard/target-command-adapter-extraction.json",

@@ -12,6 +12,7 @@ const AUTHORITY_COMMAND_ADAPTER_EXTRACTION = Object.freeze({
     authority: 'delegates to packaged CLI authority command family through injected bundled handler',
     agents: 'agents remains bundled CLI output behind the command adapter',
     bridge: 'bridge remains bounded AGENTS.md marker-block output behind the command adapter',
+    'authority --state': 'authority state shard seed output remains read-only and compact behind the command adapter',
     guard: 'guard remains bundled CLI output behind the command adapter'
   }),
   boundary: Object.freeze({
