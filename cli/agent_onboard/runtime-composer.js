@@ -203,6 +203,7 @@ function commandSurfaceCatalog() {
       'agent-onboard target work-items --text',
       'agent-onboard target handoff --text',
       'agent-onboard work-items --next --text',
+      'agent-onboard release --authority-state-parity-check',
       'agent-onboard release --check'
     ],
     output_modes: ['--json', '--text'],
@@ -6442,6 +6443,35 @@ const PUBLIC_EXACT_ARTIFACT_ORACLE = Object.freeze({
   })
 });
 
+
+const PUBLIC_INSTALLED_AUTHORITY_STATE_SHARD_PARITY = Object.freeze({
+  schema: 'agent-onboard-public-installed-authority-state-shard-parity-contract-001',
+  package_name: PACKAGE_NAME,
+  release_line: RELEASE_LINE,
+  command: 'agent-onboard release --authority-state-parity',
+  check_command: 'agent-onboard release --authority-state-parity-check',
+  role: 'installed package authority-state shard boundary parity without packaging source shards',
+  installed_smoke_commands: Object.freeze([
+    'node node_modules/agent-onboard/cli/agent-onboard.js authority --state-check',
+    'node node_modules/agent-onboard/cli/agent-onboard.js release --authority-state-parity-check'
+  ]),
+  boundary: Object.freeze({
+    writes_files: false,
+    writes_package_root: false,
+    writes_target_repository_state: false,
+    creates_temp_files: false,
+    git_mutation: false,
+    installs_dependencies: false,
+    runs_package_manager: false,
+    publishes_package: false,
+    mutates_registry: false,
+    network_required: false,
+    raw_authority_loaded_by_default: false,
+    file_contents_inlined: false,
+    state_shards_packaged_in_npm_tarball: false
+  })
+});
+
 function npmExecutable() {
   return process.platform === 'win32' ? 'npm.cmd' : 'npm';
 }
@@ -6484,6 +6514,72 @@ function removeTempRoot(tempRoot) {
   fs.rmSync(tempRoot, { recursive: true, force: true });
 }
 
+
+function publicInstalledAuthorityStateShardParity(root = packageRoot()) {
+  const pkg = readJson(path.join(root, 'package.json'));
+  const context = sourceContext(root);
+  const expectedPackFiles = PUBLIC_RELEASE_CONTRACT.expected_pack_files.slice().sort();
+  const projectedPackFiles = packageJsonProjectedPackFiles(pkg).slice().sort();
+  const stateShardPaths = PUBLIC_AUTHORITY_FIRST_READ_INDEX.state_shard_paths.slice();
+  const sourceShardReports = stateShardPaths.map((rel) => ({
+    file_path: rel,
+    source_present: fs.existsSync(path.join(root, rel)),
+    projected_in_pack: expectedPackFiles.includes(rel) || projectedPackFiles.includes(rel)
+  }));
+  const sourceStateCheck = publicAuthorityStateShardingSeedCheck(root);
+  const errors = [];
+  if (!arrayEquals(projectedPackFiles, expectedPackFiles)) errors.push('projected npm pack files must match release contract');
+  for (const report of sourceShardReports) {
+    if (report.projected_in_pack) errors.push(`authority state shard must not be projected into npm package: ${report.file_path}`);
+    if (context.package_context === 'source_repository' && !report.source_present) errors.push(`authority state shard missing in source repository: ${report.file_path}`);
+  }
+  if (sourceStateCheck.status !== 'ok') errors.push(...sourceStateCheck.errors.map((error) => `authority --state-check: ${error}`));
+  const installedProjection = {
+    package_context: 'installed_package',
+    state_shards_expected_absent: stateShardPaths,
+    authority_state_check_expected_status: 'ok',
+    authority_state_check_expected_reason: 'installed package context permits absent source-only state shards',
+    raw_authority_loaded_by_default: false,
+    file_contents_inlined: false
+  };
+  return {
+    schema: 'agent-onboard-public-installed-authority-state-shard-parity-result-001',
+    status: errors.length === 0 ? 'ok' : 'error',
+    package_name: PACKAGE_NAME,
+    version: VERSION,
+    release_line: RELEASE_LINE,
+    command: PUBLIC_INSTALLED_AUTHORITY_STATE_SHARD_PARITY.command,
+    check_command: PUBLIC_INSTALLED_AUTHORITY_STATE_SHARD_PARITY.check_command,
+    package_root: root,
+    package_context: context.package_context,
+    source_context: context,
+    state_shard_paths: stateShardPaths,
+    source_shards: sourceShardReports,
+    installed_projection: installedProjection,
+    source_authority_state_check: {
+      status: sourceStateCheck.status,
+      package_context: sourceStateCheck.package_context,
+      summary: sourceStateCheck.summary,
+      errors: sourceStateCheck.errors
+    },
+    expected_pack_files: expectedPackFiles,
+    projected_pack_files: projectedPackFiles,
+    validated: {
+      package_version_matches_runtime: pkg.version === VERSION,
+      projected_pack_files_match_contract: arrayEquals(projectedPackFiles, expectedPackFiles),
+      source_state_shards_not_projected_into_package: sourceShardReports.every((report) => report.projected_in_pack === false),
+      source_state_shards_present_or_installed_context_allowed: context.package_context === 'installed_package' || sourceShardReports.every((report) => report.source_present === true),
+      source_authority_state_check_ok: sourceStateCheck.status === 'ok',
+      installed_context_allows_absent_state_shards: true,
+      raw_authority_loaded_by_default: false,
+      file_contents_not_inlined: true,
+      command_is_read_only: true
+    },
+    boundary: PUBLIC_INSTALLED_AUTHORITY_STATE_SHARD_PARITY.boundary,
+    errors
+  };
+}
+
 function publicExactArtifactOracle(root = packageRoot()) {
   const pkg = readJson(path.join(root, 'package.json'));
   const expectedPackFiles = PUBLIC_RELEASE_CONTRACT.expected_pack_files.slice().sort();
@@ -6493,6 +6589,8 @@ function publicExactArtifactOracle(root = packageRoot()) {
   let installSummary = null;
   let versionSmokeSummary = null;
   let releaseSmokeSummary = null;
+  let authorityStateSmokeSummary = null;
+  let authorityStateParitySmokeSummary = null;
   let packEntry = null;
   let tarball = null;
   let tarballSha256 = null;
@@ -6578,6 +6676,44 @@ function publicExactArtifactOracle(root = packageRoot()) {
             errors.push(`fresh installed CLI release --check JSON parse failed: ${error.message}`);
           }
         }
+
+        const authorityStateSmoke = spawnSync(process.execPath, [installedCli, 'authority', '--state-check'], {
+          cwd: installRoot,
+          encoding: 'utf8',
+          timeout: 120000,
+          maxBuffer: 20 * 1024 * 1024
+        });
+        authorityStateSmokeSummary = compactSpawnSummary(authorityStateSmoke);
+        if (authorityStateSmoke.status !== 0) errors.push('fresh installed CLI authority --state-check must exit 0');
+        else {
+          try {
+            const stateOutput = JSON.parse(authorityStateSmoke.stdout);
+            if (stateOutput.status !== 'ok') errors.push('fresh installed CLI authority --state-check must return ok');
+            if (stateOutput.package_context !== 'installed_package') errors.push('fresh installed CLI authority --state-check must observe installed_package context');
+            if (!stateOutput.validated || stateOutput.validated.source_shards_present_or_installed_context_allowed !== true) errors.push('fresh installed CLI authority --state-check must permit absent source-only shards');
+          } catch (error) {
+            errors.push(`fresh installed CLI authority --state-check JSON parse failed: ${error.message}`);
+          }
+        }
+
+        const paritySmoke = spawnSync(process.execPath, [installedCli, 'release', '--authority-state-parity-check'], {
+          cwd: installRoot,
+          encoding: 'utf8',
+          timeout: 120000,
+          maxBuffer: 20 * 1024 * 1024
+        });
+        authorityStateParitySmokeSummary = compactSpawnSummary(paritySmoke);
+        if (paritySmoke.status !== 0) errors.push('fresh installed CLI release --authority-state-parity-check must exit 0');
+        else {
+          try {
+            const parityOutput = JSON.parse(paritySmoke.stdout);
+            if (parityOutput.status !== 'ok') errors.push('fresh installed CLI release --authority-state-parity-check must return ok');
+            if (parityOutput.package_context !== 'installed_package') errors.push('fresh installed CLI release --authority-state-parity-check must observe installed_package context');
+            if (!parityOutput.validated || parityOutput.validated.source_state_shards_not_projected_into_package !== true) errors.push('fresh installed CLI authority-state parity must keep shards out of package');
+          } catch (error) {
+            errors.push(`fresh installed CLI release --authority-state-parity-check JSON parse failed: ${error.message}`);
+          }
+        }
       }
     }
   } catch (error) {
@@ -6630,7 +6766,9 @@ function publicExactArtifactOracle(root = packageRoot()) {
       install: installSummary || { status: 'not_run' },
       cli_entrypoint_present: cliEntrypointPresent,
       version_smoke: versionSmokeSummary || { status: 'not_run' },
-      release_check_smoke: releaseSmokeSummary || { status: 'not_run' }
+      release_check_smoke: releaseSmokeSummary || { status: 'not_run' },
+      authority_state_check_smoke: authorityStateSmokeSummary || { status: 'not_run' },
+      authority_state_parity_smoke: authorityStateParitySmokeSummary || { status: 'not_run' }
     },
     expected_pack_files: expectedPackFiles,
     exact_pack_files: actualPackFiles,
@@ -6642,6 +6780,8 @@ function publicExactArtifactOracle(root = packageRoot()) {
       fresh_install_from_exact_tgz: installSummary && installSummary.status === 'ok',
       fresh_installed_cli_version: versionSmokeSummary && versionSmokeSummary.status === 'ok',
       fresh_installed_release_check: releaseSmokeSummary && releaseSmokeSummary.status === 'ok',
+      fresh_installed_authority_state_check: authorityStateSmokeSummary && authorityStateSmokeSummary.status === 'ok',
+      fresh_installed_authority_state_parity: authorityStateParitySmokeSummary && authorityStateParitySmokeSummary.status === 'ok',
       temp_artifacts_removed: cleanupStatus === 'ok'
     },
     boundary: PUBLIC_EXACT_ARTIFACT_ORACLE.boundary,
@@ -6733,6 +6873,8 @@ function publicReleaseCheck(root = packageRoot()) {
   const versionPolicyErrors = versionPolicy.errors.map((error) => `version reference policy: ${error}`);
   const packageSurfaceErrors = packageSurface.errors.map((error) => `package surface: ${error}`);
   const architectureParity = { status: architecture.status === 'ok' ? 'ok' : 'error', errors: [] };
+  const installedAuthorityStateParity = publicInstalledAuthorityStateShardParity(root);
+  const installedAuthorityStateParityErrors = installedAuthorityStateParity.errors.map((error) => `installed authority state parity: ${error}`);
   const targetRepoProduct = publicReleaseTargetRepoProductCheck(root);
   const targetRepoProductErrors = targetRepoProduct.errors.map((error) => `target repo product: ${error}`);
   const retiredReleaseChecks = Object.freeze([
@@ -6778,7 +6920,7 @@ function publicReleaseCheck(root = packageRoot()) {
   const routerAdapterDelegation = publicRouterCommandAdapterDelegationExpansionCheck(root);
   const routerAdapterDelegationErrors = routerAdapterDelegation.errors.map((error) => `router adapter delegation: ${error}`);
   const architectureParityErrors = architectureParity.errors.map((error) => `installed architecture parity: ${error}`);
-  const errors = [...metadataErrors, ...packErrors, ...messagingErrors, ...sourceLedgerErrors, ...architectureErrors, ...packageSurfaceErrors, ...architectureParityErrors, ...targetRepoProductErrors, ...cliRuntimePlanErrors, ...thinCliRouterErrors, ...compatibilityPortErrors, ...coreAdapterErrors, ...packageAdapterErrors, ...architectureAdapterErrors, ...authorityAdapterErrors, ...moduleInclusionPlanErrors, ...packagedRouterPortErrors, ...thinEntrypointRehearsalErrors, ...thinEntrypointCutoverErrors, ...routerAdapterDelegationErrors, ...versionPolicyErrors];
+  const errors = [...metadataErrors, ...packErrors, ...messagingErrors, ...sourceLedgerErrors, ...architectureErrors, ...packageSurfaceErrors, ...architectureParityErrors, ...installedAuthorityStateParityErrors, ...targetRepoProductErrors, ...cliRuntimePlanErrors, ...thinCliRouterErrors, ...compatibilityPortErrors, ...coreAdapterErrors, ...packageAdapterErrors, ...architectureAdapterErrors, ...authorityAdapterErrors, ...moduleInclusionPlanErrors, ...packagedRouterPortErrors, ...thinEntrypointRehearsalErrors, ...thinEntrypointCutoverErrors, ...routerAdapterDelegationErrors, ...versionPolicyErrors];
   return {
     schema: 'agent-onboard-public-release-check-result-014',
     status: errors.length === 0 ? 'ok' : 'error',
@@ -6823,7 +6965,8 @@ function publicReleaseCheck(root = packageRoot()) {
       router_command_adapter_delegation_expansion: routerAdapterDelegation.status === 'ok',
       public_version_reference_policy: versionPolicy.status === 'ok',
       public_package_surface_preservation: packageSurface.status === 'ok',
-      public_installed_parity_architecture_smoke: architectureParity.status === 'ok'
+      public_installed_parity_architecture_smoke: architectureParity.status === 'ok',
+      public_installed_authority_state_shard_parity: installedAuthorityStateParity.status === 'ok'
     },
     expected_pack_files: expectedPackFiles,
     projected_pack_files: projectedPackFiles,
@@ -6846,6 +6989,7 @@ function publicReleaseCheck(root = packageRoot()) {
     public_version_reference_policy: versionPolicy,
     public_package_surface_preservation: packageSurface,
     public_installed_parity_architecture_smoke: architectureParity,
+    public_installed_authority_state_shard_parity: installedAuthorityStateParity,
     local_pre_publish_commands: PUBLIC_RELEASE_CONTRACT.local_pre_publish_commands.slice(),
     post_publish_verification_commands: publicReleasePostPublishCommands(VERSION),
     boundary: {
@@ -7917,6 +8061,7 @@ function runRelease(args) {
       target_runtime_namespace: PUBLIC_TARGET_RUNTIME_NAMESPACE,
       package_surface_preservation: PUBLIC_PACKAGE_SURFACE_PRESERVATION,
       installed_parity_architecture_smoke: PUBLIC_INSTALLED_PARITY_ARCHITECTURE_SMOKE,
+      installed_authority_state_shard_parity: PUBLIC_INSTALLED_AUTHORITY_STATE_SHARD_PARITY,
       source_context: sourceContext(),
       post_publish_verification_commands: publicReleasePostPublishCommands(VERSION),
       boundary: {
@@ -7977,6 +8122,7 @@ function runRelease(args) {
       target_runtime_namespace: PUBLIC_TARGET_RUNTIME_NAMESPACE,
       package_surface_preservation: PUBLIC_PACKAGE_SURFACE_PRESERVATION,
       installed_parity_architecture_smoke: PUBLIC_INSTALLED_PARITY_ARCHITECTURE_SMOKE,
+      installed_authority_state_shard_parity: PUBLIC_INSTALLED_AUTHORITY_STATE_SHARD_PARITY,
       source_context: sourceContext(),
       writes_files: false,
       publishes_package: false,
@@ -8031,6 +8177,7 @@ function runRelease(args) {
       target_runtime_namespace: PUBLIC_TARGET_RUNTIME_NAMESPACE,
       package_surface_preservation: PUBLIC_PACKAGE_SURFACE_PRESERVATION,
       installed_parity_architecture_smoke: PUBLIC_INSTALLED_PARITY_ARCHITECTURE_SMOKE,
+      installed_authority_state_shard_parity: PUBLIC_INSTALLED_AUTHORITY_STATE_SHARD_PARITY,
       source_context: sourceContext(),
       writes_files: false,
       publishes_package: false,
@@ -8059,6 +8206,11 @@ function runRelease(args) {
   }
   if (args.length === 1 && (args[0] === '--artifact-oracle' || args[0] === '--artifact-oracle-check')) {
     const result = publicExactArtifactOracle();
+    json(result);
+    return result.status === 'ok' ? 0 : 1;
+  }
+  if (args.length === 1 && (args[0] === '--authority-state-parity' || args[0] === '--authority-state-parity-check')) {
+    const result = publicInstalledAuthorityStateShardParity();
     json(result);
     return result.status === 'ok' ? 0 : 1;
   }
@@ -8106,7 +8258,7 @@ function runRelease(args) {
     schema: 'agent-onboard-release-command-error-001',
     status: 'error',
     command_family: 'release',
-    message: 'release requires --plan, --contract, --fixture, --surface, --surface-check, --source-manifest, --source-manifest-check, --artifact-oracle, --artifact-oracle-check, --version-sprawl-check, --parity-smoke, --architecture-parity-smoke, --target-onboarding-smoke, --post-publish-handoff, --published-acceptance, --real-target-trial, or --check',
+    message: 'release requires --plan, --contract, --fixture, --surface, --surface-check, --source-manifest, --source-manifest-check, --artifact-oracle, --artifact-oracle-check, --authority-state-parity, --authority-state-parity-check, --version-sprawl-check, --parity-smoke, --architecture-parity-smoke, --target-onboarding-smoke, --post-publish-handoff, --published-acceptance, --real-target-trial, or --check',
     writes_files: false,
     publishes_package: false
   });

@@ -6509,6 +6509,66 @@
           "full unsharded source test was not run end-to-end in this pass; quick suite and targeted authority-state/release checks were run"
         ]
       }
+    },
+    {
+      "id": "P1S3M5W41",
+      "milestone_id": "P1S3M5",
+      "title": "Public installed authority state shard parity gate",
+      "status": "closed",
+      "closure": {
+        "actor": "gpt-5.5-thinking",
+        "closed_at": "2026-07-06T08:10:00.000Z",
+        "summary": "Closed by adding release --authority-state-parity and release --authority-state-parity-check, integrating exact artifact oracle fresh-install smoke for authority --state-check and authority-state parity, and validating that source-only authority state shards remain absent from the npm package projection while installed package context still passes compact state checks.",
+        "changed_files": [
+          "package.json",
+          "AGENTS.md",
+          "README.md",
+          "SOURCE_OF_TRUTH.md",
+          "llms.txt",
+          ".agent-onboard/authority-path.json",
+          ".agent-onboard/authority-index.json",
+          ".agent-onboard/state/live-authority.json",
+          ".agent-onboard/state/policies.json",
+          ".agent-onboard/state/indexes.json",
+          ".agent-onboard/state/closed-gates.jsonl",
+          ".agent-onboard/claims.jsonl",
+          ".agent-onboard/claims.index.json",
+          ".agent-onboard/work-items.json",
+          ".agent-onboard/work-items.index.json",
+          ".agent-onboard/public-installed-authority-state-shard-parity-gate.json",
+          "authority-map.json",
+          "manifest.json",
+          "cli/agent_onboard/runtime-contracts.js",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/domains/architecture/static-catalog.js",
+          "cli/agent_onboard/domains/package/services/package-service.js",
+          "cli/agent_onboard/domains/package/services/package-surface-service.js",
+          "test/agent-onboard.test.js"
+        ],
+        "known_non_pass": [
+          "npm run test:full was not run end-to-end in this pass; quick suite and targeted parity/artifact/authority/release checks passed."
+        ],
+        "checks_run": [
+          "node cli/agent-onboard.js release --authority-state-parity-check",
+          "node cli/agent-onboard.js release --artifact-oracle-check",
+          "node cli/agent-onboard.js authority --state-check",
+          "node cli/agent-onboard.js authority --index-check",
+          "node cli/agent-onboard.js authority --check",
+          "node cli/agent-onboard.js release --source-manifest-check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js check --fast --json",
+          "node cli/agent-onboard.js claim --validate-ledger --json",
+          "node cli/agent-onboard.js target metadata --check --target .",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "npm test",
+          "npm run check:public-artifact-boundary",
+          "npm pack --dry-run --json"
+        ],
+        "checks_not_run": [
+          "npm run test:full"
+        ]
+      }
     }
   ]
 }

@@ -23,7 +23,7 @@ Before proposing or making changes, read:
 13. `README.md`
 14. Raw evidence/source files on demand only after the authority and scope files above.
 
-Authority state shard note: `.agent-onboard/state/live-authority.json`, `.agent-onboard/state/policies.json`, `.agent-onboard/state/indexes.json`, and `.agent-onboard/state/closed-gates.jsonl` are compact source-only shards. Validate them with `node cli/agent-onboard.js authority --state-check`; do not treat them as permission to read raw growth files by default.
+Authority state shard note: `.agent-onboard/state/live-authority.json`, `.agent-onboard/state/policies.json`, `.agent-onboard/state/indexes.json`, and `.agent-onboard/state/closed-gates.jsonl` are compact source-only shards. Validate them with `node cli/agent-onboard.js authority --state-check` and `node cli/agent-onboard.js release --authority-state-parity-check`; do not treat them as permission to read raw growth files by default, and do not project these shards into the npm package.
 
 ## Default boundary
 
@@ -567,3 +567,6 @@ Forbidden by default unless the repository owner explicitly authorizes the actio
 - treating this bridge block as proof that runtime enforcement already exists.
 
 <!-- agent-onboard:bridge:end -->
+
+
+Installed authority state shard parity: use `node cli/agent-onboard.js release --authority-state-parity-check` before packaging or handoff. The check keeps `.agent-onboard/state/*` source-only while requiring installed-package parity to pass without loading raw authority state, writing files, installing dependencies, mutating Git, publishing, or using network access.

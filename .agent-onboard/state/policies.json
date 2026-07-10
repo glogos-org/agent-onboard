@@ -1,7 +1,7 @@
 {
   "schema": "agent-onboard-public-authority-policies-state-shard-001",
   "package_name": "agent-onboard",
-  "release_line": "public_authority_state_sharding_seed_gate",
+  "release_line": "public_installed_authority_state_shard_parity_gate",
   "policies": {
     "first_read": {
       "default_first_read": true,

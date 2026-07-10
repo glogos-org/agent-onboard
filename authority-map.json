@@ -138,6 +138,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-first-read-ladder-manifest-gate-json-379e683b"
     },
     {
+      "file_path": ".agent-onboard/public-installed-authority-state-shard-parity-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-public-installed-authority-state-shard-parity-gate-json-345a58b1"
+    },
+    {
       "file_path": ".agent-onboard/public-package-fast-runner-engine-gate.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-package-fast-runner-engine-gate-json-52aaf819"
     },
@@ -649,7 +653,7 @@
     "visible_front_matter_admin_metadata": false
   },
   "namespace": "urn:agent-onboard:file",
-  "schema": "agent-onboard-target-authority-map-001",
+  "schema": "agent-onboard-target-authority-map-002",
   "target": {
     "name": "agent-onboard"
   }

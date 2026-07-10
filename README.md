@@ -265,6 +265,7 @@ npx agent-onboard release --surface-check
 npx agent-onboard release --source-manifest
 npx agent-onboard release --source-manifest-check
 npx agent-onboard release --artifact-oracle-check
+npx agent-onboard release --authority-state-parity-check
 npx agent-onboard release --target-onboarding-smoke
 npx agent-onboard release --real-target-trial
 npx agent-onboard release --check
@@ -429,9 +430,9 @@ Previous release: `bridge --dry-run`, `bridge --check`, and `bridge --write` pro
 
 Previous release: `claim --validate-ledger` validates `.agent-onboard/claims.jsonl` as a compact JSONL claim-event ledger without inlining raw entries, and `claim --append --dry-run|--write` appends exactly one claim event only under explicit `--write`. The command does not mutate `.agent-onboard/work-items.json`, Git, dependencies, build/test/deploy state, publication state, registry state, or network state.
 
-Previous release: `release --artifact-oracle-check` validates the exact local npm artifact with npm pack, tarball SHA-256, file-list contract, and fresh installed CLI smoke while keeping `check --fast` free of package-manager execution.
+Previous release: `authority --state` previews compact authority state shards, and `authority --state-check` validates `.agent-onboard/state/live-authority.json`, `.agent-onboard/state/policies.json`, `.agent-onboard/state/indexes.json`, and `.agent-onboard/state/closed-gates.jsonl` against generated state without loading raw growth files by default. The state shards are source-only and remain outside the npm package projection.
 
-Current release: `authority --state` previews compact authority state shards, and `authority --state-check` validates `.agent-onboard/state/live-authority.json`, `.agent-onboard/state/policies.json`, `.agent-onboard/state/indexes.json`, and `.agent-onboard/state/closed-gates.jsonl` against generated state without loading raw growth files by default. The state shards are source-only and remain outside the npm package projection.
+Current release: `release --authority-state-parity-check` verifies that authority state shards remain source-only and absent from the npm package projection while the installed package context still passes `authority --state-check`. The exact artifact oracle also fresh-installs the local tarball and smoke-tests both installed authority state checking and installed authority-state parity without publishing or mutating registry state.
 
 Print the public authority read order without writing files:
 
@@ -1341,3 +1342,8 @@ The previous release added the public MCP bridge plan / skeleton product surface
 MCP bridge boundary summary: without starting an MCP server, adding MCP dependencies, opening sockets, starting stdio transport, writing files, network, Git mutation, or publish.
 
 This release adds the public contract output validator gate: `contracts --validate-output --contract <id> --file <path> --json|--text` validates a captured JSON output against one public contract ID, checks schema/required paths/status/readiness reasons/no-mutation boundaries, does not re-emit file contents, and fails non-zero on mismatch.
+
+
+## Current release: installed authority state shard parity gate
+
+The current release adds `agent-onboard release --authority-state-parity` and `agent-onboard release --authority-state-parity-check`. The check validates that `.agent-onboard/state/live-authority.json`, `.agent-onboard/state/policies.json`, `.agent-onboard/state/indexes.json`, and `.agent-onboard/state/closed-gates.jsonl` remain source-only and are not projected into the npm package. In installed package context, those shards are expected to be absent while `authority --state-check` and `release --authority-state-parity-check` still pass by enforcing the source-only boundary rather than loading raw state. The command is read-only, does not write the package root, does not mutate Git, does not run package managers, does not publish, and does not require network access.

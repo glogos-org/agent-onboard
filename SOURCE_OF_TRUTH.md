@@ -41,3 +41,6 @@ Work-item semantics remain delegated to `agent-onboard`.
 ## Exact artifact oracle
 
 `release --artifact-oracle-check` runs local exact artifact evidence using temporary npm pack and fresh install smoke. It must not publish, mutate registry state, require network access, write the package root, or mutate target repositories.
+
+
+`release --authority-state-parity-check` is the current installed authority-state shard parity gate. It validates that `.agent-onboard/state/*` shards remain source-only, remain outside the npm package projection, and are tolerated as absent in installed package context while `authority --state-check` still passes. It is read-only and does not run package managers, publish, mutate registry state, mutate Git, or load raw authority content by default.

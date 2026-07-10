@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_authority_state_sharding_seed_gate';
+const EXPECTED_RELEASE_LINE = 'public_installed_authority_state_shard_parity_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -275,6 +275,7 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.ok(output.help_lines.some((line) => line.startsWith('agent-onboard contributor --admission-dry-run|--json|--text')));
   assert.ok(output.help_lines.includes('agent-onboard claim --validate-ledger [--file <path>] [--json|--text]'));
   assert.ok(output.help_lines.some((line) => line.includes('--artifact-oracle|--artifact-oracle-check')));
+  assert.ok(output.help_lines.some((line) => line.includes('--authority-state-parity|--authority-state-parity-check')));
   assert.ok(output.help_lines.some((line) => line.includes('authority --first-read|--check|--index|--index-check|--state|--state-check')));
   assert.ok(output.help_lines.some((line) => line.startsWith('agent-onboard claim --append --dry-run|--write')));
   assert.ok(output.help_lines.includes('agent-onboard check --plan|--fast [--json|--text]'));
@@ -1871,14 +1872,38 @@ fullSourceTest('exact artifact oracle packs and fresh-installs the local candida
   assert.strictEqual(output.fresh_install_smoke.cli_entrypoint_present, true);
   assert.strictEqual(output.fresh_install_smoke.version_smoke.status, 'ok');
   assert.strictEqual(output.fresh_install_smoke.release_check_smoke.status, 'ok');
+  assert.strictEqual(output.fresh_install_smoke.authority_state_check_smoke.status, 'ok');
+  assert.strictEqual(output.fresh_install_smoke.authority_state_parity_smoke.status, 'ok');
   assert.strictEqual(output.validated.exact_pack_file_list_matches_contract, true);
   assert.strictEqual(output.validated.fresh_install_from_exact_tgz, true);
   assert.strictEqual(output.validated.fresh_installed_release_check, true);
+  assert.strictEqual(output.validated.fresh_installed_authority_state_check, true);
+  assert.strictEqual(output.validated.fresh_installed_authority_state_parity, true);
   assert.strictEqual(output.boundary.writes_package_root, false);
   assert.strictEqual(output.boundary.writes_temp_files, true);
   assert.strictEqual(output.boundary.runs_package_manager, true);
   assert.strictEqual(output.boundary.mutates_registry, false);
   assert.strictEqual(output.boundary.network_required, false);
+  assert.deepStrictEqual(output.errors, []);
+});
+
+
+fullSourceTest('installed authority state shard parity keeps source shards out of packaged runtime', () => {
+  const result = run(['release', '--authority-state-parity-check']);
+  const output = readJsonOutput(result);
+  assert.strictEqual(output.schema, 'agent-onboard-public-installed-authority-state-shard-parity-result-001');
+  assert.strictEqual(output.status, 'ok');
+  assert.strictEqual(output.version, EXPECTED_VERSION);
+  assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
+  assert.strictEqual(output.command, 'agent-onboard release --authority-state-parity');
+  assert.strictEqual(output.check_command, 'agent-onboard release --authority-state-parity-check');
+  assert.strictEqual(output.validated.source_state_shards_not_projected_into_package, true);
+  assert.strictEqual(output.validated.source_state_shards_present_or_installed_context_allowed, true);
+  assert.strictEqual(output.validated.source_authority_state_check_ok, true);
+  assert.strictEqual(output.validated.installed_context_allows_absent_state_shards, true);
+  assert.strictEqual(output.validated.raw_authority_loaded_by_default, false);
+  assert.strictEqual(output.validated.file_contents_not_inlined, true);
+  assert.strictEqual(output.boundary.state_shards_packaged_in_npm_tarball, false);
   assert.deepStrictEqual(output.errors, []);
 });
 
@@ -4229,7 +4254,7 @@ fullSourceTest('full source block line 2233', () => {
   assert.ok(readme.includes('npx agent-onboard authority --index-check'));
   assert.ok(readme.includes('npx agent-onboard authority --state'));
   assert.ok(readme.includes('npx agent-onboard authority --state-check'));
-  assert.ok(readme.includes('Current release: `authority --state` previews compact authority state shards'));
+  assert.ok(readme.includes('Current release: `release --authority-state-parity-check` verifies that authority state shards remain source-only'));
   assert.ok(readme.includes('npx agent-onboard target doctor --json'));
   assert.ok(readme.includes('npx agent-onboard target profile --json'));
   assert.ok(readme.includes('npx agent-onboard target work-items --preview'));
@@ -4329,7 +4354,7 @@ fullSourceTest('full source block line 2323', () => {
   assert.ok(help.stdout.includes('work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>'));
   assert.ok(help.stdout.includes('architecture --map|--router|--facades|--check'));
   assert.ok(!help.stdout.includes('claims-installed-fallback-smoke'));
-  assert.ok(help.stdout.includes('release --plan|--surface|--surface-check|--source-manifest|--source-manifest-check|--artifact-oracle|--artifact-oracle-check|--target-onboarding-smoke|--real-target-trial|--check'));
+  assert.ok(help.stdout.includes('release --plan|--surface|--surface-check|--source-manifest|--source-manifest-check|--artifact-oracle|--artifact-oracle-check|--authority-state-parity|--authority-state-parity-check|--target-onboarding-smoke|--real-target-trial|--check'));
   assert.ok(help.stdout.includes('target repair --plan|--write [--force] [--target <path>]'));
   assert.ok(help.stdout.includes('target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]'));
 });
@@ -4376,6 +4401,7 @@ assert.ok(agents.includes('node cli/agent-onboard.js target runtime --check'));
   assert.ok(agents.includes('node cli/agent-onboard.js check --plan --text'));
   assert.ok(agents.includes('node cli/agent-onboard.js authority --state'));
   assert.ok(agents.includes('node cli/agent-onboard.js authority --state-check'));
+  assert.ok(agents.includes('node cli/agent-onboard.js release --authority-state-parity-check'));
   assert.ok(agents.includes('node cli/agent-onboard.js check --fast --text'));
   assert.ok(agents.includes('node cli/agent-onboard.js release --check'));
   assert.ok(agents.includes('node cli/agent-onboard.js release --contract'));
