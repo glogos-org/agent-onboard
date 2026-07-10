@@ -388,6 +388,7 @@ node cli/agent-onboard.js work-items --validate-template
 node cli/agent-onboard.js work-items --list .agent-onboard/work-items.json
 node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json
 node cli/agent-onboard.js claim --validate-ledger --json
+node cli/agent-onboard.js claim --lifecycle-check --json
 node cli/agent-onboard.js work-items --init --dry-run --force
 node cli/agent-onboard.js work-items --append --dry-run --id <public-work-item-id> --title "Runtime append dry-run smoke"
 node cli/agent-onboard.js architecture --router-adapter-delegation-check

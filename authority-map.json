@@ -122,6 +122,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-claim-ledger-jsonl-gate-json-7a768ba3"
     },
     {
+      "file_path": ".agent-onboard/public-claim-lifecycle-conflict-hardening-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-public-claim-lifecycle-conflict-hardening-gate-json-396c4497"
+    },
+    {
       "file_path": ".agent-onboard/public-contract-output-validator-gate.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-contract-output-validator-gate-json-aa8ca966"
     },
@@ -653,7 +657,7 @@
     "visible_front_matter_admin_metadata": false
   },
   "namespace": "urn:agent-onboard:file",
-  "schema": "agent-onboard-target-authority-map-002",
+  "schema": "agent-onboard-target-authority-map-001",
   "target": {
     "name": "agent-onboard"
   }

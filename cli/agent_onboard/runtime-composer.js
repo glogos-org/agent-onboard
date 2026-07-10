@@ -182,6 +182,7 @@ function commandSurfaceCatalog() {
       'agent-onboard issue --classify-dry-run --text',
       'agent-onboard contributor --admission-dry-run --text',
       'agent-onboard claim --validate-ledger --text',
+      'agent-onboard claim --lifecycle-check --text',
       'agent-onboard contracts --text',
       'agent-onboard contracts --check --json',
       'agent-onboard contracts --validate-output --contract <id> --file <path> --json',

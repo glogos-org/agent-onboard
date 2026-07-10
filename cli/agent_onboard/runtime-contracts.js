@@ -2,7 +2,7 @@
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
-const RELEASE_LINE = 'public_installed_authority_state_shard_parity_gate';
+const RELEASE_LINE = 'public_claim_lifecycle_conflict_hardening_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
   agents: 'agents',
@@ -305,6 +305,7 @@ const PRODUCT_HELP_LINES = Object.freeze([
   'agent-onboard issue --classify-dry-run|--json|--text [--title <title>] [--label <label>] [--actor <kind>] [--source <kind>] [--repo <owner/name>] [--issue-number <number>]',
   'agent-onboard contributor --admission-dry-run|--json|--text [--actor <kind>] [--handle <handle>] [--email <email>] [--repo <owner/name>] [--identity-surface <surface>] [--agreement <surface>] [--ai-assisted yes|no] [--assisted-by <trailer>]',
   'agent-onboard claim --validate-ledger [--file <path>] [--json|--text]',
+  'agent-onboard claim --lifecycle-check [--file <path>] [--stale-hours <hours>] [--json|--text]',
   'agent-onboard claim --append --dry-run|--write --work-item-id <id> --actor <actor> [--event-type claim_proposed|claim_merged] [--claim-id <id>] [--note <note>]',
   'agent-onboard contracts --json|--text|--check|--validate-output --contract <id> --file <path>',
   'agent-onboard check --plan|--fast [--json|--text]',

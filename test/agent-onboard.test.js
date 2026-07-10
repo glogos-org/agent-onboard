@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_installed_authority_state_shard_parity_gate';
+const EXPECTED_RELEASE_LINE = 'public_claim_lifecycle_conflict_hardening_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -317,6 +317,7 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.ok(textResult.stdout.includes('agent-onboard issue --classify-dry-run|--json|--text'));
   assert.ok(textResult.stdout.includes('agent-onboard contributor --admission-dry-run|--json|--text'));
   assert.ok(textResult.stdout.includes('agent-onboard claim --validate-ledger [--file <path>] [--json|--text]'));
+  assert.ok(textResult.stdout.includes('agent-onboard claim --lifecycle-check [--file <path>] [--stale-hours <hours>] [--json|--text]'));
   assert.ok(textResult.stdout.includes('agent-onboard check --plan|--fast [--json|--text]'));
   assert.ok(textResult.stdout.includes('agent-onboard authority --first-read|--check|--index|--index-check|--state|--state-check'));
   assert.ok(textResult.stdout.includes('agent-onboard ci --github-action|--json|--text'));
@@ -347,12 +348,23 @@ fullSourceTest('public claim ledger JSONL command validates and appends explicit
   assert.strictEqual(output.event_counts.claim_proposed, 1);
   assert.strictEqual(output.event_counts.claim_merged, 1);
   assert.strictEqual(output.output_policy.raw_claims_ledger_inlined, false);
+  assert.strictEqual(output.output_policy.compact_lifecycle_only, true);
+  assert.strictEqual(output.lifecycle.status, 'ok');
+  assert.strictEqual(output.lifecycle.conflict_count, 0);
   assert.strictEqual(output.boundary.writes_files, false);
 
   const textResult = run(['claim', '--validate-ledger', '--text'], { cwd: dir });
   assert.strictEqual(textResult.status, 0, textResult.stderr || textResult.stdout);
   assert.ok(textResult.stdout.includes('agent-onboard claim ledger validation'));
   assert.ok(textResult.stdout.includes('Writes performed: false'));
+
+  const lifecycleResult = run(['claim', '--lifecycle-check', '--json', '--now', '2026-07-06T00:02:00.000Z'], { cwd: dir });
+  const lifecycleOutput = readJsonOutput(lifecycleResult);
+  assert.strictEqual(lifecycleOutput.schema, 'agent-onboard-public-claim-ledger-lifecycle-result-001');
+  assert.strictEqual(lifecycleOutput.status, 'ok');
+  assert.strictEqual(lifecycleOutput.active_claim_count, 0);
+  assert.strictEqual(lifecycleOutput.conflict_count, 0);
+  assert.strictEqual(lifecycleOutput.boundary.writes_files, false);
 
   const dryRun = run(['claim', '--append', '--dry-run', '--work-item-id', 'P1S3M5W38', '--actor', 'agent-b', '--event-type', 'claim_proposed', '--claim-id', 'claim-fixture-002', '--created-at', '2026-07-06T00:02:00.000Z'], { cwd: dir });
   const dryOutput = readJsonOutput(dryRun);
@@ -367,6 +379,33 @@ fullSourceTest('public claim ledger JSONL command validates and appends explicit
   assert.strictEqual(writeOutput.writes_performed, true);
   assert.strictEqual(writeOutput.boundary.mutates_only_claims_ledger, true);
   assert.strictEqual(fs.readFileSync(ledgerFile, 'utf8').trim().split(/\r?\n/).length, 3);
+});
+
+
+fullSourceTest('public claim lifecycle check detects active claim conflicts and append refuses them', () => {
+  const dir = tempRepo();
+  const ledgerFile = path.join(dir, '.agent-onboard', 'claims.jsonl');
+  fs.mkdirSync(path.dirname(ledgerFile), { recursive: true });
+  fs.writeFileSync(ledgerFile, [
+    JSON.stringify({ schema: 'agent-onboard-public-claim-ledger-entry-001', event_type: 'claim_proposed', claim_status: 'proposed', claim_id: 'claim-conflict-a', work_item_id: 'P1S3M5W42', actor: 'agent-a', created_at: '2026-07-06T00:00:00.000Z' }),
+    JSON.stringify({ schema: 'agent-onboard-public-claim-ledger-entry-001', event_type: 'claim_proposed', claim_status: 'proposed', claim_id: 'claim-conflict-b', work_item_id: 'P1S3M5W42', actor: 'agent-b', created_at: '2026-07-06T00:01:00.000Z' })
+  ].join('\n') + '\n');
+
+  const lifecycle = run(['claim', '--lifecycle-check', '--json', '--now', '2026-07-06T00:02:00.000Z'], { cwd: dir });
+  assert.notStrictEqual(lifecycle.status, 0);
+  const lifecycleOutput = readJsonFailure(lifecycle);
+  assert.strictEqual(lifecycleOutput.status, 'error');
+  assert.strictEqual(lifecycleOutput.conflict_count, 1);
+  assert.strictEqual(lifecycleOutput.active_claim_count, 2);
+  assert.strictEqual(lifecycleOutput.output_policy.raw_claims_ledger_inlined, false);
+
+  fs.writeFileSync(ledgerFile, JSON.stringify({ schema: 'agent-onboard-public-claim-ledger-entry-001', event_type: 'claim_proposed', claim_status: 'proposed', claim_id: 'claim-active-a', work_item_id: 'P1S3M5W43', actor: 'agent-a', created_at: '2026-07-06T00:00:00.000Z' }) + '\n');
+  const rejected = run(['claim', '--append', '--dry-run', '--work-item-id', 'P1S3M5W43', '--actor', 'agent-b', '--event-type', 'claim_proposed', '--claim-id', 'claim-active-b', '--created-at', '2026-07-06T00:01:00.000Z', '--now', '2026-07-06T00:02:00.000Z'], { cwd: dir });
+  assert.notStrictEqual(rejected.status, 0);
+  const rejectedOutput = readJsonFailure(rejected);
+  assert.strictEqual(rejectedOutput.status, 'error');
+  assert.strictEqual(rejectedOutput.writes_performed, false);
+  assert.strictEqual(rejectedOutput.planned_lifecycle.conflict_count, 1);
 });
 
 fullSourceTest('public discovery is directly usable', () => {

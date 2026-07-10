@@ -91,10 +91,12 @@ const WORK_ITEMS_RESULT_SCHEMA = Object.freeze({
   NEXT: 'agent-onboard-work-items-next-response-001',
   MINE: 'agent-onboard-work-items-mine-response-001',
   CLAIM_LEDGER_VALIDATION: 'agent-onboard-public-claim-ledger-validation-001',
-  CLAIM_LEDGER_APPEND: 'agent-onboard-public-claim-ledger-append-result-001'
+  CLAIM_LEDGER_APPEND: 'agent-onboard-public-claim-ledger-append-result-001',
+  CLAIM_LEDGER_LIFECYCLE: 'agent-onboard-public-claim-ledger-lifecycle-result-001'
 });
 
 const CLAIM_EVENT_TYPE = Object.freeze(['claim_proposed', 'claim_merged']);
+const CLAIM_LIFECYCLE_TERMINAL_EVENTS = Object.freeze(['claim_merged']);
 
 const WORK_ITEMS_REASON = Object.freeze({
   MISSING_LEDGER: 'missing .agent-onboard/work-items.json in current target repo root',
@@ -1049,20 +1051,165 @@ function createWorkItemsService(options = Object.freeze({})) {
     return errors;
   }
 
-  function claimLedgerValidationPayload(file) {
-    const parsed = parseClaimsLedger(file);
-    const errors = parsed.errors.slice();
+  function positiveIntegerOption(args, flag, fallback) {
+    const value = optionAfterFlag(args, flag);
+    if (value === undefined) return fallback;
+    const parsed = Number.parseInt(value, 10);
+    if (!Number.isSafeInteger(parsed) || parsed <= 0) throw new Error(`${flag} requires a positive integer`);
+    return parsed;
+  }
+
+  function isoTimeFromOption(args, flag, fallbackIso) {
+    const value = optionAfterFlag(args, flag) || fallbackIso;
+    if (Number.isNaN(Date.parse(value))) throw new Error(`${flag} requires an ISO timestamp`);
+    return value;
+  }
+
+  function claimLifecyclePayloadFromParsed(parsed, options = Object.freeze({})) {
+    const staleHours = Number.isSafeInteger(options.staleHours) && options.staleHours > 0 ? options.staleHours : 72;
+    const nowIso = options.nowIso || new Date().toISOString();
+    const nowMs = Date.parse(nowIso);
+    const claimState = new Map();
+    const activeByWorkItem = new Map();
     const eventCounts = Object.fromEntries(CLAIM_EVENT_TYPE.map((type) => [type, 0]));
+    const lifecycleErrors = [];
+    const sequenceErrors = [];
+    const conflictWorkItems = [];
+    const staleClaims = [];
     const workItemIds = new Set();
     const actors = new Set();
     const claimIds = new Set();
+
     for (const item of parsed.entries) {
-      errors.push(...validateClaimEntry(item.entry, item.line_number));
-      if (CLAIM_EVENT_TYPE.includes(item.entry.event_type)) eventCounts[item.entry.event_type] += 1;
-      if (typeof item.entry.work_item_id === 'string') workItemIds.add(item.entry.work_item_id);
-      if (typeof item.entry.actor === 'string') actors.add(item.entry.actor);
-      if (typeof item.entry.claim_id === 'string') claimIds.add(item.entry.claim_id);
+      const entry = item.entry;
+      if (CLAIM_EVENT_TYPE.includes(entry.event_type)) eventCounts[entry.event_type] += 1;
+      if (typeof entry.work_item_id === 'string') workItemIds.add(entry.work_item_id);
+      if (typeof entry.actor === 'string') actors.add(entry.actor);
+      if (typeof entry.claim_id === 'string') claimIds.add(entry.claim_id);
+      if (!entry.claim_id || !entry.work_item_id || !entry.event_type) continue;
+
+      const existing = claimState.get(entry.claim_id);
+      if (entry.event_type === 'claim_proposed') {
+        if (existing && existing.proposed) sequenceErrors.push(`line ${item.line_number} duplicates proposed event for ${entry.claim_id}`);
+        if (existing && existing.work_item_id && existing.work_item_id !== entry.work_item_id) sequenceErrors.push(`line ${item.line_number} reuses ${entry.claim_id} for a different work item`);
+        claimState.set(entry.claim_id, {
+          claim_id: entry.claim_id,
+          work_item_id: entry.work_item_id,
+          actor: entry.actor || null,
+          proposed_at: entry.created_at || null,
+          proposed_line: item.line_number,
+          merged_at: existing && existing.merged_at ? existing.merged_at : null,
+          merged_line: existing && existing.merged_line ? existing.merged_line : null,
+          proposed: true
+        });
+        continue;
+      }
+
+      if (CLAIM_LIFECYCLE_TERMINAL_EVENTS.includes(entry.event_type)) {
+        if (!existing || !existing.proposed) {
+          sequenceErrors.push(`line ${item.line_number} merges ${entry.claim_id} before a proposed event`);
+          claimState.set(entry.claim_id, {
+            claim_id: entry.claim_id,
+            work_item_id: entry.work_item_id,
+            actor: entry.actor || null,
+            proposed_at: null,
+            proposed_line: null,
+            merged_at: entry.created_at || null,
+            merged_line: item.line_number,
+            proposed: false
+          });
+          continue;
+        }
+        if (existing.work_item_id !== entry.work_item_id) sequenceErrors.push(`line ${item.line_number} merges ${entry.claim_id} against a different work item`);
+        if (existing.merged_at) sequenceErrors.push(`line ${item.line_number} duplicates terminal event for ${entry.claim_id}`);
+        existing.merged_at = entry.created_at || null;
+        existing.merged_line = item.line_number;
+        claimState.set(entry.claim_id, existing);
+      }
     }
+
+    for (const state of claimState.values()) {
+      if (!state.proposed || state.merged_at) continue;
+      const active = activeByWorkItem.get(state.work_item_id) || [];
+      active.push({
+        claim_id: state.claim_id,
+        work_item_id: state.work_item_id,
+        actor: state.actor,
+        proposed_at: state.proposed_at,
+        proposed_line: state.proposed_line
+      });
+      activeByWorkItem.set(state.work_item_id, active);
+      if (state.proposed_at && nowMs - Date.parse(state.proposed_at) > staleHours * 60 * 60 * 1000) {
+        staleClaims.push({
+          claim_id: state.claim_id,
+          work_item_id: state.work_item_id,
+          actor: state.actor,
+          proposed_at: state.proposed_at,
+          stale_after_hours: staleHours
+        });
+      }
+    }
+
+    for (const [workItemId, active] of activeByWorkItem.entries()) {
+      if (active.length > 1) {
+        conflictWorkItems.push({
+          work_item_id: workItemId,
+          active_claim_count: active.length,
+          claim_ids: active.map((entry) => entry.claim_id)
+        });
+      }
+    }
+
+    lifecycleErrors.push(...sequenceErrors);
+    for (const conflict of conflictWorkItems) lifecycleErrors.push(`work item ${conflict.work_item_id} has ${conflict.active_claim_count} active claims`);
+
+    return {
+      schema: WORK_ITEMS_RESULT_SCHEMA.CLAIM_LEDGER_LIFECYCLE,
+      status: lifecycleErrors.length === 0 ? STATUS.OK : STATUS.ERROR,
+      command_family: 'claim',
+      command: 'agent-onboard claim --lifecycle-check',
+      file: parsed.file,
+      present: parsed.present,
+      lifecycle_checked: true,
+      line_count: parsed.entries.length,
+      event_counts: eventCounts,
+      work_item_count: workItemIds.size,
+      actor_count: actors.size,
+      claim_count: claimIds.size,
+      active_claim_count: Array.from(activeByWorkItem.values()).reduce((sum, active) => sum + active.length, 0),
+      active_work_item_count: activeByWorkItem.size,
+      conflict_count: conflictWorkItems.length,
+      stale_claim_count: staleClaims.length,
+      stale_threshold_hours: staleHours,
+      now: nowIso,
+      active_claims: Array.from(activeByWorkItem.values()).flat().map((entry) => ({ claim_id: entry.claim_id, work_item_id: entry.work_item_id, actor: entry.actor, proposed_at: entry.proposed_at })),
+      conflict_work_items: conflictWorkItems,
+      stale_claims: staleClaims,
+      output_policy: {
+        raw_claims_ledger_inlined: false,
+        raw_claim_event_notes_inlined: false,
+        compact_lifecycle_only: true
+      },
+      boundary: {
+        reads_claims_ledger: true,
+        writes_files: false,
+        mutates_work_items_ledger: false,
+        mutates_claims_ledger: false,
+        installs_dependencies: false,
+        runs_build_test_deploy: false,
+        publishes_or_pushes: false,
+        network: false
+      },
+      errors: lifecycleErrors
+    };
+  }
+
+  function claimLedgerValidationPayload(file, options = Object.freeze({})) {
+    const parsed = parseClaimsLedger(file);
+    const entryErrors = parsed.errors.slice();
+    for (const item of parsed.entries) entryErrors.push(...validateClaimEntry(item.entry, item.line_number));
+    const lifecycle = claimLifecyclePayloadFromParsed(parsed, options);
+    const errors = entryErrors.concat(lifecycle.errors || []);
     return {
       schema: WORK_ITEMS_RESULT_SCHEMA.CLAIM_LEDGER_VALIDATION,
       status: errors.length === 0 ? STATUS.OK : STATUS.ERROR,
@@ -1072,14 +1219,23 @@ function createWorkItemsService(options = Object.freeze({})) {
       present: parsed.present,
       validated: true,
       line_count: parsed.entries.length,
-      event_counts: eventCounts,
-      work_item_count: workItemIds.size,
-      actor_count: actors.size,
-      claim_count: claimIds.size,
+      event_counts: lifecycle.event_counts,
+      work_item_count: lifecycle.work_item_count,
+      actor_count: lifecycle.actor_count,
+      claim_count: lifecycle.claim_count,
+      lifecycle: {
+        status: lifecycle.status,
+        active_claim_count: lifecycle.active_claim_count,
+        active_work_item_count: lifecycle.active_work_item_count,
+        conflict_count: lifecycle.conflict_count,
+        stale_claim_count: lifecycle.stale_claim_count,
+        stale_threshold_hours: lifecycle.stale_threshold_hours
+      },
       output_policy: {
         raw_claims_ledger_inlined: false,
         raw_claim_event_notes_inlined: false,
-        compact_counts_only: true
+        compact_counts_only: true,
+        compact_lifecycle_only: true
       },
       boundary: {
         reads_claims_ledger: true,
@@ -1104,6 +1260,26 @@ function createWorkItemsService(options = Object.freeze({})) {
       `Events: ${payload.line_count}`,
       `Proposed: ${payload.event_counts.claim_proposed}`,
       `Merged: ${payload.event_counts.claim_merged}`,
+      `Lifecycle: ${payload.lifecycle ? payload.lifecycle.status : 'not checked'}`,
+      `Active claims: ${payload.lifecycle ? payload.lifecycle.active_claim_count : 0}`,
+      `Conflicts: ${payload.lifecycle ? payload.lifecycle.conflict_count : 0}`,
+      `Stale claims: ${payload.lifecycle ? payload.lifecycle.stale_claim_count : 0}`,
+      `Writes performed: ${payload.boundary.writes_files}`,
+      payload.errors.length > 0 ? `Errors: ${payload.errors.join('; ')}` : 'Errors: none'
+    ].join('\n') + '\n';
+  }
+
+  function formatClaimLedgerLifecycleText(payload) {
+    return [
+      'agent-onboard claim lifecycle check',
+      `Status: ${payload.status}`,
+      `File: ${payload.file}`,
+      `Present: ${payload.present ? 'yes' : 'no'}`,
+      `Events: ${payload.line_count}`,
+      `Active claims: ${payload.active_claim_count}`,
+      `Active work items: ${payload.active_work_item_count}`,
+      `Conflicts: ${payload.conflict_count}`,
+      `Stale claims: ${payload.stale_claim_count}`,
       `Writes performed: ${payload.boundary.writes_files}`,
       payload.errors.length > 0 ? `Errors: ${payload.errors.join('; ')}` : 'Errors: none'
     ].join('\n') + '\n';
@@ -1114,8 +1290,28 @@ function createWorkItemsService(options = Object.freeze({})) {
     const wantsJson = args.includes(OUTPUT_FLAG.JSON);
     if (wantsText && wantsJson) throw new Error('claim --validate-ledger accepts either --json or --text, not both');
     const file = claimsFileFromArgs(args);
-    const result = claimLedgerValidationPayload(file);
+    const staleHours = positiveIntegerOption(args, '--stale-hours', 72);
+    const nowIso = isoTimeFromOption(args, '--now', new Date().toISOString());
+    const result = claimLedgerValidationPayload(file, { staleHours, nowIso });
     if (wantsText) emitText(formatClaimLedgerValidationText(result).trimEnd());
+    else emit(result);
+    return result.status === STATUS.OK ? 0 : 1;
+  }
+
+  function claimLifecycleCheck(args) {
+    const wantsText = args.includes(OUTPUT_FLAG.TEXT);
+    const wantsJson = args.includes(OUTPUT_FLAG.JSON);
+    if (wantsText && wantsJson) throw new Error('claim --lifecycle-check accepts either --json or --text, not both');
+    const file = claimsFileFromArgs(args);
+    const staleHours = positiveIntegerOption(args, '--stale-hours', 72);
+    const nowIso = isoTimeFromOption(args, '--now', new Date().toISOString());
+    const parsed = parseClaimsLedger(file);
+    const result = claimLifecyclePayloadFromParsed(parsed, { staleHours, nowIso });
+    const entryErrors = parsed.errors.slice();
+    for (const item of parsed.entries) entryErrors.push(...validateClaimEntry(item.entry, item.line_number));
+    result.errors = entryErrors.concat(result.errors || []);
+    result.status = result.errors.length === 0 ? STATUS.OK : STATUS.ERROR;
+    if (wantsText) emitText(formatClaimLedgerLifecycleText(result).trimEnd());
     else emit(result);
     return result.status === STATUS.OK ? 0 : 1;
   }
@@ -1147,13 +1343,27 @@ function createWorkItemsService(options = Object.freeze({})) {
     if (note) entry.note = note;
     if (summary) entry.summary = summary;
     const entryErrors = validateClaimEntry(entry, 1);
+    const currentParsed = parseClaimsLedger(file);
+    const currentEntryErrors = currentParsed.errors.slice();
+    for (const item of currentParsed.entries) currentEntryErrors.push(...validateClaimEntry(item.entry, item.line_number));
+    const staleHours = positiveIntegerOption(args, '--stale-hours', 72);
+    const nowIso = isoTimeFromOption(args, '--now', new Date().toISOString());
+    const plannedParsed = {
+      file,
+      absolutePath: currentParsed.absolutePath,
+      present: currentParsed.present,
+      entries: currentParsed.entries.concat([{ line_number: currentParsed.entries.length + 1, entry }]),
+      errors: currentParsed.errors.slice()
+    };
+    const plannedLifecycle = claimLifecyclePayloadFromParsed(plannedParsed, { staleHours, nowIso });
+    const lifecycleErrors = plannedLifecycle.errors || [];
     const plannedLine = JSON.stringify(entry);
-    if (write && entryErrors.length === 0) {
+    if (write && entryErrors.length === 0 && currentEntryErrors.length === 0 && lifecycleErrors.length === 0) {
       fs.mkdirSync(path.dirname(path.resolve(cwd(), file)), { recursive: true });
       fs.appendFileSync(path.resolve(cwd(), file), `${plannedLine}\n`);
     }
-    const validationAfter = write && entryErrors.length === 0 ? claimLedgerValidationPayload(file) : null;
-    const ok = entryErrors.length === 0 && (!validationAfter || validationAfter.status === STATUS.OK);
+    const validationAfter = write && entryErrors.length === 0 && currentEntryErrors.length === 0 && lifecycleErrors.length === 0 ? claimLedgerValidationPayload(file, { staleHours, nowIso }) : null;
+    const ok = entryErrors.length === 0 && currentEntryErrors.length === 0 && lifecycleErrors.length === 0 && (!validationAfter || validationAfter.status === STATUS.OK);
     emit({
       schema: WORK_ITEMS_RESULT_SCHEMA.CLAIM_LEDGER_APPEND,
       status: ok ? STATUS.OK : STATUS.ERROR,
@@ -1163,6 +1373,12 @@ function createWorkItemsService(options = Object.freeze({})) {
       mode,
       writes_performed: write && ok,
       planned_entry: entry,
+      planned_lifecycle: {
+        status: plannedLifecycle.status,
+        active_claim_count: plannedLifecycle.active_claim_count,
+        conflict_count: plannedLifecycle.conflict_count,
+        stale_claim_count: plannedLifecycle.stale_claim_count
+      },
       validation_after_write: validationAfter,
       boundary: {
         writes_only_under_explicit_write: true,
@@ -1174,7 +1390,7 @@ function createWorkItemsService(options = Object.freeze({})) {
         publishes_or_pushes: false,
         network: false
       },
-      errors: ok ? [] : entryErrors.concat(validationAfter && validationAfter.errors ? validationAfter.errors : [])
+      errors: ok ? [] : entryErrors.concat(currentEntryErrors, lifecycleErrors, validationAfter && validationAfter.errors ? validationAfter.errors : [])
     });
     return ok ? 0 : 1;
   }
@@ -1195,6 +1411,7 @@ function createWorkItemsService(options = Object.freeze({})) {
     next,
     mine,
     validateClaimLedger,
+    claimLifecycleCheck,
     appendClaimLedger
   });
 }

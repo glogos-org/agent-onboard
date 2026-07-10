@@ -187,21 +187,61 @@ function buildClaimsIndex(entries, options = {}) {
   const status = safeString(options.status) || 'derived_preview';
   const updatedAt = safeString(options.updatedAt);
   const latestClaims = [];
-  const activeWorkItemIds = [];
   const latestMergedWorkItemIds = [];
+  const claimState = new Map();
+  const activeWorkItemIds = [];
+  const conflictWorkItemIds = [];
   let proposedCount = 0;
   let mergedCount = 0;
 
   for (const entry of Array.isArray(entries) ? entries : []) {
-    const status = safeString(entry.claim_status || entry.status) || 'unknown';
+    const claimStatus = safeString(entry.claim_status || entry.status) || 'unknown';
+    const eventType = safeString(entry.event_type || entry.type) || '';
+    const claimId = safeString(entry.claim_id);
+    const workItemId = safeString(entry.work_item_id);
     pushBounded(latestClaims, compactClaim(entry), latestLimit);
-    if (['proposed', 'claimed', 'active'].includes(status)) {
+    if (['proposed', 'claimed', 'active'].includes(claimStatus) || eventType === 'claim_proposed') {
       proposedCount += 1;
-      pushUniqueBounded(activeWorkItemIds, safeString(entry.work_item_id), latestLimit);
-    } else if (status === 'merged') {
+      if (claimId) {
+        claimState.set(claimId, {
+          claim_id: claimId,
+          work_item_id: workItemId,
+          actor: compactText(entry.actor, 80),
+          proposed_at: compactText(entry.created_at || entry.timestamp, 40),
+          active: true
+        });
+      }
+    } else if (claimStatus === 'merged' || eventType === 'claim_merged') {
       mergedCount += 1;
-      pushUniqueBounded(latestMergedWorkItemIds, safeString(entry.work_item_id), latestLimit);
+      pushUniqueBounded(latestMergedWorkItemIds, workItemId, latestLimit);
+      if (claimId && claimState.has(claimId)) {
+        const state = claimState.get(claimId);
+        state.active = false;
+        state.merged_at = compactText(entry.created_at || entry.timestamp, 40);
+        claimState.set(claimId, state);
+      } else if (claimId) {
+        claimState.set(claimId, {
+          claim_id: claimId,
+          work_item_id: workItemId,
+          actor: compactText(entry.actor, 80),
+          proposed_at: null,
+          active: false,
+          merged_at: compactText(entry.created_at || entry.timestamp, 40)
+        });
+      }
     }
+  }
+
+  const activeClaimsByWorkItem = new Map();
+  for (const state of claimState.values()) {
+    if (!state.active || !state.work_item_id) continue;
+    const active = activeClaimsByWorkItem.get(state.work_item_id) || [];
+    active.push(state.claim_id);
+    activeClaimsByWorkItem.set(state.work_item_id, active);
+  }
+  for (const [workItemId, claimIds] of activeClaimsByWorkItem.entries()) {
+    pushUniqueBounded(activeWorkItemIds, workItemId, latestLimit);
+    if (claimIds.length > 1) pushUniqueBounded(conflictWorkItemIds, workItemId, latestLimit);
   }
 
   const index = {
@@ -215,7 +255,14 @@ function buildClaimsIndex(entries, options = {}) {
     latest_claims_limit: latestLimit,
     latest_claims: latestClaims.filter(Boolean),
     active_work_item_ids: activeWorkItemIds,
-    latest_merged_work_item_ids: latestMergedWorkItemIds
+    latest_merged_work_item_ids: latestMergedWorkItemIds,
+    lifecycle: {
+      active_claim_count: Array.from(activeClaimsByWorkItem.values()).reduce((sum, claimIds) => sum + claimIds.length, 0),
+      active_work_item_count: activeClaimsByWorkItem.size,
+      conflict_count: conflictWorkItemIds.length,
+      conflict_work_item_ids: conflictWorkItemIds,
+      lifecycle_check_command: 'agent-onboard claim --lifecycle-check --json'
+    }
   };
   if (updatedAt) index.updated_at = updatedAt;
   return Object.freeze(index);

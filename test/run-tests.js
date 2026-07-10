@@ -274,6 +274,8 @@ function quickTasks() {
     cliTask('work-items validate', ['work-items', '--validate', '.agent-onboard/work-items.json'], expectStatusOk),
     cliTask('claim ledger validate', ['claim', '--validate-ledger', '--json'], expectStatusOk),
     cliTask('claim ledger validate text', ['claim', '--validate-ledger', '--text'], expectTextIncludes(['agent-onboard claim ledger validation', 'Writes performed: false'])),
+    cliTask('claim lifecycle check', ['claim', '--lifecycle-check', '--json'], expectStatusOk),
+    cliTask('claim lifecycle check text', ['claim', '--lifecycle-check', '--text'], expectTextIncludes(['agent-onboard claim lifecycle check', 'Writes performed: false'])),
     cliTask('claim ledger append dry-run', ['claim', '--append', '--dry-run', '--work-item-id', APPEND_SMOKE_WORK_ITEM_ID, '--actor', 'test-runner', '--event-type', 'claim_proposed', '--claim-id', 'quick-smoke-claim', '--created-at', '2026-07-06T00:00:00.000Z'], expectStatusOk),
     cliTask('work-items init dry-run through runtime service', ['work-items', '--init', '--dry-run', '--force'], expectStatusOk),
     cliTask('work-items append dry-run through runtime service', ['work-items', '--append', '--dry-run', '--id', APPEND_SMOKE_WORK_ITEM_ID, '--title', 'Runtime append dry-run smoke'], expectStatusOk),

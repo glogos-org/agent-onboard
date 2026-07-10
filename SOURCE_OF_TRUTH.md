@@ -31,7 +31,7 @@ Work-item semantics remain delegated to `agent-onboard`.
 
 ## Claim ledger JSONL boundary
 
-`agent-onboard claim --validate-ledger` validates `.agent-onboard/claims.jsonl` as compact JSONL coordination state without inlining raw entries. `agent-onboard claim --append --write` may append exactly one claim event to that ledger only when the repository owner explicitly authorizes the write; it does not mutate the work-item ledger, Git, dependencies, build/test/deploy state, publication state, registry state, or network state.
+`agent-onboard claim --validate-ledger` validates `.agent-onboard/claims.jsonl` as compact JSONL coordination state without inlining raw entries. `agent-onboard claim --lifecycle-check` checks proposed/merged sequencing, active claim conflicts, and stale active claims as compact lifecycle state. `agent-onboard claim --append --write` may append exactly one claim event to that ledger only when the repository owner explicitly authorizes the write and only after lifecycle conflict planning passes; it does not mutate the work-item ledger, Git, dependencies, build/test/deploy state, publication state, registry state, or network state.
 
 
 ## Authority state shards

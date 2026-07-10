@@ -16,7 +16,8 @@ const WORK_ITEMS_COMMAND_ADAPTER_EXTRACTION = Object.freeze({
     'work-items --next',
     'work-items --mine',
     'work-items --validate',
-    'claim --validate-ledger'
+    'claim --validate-ledger',
+    'claim --lifecycle-check'
   ]),
   extracted_write_boundary_commands: Object.freeze([
     'work-items --init',
@@ -42,6 +43,7 @@ const WORK_ITEMS_COMMAND_ADAPTER_EXTRACTION = Object.freeze({
     close: 'work-items --close is served by the packaged work-items runtime service with explicit --write boundary',
     fallback: 'no work-items subcommands require bundled CLI fallback in this gate',
     claim_validate_ledger: 'claim --validate-ledger is served by the packaged work-items runtime service against .agent-onboard/claims.jsonl',
+    claim_lifecycle_check: 'claim --lifecycle-check is served by the packaged work-items runtime service as a read-only lifecycle conflict gate',
     claim_append: 'claim --append is served by the packaged work-items runtime service with explicit --write boundary'
   }),
   boundary: Object.freeze({
@@ -73,8 +75,9 @@ function createWorkItemsCommandAdapter(options = Object.freeze({})) {
     claim(argv) {
       const args = Array.isArray(argv) ? argv.slice(3) : [];
       if (args.includes('--validate-ledger') && service && typeof service.validateClaimLedger === 'function') return service.validateClaimLedger(args);
+      if ((args.includes('--lifecycle') || args.includes('--lifecycle-check')) && service && typeof service.claimLifecycleCheck === 'function') return service.claimLifecycleCheck(args);
       if (args.includes('--append') && service && typeof service.appendClaimLedger === 'function') return service.appendClaimLedger(args);
-      throw new Error('claim requires --validate-ledger [--file <path>] [--json|--text] or --append --dry-run|--write --work-item-id <id> --actor <actor> [--event-type claim_proposed|claim_merged] [--claim-id <id>] [--note <note>]');
+      throw new Error('claim requires --validate-ledger [--file <path>] [--json|--text], --lifecycle-check [--file <path>] [--json|--text], or --append --dry-run|--write --work-item-id <id> --actor <actor> [--event-type claim_proposed|claim_merged] [--claim-id <id>] [--note <note>]');
     },
     workItems(argv) {
       const args = Array.isArray(argv) ? argv.slice(3) : [];

@@ -6569,6 +6569,76 @@
           "npm run test:full"
         ]
       }
+    },
+    {
+      "id": "P1S3M5W42",
+      "milestone_id": "P1S3M5",
+      "title": "Public claim lifecycle conflict hardening gate",
+      "status": "closed",
+      "closure": {
+        "actor": "gpt-5.5-thinking",
+        "closed_at": "2026-07-06T09:00:00.000Z",
+        "summary": "Closed by adding claim --lifecycle-check, integrating compact lifecycle status into claim --validate-ledger, hardening claim --append conflict planning, and adding tests/docs for active-claim conflict refusal.",
+        "changed_files": [
+          "package.json",
+          "AGENTS.md",
+          "README.md",
+          "SOURCE_OF_TRUTH.md",
+          "llms.txt",
+          ".agent-onboard/authority-index.json",
+          ".agent-onboard/authority-path.json",
+          ".agent-onboard/state/live-authority.json",
+          ".agent-onboard/state/policies.json",
+          ".agent-onboard/state/indexes.json",
+          ".agent-onboard/state/closed-gates.jsonl",
+          ".agent-onboard/claims.jsonl",
+          ".agent-onboard/claims.index.json",
+          ".agent-onboard/work-items.json",
+          ".agent-onboard/work-items.index.json",
+          ".agent-onboard/public-claim-lifecycle-conflict-hardening-gate.json",
+          "authority-map.json",
+          "manifest.json",
+          "cli/agent_onboard/runtime-contracts.js",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/adapters/commands/work-items.js",
+          "cli/agent_onboard/domains/work-items/services/work-items-service.js",
+          "cli/agent_onboard/domains/target/services/target-governance-service.js",
+          "test/run-tests.js",
+          "test/agent-onboard.test.js"
+        ],
+        "checks_run": [
+          "node -c cli/agent_onboard/domains/work-items/services/work-items-service.js",
+          "node -c cli/agent_onboard/adapters/commands/work-items.js",
+          "node -c cli/agent_onboard/domains/target/services/target-governance-service.js",
+          "node -c cli/agent_onboard/runtime-contracts.js",
+          "node -c cli/agent_onboard/runtime-composer.js",
+          "node -c test/run-tests.js",
+          "node -c test/agent-onboard.test.js",
+          "node cli/agent-onboard.js claim --lifecycle-check --json",
+          "node cli/agent-onboard.js claim --validate-ledger --json",
+          "node cli/agent-onboard.js release --source-manifest-check",
+          "node cli/agent-onboard.js authority --state-check",
+          "node cli/agent-onboard.js authority --index-check",
+          "node cli/agent-onboard.js authority --check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js check --fast --json",
+          "node cli/agent-onboard.js target metadata --check --target .",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "node test/agent-onboard.test.js --shard=2/200",
+          "node test/agent-onboard.test.js --shard=3/200",
+          "npm test",
+          "npm run check:public-artifact-boundary",
+          "npm pack --dry-run --json",
+          "node cli/agent-onboard.js release --artifact-oracle-check"
+        ],
+        "checks_not_run": [
+          "npm run test:full"
+        ],
+        "known_non_pass": [
+          "npm run test:full was not run end-to-end in this pass; quick suite, exact artifact oracle, release/authority/claim/metadata checks, public artifact boundary, npm pack dry-run, and targeted claim lifecycle shards passed."
+        ]
+      }
     }
   ]
 }
