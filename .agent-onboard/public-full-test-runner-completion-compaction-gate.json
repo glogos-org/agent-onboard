@@ -1,0 +1,57 @@
+{
+  "schema": "agent-onboard-public-full-test-runner-completion-result-001",
+  "status": "ok",
+  "package_name": "agent-onboard",
+  "version": "0.0.160",
+  "release_line": "public_full_test_runner_completion_compaction_gate",
+  "milestone_id": "P1S3M6",
+  "prerequisite_work_item_id": "P1S3M6W10",
+  "work_item_id": "P1S3M6W11",
+  "title": "Public full-test runner completion compaction gate",
+  "command": "agent-onboard release --full-test-runner",
+  "check_command": "agent-onboard release --full-test-runner-check",
+  "package_root": "/mnt/data/w11_work",
+  "surface_id": "full-test-runner-completion",
+  "artifact": {
+    "path": ".agent-onboard/public-full-test-runner-completion-compaction-gate.json",
+    "present": true,
+    "content_inlined": false
+  },
+  "runner_contract": {
+    "official_command": "npm run test:full",
+    "full_runner_script": "node test/run-tests.js full",
+    "default_shard_count": 162,
+    "default_full_concurrency": 1,
+    "per_task_timeout_ms": 180000,
+    "case_mode_env": "AGENT_ONBOARD_FULL_TEST_CASE_MODE=1",
+    "shard_mode_default": true,
+    "runs_tests_inside_checker": false
+  },
+  "observed_source": {
+    "runner_file_present": true,
+    "source_test_file_present": true,
+    "exit_event_completion": true,
+    "stdio_close_not_required_for_full_source_tasks": true,
+    "per_task_timeout_configured": true,
+    "output_capture_disabled_for_full_tasks": true,
+    "temp_cleanup_available": true,
+    "per_case_diagnostic_mode": true,
+    "selected_test_only_index_supported": true,
+    "selected_test_exclude_index_supported": true,
+    "selected_test_force_exit": true
+  },
+  "boundary": {
+    "writes_files": false,
+    "executes_tests_inside_checker": false,
+    "deletes_raw_gate_artifacts": false,
+    "moves_raw_gate_artifacts": false,
+    "mutates_work_items": false,
+    "mutates_claims": false,
+    "mutates_git": false,
+    "installs_dependencies": false,
+    "runs_package_manager": false,
+    "publishes_package": false,
+    "mutates_registry": false,
+    "network": false
+  }
+}

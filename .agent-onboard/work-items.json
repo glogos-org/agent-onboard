@@ -7238,6 +7238,58 @@
         "checks_not_run": [],
         "known_non_pass": []
       }
+    },
+    {
+      "id": "P1S3M6W11",
+      "milestone_id": "P1S3M6",
+      "title": "Public full-test runner completion compaction gate",
+      "status": "closed",
+      "closure": {
+        "actor": "gpt-5.5-thinking",
+        "closed_at": "2026-07-07T10:11:00.000Z",
+        "summary": "Closed by making the official full-test command complete deterministically: full-source execution now uses one-test shard isolation by default, sequential completion, explicit task timeouts, deterministic selected-test exits, and a read-only release checker that validates the runner contract without executing tests.",
+        "changed_files": [
+          "package.json",
+          "README.md",
+          "AGENTS.md",
+          "SOURCE_OF_TRUTH.md",
+          "llms.txt",
+          "cli/agent_onboard/runtime-contracts.js",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/domains/package/services/package-service.js",
+          "test/run-tests.js",
+          "test/agent-onboard.test.js",
+          ".agent-onboard/public-full-test-runner-completion-compaction-gate.json",
+          ".agent-onboard/work-items.json",
+          ".agent-onboard/work-items.index.json",
+          ".agent-onboard/claims.jsonl",
+          ".agent-onboard/claims.index.json",
+          ".agent-onboard/closed-gates.index.json",
+          ".agent-onboard/closed-gates.archive.jsonl",
+          "authority-map.json",
+          "manifest.json",
+          ".agent-onboard/state/live-authority.json",
+          ".agent-onboard/state/policies.json",
+          ".agent-onboard/state/indexes.json",
+          ".agent-onboard/state/closed-gates.jsonl",
+          ".agent-onboard/authority-index.json"
+        ],
+        "checks_run": [
+          "node cli/agent-onboard.js release --full-test-runner-check",
+          "node cli/agent-onboard.js release --closed-gates-apply-check",
+          "node cli/agent-onboard.js release --closed-gates-read-check",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js check --fast --json",
+          "npm test",
+          "npm pack --dry-run --json",
+          "node cli/agent-onboard.js authority --index-check",
+          "node cli/agent-onboard.js authority --state-check",
+          "node cli/agent-onboard.js target metadata --check --target .",
+          "npm run test:full"
+        ],
+        "checks_not_run": [],
+        "known_non_pass": []
+      }
     }
   ]
 }

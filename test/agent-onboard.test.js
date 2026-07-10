@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_closed_gate_archive_reader_full_test_hardening_gate';
+const EXPECTED_RELEASE_LINE = 'public_full_test_runner_completion_compaction_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -184,9 +184,19 @@ function fullSourceTest(name, fn) {
 }
 
 function parseFullSourceTestSelection(argv) {
-  const selection = { list: false, shardIndex: 0, shardTotal: 1 };
+  const selection = { list: false, shardIndex: 0, shardTotal: 1, onlyIndex: null, excludeIndexes: new Set() };
   for (const arg of argv.slice(2)) {
     if (arg === '--list') selection.list = true;
+    if (arg.startsWith('--only-index=')) {
+      const value = Number.parseInt(arg.slice('--only-index='.length), 10);
+      if (!Number.isInteger(value) || value < 0) throw new Error('expected --only-index=<non-negative integer>');
+      selection.onlyIndex = value;
+    }
+    if (arg.startsWith('--exclude-index=')) {
+      const value = Number.parseInt(arg.slice('--exclude-index='.length), 10);
+      if (!Number.isInteger(value) || value < 0) throw new Error('expected --exclude-index=<non-negative integer>');
+      selection.excludeIndexes.add(value);
+    }
     if (arg.startsWith('--shard=')) {
       const match = /^--shard=(\d+)\/(\d+)$/.exec(arg);
       if (!match) throw new Error('expected --shard=<index>/<total>');
@@ -201,7 +211,18 @@ function parseFullSourceTestSelection(argv) {
 }
 
 function selectedFullSourceTests(selection) {
-  return FULL_SOURCE_TESTS.filter((_, index) => index % selection.shardTotal === selection.shardIndex);
+  if (selection.onlyIndex !== null) {
+    return FULL_SOURCE_TESTS
+      .map((test, index) => Object.assign({ index }, test))
+      .filter((test) => test.index === selection.onlyIndex && !selection.excludeIndexes.has(test.index));
+  }
+  return FULL_SOURCE_TESTS
+    .map((test, index) => Object.assign({ index }, test))
+    .filter((test) => indexMatchesSelection(test.index, selection));
+}
+
+function indexMatchesSelection(index, selection) {
+  return index % selection.shardTotal === selection.shardIndex && !selection.excludeIndexes.has(index);
 }
 
 function runSelectedFullSourceTests() {
@@ -212,8 +233,11 @@ function runSelectedFullSourceTests() {
   }
   const tests = selectedFullSourceTests(selection);
   for (const test of tests) test.fn();
-  const shardLabel = selection.shardTotal > 1 ? ` shard ${selection.shardIndex}/${selection.shardTotal}` : '';
+  const shardLabel = selection.onlyIndex !== null
+    ? ` index ${selection.onlyIndex}`
+    : (selection.shardTotal > 1 ? ` shard ${selection.shardIndex}/${selection.shardTotal}` : '');
   console.log(`agent-onboard full source tests passed${shardLabel} (${tests.length}/${FULL_SOURCE_TESTS.length})`);
+  if (process.env.AGENT_ONBOARD_FULL_SOURCE_FORCE_EXIT !== '0') process.exit(0);
 }
 
 fullSourceTest('public runtime contracts module centralizes command and package constants', () => {

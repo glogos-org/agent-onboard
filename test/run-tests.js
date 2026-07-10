@@ -1,8 +1,9 @@
 'use strict';
 
+const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { spawn } = require('child_process');
+const { spawn, spawnSync } = require('child_process');
 
 const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
@@ -10,8 +11,8 @@ const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_PACK_FILES = Array.from(new Set(PACKAGE_JSON.files.concat(['package.json']))).sort();
 const MAX_OUTPUT_BYTES = 20 * 1024 * 1024;
 const DEFAULT_CONCURRENCY = 8;
-const DEFAULT_FULL_CONCURRENCY = 4;
-const DEFAULT_FULL_SOURCE_TEST_SHARDS = DEFAULT_CONCURRENCY * 4;
+const DEFAULT_FULL_CONCURRENCY = 1;
+const DEFAULT_FULL_SOURCE_TEST_SHARDS = 162;
 const DEFAULT_TASK_TIMEOUT_MS = 120000;
 const DEFAULT_FULL_SOURCE_TEST_TASK_TIMEOUT_MS = 180000;
 const FULL_SOURCE_TEST = path.join(ROOT, 'test', 'agent-onboard.test.js');
@@ -23,7 +24,9 @@ function nodeTask(name, args, validate, options = {}) {
     command: process.execPath,
     args,
     validate,
-    timeoutMs: options.timeoutMs || DEFAULT_TASK_TIMEOUT_MS
+    timeoutMs: options.timeoutMs || DEFAULT_TASK_TIMEOUT_MS,
+    captureOutput: options.captureOutput !== false,
+    cleanupTemp: options.cleanupTemp === true
   };
 }
 
@@ -95,55 +98,47 @@ function trimOutput(output) {
   return `${trimmed.slice(0, 2000)}\n... output truncated ...`;
 }
 
+
+function cleanupFullSourceTempDirs() {
+  const tmp = os.tmpdir();
+  let entries = [];
+  try { entries = fs.readdirSync(tmp); } catch { return; }
+  for (const entry of entries) {
+    if (/^(agent-onboard-test-|aob-contract-output-|aob-full-task-|aob-target-fixture-)/.test(entry)) {
+      try { fs.rmSync(path.join(tmp, entry), { recursive: true, force: true }); } catch {}
+    }
+  }
+}
+
 function runTask(task) {
   const startedAt = Date.now();
   return new Promise((resolve) => {
+    if (task.cleanupTemp) cleanupFullSourceTempDirs();
     const child = spawn(task.command, task.args, {
       cwd: ROOT,
-      windowsHide: true
+      windowsHide: true,
+      stdio: task.captureOutput === false ? 'ignore' : ['ignore', 'pipe', 'pipe']
     });
     let stdout = '';
     let stderr = '';
     let outputTooLarge = false;
     let timedOut = false;
+    let settled = false;
     const timeoutMs = Number.isInteger(task.timeoutMs) && task.timeoutMs > 0 ? task.timeoutMs : DEFAULT_TASK_TIMEOUT_MS;
-    const timeout = setTimeout(() => {
-      timedOut = true;
-      child.kill('SIGTERM');
-      setTimeout(() => {
-        if (child.exitCode === null && child.signalCode === null) child.kill('SIGKILL');
-      }, 1000).unref();
-    }, timeoutMs);
-    timeout.unref();
 
-    child.stdout.on('data', (chunk) => {
-      stdout += chunk.toString();
-      if (stdout.length + stderr.length > MAX_OUTPUT_BYTES) {
-        outputTooLarge = true;
-        child.kill();
-      }
-    });
-    child.stderr.on('data', (chunk) => {
-      stderr += chunk.toString();
-      if (stdout.length + stderr.length > MAX_OUTPUT_BYTES) {
-        outputTooLarge = true;
-        child.kill();
-      }
-    });
-    child.on('error', (error) => {
+    function finish(status, signal, errorMessage) {
+      if (settled) return;
+      settled = true;
       clearTimeout(timeout);
-      resolve({
-        task,
-        ok: false,
-        durationMs: Date.now() - startedAt,
-        error: error.message,
-        stdout,
-        stderr
-      });
-    });
-    child.on('close', (status, signal) => {
-      clearTimeout(timeout);
+      if (child.stdout && !child.stdout.destroyed) child.stdout.destroy();
+      if (child.stderr && !child.stderr.destroyed) child.stderr.destroy();
+      if (child.stdin && !child.stdin.destroyed) child.stdin.destroy();
+      if (task.cleanupTemp) cleanupFullSourceTempDirs();
       const durationMs = Date.now() - startedAt;
+      if (errorMessage) {
+        resolve({ task, ok: false, durationMs, error: errorMessage, stdout, stderr });
+        return;
+      }
       if (outputTooLarge) {
         resolve({ task, ok: false, durationMs, error: 'output exceeded runner buffer limit', stdout, stderr });
         return;
@@ -169,6 +164,44 @@ function runTask(task) {
       } catch (error) {
         resolve({ task, ok: false, durationMs, error: error.message, stdout, stderr });
       }
+    }
+
+    const timeout = setTimeout(() => {
+      timedOut = true;
+      child.kill('SIGTERM');
+      setTimeout(() => {
+        if (child.exitCode === null && child.signalCode === null) child.kill('SIGKILL');
+        finish(null, 'SIGKILL');
+      }, 1000).unref();
+    }, timeoutMs);
+    timeout.unref();
+
+    if (child.stdout) {
+      child.stdout.on('data', (chunk) => {
+        stdout += chunk.toString();
+        if (stdout.length + stderr.length > MAX_OUTPUT_BYTES) {
+          outputTooLarge = true;
+          child.kill();
+        }
+      });
+    }
+    if (child.stderr) {
+      child.stderr.on('data', (chunk) => {
+        stderr += chunk.toString();
+        if (stdout.length + stderr.length > MAX_OUTPUT_BYTES) {
+          outputTooLarge = true;
+          child.kill();
+        }
+      });
+    }
+    child.on('error', (error) => {
+      finish(null, null, error.message);
+    });
+    child.on('exit', (status, signal) => {
+      setTimeout(() => finish(status, signal), 25);
+    });
+    child.on('close', (status, signal) => {
+      finish(status, signal);
     });
   });
 }
@@ -316,10 +349,30 @@ function quickTasks() {
   ];
 }
 
+function discoverFullSourceTests() {
+  const result = spawnSync(process.execPath, [FULL_SOURCE_TEST, '--list'], {
+    cwd: ROOT,
+    encoding: 'utf8',
+    maxBuffer: MAX_OUTPUT_BYTES,
+    timeout: DEFAULT_TASK_TIMEOUT_MS
+  });
+  if (result.status !== 0) {
+    throw new Error(`full source test list failed: ${result.stderr || result.stdout || result.error && result.error.message || result.status}`);
+  }
+  const listed = parseJson(result.stdout, 'full source test list');
+  if (!Array.isArray(listed)) throw new Error('full source test list did not return an array');
+  return listed;
+}
+
 function fullTasks(shards) {
   const timeoutMs = Number.parseInt(process.env.AGENT_ONBOARD_FULL_TEST_TASK_TIMEOUT_MS || '', 10) || DEFAULT_FULL_SOURCE_TEST_TASK_TIMEOUT_MS;
+  if (process.env.AGENT_ONBOARD_FULL_TEST_CASE_MODE === '1') {
+    return discoverFullSourceTests().map((test) => (
+      nodeTask(`full source test index ${test.index}`, [FULL_SOURCE_TEST, `--only-index=${test.index}`], null, { timeoutMs, captureOutput: false })
+    ));
+  }
   return Array.from({ length: shards }, (_, index) => (
-    nodeTask(`full source test shard ${index}/${shards}`, [FULL_SOURCE_TEST, `--shard=${index}/${shards}`], null, { timeoutMs })
+    nodeTask(`full source test shard ${index}/${shards}`, [FULL_SOURCE_TEST, `--shard=${index}/${shards}`], null, { timeoutMs, captureOutput: false })
   ));
 }
 
@@ -374,11 +427,72 @@ async function runSuite(label, tasks, concurrency) {
   return true;
 }
 
+function runFullTaskSync(task) {
+  const startedAt = Date.now();
+  const timeoutMs = Number.isInteger(task.timeoutMs) && task.timeoutMs > 0 ? task.timeoutMs : DEFAULT_FULL_SOURCE_TEST_TASK_TIMEOUT_MS;
+  const result = spawnSync(task.command, task.args, {
+    cwd: ROOT,
+    windowsHide: true,
+    stdio: task.captureOutput === false ? 'ignore' : 'pipe',
+    encoding: 'utf8',
+    maxBuffer: MAX_OUTPUT_BYTES,
+    timeout: timeoutMs
+  });
+  const durationMs = Date.now() - startedAt;
+  if (result.error) {
+    const timedOut = result.error.code === 'ETIMEDOUT';
+    return Object.assign({}, result, { task, ok: false, durationMs, errorMessage: timedOut ? `task timeout after ${timeoutMs}ms` : result.error.message });
+  }
+  if (result.status !== 0) {
+    return Object.assign({}, result, { task, ok: false, durationMs, errorMessage: result.signal ? `terminated by ${result.signal}` : `exited with ${result.status}` });
+  }
+  try {
+    if (task.validate) task.validate(result.stdout || '', task.name);
+    return Object.assign({}, result, { task, ok: true, durationMs });
+  } catch (error) {
+    return Object.assign({}, result, { task, ok: false, durationMs, errorMessage: error.message });
+  }
+}
+
+function runFullSuiteSync(tasks, concurrency) {
+  const startedAt = Date.now();
+  process.stdout.write(`agent-onboard full test suite: ${tasks.length} checks, concurrency ${Math.min(concurrency, tasks.length)}\n`);
+  const failed = [];
+  for (const task of tasks) {
+    const result = runFullTaskSync(task);
+    const seconds = (result.durationMs / 1000).toFixed(1);
+    const marker = result.ok ? 'pass' : 'fail';
+    process.stdout.write(`[${marker}] ${task.name} (${seconds}s)\n`);
+    if (!result.ok) failed.push(result);
+  }
+  if (failed.length > 0) {
+    for (const result of failed) {
+      process.stderr.write(`\n[fail] ${result.task.name}\n`);
+      process.stderr.write(`command: ${commandForDisplay(result.task)}\n`);
+      process.stderr.write(`error: ${result.errorMessage}\n`);
+      const stdout = trimOutput(result.stdout || '');
+      const stderr = trimOutput(result.stderr || '');
+      if (stdout) process.stderr.write(`stdout:\n${stdout}\n`);
+      if (stderr) process.stderr.write(`stderr:\n${stderr}\n`);
+    }
+    process.exitCode = 1;
+    return false;
+  }
+  const seconds = ((Date.now() - startedAt) / 1000).toFixed(1);
+  process.stdout.write(`agent-onboard full test suite passed in ${seconds}s\n`);
+  return true;
+}
+
 async function runFull() {
+  cleanupFullSourceTempDirs();
   const concurrency = testConcurrency(DEFAULT_FULL_CONCURRENCY);
   const shardCount = Number.parseInt(process.env.AGENT_ONBOARD_FULL_TEST_SHARDS || '', 10) || DEFAULT_FULL_SOURCE_TEST_SHARDS;
   const tasks = fullTasks(Math.max(1, shardCount));
-  await runSuite('full', tasks, concurrency);
+  try {
+    runFullSuiteSync(tasks, concurrency);
+  } finally {
+    cleanupFullSourceTempDirs();
+  }
 }
 
 async function main() {

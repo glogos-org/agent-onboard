@@ -2,16 +2,16 @@
   "schema": "agent-onboard-public-closed-gates-index-001",
   "status": "applied",
   "package_name": "agent-onboard",
-  "version": "0.0.159",
-  "release_line": "public_closed_gate_archive_reader_full_test_hardening_gate",
+  "version": "0.0.160",
+  "release_line": "public_full_test_runner_completion_compaction_gate",
   "surface_id": "closed-gate-artifacts",
   "source_context": "source_repository",
   "source_root_inlined": false,
   "index_path": ".agent-onboard/closed-gates.index.json",
   "archive_candidate_path": ".agent-onboard/closed-gates.archive.jsonl",
-  "archive_candidate_file_id": "ni:///sha-256;v-MH3UWY5dQUCOrV7UXTfWQ-cvbCrEdPvdc4gwsnjy0",
-  "record_count": 50,
-  "raw_artifact_count": 50,
+  "archive_candidate_file_id": "ni:///sha-256;i3oIiIGxzNSIq45unNharva6B-l4SINit0-BkMtUjVI",
+  "record_count": 51,
+  "raw_artifact_count": 51,
   "raw_artifacts_preserved": true,
   "raw_artifact_paths": [
     ".agent-onboard/ai-discovery-product-gate.json",
@@ -40,6 +40,7 @@
     ".agent-onboard/public-contract-spine-readiness-output-contract-gate.json",
     ".agent-onboard/public-exact-artifact-oracle-gate.json",
     ".agent-onboard/public-first-read-ladder-manifest-gate.json",
+    ".agent-onboard/public-full-test-runner-completion-compaction-gate.json",
     ".agent-onboard/public-installed-authority-state-shard-parity-gate.json",
     ".agent-onboard/public-package-fast-runner-engine-gate.json",
     ".agent-onboard/public-package-keyword-taxonomy-compaction-gate.json",
@@ -92,6 +93,7 @@
     "ni:///sha-256;pyVuCwoOJSgpB9agvTQOfabBFeXZNr3tnd1wVd_HRew",
     "ni:///sha-256;6t5kgnft91824oxCPzzFpzRmNiqeo8guYimnt2NINKc",
     "ni:///sha-256;PP7GXOBlQpy9U6-5PBaGrXtdGQVedWcTfdwSHXi-DaY",
+    "ni:///sha-256;hxc9C9UcxBKv6YCtBu_XfpRA7zKKFArltgDzqw4cME0",
     "ni:///sha-256;YPgrK2L7HZXyP_RtImJx1SG1V2Ry9Gn2O5rHkg4m3us",
     "ni:///sha-256;gHI2vy9I9Yz4G-tHkyu21diLetXC0uP5Gak2egnB86E",
     "ni:///sha-256;vCQenTFDbzZR7iwlKguzmvswVuDQExtUi9sXRalQZsc",
@@ -120,7 +122,7 @@
   "by_milestone": {
     "unknown": 43,
     "P1S3M5": 1,
-    "P1S3M6": 6
+    "P1S3M6": 7
   },
   "recovery": {
     "replay_from_archive_jsonl": true,

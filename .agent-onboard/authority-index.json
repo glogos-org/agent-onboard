@@ -2,7 +2,7 @@
   "schema": "agent-onboard-public-authority-compact-index-001",
   "package_name": "agent-onboard",
   "package_version_source": "package.json#version",
-  "release_line": "public_closed_gate_archive_reader_full_test_hardening_gate",
+  "release_line": "public_full_test_runner_completion_compaction_gate",
   "index_file": ".agent-onboard/authority-index.json",
   "first_read_command": "agent-onboard authority --first-read",
   "check_command": "agent-onboard authority --check",
@@ -113,16 +113,16 @@
       "file_path": "AGENTS.md",
       "present": true,
       "kind": "file",
-      "bytes": 43176,
-      "file_id": "ni:///sha-256;JRpHYyCjEmeyLTlv24AgFvcGZIzdBJTYwGDRlYTunnA",
+      "bytes": 43253,
+      "file_id": "ni:///sha-256;epdsj-jxuT4MlQP0eBw8GNo1GgZxZ9Lzri5G6AAsLgI",
       "content_inlined": false
     },
     {
       "file_path": "SOURCE_OF_TRUTH.md",
       "present": true,
       "kind": "file",
-      "bytes": 6799,
-      "file_id": "ni:///sha-256;2k-8O3nM_HwlfxnTsMcGleva5s3hGMCT_QSJeMtOE58",
+      "bytes": 7153,
+      "file_id": "ni:///sha-256;S8gEeAOu8yBVV5W0xaXwHl0KyqtmlbVJaMyhlfVYtHA",
       "content_inlined": false
     },
     {
@@ -137,8 +137,8 @@
       "file_path": "llms.txt",
       "present": true,
       "kind": "file",
-      "bytes": 11537,
-      "file_id": "ni:///sha-256;YWf771UyMTGDEyWFpQ0log1U_hguEREjX_MlDpTFYVU",
+      "bytes": 11763,
+      "file_id": "ni:///sha-256;Acas1EdjQ5AYpSo3hMgg5PoZ4F0mJskgAq2g_XcBnb0",
       "content_inlined": false
     },
     {
@@ -146,7 +146,7 @@
       "present": true,
       "kind": "file",
       "bytes": 6159,
-      "file_id": "ni:///sha-256;eKQQtSTsPiGsnnKf_2T7aZLxbSzrllC_yPIaZHrABNY",
+      "file_id": "ni:///sha-256;PAREh8TmPnLGgfFqX7H_mmjgqk_JI0G8jImSoVqazO0",
       "content_inlined": false
     },
     {
@@ -177,8 +177,8 @@
       "file_path": ".agent-onboard/work-items.json",
       "present": true,
       "kind": "file",
-      "bytes": 359304,
-      "file_id": "ni:///sha-256;tq0gwKd5Qwanniihsxa1TfdrHB0Aqyj9AxLnInaFT10",
+      "bytes": 361734,
+      "file_id": "ni:///sha-256;_mRp6Wg83ztUW1W7JauZpex-PGtc3HO7LfpWhUcYG9o",
       "content_inlined": false
     }
   ],
@@ -216,7 +216,7 @@
     "indexed_file_count": 9,
     "present_file_count": 9,
     "missing_file_count": 0,
-    "present_bytes": 434911,
+    "present_bytes": 437998,
     "missing_files": [],
     "excluded_file_count": 7,
     "state_shard_count": 4,

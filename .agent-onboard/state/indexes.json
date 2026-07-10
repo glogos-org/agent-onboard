@@ -1,7 +1,7 @@
 {
   "schema": "agent-onboard-public-authority-indexes-state-shard-001",
   "package_name": "agent-onboard",
-  "release_line": "public_closed_gate_archive_reader_full_test_hardening_gate",
+  "release_line": "public_full_test_runner_completion_compaction_gate",
   "raw_registries_loaded_by_default": false,
   "file_contents_inlined": false,
   "indexes": [
@@ -9,8 +9,8 @@
       "file_path": ".agent-onboard/authority-index.json",
       "kind": "compact_authority_index",
       "present": true,
-      "bytes": 7520,
-      "file_id": "ni:///sha-256;3EkHqRzJzS8p4ZeDF4Qb5Y4PTecsF6l40tdn08kWM0A",
+      "bytes": 7512,
+      "file_id": "ni:///sha-256;B13qLciWnSPNOpnsJVsEI5KXiyFKBgYZ7aDplmtLvnE",
       "schema": "agent-onboard-public-authority-compact-index-001",
       "status": null,
       "raw_registry_loaded_by_default": null,
@@ -21,28 +21,28 @@
       "file_path": ".agent-onboard/work-items.index.json",
       "kind": "work_items_compact_index",
       "present": true,
-      "bytes": 1452,
-      "file_id": "ni:///sha-256;-weR6twCHp1q7mzG6q5unN0M4Yr66A9_yB6msthSKBQ",
+      "bytes": 1171,
+      "file_id": "ni:///sha-256;dtz_ZuBAxCNeU6Ajbp5LupMRINPJU8qwN5NIVC4CJgo",
       "schema": "agent-onboard-target-work-items-index-001",
       "status": "active",
-      "raw_registry_loaded_by_default": false,
+      "raw_registry_loaded_by_default": null,
       "content_inlined": false,
-      "item_count": 147,
+      "item_count": 148,
       "open_count": 0,
-      "closed_count": 147
+      "closed_count": 148
     },
     {
       "file_path": ".agent-onboard/claims.index.json",
       "kind": "claims_compact_index",
       "present": true,
-      "bytes": 2089,
-      "file_id": "ni:///sha-256;pyxuc36jQpUZRKFtVzLu2qYVSqe6EWxDrNcUHetKSd4",
+      "bytes": 2094,
+      "file_id": "ni:///sha-256;mKT9-mpezB93iqslv7LqxGp9QWN1EPMehVbjpN8wE8Q",
       "schema": "agent-onboard-target-claims-index-001",
       "status": "active",
       "raw_registry_loaded_by_default": null,
       "content_inlined": false,
       "event_count": null,
-      "claim_count": 32
+      "claim_count": 34
     }
   ],
   "raw_growth_ledgers": [
@@ -50,8 +50,8 @@
       "file_path": ".agent-onboard/work-items.json",
       "present": true,
       "kind": "work_items_raw_ledger",
-      "bytes": 359304,
-      "file_id": "ni:///sha-256;tq0gwKd5Qwanniihsxa1TfdrHB0Aqyj9AxLnInaFT10",
+      "bytes": 361734,
+      "file_id": "ni:///sha-256;_mRp6Wg83ztUW1W7JauZpex-PGtc3HO7LfpWhUcYG9o",
       "content_inlined": false,
       "loaded_by_default": false
     },
@@ -59,13 +59,13 @@
       "file_path": ".agent-onboard/claims.jsonl",
       "present": true,
       "kind": "claims_raw_ledger",
-      "bytes": 13155,
-      "file_id": "ni:///sha-256;CtuFD-DCVchc0SdxGDqEN7R_utBoReljpyvN5UOkhh8",
+      "bytes": 14013,
+      "file_id": "ni:///sha-256;3y5n-dVuMmMzg3IfTVMwF0PBvx3glBfCl2dIQRNwobE",
       "content_inlined": false,
       "loaded_by_default": false
     }
   ],
-  "authority_index_digest": "ni:///sha-256;3EkHqRzJzS8p4ZeDF4Qb5Y4PTecsF6l40tdn08kWM0A",
-  "work_items_index_digest": "ni:///sha-256;-weR6twCHp1q7mzG6q5unN0M4Yr66A9_yB6msthSKBQ",
-  "claims_index_digest": "ni:///sha-256;pyxuc36jQpUZRKFtVzLu2qYVSqe6EWxDrNcUHetKSd4"
+  "authority_index_digest": "ni:///sha-256;B13qLciWnSPNOpnsJVsEI5KXiyFKBgYZ7aDplmtLvnE",
+  "work_items_index_digest": "ni:///sha-256;dtz_ZuBAxCNeU6Ajbp5LupMRINPJU8qwN5NIVC4CJgo",
+  "claims_index_digest": "ni:///sha-256;mKT9-mpezB93iqslv7LqxGp9QWN1EPMehVbjpN8wE8Q"
 }

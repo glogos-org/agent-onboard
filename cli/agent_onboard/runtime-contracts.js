@@ -2,7 +2,7 @@
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
-const RELEASE_LINE = 'public_closed_gate_archive_reader_full_test_hardening_gate';
+const RELEASE_LINE = 'public_full_test_runner_completion_compaction_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
   agents: 'agents',

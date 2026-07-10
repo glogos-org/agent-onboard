@@ -25,7 +25,7 @@ Before proposing or making changes, read:
 
 Authority state shard note: `.agent-onboard/state/live-authority.json`, `.agent-onboard/state/policies.json`, `.agent-onboard/state/indexes.json`, and `.agent-onboard/state/closed-gates.jsonl` are compact source-only shards. Validate them with `node cli/agent-onboard.js authority --state-check` and `node cli/agent-onboard.js release --authority-state-parity-check`; do not treat them as permission to read raw growth files by default, and do not project these shards into the npm package.
 
-Closed-gate compaction note: `.agent-onboard/closed-gates.archive.jsonl` and `.agent-onboard/closed-gates.index.json` are source-only recovery/index surfaces for closed gate artifacts. Validate them with `node cli/agent-onboard.js release --closed-gates-apply-check` and `node cli/agent-onboard.js release --closed-gates-read-check`; do not delete, move, or rewrite raw `*-gate.json` artifacts unless a later prune gate explicitly admits that mutation.
+Closed-gate compaction note: `.agent-onboard/closed-gates.archive.jsonl` and `.agent-onboard/closed-gates.index.json` are source-only recovery/index surfaces for closed gate artifacts. Validate them with `node cli/agent-onboard.js release --closed-gates-apply-check`, `node cli/agent-onboard.js release --closed-gates-read-check`, and `node cli/agent-onboard.js release --full-test-runner-check`; do not delete, move, or rewrite raw `*-gate.json` artifacts unless a later prune gate explicitly admits that mutation.
 
 ## Default boundary
 
@@ -48,7 +48,7 @@ Use this source-repository lifecycle for public human/agent participation:
 6. Handoff: report changed files, checks run, checks not run, and known non-pass states.
 7. Close: record a closure envelope only after handoff evidence is ready.
 
-For source validation, `npm test` runs the parallel quick gate. Use `npm run test:full` for the parallel full exhaustive fixture matrix, and `npm run test:all` when both the quick gate and the full fixture matrix are needed before release handoff.
+For source validation, `npm test` runs the parallel quick gate. Use `npm run test:full` for the bounded shard-parallel full exhaustive fixture matrix, and `npm run test:all` when both the quick gate and the full fixture matrix are needed before release handoff.
 
 Inspect the public command surface before choosing a workflow:
 
