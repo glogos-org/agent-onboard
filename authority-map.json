@@ -162,6 +162,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-package-keyword-taxonomy-compaction-gate-json-50eab3fa"
     },
     {
+      "file_path": ".agent-onboard/public-readme-first-read-history-split-plan-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-public-readme-first-read-history-split-plan-gate-json-3746dbf4"
+    },
+    {
       "file_path": ".agent-onboard/public-release-surface-vocabulary-gate.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-release-surface-vocabulary-gate-json-ca7d6fb4"
     },

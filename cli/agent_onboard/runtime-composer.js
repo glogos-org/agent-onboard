@@ -208,6 +208,7 @@ function commandSurfaceCatalog() {
       'agent-onboard release --clean-check',
       'agent-onboard release --clean-catalog-check',
       'agent-onboard release --keyword-taxonomy-check',
+      'agent-onboard release --readme-plan-check',
       'agent-onboard release --check'
     ],
     output_modes: ['--json', '--text'],
@@ -564,6 +565,8 @@ function discoveryStableCommands() {
     'agent-onboard release --clean-catalog-check',
     'agent-onboard release --keyword-taxonomy',
     'agent-onboard release --keyword-taxonomy-check',
+    'agent-onboard release --readme-plan',
+    'agent-onboard release --readme-plan-check',
     'agent-onboard authority --index',
     'agent-onboard authority --index-check',
     'agent-onboard authority --state',
@@ -1273,6 +1276,7 @@ const CHECK_FAST_REGISTRY = Object.freeze([
   Object.freeze({ id: 'release-clean-check', command: 'agent-onboard release --clean-check', scope: 'source_clean_compaction_baseline', slow: false }),
   Object.freeze({ id: 'release-clean-catalog-check', command: 'agent-onboard release --clean-catalog-check', scope: 'source_clean_compaction_catalog', slow: false }),
   Object.freeze({ id: 'release-keyword-taxonomy-check', command: 'agent-onboard release --keyword-taxonomy-check', scope: 'source_package_keyword_taxonomy', slow: false }),
+  Object.freeze({ id: 'release-readme-plan-check', command: 'agent-onboard release --readme-plan-check', scope: 'source_readme_first_read_history_split_plan', slow: false }),
   Object.freeze({ id: 'command-surface-catalog', command: 'agent-onboard commands --json', scope: 'product_discovery', slow: false }),
   Object.freeze({ id: 'operator-guide', command: 'agent-onboard guide --json', scope: 'operator_orientation', slow: false }),
   Object.freeze({ id: 'quickstart', command: 'agent-onboard quickstart --json', scope: 'first_run_recipe', slow: false }),
@@ -1564,6 +1568,7 @@ function runCheckFastPlan(root = packageRoot(), options = {}) {
     'release-clean-check': () => publicCleanCompactionBaselineCheck(root),
     'release-clean-catalog-check': () => publicCleanCompactionCatalogCheck(root),
     'release-keyword-taxonomy-check': () => publicPackageKeywordTaxonomyCompactionCheck(root),
+    'release-readme-plan-check': () => publicReadmeFirstReadHistorySplitPlanCheck(root),
     'release-surface-check': () => publicPackageSurfaceCheck(root),
     'release-check': () => publicReleaseCheck(root),
     'ci-surface': () => ciSurfaceService.catalog(),
@@ -7154,6 +7159,264 @@ function publicPackageKeywordTaxonomyCompactionText(result = publicPackageKeywor
   return `${lines.join('\n')}\n`;
 }
 
+
+const PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN = Object.freeze({
+  schema: 'agent-onboard-public-readme-first-read-history-split-plan-001',
+  package_name: PACKAGE_NAME,
+  release_line: RELEASE_LINE,
+  milestone_id: 'P1S3M6',
+  catalog_surface_id: 'readme-first-read-history',
+  baseline_work_item_id: ['P1S3M6', 'W1'].join(''),
+  catalog_work_item_id: ['P1S3M6', 'W2'].join(''),
+  keyword_work_item_id: ['P1S3M6', 'W3'].join(''),
+  work_item_id: ['P1S3M6', 'W4'].join(''),
+  title: 'Public README first-read history split planning gate',
+  command: 'agent-onboard release --readme-plan',
+  check_command: 'agent-onboard release --readme-plan-check',
+  artifact_file: '.agent-onboard/public-readme-first-read-history-split-plan-gate.json',
+  purpose: 'Plan a future README first-read/history split without moving, deleting, archiving, or rewriting README.md in this gate.',
+  required_first_read_markers: Object.freeze([
+    '# agent-onboard',
+    '## Install',
+    '## Quickstart',
+    'npx agent-onboard status',
+    'npx agent-onboard target doctor --text',
+    'npx agent-onboard release --check'
+  ]),
+  planned_surfaces: Object.freeze({
+    live_readme: 'README.md',
+    future_history_archive_candidate: 'docs/release-history.md',
+    future_history_index_candidate: '.agent-onboard/readme-history.index.json'
+  }),
+  plan_rules: Object.freeze({
+    live_readme_keeps_install_quickstart_current_commands: true,
+    history_archive_requires_exact_recovery_path: true,
+    first_read_path_must_not_depend_on_history_archive: true,
+    future_write_must_name_catalog_surface_id: true,
+    future_write_must_refresh_metadata_after_mutation: true
+  }),
+  boundary: Object.freeze({
+    command_writes_files: false,
+    check_command_writes_files: false,
+    creates_history_archive: false,
+    deletes_files: false,
+    moves_files: false,
+    rewrites_history: false,
+    mutates_work_items: false,
+    mutates_claims: false,
+    mutates_git: false,
+    installs_dependencies: false,
+    runs_package_manager: false,
+    publishes_package: false,
+    mutates_registry: false,
+    network: false
+  })
+});
+
+function publicReadmeHistoryHeadings(readme) {
+  return readme.split(/\r?\n/).filter((line) => /^#{2,3}\s+/.test(line) && /release|history|runtime|surface|gate|product|target|contract|compaction/i.test(line));
+}
+
+function publicReadmeFirstReadHistoryCurrent(root = packageRoot()) {
+  const readmePath = path.join(root, 'README.md');
+  const readme = fs.existsSync(readmePath) ? fs.readFileSync(readmePath, 'utf8') : '';
+  const markers = PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.required_first_read_markers;
+  const releaseMentions = (readme.match(/\b(?:This release|The current release|Current release:)\b/g) || []).length;
+  const historyHeadings = publicReadmeHistoryHeadings(readme);
+  const planned = PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.planned_surfaces;
+  return Object.freeze({
+    readme_path: 'README.md',
+    readme_present: fs.existsSync(readmePath),
+    readme_bytes: Buffer.byteLength(readme, 'utf8'),
+    readme_lines: readme.length === 0 ? 0 : readme.split(/\r?\n/).length,
+    first_read_markers: Object.freeze(markers.map((marker) => Object.freeze({
+      marker,
+      present: readme.includes(marker)
+    }))),
+    first_read_marker_count: markers.filter((marker) => readme.includes(marker)).length,
+    release_history_signal: Object.freeze({
+      release_mention_count: releaseMentions,
+      history_heading_count: historyHeadings.length,
+      sample_headings: historyHeadings.slice(0, 12)
+    }),
+    future_history_archive_present: fs.existsSync(path.join(root, planned.future_history_archive_candidate)),
+    future_history_index_present: fs.existsSync(path.join(root, planned.future_history_index_candidate)),
+    current_gate_performs_split: false
+  });
+}
+
+function publicReadmeFirstReadHistoryMilestoneState(root = packageRoot()) {
+  const ledgerPath = path.join(root, '.agent-onboard', 'work-items.json');
+  if (!fs.existsSync(ledgerPath)) {
+    return Object.freeze({
+      ledger_present: false,
+      milestone_id: PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.milestone_id,
+      baseline_work_item_id: PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.baseline_work_item_id,
+      catalog_work_item_id: PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.catalog_work_item_id,
+      keyword_work_item_id: PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.keyword_work_item_id,
+      work_item_id: PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.work_item_id,
+      milestone_status: 'not_present_installed_context_allowed',
+      baseline_work_item_status: 'not_present_installed_context_allowed',
+      catalog_work_item_status: 'not_present_installed_context_allowed',
+      keyword_work_item_status: 'not_present_installed_context_allowed',
+      work_item_status: 'not_present_installed_context_allowed'
+    });
+  }
+  let ledger = null;
+  try { ledger = readJson(ledgerPath); } catch { ledger = null; }
+  const milestones = ledger && Array.isArray(ledger.milestones) ? ledger.milestones : [];
+  const workItems = ledger && Array.isArray(ledger.work_items) ? ledger.work_items : [];
+  const milestone = milestones.find((item) => item.id === PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.milestone_id) || null;
+  const baselineWorkItem = workItems.find((item) => item.id === PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.baseline_work_item_id) || null;
+  const catalogWorkItem = workItems.find((item) => item.id === PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.catalog_work_item_id) || null;
+  const keywordWorkItem = workItems.find((item) => item.id === PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.keyword_work_item_id) || null;
+  const workItem = workItems.find((item) => item.id === PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.work_item_id) || null;
+  return Object.freeze({
+    ledger_present: true,
+    milestone_id: PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.milestone_id,
+    baseline_work_item_id: PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.baseline_work_item_id,
+    catalog_work_item_id: PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.catalog_work_item_id,
+    keyword_work_item_id: PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.keyword_work_item_id,
+    work_item_id: PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.work_item_id,
+    milestone_status: milestone ? milestone.status : 'missing',
+    baseline_work_item_status: baselineWorkItem ? baselineWorkItem.status : 'missing',
+    catalog_work_item_status: catalogWorkItem ? catalogWorkItem.status : 'missing',
+    keyword_work_item_status: keywordWorkItem ? keywordWorkItem.status : 'missing',
+    work_item_status: workItem ? workItem.status : 'missing',
+    milestone_title: milestone ? milestone.title : null,
+    baseline_work_item_title: baselineWorkItem ? baselineWorkItem.title : null,
+    catalog_work_item_title: catalogWorkItem ? catalogWorkItem.title : null,
+    keyword_work_item_title: keywordWorkItem ? keywordWorkItem.title : null,
+    work_item_title: workItem ? workItem.title : null
+  });
+}
+
+function publicReadmeFirstReadHistorySplitPlan(root = packageRoot()) {
+  const current = publicReadmeFirstReadHistoryCurrent(root);
+  const catalogCheck = publicCleanCompactionCatalogCheck(root);
+  const keywordTaxonomyCheck = publicPackageKeywordTaxonomyCompactionCheck(root);
+  return Object.freeze({
+    schema: 'agent-onboard-public-readme-first-read-history-split-plan-result-001',
+    status: 'ok',
+    package_name: PACKAGE_NAME,
+    version: VERSION,
+    release_line: RELEASE_LINE,
+    command: PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.command,
+    check_command: PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.check_command,
+    package_root: root,
+    readme_path: 'README.md',
+    plan: PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN,
+    catalog_surface: Object.freeze({
+      source_command: PUBLIC_CLEAN_COMPACTION_CATALOG.command,
+      source_check_command: PUBLIC_CLEAN_COMPACTION_CATALOG.check_command,
+      catalog_check_status: catalogCheck.status,
+      required_surface_id: PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.catalog_surface_id,
+      surface_present: catalogCheck.catalog.entries.some((entry) => entry.id === PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.catalog_surface_id)
+    }),
+    prerequisite_checks: Object.freeze({
+      clean_catalog_check: catalogCheck.status,
+      keyword_taxonomy_check: keywordTaxonomyCheck.status
+    }),
+    current,
+    split_plan: Object.freeze({
+      live_readme_keeps: Object.freeze(['package identity', 'install commands', 'quickstart', 'current command surface', 'safety/no-mutation boundary']),
+      future_history_archive_candidate: PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.planned_surfaces.future_history_archive_candidate,
+      future_history_index_candidate: PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.planned_surfaces.future_history_index_candidate,
+      future_write_sequence: Object.freeze([
+        'copy historical release prose into archive candidate',
+        'leave first-read install/quickstart/current commands in README.md',
+        'add bounded recovery index only if raw archive remains recoverable',
+        'refresh target metadata and public package checks after mutation'
+      ]),
+      no_write_in_this_gate: true
+    }),
+    boundary: PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.boundary
+  });
+}
+
+function publicReadmeFirstReadHistorySplitPlanCheck(root = packageRoot()) {
+  const result = publicReadmeFirstReadHistorySplitPlan(root);
+  const current = result.current;
+  const milestone = publicReadmeFirstReadHistoryMilestoneState(root);
+  const errors = [];
+  if (result.catalog_surface.catalog_check_status !== 'ok') errors.push('clean compaction catalog check must pass before README split planning');
+  if (!result.catalog_surface.surface_present) errors.push('clean compaction catalog must include readme-first-read-history surface');
+  if (result.prerequisite_checks.keyword_taxonomy_check !== 'ok') errors.push('keyword taxonomy check must pass before README split planning');
+  if (!current.readme_present) errors.push('README.md must be present before split planning');
+  for (const marker of current.first_read_markers) {
+    if (!marker.present) errors.push(`README first-read marker missing: ${marker.marker}`);
+  }
+  if (current.release_history_signal.release_mention_count < 3) errors.push('README must expose enough release-history signal before a split plan is meaningful');
+  if (current.future_history_archive_present) errors.push(`${PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.planned_surfaces.future_history_archive_candidate} must not be created by this planning gate`);
+  if (current.future_history_index_present) errors.push(`${PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.planned_surfaces.future_history_index_candidate} must not be created by this planning gate`);
+  if (result.boundary.command_writes_files !== false || result.boundary.check_command_writes_files !== false) errors.push('README split planning commands must remain read-only');
+  if (result.boundary.creates_history_archive !== false || result.boundary.deletes_files !== false || result.boundary.moves_files !== false) errors.push('README split planning must not create archive, delete files, or move files');
+  if (result.boundary.rewrites_history !== false) errors.push('README split planning must not rewrite history in this gate');
+  if (milestone.ledger_present) {
+    if (milestone.milestone_status !== 'open') errors.push(`${PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.milestone_id} must remain open during README split planning`);
+    if (milestone.baseline_work_item_status !== 'closed') errors.push(`${PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.baseline_work_item_id} must be closed before README split planning`);
+    if (milestone.catalog_work_item_status !== 'closed') errors.push(`${PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.catalog_work_item_id} must be closed before README split planning`);
+    if (milestone.keyword_work_item_status !== 'closed') errors.push(`${PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.keyword_work_item_id} must be closed before README split planning`);
+    if (milestone.work_item_status !== 'closed') errors.push(`${PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.work_item_id} must be closed by this README split planning gate`);
+  }
+  return Object.freeze({
+    schema: 'agent-onboard-public-readme-first-read-history-split-plan-check-result-001',
+    status: errors.length === 0 ? 'ok' : 'error',
+    package_name: PACKAGE_NAME,
+    version: VERSION,
+    release_line: RELEASE_LINE,
+    command: PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.check_command,
+    plan_command: PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.command,
+    package_root: root,
+    validated: Object.freeze({
+      catalog_check_passes: result.catalog_surface.catalog_check_status === 'ok',
+      catalog_surface_present: result.catalog_surface.surface_present,
+      keyword_taxonomy_check_passes: result.prerequisite_checks.keyword_taxonomy_check === 'ok',
+      readme_present: current.readme_present,
+      all_first_read_markers_present: current.first_read_markers.every((marker) => marker.present),
+      release_history_signal_present: current.release_history_signal.release_mention_count >= 3,
+      future_archive_not_created: current.future_history_archive_present === false,
+      future_index_not_created: current.future_history_index_present === false,
+      read_only_commands: result.boundary.command_writes_files === false && result.boundary.check_command_writes_files === false,
+      no_archive_delete_move_or_rewrite: result.boundary.creates_history_archive === false && result.boundary.deletes_files === false && result.boundary.moves_files === false && result.boundary.rewrites_history === false,
+      m6_open: !milestone.ledger_present || milestone.milestone_status === 'open',
+      baseline_work_item_closed: !milestone.ledger_present || milestone.baseline_work_item_status === 'closed',
+      catalog_work_item_closed: !milestone.ledger_present || milestone.catalog_work_item_status === 'closed',
+      keyword_work_item_closed: !milestone.ledger_present || milestone.keyword_work_item_status === 'closed',
+      current_work_item_closed: !milestone.ledger_present || milestone.work_item_status === 'closed'
+    }),
+    plan: result,
+    milestone_state: milestone,
+    boundary: PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.boundary,
+    errors
+  });
+}
+
+function publicReadmeFirstReadHistorySplitPlanText(result = publicReadmeFirstReadHistorySplitPlan()) {
+  const lines = [
+    `agent-onboard README first-read/history split plan ${result.version}`,
+    `Status: ${result.status}`,
+    `Command: ${result.command}`,
+    '',
+    'Current README:',
+    `- bytes: ${result.current.readme_bytes}`,
+    `- lines: ${result.current.readme_lines}`,
+    `- release mentions: ${result.current.release_history_signal.release_mention_count}`,
+    '',
+    'Planned future split:',
+    `- live README: ${result.plan.planned_surfaces.live_readme}`,
+    `- future history archive: ${result.plan.planned_surfaces.future_history_archive_candidate}`,
+    `- future history index: ${result.plan.planned_surfaces.future_history_index_candidate}`,
+    '',
+    'Boundary:',
+    `- Writes files: ${result.boundary.command_writes_files}`,
+    `- Creates history archive: ${result.boundary.creates_history_archive}`,
+    `- Rewrites history: ${result.boundary.rewrites_history}`
+  ];
+  if (Array.isArray(result.errors) && result.errors.length > 0) lines.push('', 'Errors:', ...result.errors.map((error) => `- ${error}`));
+  return `${lines.join('\n')}\n`;
+}
+
 function publicPackageSurfaceCheck(root = packageRoot()) {
   const surface = publicPackageSurface(root);
   const packageSourceManifest = createPublicPackageSourceManifestService().check(root);
@@ -7664,6 +7927,8 @@ function publicReleaseCheck(root = packageRoot()) {
   const cleanCompactionCatalogErrors = cleanCompactionCatalog.errors.map((error) => `clean compaction catalog: ${error}`);
   const keywordTaxonomy = publicPackageKeywordTaxonomyCompactionCheck(root);
   const keywordTaxonomyErrors = keywordTaxonomy.errors.map((error) => `package keyword taxonomy: ${error}`);
+  const readmePlan = publicReadmeFirstReadHistorySplitPlanCheck(root);
+  const readmePlanErrors = readmePlan.errors.map((error) => `README first-read/history split plan: ${error}`);
   const packageSurfaceErrors = packageSurface.errors.map((error) => `package surface: ${error}`);
   const architectureParity = { status: architecture.status === 'ok' ? 'ok' : 'error', errors: [] };
   const installedAuthorityStateParity = publicInstalledAuthorityStateShardParity(root);
@@ -7713,9 +7978,9 @@ function publicReleaseCheck(root = packageRoot()) {
   const routerAdapterDelegation = publicRouterCommandAdapterDelegationExpansionCheck(root);
   const routerAdapterDelegationErrors = routerAdapterDelegation.errors.map((error) => `router adapter delegation: ${error}`);
   const architectureParityErrors = architectureParity.errors.map((error) => `installed architecture parity: ${error}`);
-  const errors = [...metadataErrors, ...packErrors, ...messagingErrors, ...sourceLedgerErrors, ...architectureErrors, ...packageSurfaceErrors, ...architectureParityErrors, ...installedAuthorityStateParityErrors, ...targetRepoProductErrors, ...cliRuntimePlanErrors, ...thinCliRouterErrors, ...compatibilityPortErrors, ...coreAdapterErrors, ...packageAdapterErrors, ...architectureAdapterErrors, ...authorityAdapterErrors, ...moduleInclusionPlanErrors, ...packagedRouterPortErrors, ...thinEntrypointRehearsalErrors, ...thinEntrypointCutoverErrors, ...routerAdapterDelegationErrors, ...versionPolicyErrors, ...cleanCompactionErrors, ...cleanCompactionCatalogErrors, ...keywordTaxonomyErrors];
+  const errors = [...metadataErrors, ...packErrors, ...messagingErrors, ...sourceLedgerErrors, ...architectureErrors, ...packageSurfaceErrors, ...architectureParityErrors, ...installedAuthorityStateParityErrors, ...targetRepoProductErrors, ...cliRuntimePlanErrors, ...thinCliRouterErrors, ...compatibilityPortErrors, ...coreAdapterErrors, ...packageAdapterErrors, ...architectureAdapterErrors, ...authorityAdapterErrors, ...moduleInclusionPlanErrors, ...packagedRouterPortErrors, ...thinEntrypointRehearsalErrors, ...thinEntrypointCutoverErrors, ...routerAdapterDelegationErrors, ...versionPolicyErrors, ...cleanCompactionErrors, ...cleanCompactionCatalogErrors, ...keywordTaxonomyErrors, ...readmePlanErrors];
   return {
-    schema: 'agent-onboard-public-release-check-result-015',
+    schema: 'agent-onboard-public-release-check-result-016',
     status: errors.length === 0 ? 'ok' : 'error',
     package_name: PUBLIC_RELEASE_CONTRACT.package_name,
     version: VERSION,
@@ -7762,7 +8027,8 @@ function publicReleaseCheck(root = packageRoot()) {
       public_installed_authority_state_shard_parity: installedAuthorityStateParity.status === 'ok',
       public_clean_compaction_baseline: cleanCompaction.status === 'ok',
       public_clean_compaction_catalog: cleanCompactionCatalog.status === 'ok',
-      public_package_keyword_taxonomy_compaction: keywordTaxonomy.status === 'ok'
+      public_package_keyword_taxonomy_compaction: keywordTaxonomy.status === 'ok',
+      public_readme_first_read_history_split_plan: readmePlan.status === 'ok'
     },
     expected_pack_files: expectedPackFiles,
     projected_pack_files: projectedPackFiles,
@@ -7789,6 +8055,7 @@ function publicReleaseCheck(root = packageRoot()) {
     public_clean_compaction_baseline: cleanCompaction,
     public_clean_compaction_catalog: cleanCompactionCatalog,
     public_package_keyword_taxonomy_compaction: keywordTaxonomy,
+    public_readme_first_read_history_split_plan: readmePlan,
     local_pre_publish_commands: PUBLIC_RELEASE_CONTRACT.local_pre_publish_commands.slice(),
     post_publish_verification_commands: publicReleasePostPublishCommands(VERSION),
     boundary: {
@@ -9030,6 +9297,12 @@ function runRelease(args) {
     json(result);
     return result.status === 'ok' ? 0 : 1;
   }
+  if (args.length === 1 && (args[0] === '--readme-plan' || args[0] === '--readme-plan-check')) {
+    const checkMode = args[0] === '--readme-plan-check';
+    const result = checkMode ? publicReadmeFirstReadHistorySplitPlanCheck() : publicReadmeFirstReadHistorySplitPlan();
+    json(result);
+    return result.status === 'ok' ? 0 : 1;
+  }
   if (args.length === 1 && (args[0] === '--authority-state-parity' || args[0] === '--authority-state-parity-check')) {
     const result = publicInstalledAuthorityStateShardParity();
     json(result);
@@ -9079,7 +9352,7 @@ function runRelease(args) {
     schema: 'agent-onboard-release-command-error-001',
     status: 'error',
     command_family: 'release',
-    message: 'release requires --plan, --contract, --fixture, --surface, --surface-check, --source-manifest, --source-manifest-check, --artifact-oracle, --artifact-oracle-check, --authority-state-parity, --authority-state-parity-check, --clean-inventory, --clean-check, --clean-catalog, --clean-catalog-check, --keyword-taxonomy, --keyword-taxonomy-check, --version-sprawl-check, --parity-smoke, --architecture-parity-smoke, --target-onboarding-smoke, --post-publish-handoff, --published-acceptance, --real-target-trial, or --check',
+    message: 'release requires --plan, --contract, --fixture, --surface, --surface-check, --source-manifest, --source-manifest-check, --artifact-oracle, --artifact-oracle-check, --authority-state-parity, --authority-state-parity-check, --clean-inventory, --clean-check, --clean-catalog, --clean-catalog-check, --keyword-taxonomy, --keyword-taxonomy-check, --readme-plan, --readme-plan-check, --version-sprawl-check, --parity-smoke, --architecture-parity-smoke, --target-onboarding-smoke, --post-publish-handoff, --published-acceptance, --real-target-trial, or --check',
     writes_files: false,
     publishes_package: false
   });

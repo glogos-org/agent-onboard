@@ -25,6 +25,8 @@ const PACKAGE_SERVICE_SEED = Object.freeze({
     'release --clean-catalog-check',
     'release --keyword-taxonomy',
     'release --keyword-taxonomy-check',
+    'release --readme-plan',
+    'release --readme-plan-check',
     'release --version-sprawl-check',
     'release --parity-smoke',
     'release --architecture-parity-smoke',

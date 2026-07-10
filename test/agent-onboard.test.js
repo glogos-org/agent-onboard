@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_package_keyword_taxonomy_compaction_gate';
+const EXPECTED_RELEASE_LINE = 'public_readme_first_read_history_split_planning_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -2156,7 +2156,7 @@ fullSourceTest('full source block line 780', () => {
   const result = run(['release', '--check']);
   const output = readJsonOutput(result);
   assert.strictEqual(output.status, 'ok');
-  assert.strictEqual(output.schema, 'agent-onboard-public-release-check-result-015');
+  assert.strictEqual(output.schema, 'agent-onboard-public-release-check-result-016');
   assert.strictEqual(output.version, EXPECTED_VERSION);
   assert.strictEqual(output.validated.package_metadata, true);
   assert.strictEqual(output.validated.projected_pack_allowlist, true);
@@ -5192,6 +5192,35 @@ fullSourceTest('public package keyword taxonomy is compacted and release-checked
   assert.strictEqual(check.validated.keyword_count_reduced_from_previous_observation, true);
   assert.strictEqual(check.validated.every_required_group_complete, true);
   assert.strictEqual(check.validated.release_era_keywords_removed, true);
+  assert.strictEqual(check.validated.current_work_item_closed, true);
+  assert.strictEqual(check.boundary.check_command_writes_files, false);
+});
+
+
+fullSourceTest('public README first-read history split planning is read-only and release-checked', () => {
+  const plan = readJsonOutput(run(['release', '--readme-plan']));
+  assert.strictEqual(plan.schema, 'agent-onboard-public-readme-first-read-history-split-plan-result-001');
+  assert.strictEqual(plan.status, 'ok');
+  assert.strictEqual(plan.version, EXPECTED_VERSION);
+  assert.strictEqual(plan.release_line, EXPECTED_RELEASE_LINE);
+  assert.strictEqual(plan.command, 'agent-onboard release --readme-plan');
+  assert.strictEqual(plan.catalog_surface.surface_present, true);
+  assert.strictEqual(plan.prerequisite_checks.keyword_taxonomy_check, 'ok');
+  assert.strictEqual(plan.current.readme_present, true);
+  assert.strictEqual(plan.current.future_history_archive_present, false);
+  assert.strictEqual(plan.split_plan.no_write_in_this_gate, true);
+  assert.strictEqual(plan.boundary.command_writes_files, false);
+  assert.strictEqual(plan.boundary.creates_history_archive, false);
+
+  const check = readJsonOutput(run(['release', '--readme-plan-check']));
+  assert.strictEqual(check.schema, 'agent-onboard-public-readme-first-read-history-split-plan-check-result-001');
+  assert.strictEqual(check.status, 'ok');
+  assert.strictEqual(check.command, 'agent-onboard release --readme-plan-check');
+  assert.strictEqual(check.validated.catalog_check_passes, true);
+  assert.strictEqual(check.validated.keyword_taxonomy_check_passes, true);
+  assert.strictEqual(check.validated.all_first_read_markers_present, true);
+  assert.strictEqual(check.validated.future_archive_not_created, true);
+  assert.strictEqual(check.validated.no_archive_delete_move_or_rewrite, true);
   assert.strictEqual(check.validated.current_work_item_closed, true);
   assert.strictEqual(check.boundary.check_command_writes_files, false);
 });
