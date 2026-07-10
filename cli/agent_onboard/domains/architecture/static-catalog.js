@@ -57,7 +57,7 @@ const PUBLIC_ARCHITECTURE_MAP = Object.freeze({
       owns: Object.freeze(['release contract', 'fixture matrix', 'npm pack allowlist', 'package parity smoke', 'post-publish handoff']),
       public_surface: Object.freeze(['release --plan', 'release --contract', 'release --fixture', 'release --surface', 'release --surface-check', 'release --source-manifest', 'release --source-manifest-check', 'release --artifact-oracle', 'release --artifact-oracle-check', 'release --authority-state-parity', 'release --authority-state-parity-check', 'release --clean-inventory', 'release --clean-check', 'release --clean-catalog', 'release --clean-catalog-check', 'release --keyword-taxonomy', 'release --keyword-taxonomy-check', 'release --readme-plan', 'release --readme-plan-check',
     'release --readme-dry-run',
-    'release --readme-dry-run-check', 'release --version-sprawl-check', 'release --parity-smoke', 'release --architecture-parity-smoke', 'release --target-onboarding-smoke', 'release --post-publish-handoff', 'release --published-acceptance', 'release --real-target-trial', 'release --check']),
+    'release --readme-dry-run-check', 'release --readme-apply', 'release --readme-apply-check', 'release --version-sprawl-check', 'release --parity-smoke', 'release --architecture-parity-smoke', 'release --target-onboarding-smoke', 'release --post-publish-handoff', 'release --published-acceptance', 'release --real-target-trial', 'release --check']),
       state_files: Object.freeze(['package.json', 'README.md', 'LICENSE', 'cli/agent-onboard.js'])
     })
   ]),

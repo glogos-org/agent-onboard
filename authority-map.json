@@ -166,6 +166,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-readme-first-read-history-split-plan-gate-json-3746dbf4"
     },
     {
+      "file_path": ".agent-onboard/public-readme-history-archive-split-apply-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-public-readme-history-archive-split-apply-gate-json-979735eb"
+    },
+    {
       "file_path": ".agent-onboard/public-readme-history-archive-split-dry-run-gate.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-readme-history-archive-split-dry-run-gate-json-1ba9dab3"
     },
@@ -180,6 +184,10 @@
     {
       "file_path": ".agent-onboard/quickstart-product-gate.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-quickstart-product-gate-json-eb9f94bd"
+    },
+    {
+      "file_path": ".agent-onboard/readme-history.index.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-readme-history-index-json-11cf628c"
     },
     {
       "file_path": ".agent-onboard/router-command-adapter-delegation-expansion.json",
@@ -628,6 +636,10 @@
     {
       "file_path": "cli/agent_onboard/runtime-contracts.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-runtime-contracts-js-3253ce5e"
+    },
+    {
+      "file_path": "docs/release-history.md",
+      "file_urn": "urn:agent-onboard:file:docs-release-history-md-ba1003a5"
     },
     {
       "file_path": "llms.txt",

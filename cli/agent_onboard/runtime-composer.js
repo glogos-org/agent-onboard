@@ -210,6 +210,7 @@ function commandSurfaceCatalog() {
       'agent-onboard release --keyword-taxonomy-check',
       'agent-onboard release --readme-plan-check',
       'agent-onboard release --readme-dry-run-check',
+      'agent-onboard release --readme-apply-check',
       'agent-onboard release --check'
     ],
     output_modes: ['--json', '--text'],
@@ -570,6 +571,8 @@ function discoveryStableCommands() {
     'agent-onboard release --readme-plan-check',
     'agent-onboard release --readme-dry-run',
     'agent-onboard release --readme-dry-run-check',
+    'agent-onboard release --readme-apply',
+    'agent-onboard release --readme-apply-check',
     'agent-onboard authority --index',
     'agent-onboard authority --index-check',
     'agent-onboard authority --state',
@@ -1281,6 +1284,7 @@ const CHECK_FAST_REGISTRY = Object.freeze([
   Object.freeze({ id: 'release-keyword-taxonomy-check', command: 'agent-onboard release --keyword-taxonomy-check', scope: 'source_package_keyword_taxonomy', slow: false }),
   Object.freeze({ id: 'release-readme-plan-check', command: 'agent-onboard release --readme-plan-check', scope: 'source_readme_first_read_history_split_plan', slow: false }),
   Object.freeze({ id: 'release-readme-dry-run-check', command: 'agent-onboard release --readme-dry-run-check', scope: 'source_readme_history_archive_split_dry_run', slow: false }),
+  Object.freeze({ id: 'release-readme-apply-check', command: 'agent-onboard release --readme-apply-check', scope: 'source_readme_history_archive_split_apply', slow: false }),
   Object.freeze({ id: 'command-surface-catalog', command: 'agent-onboard commands --json', scope: 'product_discovery', slow: false }),
   Object.freeze({ id: 'operator-guide', command: 'agent-onboard guide --json', scope: 'operator_orientation', slow: false }),
   Object.freeze({ id: 'quickstart', command: 'agent-onboard quickstart --json', scope: 'first_run_recipe', slow: false }),
@@ -1574,6 +1578,7 @@ function runCheckFastPlan(root = packageRoot(), options = {}) {
     'release-keyword-taxonomy-check': () => publicPackageKeywordTaxonomyCompactionCheck(root),
     'release-readme-plan-check': () => publicReadmeFirstReadHistorySplitPlanCheck(root),
     'release-readme-dry-run-check': () => publicReadmeHistoryArchiveSplitDryRunCheck(root),
+    'release-readme-apply-check': () => publicReadmeHistoryArchiveSplitApplyCheck(root),
     'release-surface-check': () => publicPackageSurfaceCheck(root),
     'release-check': () => publicReleaseCheck(root),
     'ci-surface': () => ciSurfaceService.catalog(),
@@ -7229,6 +7234,10 @@ function publicReadmeFirstReadHistoryCurrent(root = packageRoot()) {
   const releaseMentions = (readme.match(/\b(?:This release|The current release|Current release:)\b/g) || []).length;
   const historyHeadings = publicReadmeHistoryHeadings(readme);
   const planned = PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.planned_surfaces;
+  const historyArchivePresent = fs.existsSync(path.join(root, planned.future_history_archive_candidate));
+  const historyIndexPresent = fs.existsSync(path.join(root, planned.future_history_index_candidate));
+  const liveHistorySections = publicReadmeHistoryArchiveSections(readme);
+  const historyArchivePointerPresent = readme.includes(planned.future_history_archive_candidate);
   return Object.freeze({
     readme_path: 'README.md',
     readme_present: fs.existsSync(readmePath),
@@ -7242,11 +7251,15 @@ function publicReadmeFirstReadHistoryCurrent(root = packageRoot()) {
     release_history_signal: Object.freeze({
       release_mention_count: releaseMentions,
       history_heading_count: historyHeadings.length,
+      live_history_section_count: liveHistorySections.length,
+      history_archive_pointer_present: historyArchivePointerPresent,
+      applied_archive_present: historyArchivePresent,
+      applied_index_present: historyIndexPresent,
       sample_headings: historyHeadings.slice(0, 12)
     }),
-    future_history_archive_present: fs.existsSync(path.join(root, planned.future_history_archive_candidate)),
-    future_history_index_present: fs.existsSync(path.join(root, planned.future_history_index_candidate)),
-    current_gate_performs_split: false
+    future_history_archive_present: historyArchivePresent,
+    future_history_index_present: historyIndexPresent,
+    current_gate_performs_split: historyArchivePresent && historyIndexPresent && liveHistorySections.length === 0
   });
 }
 
@@ -7297,6 +7310,7 @@ function publicReadmeFirstReadHistoryMilestoneState(root = packageRoot()) {
 }
 
 function publicReadmeFirstReadHistorySplitPlan(root = packageRoot()) {
+  const context = sourceContext(root);
   const current = publicReadmeFirstReadHistoryCurrent(root);
   const catalogCheck = publicCleanCompactionCatalogCheck(root);
   const keywordTaxonomyCheck = publicPackageKeywordTaxonomyCompactionCheck(root);
@@ -7309,6 +7323,7 @@ function publicReadmeFirstReadHistorySplitPlan(root = packageRoot()) {
     command: PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.command,
     check_command: PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.check_command,
     package_root: root,
+    package_context: context.package_context,
     readme_path: 'README.md',
     plan: PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN,
     catalog_surface: Object.freeze({
@@ -7344,16 +7359,18 @@ function publicReadmeFirstReadHistorySplitPlanCheck(root = packageRoot()) {
   const current = result.current;
   const milestone = publicReadmeFirstReadHistoryMilestoneState(root);
   const errors = [];
-  if (result.catalog_surface.catalog_check_status !== 'ok') errors.push('clean compaction catalog check must pass before README split planning');
-  if (!result.catalog_surface.surface_present) errors.push('clean compaction catalog must include readme-first-read-history surface');
-  if (result.prerequisite_checks.keyword_taxonomy_check !== 'ok') errors.push('keyword taxonomy check must pass before README split planning');
+  const installedContext = result.package_context === 'installed_package';
+  if (!installedContext && result.catalog_surface.catalog_check_status !== 'ok') errors.push('clean compaction catalog check must pass before README split planning');
+  if (!installedContext && !result.catalog_surface.surface_present) errors.push('clean compaction catalog must include readme-first-read-history surface');
+  if (!installedContext && result.prerequisite_checks.keyword_taxonomy_check !== 'ok') errors.push('keyword taxonomy check must pass before README split planning');
   if (!current.readme_present) errors.push('README.md must be present before split planning');
   for (const marker of current.first_read_markers) {
     if (!marker.present) errors.push(`README first-read marker missing: ${marker.marker}`);
   }
-  if (current.release_history_signal.release_mention_count < 3) errors.push('README must expose enough release-history signal before a split plan is meaningful');
-  if (current.future_history_archive_present) errors.push(`${PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.planned_surfaces.future_history_archive_candidate} must not be created by this planning gate`);
-  if (current.future_history_index_present) errors.push(`${PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.planned_surfaces.future_history_index_candidate} must not be created by this planning gate`);
+  const appliedSplit = current.future_history_archive_present === true || current.future_history_index_present === true;
+  if (!installedContext && !appliedSplit && current.release_history_signal.release_mention_count < 3) errors.push('README must expose enough release-history signal before a split plan is meaningful');
+  if (installedContext && !current.release_history_signal.history_archive_pointer_present) errors.push('installed package README must retain release history archive pointer');
+  if (appliedSplit && !(current.future_history_archive_present && current.future_history_index_present && current.release_history_signal.history_archive_pointer_present)) errors.push('applied README split must keep archive, index, and live README pointer together');
   if (result.boundary.command_writes_files !== false || result.boundary.check_command_writes_files !== false) errors.push('README split planning commands must remain read-only');
   if (result.boundary.creates_history_archive !== false || result.boundary.deletes_files !== false || result.boundary.moves_files !== false) errors.push('README split planning must not create archive, delete files, or move files');
   if (result.boundary.rewrites_history !== false) errors.push('README split planning must not rewrite history in this gate');
@@ -7379,9 +7396,10 @@ function publicReadmeFirstReadHistorySplitPlanCheck(root = packageRoot()) {
       keyword_taxonomy_check_passes: result.prerequisite_checks.keyword_taxonomy_check === 'ok',
       readme_present: current.readme_present,
       all_first_read_markers_present: current.first_read_markers.every((marker) => marker.present),
-      release_history_signal_present: current.release_history_signal.release_mention_count >= 3,
+      release_history_signal_present: current.release_history_signal.release_mention_count >= 3 || current.release_history_signal.history_archive_pointer_present === true,
       future_archive_not_created: current.future_history_archive_present === false,
       future_index_not_created: current.future_history_index_present === false,
+      history_archive_state_valid: (current.future_history_archive_present === false && current.future_history_index_present === false) || (current.future_history_archive_present === true && current.future_history_index_present === true && current.release_history_signal.history_archive_pointer_present === true),
       read_only_commands: result.boundary.command_writes_files === false && result.boundary.check_command_writes_files === false,
       no_archive_delete_move_or_rewrite: result.boundary.creates_history_archive === false && result.boundary.deletes_files === false && result.boundary.moves_files === false && result.boundary.rewrites_history === false,
       m6_open: !milestone.ledger_present || milestone.milestone_status === 'open',
@@ -7473,7 +7491,7 @@ function textFileId(text) {
   return `ni:///sha-256;${crypto.createHash('sha256').update(text).digest('base64url')}`;
 }
 
-function publicReadmeHistoryArchiveSections(readme) {
+function publicReadmeHistoryArchiveSections(readme, sourcePath = 'README.md') {
   const lines = readme.split(/\r?\n/);
   const headingRegex = /^##\s+(?:Current release|Previous release)\b/i;
   const sectionStarts = [];
@@ -7492,7 +7510,7 @@ function publicReadmeHistoryArchiveSections(readme) {
     return Object.freeze({
       ordinal: sectionIndex + 1,
       heading: lines[startIndex],
-      source_path: 'README.md',
+      source_path: sourcePath,
       start_line: startIndex + 1,
       end_line: endIndexExclusive,
       byte_count: Buffer.byteLength(text, 'utf8'),
@@ -7578,12 +7596,22 @@ function publicReadmeHistoryArchiveSplitMilestoneState(root = packageRoot()) {
 }
 
 function publicReadmeHistoryArchiveSplitDryRun(root = packageRoot()) {
-  const readmePath = path.join(root, 'README.md');
+  const context = sourceContext(root);
+  const installedContext = context.package_context === 'installed_package';
+  const planned = PUBLIC_README_HISTORY_ARCHIVE_SPLIT_DRY_RUN.planned_surfaces;
+  const readmePath = path.join(root, planned.live_readme);
+  const archivePath = path.join(root, planned.history_archive_candidate);
+  const indexPath = path.join(root, planned.history_index_candidate);
   const readme = fs.existsSync(readmePath) ? fs.readFileSync(readmePath, 'utf8') : '';
-  const sections = publicReadmeHistoryArchiveSections(readme);
-  const archiveCandidate = publicReadmeHistoryArchiveCandidate(readme, sections);
-  const liveReadmeCandidate = publicReadmeHistoryLiveReadmeCandidate(readme, sections);
-  const indexCandidate = {
+  const archiveExists = fs.existsSync(archivePath);
+  const indexExists = fs.existsSync(indexPath);
+  const applied = archiveExists && indexExists;
+  const sourceSections = publicReadmeHistoryArchiveSections(readme);
+  const archiveText = archiveExists ? fs.readFileSync(archivePath, 'utf8') : null;
+  const sections = applied ? publicReadmeHistoryArchiveSections(archiveText, planned.history_archive_candidate) : sourceSections;
+  const archiveCandidate = applied ? archiveText : publicReadmeHistoryArchiveCandidate(readme, sections);
+  const liveReadmeCandidate = applied ? readme : publicReadmeHistoryLiveReadmeCandidate(readme, sections);
+  const indexCandidate = applied && indexExists ? readJson(indexPath) : {
     schema: 'agent-onboard-public-readme-history-index-preview-001',
     status: 'dry_run_only',
     source_file: 'README.md',
@@ -7602,12 +7630,12 @@ function publicReadmeHistoryArchiveSplitDryRun(root = packageRoot()) {
       file_id: section.file_id
     }))
   };
-  const indexCandidateText = `${JSON.stringify(indexCandidate, null, 2)}\n`;
+  const indexCandidateText = applied && indexExists ? fs.readFileSync(indexPath, 'utf8') : `${JSON.stringify(indexCandidate, null, 2)}
+`;
   const retainedMarkers = PUBLIC_README_HISTORY_ARCHIVE_SPLIT_DRY_RUN.retained_live_readme_markers.map((marker) => Object.freeze({
     marker,
     present_in_live_candidate: liveReadmeCandidate.includes(marker)
   }));
-  const planned = PUBLIC_README_HISTORY_ARCHIVE_SPLIT_DRY_RUN.planned_surfaces;
   return Object.freeze({
     schema: 'agent-onboard-public-readme-history-archive-split-dry-run-result-001',
     status: 'ok',
@@ -7617,16 +7645,19 @@ function publicReadmeHistoryArchiveSplitDryRun(root = packageRoot()) {
     command: PUBLIC_README_HISTORY_ARCHIVE_SPLIT_DRY_RUN.command,
     check_command: PUBLIC_README_HISTORY_ARCHIVE_SPLIT_DRY_RUN.check_command,
     package_root: root,
+    package_context: context.package_context,
+    mode: applied ? 'applied_replay' : (installedContext ? 'installed_readme_pointer_check' : 'pre_apply_dry_run'),
     plan_gate_check: publicReadmeFirstReadHistorySplitPlanCheck(root).status,
     dry_run: PUBLIC_README_HISTORY_ARCHIVE_SPLIT_DRY_RUN,
     current: Object.freeze({
-      readme_path: 'README.md',
+      readme_path: planned.live_readme,
       readme_present: fs.existsSync(readmePath),
       readme_bytes: Buffer.byteLength(readme, 'utf8'),
       readme_lines: readme.length === 0 ? 0 : readme.split(/\r?\n/).length,
       readme_file_id: textFileId(readme),
-      history_archive_present: fs.existsSync(path.join(root, planned.history_archive_candidate)),
-      history_index_present: fs.existsSync(path.join(root, planned.history_index_candidate))
+      live_history_section_count: sourceSections.length,
+      history_archive_present: archiveExists,
+      history_index_present: indexExists
     }),
     archive_preview: Object.freeze({
       candidate_path: planned.history_archive_candidate,
@@ -7639,8 +7670,8 @@ function publicReadmeHistoryArchiveSplitDryRun(root = packageRoot()) {
         byte_count: section.byte_count,
         file_id: section.file_id
       })),
-      byte_count: Buffer.byteLength(archiveCandidate, 'utf8'),
-      file_id: textFileId(archiveCandidate),
+      byte_count: Buffer.byteLength(archiveCandidate || '', 'utf8'),
+      file_id: textFileId(archiveCandidate || ''),
       content_inlined: false
     }),
     live_readme_preview: Object.freeze({
@@ -7660,7 +7691,7 @@ function publicReadmeHistoryArchiveSplitDryRun(root = packageRoot()) {
     }),
     diff_preview: Object.freeze({
       writes_files_now: false,
-      would_write_files_after_future_admission: Object.freeze([
+      would_write_files_after_future_admission: applied ? Object.freeze([]) : Object.freeze([
         planned.live_readme,
         planned.history_archive_candidate,
         planned.history_index_candidate
@@ -7673,27 +7704,30 @@ function publicReadmeHistoryArchiveSplitDryRun(root = packageRoot()) {
       readme_replacement: Object.freeze({
         heading: PUBLIC_README_HISTORY_ARCHIVE_SPLIT_DRY_RUN.extraction.replacement_pointer_heading,
         points_to: planned.history_archive_candidate,
-        exact_content_inlined: false
+        exact_content_inlined: false,
+        already_applied: applied
       })
     }),
     boundary: PUBLIC_README_HISTORY_ARCHIVE_SPLIT_DRY_RUN.boundary
   });
 }
-
 function publicReadmeHistoryArchiveSplitDryRunCheck(root = packageRoot()) {
   const result = publicReadmeHistoryArchiveSplitDryRun(root);
   const milestone = publicReadmeHistoryArchiveSplitMilestoneState(root);
   const errors = [];
   const dryRun = PUBLIC_README_HISTORY_ARCHIVE_SPLIT_DRY_RUN;
-  if (result.plan_gate_check !== 'ok') errors.push('README split planning check must pass before archive split dry-run');
+  const installedContext = result.package_context === 'installed_package';
+  if (!installedContext && result.plan_gate_check !== 'ok') errors.push('README split planning check must pass before archive split dry-run');
+  const appliedReplay = result.mode === 'applied_replay';
   if (!result.current.readme_present) errors.push('README.md must be present before README history archive split dry-run');
-  if (result.archive_preview.section_count < dryRun.extraction.min_history_sections) errors.push(`README history archive dry-run must identify at least ${dryRun.extraction.min_history_sections} history sections`);
-  if (result.archive_preview.byte_count <= 0) errors.push('README history archive dry-run must produce a non-empty archive preview');
+  if (!installedContext && result.archive_preview.section_count < dryRun.extraction.min_history_sections) errors.push(`README history archive dry-run/replay must identify at least ${dryRun.extraction.min_history_sections} history sections`);
+  if (!installedContext && result.archive_preview.byte_count <= 0) errors.push('README history archive dry-run must produce a non-empty archive preview');
   if (result.archive_preview.byte_count > dryRun.extraction.max_archive_preview_bytes) errors.push(`README history archive preview bytes ${result.archive_preview.byte_count} exceeds budget ${dryRun.extraction.max_archive_preview_bytes}`);
   if (result.live_readme_preview.byte_count > dryRun.extraction.max_live_readme_preview_bytes) errors.push(`live README preview bytes ${result.live_readme_preview.byte_count} exceeds budget ${dryRun.extraction.max_live_readme_preview_bytes}`);
   if (result.index_preview.byte_count > dryRun.extraction.max_index_preview_bytes) errors.push(`README history index preview bytes ${result.index_preview.byte_count} exceeds budget ${dryRun.extraction.max_index_preview_bytes}`);
-  if (result.current.history_archive_present) errors.push(`${dryRun.planned_surfaces.history_archive_candidate} must not be created by this dry-run gate`);
-  if (result.current.history_index_present) errors.push(`${dryRun.planned_surfaces.history_index_candidate} must not be created by this dry-run gate`);
+  if (!appliedReplay && result.current.history_archive_present) errors.push(`${dryRun.planned_surfaces.history_archive_candidate} must not be created by this dry-run gate`);
+  if (!appliedReplay && result.current.history_index_present) errors.push(`${dryRun.planned_surfaces.history_index_candidate} must not be created by this dry-run gate`);
+  if (!installedContext && appliedReplay && !(result.current.history_archive_present && result.current.history_index_present)) errors.push('applied replay requires both README history archive and history index to be present');
   for (const marker of result.live_readme_preview.retained_first_read_markers) {
     if (!marker.present_in_live_candidate) errors.push(`live README candidate would drop first-read marker: ${marker.marker}`);
   }
@@ -7715,15 +7749,19 @@ function publicReadmeHistoryArchiveSplitDryRunCheck(root = packageRoot()) {
     dry_run_command: dryRun.command,
     package_root: root,
     validated: Object.freeze({
-      plan_gate_check_passes: result.plan_gate_check === 'ok',
+      installed_context: installedContext,
+      plan_gate_check_passes: installedContext || result.plan_gate_check === 'ok',
       readme_present: result.current.readme_present,
-      enough_history_sections_identified: result.archive_preview.section_count >= dryRun.extraction.min_history_sections,
-      archive_preview_non_empty: result.archive_preview.byte_count > 0,
+      enough_history_sections_identified: installedContext || result.archive_preview.section_count >= dryRun.extraction.min_history_sections,
+      archive_preview_non_empty: installedContext || result.archive_preview.byte_count > 0,
       archive_preview_within_budget: result.archive_preview.byte_count <= dryRun.extraction.max_archive_preview_bytes,
       live_readme_preview_within_budget: result.live_readme_preview.byte_count <= dryRun.extraction.max_live_readme_preview_bytes,
       index_preview_within_budget: result.index_preview.byte_count <= dryRun.extraction.max_index_preview_bytes,
       future_archive_not_created: result.current.history_archive_present === false,
       future_index_not_created: result.current.history_index_present === false,
+      applied_archive_present: result.current.history_archive_present === true,
+      applied_index_present: result.current.history_index_present === true,
+      applied_replay_or_future_files_absent: installedContext ? (result.current.history_archive_present === false && result.current.history_index_present === false) : (appliedReplay ? (result.current.history_archive_present === true && result.current.history_index_present === true) : (result.current.history_archive_present === false && result.current.history_index_present === false)),
       live_readme_candidate_retains_first_read_markers: result.live_readme_preview.retained_first_read_markers.every((marker) => marker.present_in_live_candidate),
       read_only_commands: result.boundary.command_writes_files === false && result.boundary.check_command_writes_files === false,
       no_archive_index_readme_write: result.boundary.creates_history_archive === false && result.boundary.creates_history_index === false && result.boundary.rewrites_readme === false,
@@ -7759,6 +7797,222 @@ function publicReadmeHistoryArchiveSplitDryRunText(result = publicReadmeHistoryA
     `- Creates archive now: ${result.boundary.creates_history_archive}`,
     `- Creates index now: ${result.boundary.creates_history_index}`,
     `- Rewrites README now: ${result.boundary.rewrites_readme}`
+  ];
+  if (Array.isArray(result.errors) && result.errors.length > 0) lines.push('', 'Errors:', ...result.errors.map((error) => `- ${error}`));
+  return `${lines.join('\n')}\n`;
+}
+
+
+const PUBLIC_README_HISTORY_ARCHIVE_SPLIT_APPLY = Object.freeze({
+  schema: 'agent-onboard-public-readme-history-archive-split-apply-001',
+  package_name: PACKAGE_NAME,
+  release_line: RELEASE_LINE,
+  milestone_id: 'P1S3M6',
+  catalog_surface_id: 'readme-first-read-history',
+  prerequisite_work_item_id: ['P1S3M6', 'W5'].join(''),
+  work_item_id: ['P1S3M6', 'W6'].join(''),
+  title: 'Public README history archive split apply gate',
+  command: 'agent-onboard release --readme-apply',
+  check_command: 'agent-onboard release --readme-apply-check',
+  artifact_file: '.agent-onboard/public-readme-history-archive-split-apply-gate.json',
+  applied_surfaces: Object.freeze({
+    live_readme: 'README.md',
+    history_archive: 'docs/release-history.md',
+    history_index: '.agent-onboard/readme-history.index.json'
+  }),
+  boundary: Object.freeze({
+    command_writes_files: false,
+    check_command_writes_files: false,
+    verifies_applied_files: true,
+    deletes_files: false,
+    moves_files: false,
+    mutates_work_items: false,
+    mutates_claims: false,
+    mutates_git: false,
+    installs_dependencies: false,
+    runs_package_manager: false,
+    publishes_package: false,
+    mutates_registry: false,
+    network: false
+  })
+});
+
+function publicReadmeHistoryArchiveSplitApplyMilestoneState(root = packageRoot()) {
+  const ledgerPath = path.join(root, '.agent-onboard', 'work-items.json');
+  if (!fs.existsSync(ledgerPath)) {
+    return Object.freeze({
+      ledger_present: false,
+      milestone_id: PUBLIC_README_HISTORY_ARCHIVE_SPLIT_APPLY.milestone_id,
+      prerequisite_work_item_id: PUBLIC_README_HISTORY_ARCHIVE_SPLIT_APPLY.prerequisite_work_item_id,
+      work_item_id: PUBLIC_README_HISTORY_ARCHIVE_SPLIT_APPLY.work_item_id,
+      milestone_status: 'not_present_installed_context_allowed',
+      prerequisite_work_item_status: 'not_present_installed_context_allowed',
+      work_item_status: 'not_present_installed_context_allowed'
+    });
+  }
+  let ledger = null;
+  try { ledger = readJson(ledgerPath); } catch { ledger = null; }
+  const milestones = ledger && Array.isArray(ledger.milestones) ? ledger.milestones : [];
+  const workItems = ledger && Array.isArray(ledger.work_items) ? ledger.work_items : [];
+  const milestone = milestones.find((item) => item.id === PUBLIC_README_HISTORY_ARCHIVE_SPLIT_APPLY.milestone_id) || null;
+  const prerequisiteWorkItem = workItems.find((item) => item.id === PUBLIC_README_HISTORY_ARCHIVE_SPLIT_APPLY.prerequisite_work_item_id) || null;
+  const workItem = workItems.find((item) => item.id === PUBLIC_README_HISTORY_ARCHIVE_SPLIT_APPLY.work_item_id) || null;
+  return Object.freeze({
+    ledger_present: true,
+    milestone_id: PUBLIC_README_HISTORY_ARCHIVE_SPLIT_APPLY.milestone_id,
+    prerequisite_work_item_id: PUBLIC_README_HISTORY_ARCHIVE_SPLIT_APPLY.prerequisite_work_item_id,
+    work_item_id: PUBLIC_README_HISTORY_ARCHIVE_SPLIT_APPLY.work_item_id,
+    milestone_status: milestone ? milestone.status : 'missing',
+    prerequisite_work_item_status: prerequisiteWorkItem ? prerequisiteWorkItem.status : 'missing',
+    work_item_status: workItem ? workItem.status : 'missing',
+    milestone_title: milestone ? milestone.title : null,
+    prerequisite_work_item_title: prerequisiteWorkItem ? prerequisiteWorkItem.title : null,
+    work_item_title: workItem ? workItem.title : null
+  });
+}
+
+function publicReadmeHistoryArchiveSplitApply(root = packageRoot()) {
+  const context = sourceContext(root);
+  const installedContext = context.package_context === 'installed_package';
+  const surfaces = PUBLIC_README_HISTORY_ARCHIVE_SPLIT_APPLY.applied_surfaces;
+  const readmePath = path.join(root, surfaces.live_readme);
+  const archivePath = path.join(root, surfaces.history_archive);
+  const indexPath = path.join(root, surfaces.history_index);
+  const readme = fs.existsSync(readmePath) ? fs.readFileSync(readmePath, 'utf8') : '';
+  const archive = fs.existsSync(archivePath) ? fs.readFileSync(archivePath, 'utf8') : '';
+  const indexText = fs.existsSync(indexPath) ? fs.readFileSync(indexPath, 'utf8') : '';
+  let index = null;
+  try { index = indexText ? JSON.parse(indexText) : null; } catch { index = null; }
+  const liveSections = publicReadmeHistoryArchiveSections(readme);
+  const archiveSections = publicReadmeHistoryArchiveSections(archive, surfaces.history_archive);
+  const retainedMarkers = PUBLIC_README_FIRST_READ_HISTORY_SPLIT_PLAN.required_first_read_markers.map((marker) => Object.freeze({
+    marker,
+    present_in_live_readme: readme.includes(marker)
+  }));
+  return Object.freeze({
+    schema: 'agent-onboard-public-readme-history-archive-split-apply-result-001',
+    status: 'ok',
+    package_name: PACKAGE_NAME,
+    version: VERSION,
+    release_line: RELEASE_LINE,
+    command: PUBLIC_README_HISTORY_ARCHIVE_SPLIT_APPLY.command,
+    check_command: PUBLIC_README_HISTORY_ARCHIVE_SPLIT_APPLY.check_command,
+    package_root: root,
+    package_context: context.package_context,
+    apply: PUBLIC_README_HISTORY_ARCHIVE_SPLIT_APPLY,
+    prerequisite_checks: Object.freeze({
+      plan_check: installedContext ? 'not_applicable_installed_context_allowed' : publicReadmeFirstReadHistorySplitPlanCheck(root).status,
+      dry_run_replay_check: installedContext ? 'not_applicable_installed_context_allowed' : publicReadmeHistoryArchiveSplitDryRunCheck(root).status
+    }),
+    current: Object.freeze({
+      readme_present: fs.existsSync(readmePath),
+      archive_present: fs.existsSync(archivePath),
+      index_present: fs.existsSync(indexPath),
+      readme_bytes: Buffer.byteLength(readme, 'utf8'),
+      archive_bytes: Buffer.byteLength(archive, 'utf8'),
+      index_bytes: Buffer.byteLength(indexText, 'utf8'),
+      readme_file_id: textFileId(readme),
+      archive_file_id: textFileId(archive),
+      index_file_id: textFileId(indexText),
+      live_history_section_count: liveSections.length,
+      archive_section_count: archiveSections.length,
+      readme_pointer_present: readme.includes(surfaces.history_archive),
+      retained_first_read_markers: retainedMarkers
+    }),
+    index: Object.freeze({
+      present: Boolean(index),
+      schema: index && index.schema ? index.schema : null,
+      status: index && index.status ? index.status : null,
+      section_count: index && typeof index.section_count === 'number' ? index.section_count : null,
+      live_readme_file_id: index && index.live_readme_file_id ? index.live_readme_file_id : null,
+      history_archive_file_id: index && index.history_archive_file_id ? index.history_archive_file_id : null,
+      source_file_id_before_split: index && index.source_file_id_before_split ? index.source_file_id_before_split : null
+    }),
+    boundary: PUBLIC_README_HISTORY_ARCHIVE_SPLIT_APPLY.boundary
+  });
+}
+
+function publicReadmeHistoryArchiveSplitApplyCheck(root = packageRoot()) {
+  const result = publicReadmeHistoryArchiveSplitApply(root);
+  const milestone = publicReadmeHistoryArchiveSplitApplyMilestoneState(root);
+  const minSections = PUBLIC_README_HISTORY_ARCHIVE_SPLIT_DRY_RUN.extraction.min_history_sections;
+  const errors = [];
+  const installedContext = result.package_context === 'installed_package';
+  if (!installedContext && result.prerequisite_checks.plan_check !== 'ok') errors.push('README split plan check must pass after apply');
+  if (!installedContext && result.prerequisite_checks.dry_run_replay_check !== 'ok') errors.push('README dry-run replay check must pass after apply');
+  if (!result.current.readme_present) errors.push('README.md must be present after apply');
+  if (!installedContext && !result.current.archive_present) errors.push('docs/release-history.md must be present after apply');
+  if (!installedContext && !result.current.index_present) errors.push('.agent-onboard/readme-history.index.json must be present after apply');
+  if (!result.current.readme_pointer_present) errors.push('README.md must point to docs/release-history.md after apply');
+  if (result.current.live_history_section_count !== 0) errors.push('live README must not retain raw Current/Previous release history sections after apply');
+  if (!installedContext && result.current.archive_section_count < minSections) errors.push(`release history archive must retain at least ${minSections} historical sections`);
+  if (result.current.retained_first_read_markers.some((marker) => marker.present_in_live_readme !== true)) errors.push('live README must retain all first-read markers after archive split');
+  if (!installedContext && result.index.schema !== 'agent-onboard-public-readme-history-index-001') errors.push('history index schema must be agent-onboard-public-readme-history-index-001');
+  if (!installedContext && result.index.status !== 'applied') errors.push('history index status must be applied');
+  if (!installedContext && result.index.section_count !== result.current.archive_section_count) errors.push('history index section count must match archive section count');
+  if (!installedContext && result.index.live_readme_file_id !== result.current.readme_file_id) errors.push('history index live README file_id must match current README.md');
+  if (!installedContext && result.index.history_archive_file_id !== result.current.archive_file_id) errors.push('history index archive file_id must match docs/release-history.md');
+  if (!installedContext && milestone.ledger_present) {
+    if (milestone.milestone_status !== 'open') errors.push(`${PUBLIC_README_HISTORY_ARCHIVE_SPLIT_APPLY.milestone_id} must remain open during README history archive split apply`);
+    if (milestone.prerequisite_work_item_status !== 'closed') errors.push(`${PUBLIC_README_HISTORY_ARCHIVE_SPLIT_APPLY.prerequisite_work_item_id} must be closed before README history archive split apply`);
+    if (milestone.work_item_status !== 'closed') errors.push(`${PUBLIC_README_HISTORY_ARCHIVE_SPLIT_APPLY.work_item_id} must be closed by this README history archive split apply gate`);
+  }
+  return Object.freeze({
+    schema: 'agent-onboard-public-readme-history-archive-split-apply-check-result-001',
+    status: errors.length === 0 ? 'ok' : 'error',
+    package_name: PACKAGE_NAME,
+    version: VERSION,
+    release_line: RELEASE_LINE,
+    command: PUBLIC_README_HISTORY_ARCHIVE_SPLIT_APPLY.check_command,
+    apply_command: PUBLIC_README_HISTORY_ARCHIVE_SPLIT_APPLY.command,
+    package_root: root,
+    validated: Object.freeze({
+      installed_context: installedContext,
+      plan_check_passes: installedContext || result.prerequisite_checks.plan_check === 'ok',
+      dry_run_replay_check_passes: installedContext || result.prerequisite_checks.dry_run_replay_check === 'ok',
+      archive_present: result.current.archive_present,
+      archive_present_or_installed_context_allowed: installedContext || result.current.archive_present,
+      index_present: result.current.index_present,
+      index_present_or_installed_context_allowed: installedContext || result.current.index_present,
+      live_readme_pointer_present: result.current.readme_pointer_present,
+      live_history_sections_removed: result.current.live_history_section_count === 0,
+      archive_sections_retained: installedContext || result.current.archive_section_count >= minSections,
+      all_first_read_markers_present: result.current.retained_first_read_markers.every((marker) => marker.present_in_live_readme === true),
+      index_schema_applied: installedContext || (result.index.schema === 'agent-onboard-public-readme-history-index-001' && result.index.status === 'applied'),
+      index_section_count_matches_archive: installedContext || result.index.section_count === result.current.archive_section_count,
+      index_live_readme_digest_matches: installedContext || result.index.live_readme_file_id === result.current.readme_file_id,
+      index_archive_digest_matches: installedContext || result.index.history_archive_file_id === result.current.archive_file_id,
+      m6_open: !milestone.ledger_present || milestone.milestone_status === 'open',
+      prerequisite_work_item_closed: !milestone.ledger_present || milestone.prerequisite_work_item_status === 'closed',
+      current_work_item_closed: !milestone.ledger_present || milestone.work_item_status === 'closed'
+    }),
+    apply: result,
+    milestone_state: milestone,
+    boundary: PUBLIC_README_HISTORY_ARCHIVE_SPLIT_APPLY.boundary,
+    errors
+  });
+}
+
+function publicReadmeHistoryArchiveSplitApplyText(result = publicReadmeHistoryArchiveSplitApply()) {
+  const lines = [
+    `agent-onboard README history archive split apply ${result.version}`,
+    `Status: ${result.status}`,
+    `Command: ${result.command}`,
+    '',
+    'Applied surfaces:',
+    `- live README: ${PUBLIC_README_HISTORY_ARCHIVE_SPLIT_APPLY.applied_surfaces.live_readme}`,
+    `- history archive: ${PUBLIC_README_HISTORY_ARCHIVE_SPLIT_APPLY.applied_surfaces.history_archive}`,
+    `- history index: ${PUBLIC_README_HISTORY_ARCHIVE_SPLIT_APPLY.applied_surfaces.history_index}`,
+    '',
+    'Current state:',
+    `- archive present: ${result.current.archive_present}`,
+    `- index present: ${result.current.index_present}`,
+    `- live history sections: ${result.current.live_history_section_count}`,
+    `- archive sections: ${result.current.archive_section_count}`,
+    '',
+    'Boundary:',
+    `- Command writes files: ${result.boundary.command_writes_files}`,
+    `- Check command writes files: ${result.boundary.check_command_writes_files}`
   ];
   if (Array.isArray(result.errors) && result.errors.length > 0) lines.push('', 'Errors:', ...result.errors.map((error) => `- ${error}`));
   return `${lines.join('\n')}\n`;
@@ -8278,6 +8532,8 @@ function publicReleaseCheck(root = packageRoot()) {
   const readmePlanErrors = readmePlan.errors.map((error) => `README first-read/history split plan: ${error}`);
   const readmeDryRun = publicReadmeHistoryArchiveSplitDryRunCheck(root);
   const readmeDryRunErrors = readmeDryRun.errors.map((error) => `README history archive split dry-run: ${error}`);
+  const readmeApply = publicReadmeHistoryArchiveSplitApplyCheck(root);
+  const readmeApplyErrors = readmeApply.errors.map((error) => `README history archive split apply: ${error}`);
   const packageSurfaceErrors = packageSurface.errors.map((error) => `package surface: ${error}`);
   const architectureParity = { status: architecture.status === 'ok' ? 'ok' : 'error', errors: [] };
   const installedAuthorityStateParity = publicInstalledAuthorityStateShardParity(root);
@@ -8327,9 +8583,9 @@ function publicReleaseCheck(root = packageRoot()) {
   const routerAdapterDelegation = publicRouterCommandAdapterDelegationExpansionCheck(root);
   const routerAdapterDelegationErrors = routerAdapterDelegation.errors.map((error) => `router adapter delegation: ${error}`);
   const architectureParityErrors = architectureParity.errors.map((error) => `installed architecture parity: ${error}`);
-  const errors = [...metadataErrors, ...packErrors, ...messagingErrors, ...sourceLedgerErrors, ...architectureErrors, ...packageSurfaceErrors, ...architectureParityErrors, ...installedAuthorityStateParityErrors, ...targetRepoProductErrors, ...cliRuntimePlanErrors, ...thinCliRouterErrors, ...compatibilityPortErrors, ...coreAdapterErrors, ...packageAdapterErrors, ...architectureAdapterErrors, ...authorityAdapterErrors, ...moduleInclusionPlanErrors, ...packagedRouterPortErrors, ...thinEntrypointRehearsalErrors, ...thinEntrypointCutoverErrors, ...routerAdapterDelegationErrors, ...versionPolicyErrors, ...cleanCompactionErrors, ...cleanCompactionCatalogErrors, ...keywordTaxonomyErrors, ...readmePlanErrors, ...readmeDryRunErrors];
+  const errors = [...metadataErrors, ...packErrors, ...messagingErrors, ...sourceLedgerErrors, ...architectureErrors, ...packageSurfaceErrors, ...architectureParityErrors, ...installedAuthorityStateParityErrors, ...targetRepoProductErrors, ...cliRuntimePlanErrors, ...thinCliRouterErrors, ...compatibilityPortErrors, ...coreAdapterErrors, ...packageAdapterErrors, ...architectureAdapterErrors, ...authorityAdapterErrors, ...moduleInclusionPlanErrors, ...packagedRouterPortErrors, ...thinEntrypointRehearsalErrors, ...thinEntrypointCutoverErrors, ...routerAdapterDelegationErrors, ...versionPolicyErrors, ...cleanCompactionErrors, ...cleanCompactionCatalogErrors, ...keywordTaxonomyErrors, ...readmePlanErrors, ...readmeDryRunErrors, ...readmeApplyErrors];
   return {
-    schema: 'agent-onboard-public-release-check-result-017',
+    schema: 'agent-onboard-public-release-check-result-018',
     status: errors.length === 0 ? 'ok' : 'error',
     package_name: PUBLIC_RELEASE_CONTRACT.package_name,
     version: VERSION,
@@ -8378,7 +8634,8 @@ function publicReleaseCheck(root = packageRoot()) {
       public_clean_compaction_catalog: cleanCompactionCatalog.status === 'ok',
       public_package_keyword_taxonomy_compaction: keywordTaxonomy.status === 'ok',
       public_readme_first_read_history_split_plan: readmePlan.status === 'ok',
-      public_readme_history_archive_split_dry_run: readmeDryRun.status === 'ok'
+      public_readme_history_archive_split_dry_run: readmeDryRun.status === 'ok',
+      public_readme_history_archive_split_apply: readmeApply.status === 'ok'
     },
     expected_pack_files: expectedPackFiles,
     projected_pack_files: projectedPackFiles,
@@ -8407,6 +8664,7 @@ function publicReleaseCheck(root = packageRoot()) {
     public_package_keyword_taxonomy_compaction: keywordTaxonomy,
     public_readme_first_read_history_split_plan: readmePlan,
     public_readme_history_archive_split_dry_run: readmeDryRun,
+    public_readme_history_archive_split_apply: readmeApply,
     local_pre_publish_commands: PUBLIC_RELEASE_CONTRACT.local_pre_publish_commands.slice(),
     post_publish_verification_commands: publicReleasePostPublishCommands(VERSION),
     boundary: {
@@ -9660,6 +9918,12 @@ function runRelease(args) {
     json(result);
     return result.status === 'ok' ? 0 : 1;
   }
+  if (args.length === 1 && (args[0] === '--readme-apply' || args[0] === '--readme-apply-check')) {
+    const checkMode = args[0] === '--readme-apply-check';
+    const result = checkMode ? publicReadmeHistoryArchiveSplitApplyCheck() : publicReadmeHistoryArchiveSplitApply();
+    json(result);
+    return result.status === 'ok' ? 0 : 1;
+  }
   if (args.length === 1 && (args[0] === '--authority-state-parity' || args[0] === '--authority-state-parity-check')) {
     const result = publicInstalledAuthorityStateShardParity();
     json(result);
@@ -9709,7 +9973,7 @@ function runRelease(args) {
     schema: 'agent-onboard-release-command-error-001',
     status: 'error',
     command_family: 'release',
-    message: 'release requires --plan, --contract, --fixture, --surface, --surface-check, --source-manifest, --source-manifest-check, --artifact-oracle, --artifact-oracle-check, --authority-state-parity, --authority-state-parity-check, --clean-inventory, --clean-check, --clean-catalog, --clean-catalog-check, --keyword-taxonomy, --keyword-taxonomy-check, --readme-plan, --readme-plan-check, --readme-dry-run, --readme-dry-run-check, --version-sprawl-check, --parity-smoke, --architecture-parity-smoke, --target-onboarding-smoke, --post-publish-handoff, --published-acceptance, --real-target-trial, or --check',
+    message: 'release requires --plan, --contract, --fixture, --surface, --surface-check, --source-manifest, --source-manifest-check, --artifact-oracle, --artifact-oracle-check, --authority-state-parity, --authority-state-parity-check, --clean-inventory, --clean-check, --clean-catalog, --clean-catalog-check, --keyword-taxonomy, --keyword-taxonomy-check, --readme-plan, --readme-plan-check, --readme-dry-run, --readme-dry-run-check, --readme-apply, --readme-apply-check, --version-sprawl-check, --parity-smoke, --architecture-parity-smoke, --target-onboarding-smoke, --post-publish-handoff, --published-acceptance, --real-target-trial, or --check',
     writes_files: false,
     publishes_package: false
   });
@@ -11292,6 +11556,8 @@ module.exports = {
   publicCleanCompactionBaseline,
   publicCleanCompactionBaselineCheck,
   publicCleanCompactionBaselineText,
+  publicReadmeHistoryArchiveSplitApply,
+  publicReadmeHistoryArchiveSplitApplyCheck,
   publicArchitectureMap,
   publicCommandRouter,
   publicCommandRouterCheck,

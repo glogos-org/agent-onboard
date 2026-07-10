@@ -6971,6 +6971,21 @@
           "No README history archive, README history index, file deletion, file movement, README rewrite, npm publication, registry mutation, dependency install, work-items archival split, closed-gate evidence compaction, or runtime/test module extraction is authorized by this dry-run gate."
         ]
       }
+    },
+    {
+      "id": "P1S3M6W6",
+      "milestone_id": "P1S3M6",
+      "title": "Public README history archive split apply gate",
+      "status": "closed",
+      "closure": {
+        "actor": "gpt-5.5-thinking",
+        "closed_at": "2026-07-06T16:11:45.374Z",
+        "summary": "Closed by applying the README history archive split: historical Current/Previous release sections moved to docs/release-history.md, .agent-onboard/readme-history.index.json records recovery digests and source ranges, README.md now keeps first-read install/quickstart/current command and safety boundary content with a release-history pointer, and release --readme-apply/check verifies the applied archive/index/live README state without package projection changes.",
+        "changed_files": [],
+        "checks_run": [],
+        "checks_not_run": [],
+        "known_non_pass": []
+      }
     }
   ]
 }

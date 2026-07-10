@@ -1,0 +1,175 @@
+{
+  "schema": "agent-onboard-public-readme-history-index-001",
+  "status": "applied",
+  "package_name": "agent-onboard",
+  "release_line": "public_readme_history_archive_split_apply_gate",
+  "source_file": "README.md",
+  "source_file_id_before_split": "ni:///sha-256;7ycysOhj2Tuparbv2MfbyAhOGt6fN9wEFdgNnJMnqlU",
+  "live_readme_file": "README.md",
+  "live_readme_file_id": "ni:///sha-256;6XpUt4NpRvNwV7Nrvb58GcdOYMn7QCePGq8b1FaUa-s",
+  "history_archive_file": "docs/release-history.md",
+  "history_archive_file_id": "ni:///sha-256;oueF1Xu35_owwjx0zKFKaqk0FrNwHtH7IY9dkluP7tI",
+  "section_count": 17,
+  "sections": [
+    {
+      "ordinal": 1,
+      "heading": "## Current release: public contract spine readiness output contract gate",
+      "source_path": "README.md",
+      "start_line": 1279,
+      "end_line": 1284,
+      "byte_count": 2244,
+      "file_id": "ni:///sha-256;TYbEKsrkJxTN0r_UNCJ3qG4ibqsmQJ4ASPjBJBZgynk"
+    },
+    {
+      "ordinal": 2,
+      "heading": "## Previous release: target governance budget check product gate",
+      "source_path": "README.md",
+      "start_line": 1285,
+      "end_line": 1288,
+      "byte_count": 676,
+      "file_id": "ni:///sha-256;7ZYulCsU3sSoAEGdQgnT0l9H1gUb0m4pq8U_o21oC08"
+    },
+    {
+      "ordinal": 3,
+      "heading": "## Previous release: target governance budget contract product gate",
+      "source_path": "README.md",
+      "start_line": 1289,
+      "end_line": 1292,
+      "byte_count": 682,
+      "file_id": "ni:///sha-256;gvVp76gzZUGhRQWQflGE3dQJsMDSyG_ttXV5NM-w3nM"
+    },
+    {
+      "ordinal": 4,
+      "heading": "## Previous release: target governance stale-read fast-check wiring gate",
+      "source_path": "README.md",
+      "start_line": 1293,
+      "end_line": 1296,
+      "byte_count": 605,
+      "file_id": "ni:///sha-256;IAeNdSt9bU1dxnxsdqGalDXWz_Tpov2zyxhmnUU7K8o"
+    },
+    {
+      "ordinal": 5,
+      "heading": "## Current release: exact artifact oracle gate",
+      "source_path": "README.md",
+      "start_line": 1297,
+      "end_line": 1300,
+      "byte_count": 821,
+      "file_id": "ni:///sha-256;gp-Ar2Jst2ipK4o5U5H4O1-cadRVySMjSuErZkdnh90"
+    },
+    {
+      "ordinal": 6,
+      "heading": "## Previous release: check plan / fast runner product gate",
+      "source_path": "README.md",
+      "start_line": 1301,
+      "end_line": 1305,
+      "byte_count": 1178,
+      "file_id": "ni:///sha-256;Jm0nif0Hym-lyMtJ546rasok5KyoOQsMrTLsehf0KTk"
+    },
+    {
+      "ordinal": 7,
+      "heading": "## Previous release: GitHub Action / CI surface product gate",
+      "source_path": "README.md",
+      "start_line": 1306,
+      "end_line": 1309,
+      "byte_count": 694,
+      "file_id": "ni:///sha-256;GWiSI6PJdN-malNk7H7gNlL041tSHAJ3RWFRiU39mwg"
+    },
+    {
+      "ordinal": 8,
+      "heading": "## Previous release: target governance index drift check gate",
+      "source_path": "README.md",
+      "start_line": 1310,
+      "end_line": 1315,
+      "byte_count": 1252,
+      "file_id": "ni:///sha-256;Q7TkdeyjU81L6kh9ZBVNNxWhOS9HZFvFSZI9jaAbVv8"
+    },
+    {
+      "ordinal": 9,
+      "heading": "## Previous release: target governance index refresh integration gate",
+      "source_path": "README.md",
+      "start_line": 1316,
+      "end_line": 1321,
+      "byte_count": 1293,
+      "file_id": "ni:///sha-256;2y03szdLh4SpHd_3Yok5oc8V67oYrFXaQjBJUXC46Ew"
+    },
+    {
+      "ordinal": 10,
+      "heading": "## Previous release: target governance index explicit write product gate",
+      "source_path": "README.md",
+      "start_line": 1322,
+      "end_line": 1327,
+      "byte_count": 1418,
+      "file_id": "ni:///sha-256;dD1nPf9okmVvgVGwFy8E4jGj6RNeFz8XFM_9IQxhxFA"
+    },
+    {
+      "ordinal": 11,
+      "heading": "## Previous release: target governance index materialization dry-run product gate",
+      "source_path": "README.md",
+      "start_line": 1328,
+      "end_line": 1333,
+      "byte_count": 1302,
+      "file_id": "ni:///sha-256;ONcWsVZjIs4jeGYupZtf4Mdai4AoyqMlLOfX94Et2gI"
+    },
+    {
+      "ordinal": 12,
+      "heading": "## Previous release: target governance preview product gate",
+      "source_path": "README.md",
+      "start_line": 1334,
+      "end_line": 1339,
+      "byte_count": 1136,
+      "file_id": "ni:///sha-256;4PUGhv3nt0Rht8POraEXd16tHDUkgvOpGxm73gleIOI"
+    },
+    {
+      "ordinal": 13,
+      "heading": "## Previous release: target handoff preview product gate",
+      "source_path": "README.md",
+      "start_line": 1340,
+      "end_line": 1345,
+      "byte_count": 964,
+      "file_id": "ni:///sha-256;F95kvTpqbP7jhCosT3gOESwGjYQSk0BlQ8MCPraJSEo"
+    },
+    {
+      "ordinal": 14,
+      "heading": "## Previous release: target work-items preview product gate",
+      "source_path": "README.md",
+      "start_line": 1346,
+      "end_line": 1351,
+      "byte_count": 915,
+      "file_id": "ni:///sha-256;S5ETVQ6DC3aDrK6oVs89hjRfBNZAv-hn6fay_br7_js"
+    },
+    {
+      "ordinal": 15,
+      "heading": "## Previous release: target inventory preview product gate",
+      "source_path": "README.md",
+      "start_line": 1352,
+      "end_line": 1357,
+      "byte_count": 951,
+      "file_id": "ni:///sha-256;btbGHTDmJrWtwyvyekofEHj2XbfUy6M7Nzw62fkUpGk"
+    },
+    {
+      "ordinal": 16,
+      "heading": "## Previous release: MCP bridge plan / skeleton product gate",
+      "source_path": "README.md",
+      "start_line": 1358,
+      "end_line": 1366,
+      "byte_count": 1510,
+      "file_id": "ni:///sha-256;WZPEHndJifpbjhndAElxtskk4tlnN8tWfLHmtESKS-4"
+    },
+    {
+      "ordinal": 17,
+      "heading": "## Current release: claim lifecycle conflict hardening gate",
+      "source_path": "README.md",
+      "start_line": 1367,
+      "end_line": 1369,
+      "byte_count": 877,
+      "file_id": "ni:///sha-256;vtVdNuVNMOvqD1bRDxsEJN-9BtV_6UHwjMpWyBjgc1Y"
+    }
+  ],
+  "boundary": {
+    "archive_is_source_context": true,
+    "live_readme_remains_first_read": true,
+    "raw_history_removed_from_live_readme": true,
+    "npm_package_projection_unchanged": true
+  },
+  "version": "0.0.155"
+}

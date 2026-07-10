@@ -2,7 +2,7 @@
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
-const RELEASE_LINE = 'public_readme_history_archive_split_dry_run_gate';
+const RELEASE_LINE = 'public_readme_history_archive_split_apply_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
   agents: 'agents',
@@ -336,7 +336,7 @@ const PRODUCT_HELP_LINES = Object.freeze([
   'agent-onboard guard --plan|--check-boundary',
   'agent-onboard authority --first-read|--check|--index|--index-check|--state|--state-check',
   'agent-onboard architecture --map|--router|--facades|--check',
-  'agent-onboard release --plan|--surface|--surface-check|--source-manifest|--source-manifest-check|--artifact-oracle|--artifact-oracle-check|--authority-state-parity|--authority-state-parity-check|--clean-inventory|--clean-check|--clean-catalog|--clean-catalog-check|--keyword-taxonomy|--keyword-taxonomy-check|--readme-plan|--readme-plan-check|--readme-dry-run|--readme-dry-run-check|--target-onboarding-smoke|--real-target-trial|--check',
+  'agent-onboard release --plan|--surface|--surface-check|--source-manifest|--source-manifest-check|--artifact-oracle|--artifact-oracle-check|--authority-state-parity|--authority-state-parity-check|--clean-inventory|--clean-check|--clean-catalog|--clean-catalog-check|--keyword-taxonomy|--keyword-taxonomy-check|--readme-plan|--readme-plan-check|--readme-dry-run|--readme-dry-run-check|--readme-apply|--readme-apply-check|--target-onboarding-smoke|--real-target-trial|--check',
   'agent-onboard target-config --schema|--template|--validate-template|--validate [.agent-onboard/target.json]'
 ]);
 

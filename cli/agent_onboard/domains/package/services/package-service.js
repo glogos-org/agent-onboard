@@ -29,6 +29,8 @@ const PACKAGE_SERVICE_SEED = Object.freeze({
     'release --readme-plan-check',
     'release --readme-dry-run',
     'release --readme-dry-run-check',
+    'release --readme-apply',
+    'release --readme-apply-check',
     'release --version-sprawl-check',
     'release --parity-smoke',
     'release --architecture-parity-smoke',
