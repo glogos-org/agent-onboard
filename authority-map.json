@@ -134,6 +134,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-clean-compaction-catalog-gate-json-f6ddd2b5"
     },
     {
+      "file_path": ".agent-onboard/public-closed-gate-artifact-compaction-dry-run-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-public-closed-gate-artifact-compaction-dry-run-gate-json-c9afa89f"
+    },
+    {
       "file_path": ".agent-onboard/public-closed-gate-artifact-compaction-planning-gate.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-closed-gate-artifact-compaction-planning-gate-json-bd4c6539"
     },

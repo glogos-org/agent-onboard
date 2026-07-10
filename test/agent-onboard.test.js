@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_closed_gate_artifact_compaction_planning_gate';
+const EXPECTED_RELEASE_LINE = 'public_closed_gate_artifact_compaction_dry_run_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -5326,6 +5326,49 @@ fullSourceTest('public closed gate artifact compaction plan is no-write and rele
   assert.strictEqual(check.validated.raw_artifacts_preserved, true);
   assert.strictEqual(check.validated.recovery_path_required, true);
   assert.strictEqual(check.validated.no_write_boundary, true);
+  assert.strictEqual(check.validated.current_work_item_closed, true);
+});
+
+
+fullSourceTest('public closed gate artifact compaction dry-run is exact and no-write', () => {
+  const dryRun = readJsonOutput(run(['release', '--closed-gates-dry-run']));
+  assert.strictEqual(dryRun.schema, 'agent-onboard-public-closed-gate-artifact-compaction-dry-run-result-001');
+  assert.strictEqual(dryRun.status, 'ok');
+  assert.strictEqual(dryRun.version, EXPECTED_VERSION);
+  assert.strictEqual(dryRun.release_line, EXPECTED_RELEASE_LINE);
+  assert.strictEqual(dryRun.command, 'agent-onboard release --closed-gates-dry-run');
+  assert.strictEqual(dryRun.surface_id, 'closed-gate-artifacts');
+  assert.strictEqual(dryRun.plan_gate_check, 'ok');
+  assert.ok(dryRun.current.raw_gate_artifact_count >= 30);
+  assert.strictEqual(dryRun.current.parse_error_count, 0);
+  assert.strictEqual(dryRun.current.index_candidate_present, false);
+  assert.strictEqual(dryRun.current.archive_candidate_present, false);
+  assert.strictEqual(dryRun.archive_preview.record_count, dryRun.current.raw_gate_artifact_count);
+  assert.strictEqual(dryRun.index_preview.record_count, dryRun.archive_preview.record_count);
+  assert.strictEqual(dryRun.index_preview.archive_candidate_file_id, dryRun.archive_preview.file_id);
+  assert.strictEqual(dryRun.recovery_map_preview.raw_artifact_paths_present, true);
+  assert.strictEqual(dryRun.recovery_map_preview.raw_artifact_file_ids_match, true);
+  assert.strictEqual(dryRun.diff_preview.writes_files_now, false);
+  assert.deepStrictEqual(dryRun.diff_preview.would_write_files_after_future_admission, ['.agent-onboard/closed-gates.index.json', '.agent-onboard/closed-gates.archive.jsonl']);
+  assert.strictEqual(dryRun.diff_preview.would_delete_or_move_raw_artifacts_after_future_admission, false);
+  assert.strictEqual(dryRun.boundary.writes_files, false);
+  assert.strictEqual(dryRun.boundary.deletes_raw_gate_artifacts, false);
+  assert.strictEqual(dryRun.boundary.moves_raw_gate_artifacts, false);
+
+  const check = readJsonOutput(run(['release', '--closed-gates-dry-run-check']));
+  assert.strictEqual(check.schema, 'agent-onboard-public-closed-gate-artifact-compaction-dry-run-check-result-001');
+  assert.strictEqual(check.status, 'ok');
+  assert.strictEqual(check.command, 'agent-onboard release --closed-gates-dry-run-check');
+  assert.strictEqual(check.validated.plan_gate_check_passes, true);
+  assert.strictEqual(check.validated.enough_raw_gate_artifacts, true);
+  assert.strictEqual(check.validated.raw_gate_artifacts_parse_as_json, true);
+  assert.strictEqual(check.validated.archive_record_count_matches_raw_artifacts, true);
+  assert.strictEqual(check.validated.index_record_count_matches_archive, true);
+  assert.strictEqual(check.validated.index_archive_digest_matches_archive_preview, true);
+  assert.strictEqual(check.validated.dry_run_artifact_present, true);
+  assert.strictEqual(check.validated.future_index_not_created, true);
+  assert.strictEqual(check.validated.future_archive_not_created, true);
+  assert.strictEqual(check.validated.raw_artifacts_preserved, true);
   assert.strictEqual(check.validated.current_work_item_closed, true);
 });
 

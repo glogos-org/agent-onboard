@@ -212,6 +212,7 @@ function commandSurfaceCatalog() {
       'agent-onboard release --readme-dry-run-check',
       'agent-onboard release --readme-apply-check',
       'agent-onboard release --closed-gates-plan-check',
+      'agent-onboard release --closed-gates-dry-run-check',
       'agent-onboard release --check'
     ],
     output_modes: ['--json', '--text'],
@@ -576,6 +577,8 @@ function discoveryStableCommands() {
     'agent-onboard release --readme-apply-check',
     'agent-onboard release --closed-gates-plan',
     'agent-onboard release --closed-gates-plan-check',
+    'agent-onboard release --closed-gates-dry-run',
+    'agent-onboard release --closed-gates-dry-run-check',
     'agent-onboard authority --index',
     'agent-onboard authority --index-check',
     'agent-onboard authority --state',
@@ -1289,6 +1292,7 @@ const CHECK_FAST_REGISTRY = Object.freeze([
   Object.freeze({ id: 'release-readme-dry-run-check', command: 'agent-onboard release --readme-dry-run-check', scope: 'source_readme_history_archive_split_dry_run', slow: false }),
   Object.freeze({ id: 'release-readme-apply-check', command: 'agent-onboard release --readme-apply-check', scope: 'source_readme_history_archive_split_apply', slow: false }),
   Object.freeze({ id: 'release-closed-gates-plan-check', command: 'agent-onboard release --closed-gates-plan-check', scope: 'source_closed_gate_artifact_compaction_plan', slow: false }),
+  Object.freeze({ id: 'release-closed-gates-dry-run-check', command: 'agent-onboard release --closed-gates-dry-run-check', scope: 'source_closed_gate_artifact_compaction_dry_run', slow: false }),
   Object.freeze({ id: 'command-surface-catalog', command: 'agent-onboard commands --json', scope: 'product_discovery', slow: false }),
   Object.freeze({ id: 'operator-guide', command: 'agent-onboard guide --json', scope: 'operator_orientation', slow: false }),
   Object.freeze({ id: 'quickstart', command: 'agent-onboard quickstart --json', scope: 'first_run_recipe', slow: false }),
@@ -1584,6 +1588,7 @@ function runCheckFastPlan(root = packageRoot(), options = {}) {
     'release-readme-dry-run-check': () => publicReadmeHistoryArchiveSplitDryRunCheck(root),
     'release-readme-apply-check': () => publicReadmeHistoryArchiveSplitApplyCheck(root),
     'release-closed-gates-plan-check': () => publicClosedGateArtifactCompactionPlanCheck(root),
+    'release-closed-gates-dry-run-check': () => publicClosedGateArtifactCompactionDryRunCheck(root),
     'release-surface-check': () => publicPackageSurfaceCheck(root),
     'release-check': () => publicReleaseCheck(root),
     'ci-surface': () => ciSurfaceService.catalog(),
@@ -8467,6 +8472,290 @@ function publicClosedGateArtifactCompactionPlanText(result = publicClosedGateArt
   return `${lines.join('\n')}\n`;
 }
 
+const PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN = Object.freeze({
+  schema: 'agent-onboard-public-closed-gate-artifact-compaction-dry-run-001',
+  package_name: PACKAGE_NAME,
+  release_line: RELEASE_LINE,
+  milestone_id: 'P1S3M6',
+  prerequisite_work_item_id: ['P1S3M6', 'W7'].join(''),
+  work_item_id: ['P1S3M6', 'W8'].join(''),
+  title: 'Public closed gate artifact compaction dry-run gate',
+  surface_id: 'closed-gate-artifacts',
+  command: 'agent-onboard release --closed-gates-dry-run',
+  check_command: 'agent-onboard release --closed-gates-dry-run-check',
+  dry_run_artifact_file: '.agent-onboard/public-closed-gate-artifact-compaction-dry-run-gate.json',
+  index_candidate: '.agent-onboard/closed-gates.index.json',
+  archive_candidate: '.agent-onboard/closed-gates.archive.jsonl',
+  minimum_record_count: 30,
+  boundary: Object.freeze({
+    writes_files: false,
+    creates_index_now: false,
+    creates_archive_now: false,
+    deletes_raw_gate_artifacts: false,
+    moves_raw_gate_artifacts: false,
+    rewrites_raw_gate_artifacts: false,
+    compacts_raw_artifacts_now: false,
+    mutates_work_items: false,
+    mutates_claims: false,
+    mutates_git: false,
+    installs_dependencies: false,
+    runs_package_manager: false,
+    publishes_package: false,
+    mutates_registry: false,
+    network: false
+  })
+});
+
+function publicClosedGateArtifactParsedRecord(root, artifact, ordinal) {
+  const absolute = path.join(root, artifact.path);
+  let parsed = null;
+  try { parsed = readJson(absolute); } catch { parsed = null; }
+  const changedFiles = parsed && Array.isArray(parsed.changed_files) ? parsed.changed_files : [];
+  const checks = parsed && Array.isArray(parsed.verification_commands) ? parsed.verification_commands : (parsed && Array.isArray(parsed.checks_run) ? parsed.checks_run : []);
+  const summary = parsed && typeof parsed.summary === 'string' ? parsed.summary : (parsed && parsed.closure && typeof parsed.closure.summary === 'string' ? parsed.closure.summary : '');
+  const rawText = fs.readFileSync(absolute, 'utf8');
+  return Object.freeze({
+    schema: 'agent-onboard-public-closed-gate-archive-record-001',
+    ordinal,
+    path: artifact.path,
+    raw_artifact_file_id: artifact.file_id,
+    file_id: artifact.file_id,
+    byte_count: artifact.bytes,
+    schema_id: artifact.schema,
+    status: artifact.status,
+    package_version: parsed && parsed.package_version ? parsed.package_version : null,
+    release_line: parsed && parsed.release_line ? parsed.release_line : null,
+    milestone_id: artifact.milestone_id,
+    work_item_id: artifact.work_item_id,
+    title: artifact.title,
+    closed_at: parsed && parsed.closed_at ? parsed.closed_at : null,
+    surface_id: parsed && parsed.surface_id ? parsed.surface_id : null,
+    changed_files_count: changedFiles.length,
+    checks_run_count: checks.length,
+    summary_digest: textFileId(summary || `${artifact.path}:${artifact.file_id}`),
+    raw_digest: textFileId(rawText),
+    content_inlined: false
+  });
+}
+
+function publicClosedGateArtifactCompactionDryRunMilestoneState(root = packageRoot()) {
+  const ledgerPath = path.join(root, '.agent-onboard', 'work-items.json');
+  if (!fs.existsSync(ledgerPath)) {
+    return Object.freeze({
+      ledger_present: false,
+      milestone_id: PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.milestone_id,
+      prerequisite_work_item_id: PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.prerequisite_work_item_id,
+      work_item_id: PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.work_item_id,
+      milestone_status: 'not_present_installed_context_allowed',
+      prerequisite_work_item_status: 'not_present_installed_context_allowed',
+      work_item_status: 'not_present_installed_context_allowed'
+    });
+  }
+  let ledger = null;
+  try { ledger = readJson(ledgerPath); } catch { ledger = null; }
+  const milestones = ledger && Array.isArray(ledger.milestones) ? ledger.milestones : [];
+  const workItems = ledger && Array.isArray(ledger.work_items) ? ledger.work_items : [];
+  const milestone = milestones.find((item) => item.id === PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.milestone_id) || null;
+  const prerequisiteWorkItem = workItems.find((item) => item.id === PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.prerequisite_work_item_id) || null;
+  const workItem = workItems.find((item) => item.id === PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.work_item_id) || null;
+  return Object.freeze({
+    ledger_present: true,
+    milestone_id: PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.milestone_id,
+    prerequisite_work_item_id: PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.prerequisite_work_item_id,
+    work_item_id: PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.work_item_id,
+    milestone_status: milestone ? milestone.status : 'missing',
+    prerequisite_work_item_status: prerequisiteWorkItem ? prerequisiteWorkItem.status : 'missing',
+    work_item_status: workItem ? workItem.status : 'missing',
+    milestone_title: milestone ? milestone.title : null,
+    prerequisite_work_item_title: prerequisiteWorkItem ? prerequisiteWorkItem.title : null,
+    work_item_title: workItem ? workItem.title : null
+  });
+}
+
+function publicClosedGateArtifactArchiveCandidateText(records) {
+  return `${records.map((record) => JSON.stringify(record)).join('\n')}\n`;
+}
+
+function publicClosedGateArtifactIndexCandidate(root, records, archiveText) {
+  const byMilestone = {};
+  for (const record of records) {
+    const key = record.milestone_id || 'unknown';
+    byMilestone[key] = (byMilestone[key] || 0) + 1;
+  }
+  return Object.freeze({
+    schema: 'agent-onboard-public-closed-gates-index-preview-001',
+    status: 'dry_run_only',
+    package_name: PACKAGE_NAME,
+    version: VERSION,
+    release_line: RELEASE_LINE,
+    surface_id: PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.surface_id,
+    source_root: root,
+    archive_candidate_path: PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.archive_candidate,
+    archive_candidate_file_id: textFileId(archiveText),
+    record_count: records.length,
+    raw_artifact_count: records.length,
+    raw_artifacts_preserved: true,
+    raw_artifact_paths: records.map((record) => record.path),
+    raw_artifact_file_ids: records.map((record) => record.raw_artifact_file_id),
+    by_milestone: byMilestone,
+    recovery: Object.freeze({
+      replay_from_archive_jsonl: true,
+      replay_from_raw_artifact_paths: true,
+      raw_artifacts_required_until_apply_gate: true,
+      index_is_not_sole_authority: true,
+      content_inlined: false
+    })
+  });
+}
+
+function publicClosedGateArtifactCompactionDryRun(root = packageRoot()) {
+  const planCheck = publicClosedGateArtifactCompactionPlanCheck(root);
+  const artifacts = publicClosedGateArtifactFiles(root);
+  const records = artifacts.map((artifact, index) => publicClosedGateArtifactParsedRecord(root, artifact, index + 1));
+  const archiveText = publicClosedGateArtifactArchiveCandidateText(records);
+  const indexCandidate = publicClosedGateArtifactIndexCandidate(root, records, archiveText);
+  const indexText = `${JSON.stringify(indexCandidate, null, 2)}\n`;
+  const indexPresent = fs.existsSync(path.join(root, PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.index_candidate));
+  const archivePresent = fs.existsSync(path.join(root, PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.archive_candidate));
+  const dryRunArtifactPresent = fs.existsSync(path.join(root, PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.dry_run_artifact_file));
+  return Object.freeze({
+    schema: 'agent-onboard-public-closed-gate-artifact-compaction-dry-run-result-001',
+    status: 'ok',
+    package_name: PACKAGE_NAME,
+    version: VERSION,
+    release_line: RELEASE_LINE,
+    command: PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.command,
+    check_command: PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.check_command,
+    package_root: root,
+    package_context: sourceContext(root).package_context,
+    surface_id: PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.surface_id,
+    plan_gate_check: planCheck.status,
+    current: Object.freeze({
+      raw_gate_artifact_count: artifacts.length,
+      raw_gate_artifact_bytes: artifacts.reduce((sum, artifact) => sum + artifact.bytes, 0),
+      parse_error_count: artifacts.filter((artifact) => artifact.parse_error).length,
+      index_candidate_present: indexPresent,
+      archive_candidate_present: archivePresent,
+      dry_run_artifact_present: dryRunArtifactPresent
+    }),
+    archive_preview: Object.freeze({
+      candidate_path: PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.archive_candidate,
+      file_id: textFileId(archiveText),
+      byte_count: Buffer.byteLength(archiveText, 'utf8'),
+      record_count: records.length,
+      content_inlined: false,
+      first_record: records[0] || null,
+      last_record: records[records.length - 1] || null
+    }),
+    index_preview: Object.freeze({
+      candidate_path: PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.index_candidate,
+      file_id: textFileId(indexText),
+      byte_count: Buffer.byteLength(indexText, 'utf8'),
+      record_count: indexCandidate.record_count,
+      archive_candidate_file_id: indexCandidate.archive_candidate_file_id,
+      raw_artifacts_preserved: indexCandidate.raw_artifacts_preserved,
+      recovery: indexCandidate.recovery
+    }),
+    recovery_map_preview: Object.freeze({
+      raw_artifact_count: records.length,
+      raw_artifact_paths_present: records.every((record) => fs.existsSync(path.join(root, record.path))),
+      raw_artifact_file_ids_match: records.every((record) => record.raw_artifact_file_id === record.file_id),
+      archive_record_file_ids_match_raw: records.every((record) => record.raw_artifact_file_id === record.raw_digest),
+      content_inlined: false
+    }),
+    diff_preview: Object.freeze({
+      writes_files_now: false,
+      would_write_files_after_future_admission: Object.freeze([
+        PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.index_candidate,
+        PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.archive_candidate
+      ]),
+      would_delete_or_move_raw_artifacts_after_future_admission: false
+    }),
+    boundary: PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.boundary
+  });
+}
+
+function publicClosedGateArtifactCompactionDryRunCheck(root = packageRoot()) {
+  const result = publicClosedGateArtifactCompactionDryRun(root);
+  const milestone = publicClosedGateArtifactCompactionDryRunMilestoneState(root);
+  const errors = [];
+  const installedContext = result.package_context === 'installed_package';
+  if (result.plan_gate_check !== 'ok') errors.push('closed gate dry-run requires closed-gates plan check to pass');
+  if (!installedContext && result.current.raw_gate_artifact_count < PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.minimum_record_count) errors.push(`closed gate dry-run requires at least ${PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.minimum_record_count} raw gate artifacts`);
+  if (result.current.parse_error_count !== 0) errors.push('closed gate dry-run requires all raw gate artifacts to parse as JSON');
+  if (result.archive_preview.record_count !== result.current.raw_gate_artifact_count) errors.push('archive preview record count must match raw gate artifact count');
+  if (result.index_preview.record_count !== result.archive_preview.record_count) errors.push('index preview record count must match archive preview record count');
+  if (result.index_preview.archive_candidate_file_id !== result.archive_preview.file_id) errors.push('index preview archive digest must match archive preview digest');
+  if (!installedContext && result.current.dry_run_artifact_present !== true) errors.push(`${PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.dry_run_artifact_file} must exist after this dry-run gate closes`);
+  if (result.current.index_candidate_present !== false) errors.push(`${PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.index_candidate} must not be written by dry-run gate`);
+  if (result.current.archive_candidate_present !== false) errors.push(`${PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.archive_candidate} must not be written by dry-run gate`);
+  if (result.recovery_map_preview.raw_artifact_paths_present !== true) errors.push('recovery map raw artifact paths must still be present');
+  if (result.recovery_map_preview.raw_artifact_file_ids_match !== true) errors.push('recovery map raw artifact file ids must match compact records');
+  if (result.diff_preview.writes_files_now !== false) errors.push('closed gate dry-run must not write files now');
+  if (result.diff_preview.would_delete_or_move_raw_artifacts_after_future_admission !== false) errors.push('dry-run must not plan raw artifact deletion or movement');
+  if (result.boundary.writes_files !== false) errors.push('closed gate dry-run command must be no-write');
+  if (result.boundary.deletes_raw_gate_artifacts !== false) errors.push('closed gate dry-run command must not delete raw gate artifacts');
+  if (result.boundary.moves_raw_gate_artifacts !== false) errors.push('closed gate dry-run command must not move raw gate artifacts');
+  if (milestone.ledger_present) {
+    if (milestone.milestone_status !== 'open') errors.push(`${PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.milestone_id} must remain open during closed gate dry-run`);
+    if (milestone.prerequisite_work_item_status !== 'closed') errors.push(`${PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.prerequisite_work_item_id} must be closed before closed gate dry-run passes`);
+    if (milestone.work_item_status !== 'closed') errors.push(`${PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.work_item_id} must be closed by this dry-run gate`);
+  }
+  return Object.freeze({
+    schema: 'agent-onboard-public-closed-gate-artifact-compaction-dry-run-check-result-001',
+    status: errors.length === 0 ? 'ok' : 'error',
+    package_name: PACKAGE_NAME,
+    version: VERSION,
+    release_line: RELEASE_LINE,
+    command: PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.check_command,
+    dry_run_command: PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.command,
+    package_root: root,
+    validated: Object.freeze({
+      plan_gate_check_passes: result.plan_gate_check === 'ok',
+      enough_raw_gate_artifacts: installedContext || result.current.raw_gate_artifact_count >= PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.minimum_record_count,
+      raw_gate_artifacts_parse_as_json: result.current.parse_error_count === 0,
+      archive_record_count_matches_raw_artifacts: result.archive_preview.record_count === result.current.raw_gate_artifact_count,
+      index_record_count_matches_archive: result.index_preview.record_count === result.archive_preview.record_count,
+      index_archive_digest_matches_archive_preview: result.index_preview.archive_candidate_file_id === result.archive_preview.file_id,
+      dry_run_artifact_present: installedContext || result.current.dry_run_artifact_present === true,
+      future_index_not_created: result.current.index_candidate_present === false,
+      future_archive_not_created: result.current.archive_candidate_present === false,
+      raw_artifacts_preserved: result.recovery_map_preview.raw_artifact_paths_present === true,
+      recovery_file_ids_match: result.recovery_map_preview.raw_artifact_file_ids_match === true,
+      no_write_boundary: result.boundary.writes_files === false,
+      no_delete_boundary: result.boundary.deletes_raw_gate_artifacts === false,
+      no_move_boundary: result.boundary.moves_raw_gate_artifacts === false,
+      m6_open: !milestone.ledger_present || milestone.milestone_status === 'open',
+      prerequisite_work_item_closed: !milestone.ledger_present || milestone.prerequisite_work_item_status === 'closed',
+      current_work_item_closed: !milestone.ledger_present || milestone.work_item_status === 'closed'
+    }),
+    milestone_state: milestone,
+    dry_run: result,
+    boundary: PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.boundary,
+    errors
+  });
+}
+
+function publicClosedGateArtifactCompactionDryRunText(result = publicClosedGateArtifactCompactionDryRun()) {
+  const lines = [
+    `agent-onboard closed gate artifact compaction dry-run ${result.version}`,
+    `Status: ${result.status}`,
+    `Command: ${result.command}`,
+    '',
+    'Preview:',
+    `- records: ${result.archive_preview.record_count}`,
+    `- archive bytes: ${result.archive_preview.byte_count}`,
+    `- index bytes: ${result.index_preview.byte_count}`,
+    `- writes now: ${result.diff_preview.writes_files_now}`,
+    '',
+    'Boundary:',
+    `- writes files: ${result.boundary.writes_files}`,
+    `- deletes raw artifacts: ${result.boundary.deletes_raw_gate_artifacts}`,
+    `- moves raw artifacts: ${result.boundary.moves_raw_gate_artifacts}`
+  ];
+  return `${lines.join('\n')}\n`;
+}
+
 function publicInstalledAuthorityStateShardParity(root = packageRoot()) {
   const pkg = readJson(path.join(root, 'package.json'));
   const context = sourceContext(root);
@@ -8837,6 +9126,8 @@ function publicReleaseCheck(root = packageRoot()) {
   const readmeApplyErrors = readmeApply.errors.map((error) => `README history archive split apply: ${error}`);
   const closedGatePlan = publicClosedGateArtifactCompactionPlanCheck(root);
   const closedGatePlanErrors = closedGatePlan.errors.map((error) => `closed gate artifact compaction plan: ${error}`);
+  const closedGateDryRun = publicClosedGateArtifactCompactionDryRunCheck(root);
+  const closedGateDryRunErrors = closedGateDryRun.errors.map((error) => `closed gate artifact compaction dry-run: ${error}`);
   const packageSurfaceErrors = packageSurface.errors.map((error) => `package surface: ${error}`);
   const architectureParity = { status: architecture.status === 'ok' ? 'ok' : 'error', errors: [] };
   const installedAuthorityStateParity = publicInstalledAuthorityStateShardParity(root);
@@ -8886,7 +9177,7 @@ function publicReleaseCheck(root = packageRoot()) {
   const routerAdapterDelegation = publicRouterCommandAdapterDelegationExpansionCheck(root);
   const routerAdapterDelegationErrors = routerAdapterDelegation.errors.map((error) => `router adapter delegation: ${error}`);
   const architectureParityErrors = architectureParity.errors.map((error) => `installed architecture parity: ${error}`);
-  const errors = [...metadataErrors, ...packErrors, ...messagingErrors, ...sourceLedgerErrors, ...architectureErrors, ...packageSurfaceErrors, ...architectureParityErrors, ...installedAuthorityStateParityErrors, ...targetRepoProductErrors, ...cliRuntimePlanErrors, ...thinCliRouterErrors, ...compatibilityPortErrors, ...coreAdapterErrors, ...packageAdapterErrors, ...architectureAdapterErrors, ...authorityAdapterErrors, ...moduleInclusionPlanErrors, ...packagedRouterPortErrors, ...thinEntrypointRehearsalErrors, ...thinEntrypointCutoverErrors, ...routerAdapterDelegationErrors, ...versionPolicyErrors, ...cleanCompactionErrors, ...cleanCompactionCatalogErrors, ...keywordTaxonomyErrors, ...readmePlanErrors, ...readmeDryRunErrors, ...readmeApplyErrors, ...closedGatePlanErrors];
+  const errors = [...metadataErrors, ...packErrors, ...messagingErrors, ...sourceLedgerErrors, ...architectureErrors, ...packageSurfaceErrors, ...architectureParityErrors, ...installedAuthorityStateParityErrors, ...targetRepoProductErrors, ...cliRuntimePlanErrors, ...thinCliRouterErrors, ...compatibilityPortErrors, ...coreAdapterErrors, ...packageAdapterErrors, ...architectureAdapterErrors, ...authorityAdapterErrors, ...moduleInclusionPlanErrors, ...packagedRouterPortErrors, ...thinEntrypointRehearsalErrors, ...thinEntrypointCutoverErrors, ...routerAdapterDelegationErrors, ...versionPolicyErrors, ...cleanCompactionErrors, ...cleanCompactionCatalogErrors, ...keywordTaxonomyErrors, ...readmePlanErrors, ...readmeDryRunErrors, ...readmeApplyErrors, ...closedGatePlanErrors, ...closedGateDryRunErrors];
   return {
     schema: 'agent-onboard-public-release-check-result-019',
     status: errors.length === 0 ? 'ok' : 'error',
@@ -8939,7 +9230,8 @@ function publicReleaseCheck(root = packageRoot()) {
       public_readme_first_read_history_split_plan: readmePlan.status === 'ok',
       public_readme_history_archive_split_dry_run: readmeDryRun.status === 'ok',
       public_readme_history_archive_split_apply: readmeApply.status === 'ok',
-      public_closed_gate_artifact_compaction_plan: closedGatePlan.status === 'ok'
+      public_closed_gate_artifact_compaction_plan: closedGatePlan.status === 'ok',
+      public_closed_gate_artifact_compaction_dry_run: closedGateDryRun.status === 'ok'
     },
     expected_pack_files: expectedPackFiles,
     projected_pack_files: projectedPackFiles,
@@ -8970,6 +9262,7 @@ function publicReleaseCheck(root = packageRoot()) {
     public_readme_history_archive_split_dry_run: readmeDryRun,
     public_readme_history_archive_split_apply: readmeApply,
     public_closed_gate_artifact_compaction_plan: closedGatePlan,
+    public_closed_gate_artifact_compaction_dry_run: closedGateDryRun,
     local_pre_publish_commands: PUBLIC_RELEASE_CONTRACT.local_pre_publish_commands.slice(),
     post_publish_verification_commands: publicReleasePostPublishCommands(VERSION),
     boundary: {
@@ -10235,6 +10528,12 @@ function runRelease(args) {
     json(result);
     return result.status === 'ok' ? 0 : 1;
   }
+  if (args.length === 1 && (args[0] === '--closed-gates-dry-run' || args[0] === '--closed-gates-dry-run-check')) {
+    const checkMode = args[0] === '--closed-gates-dry-run-check';
+    const result = checkMode ? publicClosedGateArtifactCompactionDryRunCheck() : publicClosedGateArtifactCompactionDryRun();
+    json(result);
+    return result.status === 'ok' ? 0 : 1;
+  }
   if (args.length === 1 && (args[0] === '--authority-state-parity' || args[0] === '--authority-state-parity-check')) {
     const result = publicInstalledAuthorityStateShardParity();
     json(result);
@@ -10284,7 +10583,7 @@ function runRelease(args) {
     schema: 'agent-onboard-release-command-error-001',
     status: 'error',
     command_family: 'release',
-    message: 'release requires --plan, --contract, --fixture, --surface, --surface-check, --source-manifest, --source-manifest-check, --artifact-oracle, --artifact-oracle-check, --authority-state-parity, --authority-state-parity-check, --clean-inventory, --clean-check, --clean-catalog, --clean-catalog-check, --keyword-taxonomy, --keyword-taxonomy-check, --readme-plan, --readme-plan-check, --readme-dry-run, --readme-dry-run-check, --readme-apply, --readme-apply-check, --closed-gates-plan, --closed-gates-plan-check, --version-sprawl-check, --parity-smoke, --architecture-parity-smoke, --target-onboarding-smoke, --post-publish-handoff, --published-acceptance, --real-target-trial, or --check',
+    message: 'release requires --plan, --contract, --fixture, --surface, --surface-check, --source-manifest, --source-manifest-check, --artifact-oracle, --artifact-oracle-check, --authority-state-parity, --authority-state-parity-check, --clean-inventory, --clean-check, --clean-catalog, --clean-catalog-check, --keyword-taxonomy, --keyword-taxonomy-check, --readme-plan, --readme-plan-check, --readme-dry-run, --readme-dry-run-check, --readme-apply, --readme-apply-check, --closed-gates-plan, --closed-gates-plan-check, --closed-gates-dry-run, --closed-gates-dry-run-check, --version-sprawl-check, --parity-smoke, --architecture-parity-smoke, --target-onboarding-smoke, --post-publish-handoff, --published-acceptance, --real-target-trial, or --check',
     writes_files: false,
     publishes_package: false
   });
@@ -11870,6 +12169,9 @@ module.exports = {
   publicClosedGateArtifactCompactionPlan,
   publicClosedGateArtifactCompactionPlanCheck,
   publicClosedGateArtifactCompactionPlanText,
+  publicClosedGateArtifactCompactionDryRun,
+  publicClosedGateArtifactCompactionDryRunCheck,
+  publicClosedGateArtifactCompactionDryRunText,
   publicArchitectureMap,
   publicCommandRouter,
   publicCommandRouterCheck,

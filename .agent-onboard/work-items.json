@@ -7097,6 +7097,80 @@
           "Full source test all shards was not run end-to-end in a single job."
         ]
       }
+    },
+    {
+      "id": "P1S3M6W8",
+      "milestone_id": "P1S3M6",
+      "title": "Public closed gate artifact compaction dry-run gate",
+      "status": "closed",
+      "closure": {
+        "actor": "gpt-5.5-thinking",
+        "closed_at": "2026-07-07T02:45:00.000Z",
+        "summary": "Closed by adding closed gate artifact compaction dry-run commands that compute exact JSONL archive and compact index candidates with digest-linked recovery maps while preserving raw gate artifacts and keeping .agent-onboard/closed-gates.index.json and .agent-onboard/closed-gates.archive.jsonl unwritten.",
+        "changed_files": [
+          "package.json",
+          "README.md",
+          "AGENTS.md",
+          "SOURCE_OF_TRUTH.md",
+          "llms.txt",
+          ".agent-onboard/readme-history.index.json",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/runtime-contracts.js",
+          "cli/agent_onboard/domains/architecture/static-catalog.js",
+          "cli/agent_onboard/domains/package/services/package-service.js",
+          "test/agent-onboard.test.js",
+          "test/run-tests.js",
+          ".agent-onboard/public-closed-gate-artifact-compaction-dry-run-gate.json",
+          ".agent-onboard/work-items.json",
+          ".agent-onboard/work-items.index.json",
+          ".agent-onboard/claims.jsonl",
+          ".agent-onboard/claims.index.json",
+          ".agent-onboard/authority-index.json",
+          ".agent-onboard/state/live-authority.json",
+          ".agent-onboard/state/policies.json",
+          ".agent-onboard/state/indexes.json",
+          ".agent-onboard/state/closed-gates.jsonl",
+          "authority-map.json",
+          "manifest.json"
+        ],
+        "checks_run": [
+          "node -c cli/agent_onboard/runtime-composer.js",
+          "node -c cli/agent_onboard/runtime-contracts.js",
+          "node -c cli/agent_onboard/domains/architecture/static-catalog.js",
+          "node -c cli/agent_onboard/domains/package/services/package-service.js",
+          "node -c test/agent-onboard.test.js",
+          "node -c test/run-tests.js",
+          "node cli/agent-onboard.js release --closed-gates-dry-run",
+          "node cli/agent-onboard.js release --closed-gates-dry-run-check",
+          "node cli/agent-onboard.js release --closed-gates-plan-check",
+          "node cli/agent-onboard.js release --readme-apply-check",
+          "node cli/agent-onboard.js release --clean-catalog-check",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js check --fast --json",
+          "node cli/agent-onboard.js claim --lifecycle-check --json",
+          "node cli/agent-onboard.js claim --validate-ledger --json",
+          "node cli/agent-onboard.js release --source-manifest-check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node cli/agent-onboard.js authority --state-check",
+          "node cli/agent-onboard.js authority --index-check",
+          "node cli/agent-onboard.js authority --check",
+          "node cli/agent-onboard.js target metadata --check --target .",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "npm run check:public-artifact-boundary",
+          "npm test",
+          "npm pack --dry-run --json",
+          "node test/agent-onboard.test.js --shard=157/160",
+          "node test/agent-onboard.test.js --shard=158/160",
+          "node test/agent-onboard.test.js --shard=159/160"
+        ],
+        "checks_not_run": [
+          "npm publish",
+          "Full source test all shards was not run end-to-end in a single job."
+        ],
+        "known_non_pass": [
+          "Full source test all shards was not run end-to-end in a single job; quick suite and targeted W8/release/authority/source checks passed."
+        ]
+      }
     }
   ]
 }
