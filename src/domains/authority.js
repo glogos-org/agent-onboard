@@ -11,7 +11,7 @@ const AUTHORITY_DOMAIN_SECOND_SLICE = Object.freeze({
   extraction_scope: 'authority read-order, first-read, and guard metadata only; write-capable agents command extraction remains excluded',
   exports_public_api: false,
   includes_write_capable_agents_command: false,
-  owns_commands: Object.freeze(['authority --first-read', 'authority --check', 'authority --index', 'authority --index-check', 'guard --plan', 'guard --check-boundary']),
+  owns_commands: Object.freeze(['authority --first-read', 'authority --check', 'authority --index', 'authority --index-check', 'authority --state', 'authority --state-check', 'guard --plan', 'guard --check-boundary']),
   excluded_commands: Object.freeze(['agents --write', 'agents --preview']),
   writes_files: false,
   state_writer: false,

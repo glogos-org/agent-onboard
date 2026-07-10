@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_closed_gate_artifact_compaction_dry_run_gate';
+const EXPECTED_RELEASE_LINE = 'public_closed_gate_artifact_compaction_apply_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -1337,7 +1337,7 @@ fullSourceTest('full source block line 169', () => {
   assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
   assert.strictEqual(output.boundary.publishes_package, false);
   assert.ok(output.post_publish_verification_commands.some((command) => command.includes(`agent-onboard@${EXPECTED_VERSION}`)));
-  assert.strictEqual(output.contract_schema, 'agent-onboard-public-release-contract-038');
+  assert.strictEqual(output.contract_schema, 'agent-onboard-public-release-contract-039');
   assert.strictEqual(output.contract_command, 'agent-onboard release --contract');
   assert.strictEqual(output.fixture_command, 'agent-onboard release --fixture');
   assert.strictEqual(output.parity_smoke_command, 'agent-onboard release --parity-smoke');
@@ -1429,7 +1429,7 @@ fullSourceTest('full source block line 261', () => {
   assert.strictEqual(output.schema, 'agent-onboard-public-release-contract-response-001');
   assert.strictEqual(output.version, EXPECTED_VERSION);
   assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
-  assert.strictEqual(output.contract.schema, 'agent-onboard-public-release-contract-038');
+  assert.strictEqual(output.contract.schema, 'agent-onboard-public-release-contract-039');
   assert.strictEqual(output.contract.contract_command, 'agent-onboard release --contract');
   assert.strictEqual(output.contract.fixture_command, 'agent-onboard release --fixture');
   assert.strictEqual(output.contract.parity_smoke_command, 'agent-onboard release --parity-smoke');
@@ -1525,7 +1525,7 @@ fullSourceTest('full source block line 355', () => {
   assert.strictEqual(output.schema, 'agent-onboard-public-release-fixture-response-001');
   assert.strictEqual(output.version, EXPECTED_VERSION);
   assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
-  assert.strictEqual(output.contract_schema, 'agent-onboard-public-release-contract-038');
+  assert.strictEqual(output.contract_schema, 'agent-onboard-public-release-contract-039');
   assert.strictEqual(output.fixture_matrix.schema, 'agent-onboard-public-release-fixture-matrix-022');
   assert.ok(output.fixture_matrix.fixtures.some((fixture) => fixture.id === 'stale_package_version_contract'));
   assert.ok(output.fixture_matrix.fixtures.some((fixture) => fixture.id === 'pack_allowlist_drift_contract'));
@@ -2156,7 +2156,7 @@ fullSourceTest('full source block line 780', () => {
   const result = run(['release', '--check']);
   const output = readJsonOutput(result);
   assert.strictEqual(output.status, 'ok');
-  assert.strictEqual(output.schema, 'agent-onboard-public-release-check-result-016');
+  assert.strictEqual(output.schema, 'agent-onboard-public-release-check-result-019');
   assert.strictEqual(output.version, EXPECTED_VERSION);
   assert.strictEqual(output.validated.package_metadata, true);
   assert.strictEqual(output.validated.projected_pack_allowlist, true);
@@ -5053,7 +5053,7 @@ fullSourceTest('full source block line 2950', () => {
   assert.ok(output.validated.delegation_file_present_or_installed_context_allowed);
   assert.ok(output.validated.work_item_closed_or_installed_context_allowed);
   assert.ok(output.validated.next_gate_open_or_installed_context_allowed);
-  assert.deepStrictEqual(output.compatibility_port.delegated_commands, ['--help', '--version', '-h', '-v', 'agents', 'architecture', 'authority', 'bridge', 'guard', 'help', 'init', 'release', 'status', 'target', 'target-config', 'target-instance', 'version', 'work-items']);
+  assert.deepStrictEqual(output.compatibility_port.delegated_commands, ['--help', '--version', '-h', '-v', 'agents', 'architecture', 'authority', 'bridge', 'claim', 'guard', 'help', 'init', 'release', 'status', 'target', 'target-config', 'target-instance', 'version', 'work-items']);
   assert.deepStrictEqual(output.expected_pack_files, EXPECTED_PACK_FILES);
   assert.deepStrictEqual(output.projected_pack_files, EXPECTED_PACK_FILES);
   assert.strictEqual(output.source_router_command_adapter_delegation_file.path, '.agent-onboard/router-command-adapter-delegation-expansion.json');
@@ -5219,7 +5219,7 @@ fullSourceTest('public README first-read history split planning is read-only and
   assert.strictEqual(check.validated.catalog_check_passes, true);
   assert.strictEqual(check.validated.keyword_taxonomy_check_passes, true);
   assert.strictEqual(check.validated.all_first_read_markers_present, true);
-  assert.strictEqual(check.validated.future_archive_not_created, true);
+  assert.strictEqual(check.validated.future_archive_not_created_or_apply_admitted, true);
   assert.strictEqual(check.validated.readme_history_apply_gate_admitted, true);
   assert.strictEqual(check.validated.no_archive_delete_move_or_rewrite, true);
   assert.strictEqual(check.validated.current_work_item_closed, true);
@@ -5253,8 +5253,8 @@ fullSourceTest('public README history archive split dry-run is exact and read-on
   assert.strictEqual(check.command, 'agent-onboard release --readme-dry-run-check');
   assert.strictEqual(check.validated.plan_gate_check_passes, true);
   assert.strictEqual(check.validated.enough_history_sections_identified, true);
-  assert.strictEqual(check.validated.future_archive_not_created, true);
-  assert.strictEqual(check.validated.future_index_not_created, true);
+  assert.strictEqual(check.validated.future_archive_not_created_or_apply_admitted, true);
+  assert.strictEqual(check.validated.future_index_not_created_or_apply_admitted, true);
   assert.strictEqual(check.validated.apply_gate_admitted_when_archive_present, true);
   assert.strictEqual(check.validated.live_readme_candidate_retains_first_read_markers, true);
   assert.strictEqual(check.validated.no_archive_index_readme_write, true);
@@ -5321,8 +5321,8 @@ fullSourceTest('public closed gate artifact compaction plan is no-write and rele
   assert.strictEqual(check.validated.enough_gate_artifacts, true);
   assert.strictEqual(check.validated.artifacts_parse_as_json, true);
   assert.strictEqual(check.validated.planning_artifact_present, true);
-  assert.strictEqual(check.validated.future_index_not_created, true);
-  assert.strictEqual(check.validated.future_archive_not_created, true);
+  assert.strictEqual(check.validated.future_index_not_created_or_apply_admitted, true);
+  assert.strictEqual(check.validated.future_archive_not_created_or_apply_admitted, true);
   assert.strictEqual(check.validated.raw_artifacts_preserved, true);
   assert.strictEqual(check.validated.recovery_path_required, true);
   assert.strictEqual(check.validated.no_write_boundary, true);
@@ -5366,9 +5366,44 @@ fullSourceTest('public closed gate artifact compaction dry-run is exact and no-w
   assert.strictEqual(check.validated.index_record_count_matches_archive, true);
   assert.strictEqual(check.validated.index_archive_digest_matches_archive_preview, true);
   assert.strictEqual(check.validated.dry_run_artifact_present, true);
-  assert.strictEqual(check.validated.future_index_not_created, true);
-  assert.strictEqual(check.validated.future_archive_not_created, true);
+  assert.strictEqual(check.validated.future_index_not_created_or_apply_admitted, true);
+  assert.strictEqual(check.validated.future_archive_not_created_or_apply_admitted, true);
   assert.strictEqual(check.validated.raw_artifacts_preserved, true);
+  assert.strictEqual(check.validated.current_work_item_closed, true);
+});
+
+fullSourceTest('public closed gate artifact compaction apply verifies archive and compact index', () => {
+  const apply = readJsonOutput(run(['release', '--closed-gates-apply']));
+  assert.strictEqual(apply.schema, 'agent-onboard-public-closed-gate-artifact-compaction-apply-result-001');
+  assert.strictEqual(apply.status, 'ok');
+  assert.strictEqual(apply.version, EXPECTED_VERSION);
+  assert.strictEqual(apply.release_line, EXPECTED_RELEASE_LINE);
+  assert.strictEqual(apply.command, 'agent-onboard release --closed-gates-apply');
+  assert.strictEqual(apply.surface_id, 'closed-gate-artifacts');
+  assert.strictEqual(apply.current.applied, true);
+  assert.strictEqual(apply.current.index_present, true);
+  assert.strictEqual(apply.current.archive_present, true);
+  assert.strictEqual(apply.current.apply_artifact_present, true);
+  assert.ok(apply.archive.record_count >= 30);
+  assert.strictEqual(apply.archive.matches_expected, true);
+  assert.strictEqual(apply.index.matches_expected, true);
+  assert.strictEqual(apply.recovery.raw_gate_artifacts_preserved, true);
+  assert.strictEqual(apply.recovery.index_archive_digest_matches_archive, true);
+  assert.strictEqual(apply.boundary.deletes_raw_gate_artifacts, false);
+  assert.strictEqual(apply.boundary.moves_raw_gate_artifacts, false);
+
+  const check = readJsonOutput(run(['release', '--closed-gates-apply-check']));
+  assert.strictEqual(check.schema, 'agent-onboard-public-closed-gate-artifact-compaction-apply-check-result-001');
+  assert.strictEqual(check.status, 'ok');
+  assert.strictEqual(check.command, 'agent-onboard release --closed-gates-apply-check');
+  assert.strictEqual(check.validated.dry_run_check_passes, true);
+  assert.strictEqual(check.validated.apply_state_present, true);
+  assert.strictEqual(check.validated.archive_record_count_matches_raw_artifacts, true);
+  assert.strictEqual(check.validated.index_record_count_matches_archive, true);
+  assert.strictEqual(check.validated.index_archive_digest_matches_archive, true);
+  assert.strictEqual(check.validated.archive_matches_generated_candidate, true);
+  assert.strictEqual(check.validated.index_matches_generated_candidate, true);
+  assert.strictEqual(check.validated.raw_gate_artifacts_preserved, true);
   assert.strictEqual(check.validated.current_work_item_closed, true);
 });
 

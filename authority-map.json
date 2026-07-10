@@ -38,6 +38,14 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-cli-runtime-de-monolith-planning-json-4876c2d0"
     },
     {
+      "file_path": ".agent-onboard/closed-gates.archive.jsonl",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-closed-gates-archive-jsonl-76e50641"
+    },
+    {
+      "file_path": ".agent-onboard/closed-gates.index.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-closed-gates-index-json-7d4285a2"
+    },
+    {
       "file_path": ".agent-onboard/command-surface-catalog-product-gate.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-command-surface-catalog-product-gate-json-72811734"
     },
@@ -132,6 +140,10 @@
     {
       "file_path": ".agent-onboard/public-clean-compaction-catalog-gate.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-clean-compaction-catalog-gate-json-f6ddd2b5"
+    },
+    {
+      "file_path": ".agent-onboard/public-closed-gate-artifact-compaction-apply-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-public-closed-gate-artifact-compaction-apply-gate-json-96a4cd2b"
     },
     {
       "file_path": ".agent-onboard/public-closed-gate-artifact-compaction-dry-run-gate.json",

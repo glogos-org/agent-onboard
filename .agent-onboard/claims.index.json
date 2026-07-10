@@ -3,43 +3,11 @@
   "status": "active",
   "ledger_path": ".agent-onboard/claims.jsonl",
   "raw_ledger_loaded_by_default": false,
-  "claim_count": 26,
-  "proposed_count": 13,
-  "merged_count": 13,
+  "claim_count": 30,
+  "proposed_count": 15,
+  "merged_count": 15,
   "latest_claims_limit": 5,
   "latest_claims": [
-    {
-      "event_type": "claim_merged",
-      "work_item_id": "P1S3M6W5",
-      "claim_id": "claim-p1s3m6w5-readme-history-archive-dry-run",
-      "claim_status": "merged",
-      "actor": "gpt-5.5-thinking",
-      "created_at": "2026-07-06T16:35:00.000Z"
-    },
-    {
-      "event_type": "claim_proposed",
-      "work_item_id": "P1S3M6W6",
-      "claim_id": "claim-p1s3m6w6-readme-history-archive-apply",
-      "claim_status": "proposed",
-      "actor": "gpt-5.5-thinking",
-      "created_at": "2026-07-06T16:50:00.000Z"
-    },
-    {
-      "event_type": "claim_merged",
-      "work_item_id": "P1S3M6W6",
-      "claim_id": "claim-p1s3m6w6-readme-history-archive-apply",
-      "claim_status": "merged",
-      "actor": "gpt-5.5-thinking",
-      "created_at": "2026-07-06T16:55:00.000Z"
-    },
-    {
-      "event_type": "claim_proposed",
-      "work_item_id": "P1S3M6W7",
-      "claim_id": "claim-p1s3m6w7-closed-gate-artifact-compaction-plan",
-      "claim_status": "proposed",
-      "actor": "gpt-5.5-thinking",
-      "created_at": "2026-07-06T17:10:00.000Z"
-    },
     {
       "event_type": "claim_merged",
       "work_item_id": "P1S3M6W7",
@@ -47,15 +15,47 @@
       "claim_status": "merged",
       "actor": "gpt-5.5-thinking",
       "created_at": "2026-07-06T17:20:00.000Z"
+    },
+    {
+      "event_type": "claim_proposed",
+      "work_item_id": "P1S3M6W8",
+      "claim_id": "claim-p1s3m6w8-closed-gate-artifact-compaction-dry-run",
+      "claim_status": "proposed",
+      "actor": "gpt-5.5-thinking",
+      "created_at": "2026-07-07T02:42:07.072Z"
+    },
+    {
+      "event_type": "claim_merged",
+      "work_item_id": "P1S3M6W8",
+      "claim_id": "claim-p1s3m6w8-closed-gate-artifact-compaction-dry-run",
+      "claim_status": "merged",
+      "actor": "gpt-5.5-thinking",
+      "created_at": "2026-07-07T02:42:07.196Z"
+    },
+    {
+      "event_type": "claim_proposed",
+      "work_item_id": "P1S3M6W9",
+      "claim_id": "claim-p1s3m6w9-closed-gate-artifact-compaction-apply",
+      "claim_status": "proposed",
+      "actor": "gpt-5.5-thinking",
+      "created_at": "2026-07-07T04:25:00.000Z"
+    },
+    {
+      "event_type": "claim_merged",
+      "work_item_id": "P1S3M6W9",
+      "claim_id": "claim-p1s3m6w9-closed-gate-artifact-compaction-apply",
+      "claim_status": "merged",
+      "actor": "gpt-5.5-thinking",
+      "created_at": "2026-07-07T04:30:00.000Z"
     }
   ],
   "active_work_item_ids": [],
   "latest_merged_work_item_ids": [
-    "P1S3M6W3",
-    "P1S3M6W4",
     "P1S3M6W5",
     "P1S3M6W6",
-    "P1S3M6W7"
+    "P1S3M6W7",
+    "P1S3M6W8",
+    "P1S3M6W9"
   ],
   "lifecycle": {
     "active_claim_count": 0,
@@ -64,5 +64,5 @@
     "conflict_work_item_ids": [],
     "lifecycle_check_command": "agent-onboard claim --lifecycle-check --json"
   },
-  "updated_at": "2026-07-07T02:41:41.300Z"
+  "updated_at": "2026-07-07T04:26:39.588Z"
 }

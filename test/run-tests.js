@@ -230,6 +230,7 @@ function quickTasks() {
     cliTask('release README history archive split apply check', ['release', '--readme-apply-check'], expectStatusOk),
     cliTask('release closed gate artifact compaction plan check', ['release', '--closed-gates-plan-check'], expectStatusOk),
     cliTask('release closed gate artifact compaction dry-run check', ['release', '--closed-gates-dry-run-check'], expectStatusOk),
+    cliTask('release closed gate artifact compaction apply check', ['release', '--closed-gates-apply-check'], expectStatusOk),
     cliTask('release version sprawl check', ['release', '--version-sprawl-check'], expectStatusOk),
     cliTask('release architecture parity smoke', ['release', '--architecture-parity-smoke'], expectStatusOk),
     cliTask('release check', ['release', '--check'], expectStatusOk),
