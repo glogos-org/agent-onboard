@@ -47,5 +47,5 @@ Work-item semantics remain delegated to `agent-onboard`.
 
 ## Clean and compaction baseline
 
-`P1S3M6` is the current public clean and compaction milestone. `agent-onboard release --clean-inventory` and `agent-onboard release --clean-check` provide the read-only baseline for that line. They may identify compaction candidates, but they do not delete, move, archive, rewrite, or compact files. Any future compaction write requires a separate admitted work item and explicit owner authorization.
+`P1S3M6` is the current public clean and compaction milestone. `agent-onboard release --clean-inventory` and `agent-onboard release --clean-check` provide the read-only baseline; `agent-onboard release --clean-catalog` and `agent-onboard release --clean-catalog-check` classify candidate surfaces before writes. They may identify README, closure evidence, package metadata, work-item ledger, identity index, and runtime/test compaction lanes, but they do not delete, move, archive, rewrite, compact, reduce taxonomy, or extract source modules. Any future compaction write requires a separate admitted work item, exact catalog surface id, preserved recovery/replay path, and explicit owner authorization.
 

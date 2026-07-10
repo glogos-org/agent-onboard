@@ -6706,6 +6706,64 @@
           "npm run test:full was not run end-to-end in this pass; quick suite, release clean check, release/authority/claim/metadata checks, public artifact boundary, npm pack dry-run, and targeted full-source shard coverage passed."
         ]
       }
+    },
+    {
+      "id": "P1S3M6W2",
+      "milestone_id": "P1S3M6",
+      "title": "Public clean and compaction candidate catalog gate",
+      "status": "closed",
+      "closure": {
+        "actor": "gpt-5.5-thinking",
+        "closed_at": "2026-07-06T15:25:00.000Z",
+        "summary": "Closed by adding release --clean-catalog and release --clean-catalog-check as no-write M6 classification surfaces over the clean baseline. The catalog classifies README history, closed gate artifacts, package keyword taxonomy, work-item ledger growth, identity indexes, and runtime/test monoliths into preserve-first dispositions and requires future admitted work items before any cleanup write.",
+        "changed_files": [
+          "package.json",
+          "README.md",
+          "AGENTS.md",
+          "SOURCE_OF_TRUTH.md",
+          "llms.txt",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/runtime-contracts.js",
+          "test/agent-onboard.test.js",
+          "test/run-tests.js",
+          ".agent-onboard/work-items.json",
+          ".agent-onboard/work-items.index.json",
+          ".agent-onboard/claims.jsonl",
+          ".agent-onboard/claims.index.json",
+          ".agent-onboard/public-clean-compaction-catalog-gate.json",
+          "authority-map.json",
+          "manifest.json"
+        ],
+        "checks_run": [
+          "node -c cli/agent_onboard/runtime-composer.js",
+          "node -c cli/agent_onboard/runtime-contracts.js",
+          "node -c test/agent-onboard.test.js",
+          "node -c test/run-tests.js",
+          "node cli/agent-onboard.js release --clean-catalog",
+          "node cli/agent-onboard.js release --clean-catalog-check",
+          "node cli/agent-onboard.js release --clean-check",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js check --fast --json",
+          "node cli/agent-onboard.js claim --lifecycle-check --json",
+          "node cli/agent-onboard.js claim --validate-ledger --json",
+          "node cli/agent-onboard.js release --source-manifest-check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node cli/agent-onboard.js authority --state-check",
+          "node cli/agent-onboard.js authority --index-check",
+          "node cli/agent-onboard.js authority --check",
+          "node cli/agent-onboard.js target metadata --check --target .",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "npm test",
+          "npm run check:public-artifact-boundary",
+          "npm pack --dry-run --json"
+        ],
+        "checks_not_run": [
+          "npm publish"
+        ],
+        "known_non_pass": [
+          "No deletion, movement, archival, taxonomy reduction, source extraction, package publication, registry mutation, dependency install, Git mutation, claim mutation, or work-item mutation is authorized by this gate."
+        ]
+      }
     }
   ]
 }

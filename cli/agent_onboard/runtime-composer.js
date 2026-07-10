@@ -206,6 +206,7 @@ function commandSurfaceCatalog() {
       'agent-onboard work-items --next --text',
       'agent-onboard release --authority-state-parity-check',
       'agent-onboard release --clean-check',
+      'agent-onboard release --clean-catalog-check',
       'agent-onboard release --check'
     ],
     output_modes: ['--json', '--text'],
@@ -558,6 +559,8 @@ function discoveryStableCommands() {
     'agent-onboard release --source-manifest',
     'agent-onboard release --clean-inventory',
     'agent-onboard release --clean-check',
+    'agent-onboard release --clean-catalog',
+    'agent-onboard release --clean-catalog-check',
     'agent-onboard authority --index',
     'agent-onboard authority --index-check',
     'agent-onboard authority --state',
@@ -1265,6 +1268,7 @@ const CHECK_FAST_SLOW_REASON_TAXONOMY = Object.freeze({
 
 const CHECK_FAST_REGISTRY = Object.freeze([
   Object.freeze({ id: 'release-clean-check', command: 'agent-onboard release --clean-check', scope: 'source_clean_compaction_baseline', slow: false }),
+  Object.freeze({ id: 'release-clean-catalog-check', command: 'agent-onboard release --clean-catalog-check', scope: 'source_clean_compaction_catalog', slow: false }),
   Object.freeze({ id: 'command-surface-catalog', command: 'agent-onboard commands --json', scope: 'product_discovery', slow: false }),
   Object.freeze({ id: 'operator-guide', command: 'agent-onboard guide --json', scope: 'operator_orientation', slow: false }),
   Object.freeze({ id: 'quickstart', command: 'agent-onboard quickstart --json', scope: 'first_run_recipe', slow: false }),
@@ -1554,6 +1558,7 @@ function runCheckFastPlan(root = packageRoot(), options = {}) {
     'target-handoff-readiness-check': () => targetRuntimeService.targetHandoffReadinessCheck(targetRoot),
     'release-source-manifest-check': () => publicPackageSourceManifestCheck(root),
     'release-clean-check': () => publicCleanCompactionBaselineCheck(root),
+    'release-clean-catalog-check': () => publicCleanCompactionCatalogCheck(root),
     'release-surface-check': () => publicPackageSurfaceCheck(root),
     'release-check': () => publicReleaseCheck(root),
     'ci-surface': () => ciSurfaceService.catalog(),
@@ -6664,6 +6669,257 @@ function publicCleanCompactionBaselineText(result = publicCleanCompactionBaselin
   return `${lines.join('\n')}\n`;
 }
 
+
+const PUBLIC_CLEAN_COMPACTION_CATALOG = Object.freeze({
+  schema: 'agent-onboard-public-clean-compaction-catalog-001',
+  package_name: PACKAGE_NAME,
+  release_line: RELEASE_LINE,
+  milestone_id: 'P1S3M6',
+  baseline_work_item_id: ['P1S3M6', 'W1'].join(''),
+  work_item_id: ['P1S3M6', 'W2'].join(''),
+  title: 'Public clean and compaction candidate catalog gate',
+  command: 'agent-onboard release --clean-catalog',
+  check_command: 'agent-onboard release --clean-catalog-check',
+  catalog_file: '.agent-onboard/public-clean-compaction-catalog-gate.json',
+  purpose: 'Classify clean and compaction candidates into explicit preserve, defer, and future-write lanes before any deletion, movement, archival, or taxonomy reduction is admitted.',
+  required_candidate_count: 6,
+  allowed_dispositions: Object.freeze([
+    'preserve_live_first_read_then_split_history',
+    'preserve_evidence_then_compact_closed_records',
+    'preserve_discovery_then_reduce_taxonomy',
+    'preserve_authority_then_split_archive_index',
+    'preserve_identity_then_regenerate_after_write',
+    'preserve_behavior_then_extract_runtime_modules'
+  ]),
+  boundary: Object.freeze({
+    writes_files: false,
+    deletes_files: false,
+    moves_files: false,
+    rewrites_history: false,
+    mutates_work_items: false,
+    mutates_claims: false,
+    mutates_git: false,
+    installs_dependencies: false,
+    runs_package_manager: false,
+    publishes_package: false,
+    mutates_registry: false,
+    network: false
+  })
+});
+
+function publicCleanCompactionCatalogEntries(inventory) {
+  const runtimeComposer = inventory.largest_files.find((file) => file.path === 'cli/agent_onboard/runtime-composer.js') || { bytes: 0 };
+  const testFile = inventory.largest_files.find((file) => file.path === 'test/agent-onboard.test.js') || { bytes: 0 };
+  return Object.freeze([
+    Object.freeze({
+      id: 'readme-first-read-history',
+      surface: 'README.md',
+      class: 'documentation_surface',
+      current_bytes: inventory.documentation.readme_bytes,
+      disposition: 'preserve_live_first_read_then_split_history',
+      preserve_before_compaction: Object.freeze(['install/use commands', 'public safety boundaries', 'current release commands', 'first-read path']),
+      forbidden_now: Object.freeze(['delete README.md', 'drop current commands', 'hide public boundary wording']),
+      future_write_requires_admitted_work_item: true
+    }),
+    Object.freeze({
+      id: 'closed-gate-artifacts',
+      surface: '.agent-onboard closed gate artifacts',
+      class: 'closure_evidence_surface',
+      current_file_count: inventory.agent_onboard_state.closed_gate_artifact_count,
+      disposition: 'preserve_evidence_then_compact_closed_records',
+      preserve_before_compaction: Object.freeze(['work item id', 'title', 'closed_at', 'summary', 'changed_files', 'checks_run', 'known_non_pass']),
+      forbidden_now: Object.freeze(['bulk-delete closure records', 'replace evidence with unlinked prose', 'make index authoritative without raw recovery path']),
+      future_write_requires_admitted_work_item: true
+    }),
+    Object.freeze({
+      id: 'package-keyword-taxonomy',
+      surface: 'package.json keywords',
+      class: 'package_discovery_metadata',
+      current_count: inventory.package.keyword_count,
+      disposition: 'preserve_discovery_then_reduce_taxonomy',
+      preserve_before_compaction: Object.freeze(['package identity keywords', 'stable command-family keywords', 'consumer onboarding discovery keywords']),
+      forbidden_now: Object.freeze(['collapse to vague branding only', 'remove npm discoverability before taxonomy is admitted']),
+      future_write_requires_admitted_work_item: true
+    }),
+    Object.freeze({
+      id: 'work-items-ledger-growth',
+      surface: '.agent-onboard/work-items.json',
+      class: 'authority_ledger_surface',
+      current_bytes: inventory.agent_onboard_state.work_items_bytes,
+      disposition: 'preserve_authority_then_split_archive_index',
+      preserve_before_compaction: Object.freeze(['open/closed status', 'milestone membership', 'closure evidence', 'operator-readable next item semantics']),
+      forbidden_now: Object.freeze(['make summary index the sole authority', 'drop closure history without archived recovery path']),
+      future_write_requires_admitted_work_item: true
+    }),
+    Object.freeze({
+      id: 'identity-index-refresh-churn',
+      surface: 'manifest.json and authority-map.json',
+      class: 'content_identity_surface',
+      current_bytes: inventory.identity_indexes.manifest_bytes + inventory.identity_indexes.authority_map_bytes,
+      disposition: 'preserve_identity_then_regenerate_after_write',
+      preserve_before_compaction: Object.freeze(['file_urn', 'file_path', 'file_id', 'self-referential manifest exclusion']),
+      forbidden_now: Object.freeze(['edit hashes by hand without target metadata refresh', 'treat digest churn as permission to drop identity coverage']),
+      future_write_requires_admitted_work_item: true
+    }),
+    Object.freeze({
+      id: 'runtime-and-test-monoliths',
+      surface: 'runtime-composer.js and agent-onboard.test.js',
+      class: 'source_runtime_surface',
+      current_bytes: runtimeComposer.bytes + testFile.bytes,
+      disposition: 'preserve_behavior_then_extract_runtime_modules',
+      preserve_before_compaction: Object.freeze(['CLI command output contracts', 'installed package parity', 'release check behavior', 'target onboarding behavior']),
+      forbidden_now: Object.freeze(['mechanical split without golden output check', 'delete test coverage to reduce byte count']),
+      future_write_requires_admitted_work_item: true
+    })
+  ]);
+}
+
+function publicCleanCompactionCatalog(root = packageRoot()) {
+  const baseline = publicCleanCompactionBaseline(root);
+  const inventory = baseline.inventory;
+  const entries = publicCleanCompactionCatalogEntries(inventory);
+  return Object.freeze({
+    schema: 'agent-onboard-public-clean-compaction-catalog-result-001',
+    status: 'ok',
+    package_name: PACKAGE_NAME,
+    version: VERSION,
+    release_line: RELEASE_LINE,
+    command: PUBLIC_CLEAN_COMPACTION_CATALOG.command,
+    check_command: PUBLIC_CLEAN_COMPACTION_CATALOG.check_command,
+    package_root: root,
+    baseline_command: PUBLIC_CLEAN_COMPACTION_BASELINE.command,
+    baseline_check_command: PUBLIC_CLEAN_COMPACTION_BASELINE.check_command,
+    catalog: PUBLIC_CLEAN_COMPACTION_CATALOG,
+    inventory_snapshot: Object.freeze({
+      total_files: inventory.total_files,
+      total_bytes: inventory.total_bytes,
+      agent_onboard_files: inventory.agent_onboard_state.file_count,
+      closed_gate_artifacts: inventory.agent_onboard_state.closed_gate_artifact_count,
+      package_keywords: inventory.package.keyword_count,
+      readme_bytes: inventory.documentation.readme_bytes,
+      work_items_bytes: inventory.agent_onboard_state.work_items_bytes,
+      identity_index_bytes: inventory.identity_indexes.manifest_bytes + inventory.identity_indexes.authority_map_bytes
+    }),
+    classification_policy: Object.freeze({
+      delete_or_move_allowed_now: false,
+      taxonomy_reduction_allowed_now: false,
+      archive_split_allowed_now: false,
+      future_write_must_name_exact_surface_id: true,
+      future_write_must_preserve_recovery_or_replay_path: true,
+      future_write_must_refresh_target_metadata_after_mutation: true
+    }),
+    entries,
+    boundary: PUBLIC_CLEAN_COMPACTION_CATALOG.boundary
+  });
+}
+
+function publicCleanCompactionCatalogMilestoneState(root = packageRoot()) {
+  const ledgerPath = path.join(root, '.agent-onboard', 'work-items.json');
+  if (!fs.existsSync(ledgerPath)) {
+    return Object.freeze({
+      ledger_present: false,
+      milestone_id: PUBLIC_CLEAN_COMPACTION_CATALOG.milestone_id,
+      baseline_work_item_id: PUBLIC_CLEAN_COMPACTION_CATALOG.baseline_work_item_id,
+      work_item_id: PUBLIC_CLEAN_COMPACTION_CATALOG.work_item_id,
+      milestone_status: 'not_present_installed_context_allowed',
+      baseline_work_item_status: 'not_present_installed_context_allowed',
+      work_item_status: 'not_present_installed_context_allowed'
+    });
+  }
+  let ledger = null;
+  try { ledger = readJson(ledgerPath); } catch { ledger = null; }
+  const milestones = ledger && Array.isArray(ledger.milestones) ? ledger.milestones : [];
+  const workItems = ledger && Array.isArray(ledger.work_items) ? ledger.work_items : [];
+  const milestone = milestones.find((item) => item.id === PUBLIC_CLEAN_COMPACTION_CATALOG.milestone_id) || null;
+  const baselineWorkItem = workItems.find((item) => item.id === PUBLIC_CLEAN_COMPACTION_CATALOG.baseline_work_item_id) || null;
+  const workItem = workItems.find((item) => item.id === PUBLIC_CLEAN_COMPACTION_CATALOG.work_item_id) || null;
+  return Object.freeze({
+    ledger_present: true,
+    milestone_id: PUBLIC_CLEAN_COMPACTION_CATALOG.milestone_id,
+    baseline_work_item_id: PUBLIC_CLEAN_COMPACTION_CATALOG.baseline_work_item_id,
+    work_item_id: PUBLIC_CLEAN_COMPACTION_CATALOG.work_item_id,
+    milestone_status: milestone ? milestone.status : 'missing',
+    baseline_work_item_status: baselineWorkItem ? baselineWorkItem.status : 'missing',
+    work_item_status: workItem ? workItem.status : 'missing',
+    milestone_title: milestone ? milestone.title : null,
+    baseline_work_item_title: baselineWorkItem ? baselineWorkItem.title : null,
+    work_item_title: workItem ? workItem.title : null
+  });
+}
+
+function publicCleanCompactionCatalogCheck(root = packageRoot()) {
+  const result = publicCleanCompactionCatalog(root);
+  const baselineCheck = publicCleanCompactionBaselineCheck(root);
+  const milestone = publicCleanCompactionCatalogMilestoneState(root);
+  const errors = baselineCheck.errors.map((error) => `baseline: ${error}`);
+  const allowed = new Set(PUBLIC_CLEAN_COMPACTION_CATALOG.allowed_dispositions);
+  if (result.entries.length !== PUBLIC_CLEAN_COMPACTION_CATALOG.required_candidate_count) errors.push(`clean catalog must classify exactly ${PUBLIC_CLEAN_COMPACTION_CATALOG.required_candidate_count} surfaces`);
+  for (const entry of result.entries) {
+    if (!entry.id) errors.push('clean catalog entry is missing id');
+    if (!entry.surface) errors.push(`clean catalog entry ${entry.id || '<unknown>'} is missing surface`);
+    if (!allowed.has(entry.disposition)) errors.push(`clean catalog entry ${entry.id || '<unknown>'} has unsupported disposition ${entry.disposition}`);
+    if (entry.future_write_requires_admitted_work_item !== true) errors.push(`clean catalog entry ${entry.id || '<unknown>'} must require a future admitted work item before writes`);
+    if (!Array.isArray(entry.forbidden_now) || entry.forbidden_now.length === 0) errors.push(`clean catalog entry ${entry.id || '<unknown>'} must list forbidden-now actions`);
+  }
+  if (result.classification_policy.delete_or_move_allowed_now !== false) errors.push('clean catalog must not allow delete or move now');
+  if (result.classification_policy.future_write_must_name_exact_surface_id !== true) errors.push('future compaction writes must name exact surface id');
+  if (result.boundary.writes_files !== false) errors.push('clean catalog command must remain no-write');
+  if (result.boundary.deletes_files !== false) errors.push('clean catalog command must not delete files');
+  if (result.boundary.moves_files !== false) errors.push('clean catalog command must not move files');
+  if (milestone.ledger_present) {
+    if (milestone.milestone_status !== 'open') errors.push(`${PUBLIC_CLEAN_COMPACTION_CATALOG.milestone_id} must remain open during clean and compaction cataloging`);
+    if (milestone.baseline_work_item_status !== 'closed') errors.push(`${PUBLIC_CLEAN_COMPACTION_CATALOG.baseline_work_item_id} must be closed before the clean catalog passes`);
+    if (milestone.work_item_status !== 'closed') errors.push(`${PUBLIC_CLEAN_COMPACTION_CATALOG.work_item_id} must be closed by this catalog gate`);
+  }
+  return Object.freeze({
+    schema: 'agent-onboard-public-clean-compaction-catalog-check-result-001',
+    status: errors.length === 0 ? 'ok' : 'error',
+    package_name: PACKAGE_NAME,
+    version: VERSION,
+    release_line: RELEASE_LINE,
+    command: PUBLIC_CLEAN_COMPACTION_CATALOG.check_command,
+    catalog_command: PUBLIC_CLEAN_COMPACTION_CATALOG.command,
+    package_root: root,
+    validated: Object.freeze({
+      baseline_check_passes: baselineCheck.status === 'ok',
+      required_candidate_count: result.entries.length === PUBLIC_CLEAN_COMPACTION_CATALOG.required_candidate_count,
+      dispositions_supported: result.entries.every((entry) => allowed.has(entry.disposition)),
+      every_entry_requires_future_admission: result.entries.every((entry) => entry.future_write_requires_admitted_work_item === true),
+      every_entry_has_forbidden_now_actions: result.entries.every((entry) => Array.isArray(entry.forbidden_now) && entry.forbidden_now.length > 0),
+      no_write_boundary: result.boundary.writes_files === false,
+      no_delete_boundary: result.boundary.deletes_files === false,
+      no_move_boundary: result.boundary.moves_files === false,
+      m6_open: !milestone.ledger_present || milestone.milestone_status === 'open',
+      baseline_work_item_closed: !milestone.ledger_present || milestone.baseline_work_item_status === 'closed',
+      current_work_item_closed: !milestone.ledger_present || milestone.work_item_status === 'closed'
+    }),
+    baseline_check: baselineCheck,
+    milestone_state: milestone,
+    catalog: result,
+    boundary: PUBLIC_CLEAN_COMPACTION_CATALOG.boundary,
+    errors
+  });
+}
+
+function publicCleanCompactionCatalogText(result = publicCleanCompactionCatalog()) {
+  const lines = [
+    `agent-onboard clean compaction catalog ${result.version}`,
+    `Status: ${result.status}`,
+    `Command: ${result.command}`,
+    '',
+    'Classification policy:',
+    `- delete or move allowed now: ${result.classification_policy.delete_or_move_allowed_now}`,
+    `- future write must name exact surface id: ${result.classification_policy.future_write_must_name_exact_surface_id}`,
+    `- future write must preserve recovery/replay path: ${result.classification_policy.future_write_must_preserve_recovery_or_replay_path}`,
+    '',
+    'Catalog entries:'
+  ];
+  for (const entry of result.entries) lines.push(`- ${entry.id}: ${entry.surface} -> ${entry.disposition}`);
+  lines.push('', 'Boundary:', `- Writes files: ${result.boundary.writes_files}`, `- Deletes files: ${result.boundary.deletes_files}`, `- Moves files: ${result.boundary.moves_files}`);
+  if (Array.isArray(result.errors) && result.errors.length > 0) lines.push('', 'Errors:', ...result.errors.map((error) => `- ${error}`));
+  return `${lines.join('\n')}\n`;
+}
+
 function publicPackageSurfaceCheck(root = packageRoot()) {
   const surface = publicPackageSurface(root);
   const packageSourceManifest = createPublicPackageSourceManifestService().check(root);
@@ -7170,6 +7426,8 @@ function publicReleaseCheck(root = packageRoot()) {
   const versionPolicyErrors = versionPolicy.errors.map((error) => `version reference policy: ${error}`);
   const cleanCompaction = publicCleanCompactionBaselineCheck(root);
   const cleanCompactionErrors = cleanCompaction.errors.map((error) => `clean compaction baseline: ${error}`);
+  const cleanCompactionCatalog = publicCleanCompactionCatalogCheck(root);
+  const cleanCompactionCatalogErrors = cleanCompactionCatalog.errors.map((error) => `clean compaction catalog: ${error}`);
   const packageSurfaceErrors = packageSurface.errors.map((error) => `package surface: ${error}`);
   const architectureParity = { status: architecture.status === 'ok' ? 'ok' : 'error', errors: [] };
   const installedAuthorityStateParity = publicInstalledAuthorityStateShardParity(root);
@@ -7219,7 +7477,7 @@ function publicReleaseCheck(root = packageRoot()) {
   const routerAdapterDelegation = publicRouterCommandAdapterDelegationExpansionCheck(root);
   const routerAdapterDelegationErrors = routerAdapterDelegation.errors.map((error) => `router adapter delegation: ${error}`);
   const architectureParityErrors = architectureParity.errors.map((error) => `installed architecture parity: ${error}`);
-  const errors = [...metadataErrors, ...packErrors, ...messagingErrors, ...sourceLedgerErrors, ...architectureErrors, ...packageSurfaceErrors, ...architectureParityErrors, ...installedAuthorityStateParityErrors, ...targetRepoProductErrors, ...cliRuntimePlanErrors, ...thinCliRouterErrors, ...compatibilityPortErrors, ...coreAdapterErrors, ...packageAdapterErrors, ...architectureAdapterErrors, ...authorityAdapterErrors, ...moduleInclusionPlanErrors, ...packagedRouterPortErrors, ...thinEntrypointRehearsalErrors, ...thinEntrypointCutoverErrors, ...routerAdapterDelegationErrors, ...versionPolicyErrors, ...cleanCompactionErrors];
+  const errors = [...metadataErrors, ...packErrors, ...messagingErrors, ...sourceLedgerErrors, ...architectureErrors, ...packageSurfaceErrors, ...architectureParityErrors, ...installedAuthorityStateParityErrors, ...targetRepoProductErrors, ...cliRuntimePlanErrors, ...thinCliRouterErrors, ...compatibilityPortErrors, ...coreAdapterErrors, ...packageAdapterErrors, ...architectureAdapterErrors, ...authorityAdapterErrors, ...moduleInclusionPlanErrors, ...packagedRouterPortErrors, ...thinEntrypointRehearsalErrors, ...thinEntrypointCutoverErrors, ...routerAdapterDelegationErrors, ...versionPolicyErrors, ...cleanCompactionErrors, ...cleanCompactionCatalogErrors];
   return {
     schema: 'agent-onboard-public-release-check-result-014',
     status: errors.length === 0 ? 'ok' : 'error',
@@ -7266,7 +7524,8 @@ function publicReleaseCheck(root = packageRoot()) {
       public_package_surface_preservation: packageSurface.status === 'ok',
       public_installed_parity_architecture_smoke: architectureParity.status === 'ok',
       public_installed_authority_state_shard_parity: installedAuthorityStateParity.status === 'ok',
-      public_clean_compaction_baseline: cleanCompaction.status === 'ok'
+      public_clean_compaction_baseline: cleanCompaction.status === 'ok',
+      public_clean_compaction_catalog: cleanCompactionCatalog.status === 'ok'
     },
     expected_pack_files: expectedPackFiles,
     projected_pack_files: projectedPackFiles,
@@ -7291,6 +7550,7 @@ function publicReleaseCheck(root = packageRoot()) {
     public_installed_parity_architecture_smoke: architectureParity,
     public_installed_authority_state_shard_parity: installedAuthorityStateParity,
     public_clean_compaction_baseline: cleanCompaction,
+    public_clean_compaction_catalog: cleanCompactionCatalog,
     local_pre_publish_commands: PUBLIC_RELEASE_CONTRACT.local_pre_publish_commands.slice(),
     post_publish_verification_commands: publicReleasePostPublishCommands(VERSION),
     boundary: {
@@ -8314,6 +8574,8 @@ function runRelease(args) {
       version_sprawl_check_command: PUBLIC_RELEASE_CONTRACT.version_sprawl_check_command,
       clean_compaction_baseline_command: PUBLIC_CLEAN_COMPACTION_BASELINE.command,
       clean_compaction_baseline_check_command: PUBLIC_CLEAN_COMPACTION_BASELINE.check_command,
+      clean_compaction_catalog_command: PUBLIC_CLEAN_COMPACTION_CATALOG.command,
+      clean_compaction_catalog_check_command: PUBLIC_CLEAN_COMPACTION_CATALOG.check_command,
       architecture_check_command: PUBLIC_RELEASE_CONTRACT.architecture_check_command,
       authority_first_read_command: PUBLIC_RELEASE_CONTRACT.authority_first_read_command,
       authority_check_command: PUBLIC_RELEASE_CONTRACT.authority_check_command,
@@ -8515,6 +8777,12 @@ function runRelease(args) {
   if (args.length === 1 && (args[0] === '--clean-inventory' || args[0] === '--clean-check')) {
     const checkMode = args[0] === '--clean-check';
     const result = checkMode ? publicCleanCompactionBaselineCheck() : publicCleanCompactionBaseline();
+    json(result);
+    return result.status === 'ok' ? 0 : 1;
+  }
+  if (args.length === 1 && (args[0] === '--clean-catalog' || args[0] === '--clean-catalog-check')) {
+    const checkMode = args[0] === '--clean-catalog-check';
+    const result = checkMode ? publicCleanCompactionCatalogCheck() : publicCleanCompactionCatalog();
     json(result);
     return result.status === 'ok' ? 0 : 1;
   }

@@ -2,13 +2,13 @@
   "schema": "agent-onboard-public-authority-live-state-shard-001",
   "package_name": "agent-onboard",
   "package_version_source": "package.json#version",
-  "release_line": "public_clean_compaction_baseline_gate",
+  "release_line": "public_clean_compaction_catalog_gate",
   "authority_state_source_layout": "sharded_seed",
   "state_root": ".agent-onboard/state",
-  "current_work_item": "P1S3M6W1",
-  "current_work_item_title": "Public clean and compaction baseline gate",
-  "last_closed_work_item": "P1S3M6W1",
-  "last_closed_title": "Public clean and compaction baseline gate",
+  "current_work_item": "P1S3M6W2",
+  "current_work_item_title": "Public clean and compaction candidate catalog gate",
+  "last_closed_work_item": "P1S3M6W2",
+  "last_closed_title": "Public clean and compaction candidate catalog gate",
   "default_first_read": true,
   "compact_authority_index_file": ".agent-onboard/authority-index.json",
   "state_command": "agent-onboard authority --state",
@@ -17,13 +17,6 @@
   "raw_growth_files_loaded_by_default": false,
   "file_contents_inlined": false,
   "latest_closed_work_items": [
-    {
-      "id": "P1S3M5W39",
-      "title": "Public exact artifact oracle gate",
-      "status": "closed",
-      "milestone_id": "P1S3M5",
-      "domain": null
-    },
     {
       "id": "P1S3M5W40",
       "title": "Public authority state sharding seed gate",
@@ -48,6 +41,13 @@
     {
       "id": "P1S3M6W1",
       "title": "Public clean and compaction baseline gate",
+      "status": "closed",
+      "milestone_id": "P1S3M6",
+      "domain": null
+    },
+    {
+      "id": "P1S3M6W2",
+      "title": "Public clean and compaction candidate catalog gate",
       "status": "closed",
       "milestone_id": "P1S3M6",
       "domain": null

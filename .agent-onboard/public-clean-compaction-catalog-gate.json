@@ -1,0 +1,90 @@
+{
+  "schema": "agent-onboard-public-work-item-closure-record-001",
+  "id": "P1S3M6W2",
+  "title": "Public clean and compaction candidate catalog gate",
+  "status": "closed",
+  "release_line": "public_clean_compaction_catalog_gate",
+  "package_version_source": "package.json#version",
+  "purpose": "Classify M6 clean/compaction candidate surfaces before any cleanup write so future work items must name the exact surface, preserve recovery/replay paths, and avoid blind deletion.",
+  "catalog": {
+    "command": "agent-onboard release --clean-catalog",
+    "check_command": "agent-onboard release --clean-catalog-check",
+    "surface_ids": [
+      "readme-first-read-history",
+      "closed-gate-artifacts",
+      "package-keyword-taxonomy",
+      "work-items-ledger-growth",
+      "identity-index-refresh-churn",
+      "runtime-and-test-monoliths"
+    ],
+    "delete_or_move_allowed_now": false,
+    "future_write_must_name_exact_surface_id": true,
+    "future_write_must_preserve_recovery_or_replay_path": true
+  },
+  "boundary": {
+    "writes_files": false,
+    "deletes_files": false,
+    "moves_files": false,
+    "rewrites_history": false,
+    "mutates_work_items": false,
+    "mutates_claims": false,
+    "installs_dependencies": false,
+    "runs_package_manager": false,
+    "publishes_package": false,
+    "git_mutation": false,
+    "mutates_registry": false,
+    "network": false
+  },
+  "closure": {
+    "actor": "gpt-5.5-thinking",
+    "closed_at": "2026-07-06T15:25:00.000Z",
+    "summary": "Closed by adding release --clean-catalog and release --clean-catalog-check as no-write M6 classification surfaces over the clean baseline. The catalog classifies README history, closed gate artifacts, package keyword taxonomy, work-item ledger growth, identity indexes, and runtime/test monoliths into preserve-first dispositions and requires future admitted work items before any cleanup write.",
+    "changed_files": [
+      "package.json",
+      "README.md",
+      "AGENTS.md",
+      "SOURCE_OF_TRUTH.md",
+      "llms.txt",
+      "cli/agent_onboard/runtime-composer.js",
+      "cli/agent_onboard/runtime-contracts.js",
+      "test/agent-onboard.test.js",
+      "test/run-tests.js",
+      ".agent-onboard/work-items.json",
+      ".agent-onboard/work-items.index.json",
+      ".agent-onboard/claims.jsonl",
+      ".agent-onboard/claims.index.json",
+      ".agent-onboard/public-clean-compaction-catalog-gate.json",
+      "authority-map.json",
+      "manifest.json"
+    ],
+    "checks_run": [
+      "node -c cli/agent_onboard/runtime-composer.js",
+      "node -c cli/agent_onboard/runtime-contracts.js",
+      "node -c test/agent-onboard.test.js",
+      "node -c test/run-tests.js",
+      "node cli/agent-onboard.js release --clean-catalog",
+      "node cli/agent-onboard.js release --clean-catalog-check",
+      "node cli/agent-onboard.js release --clean-check",
+      "node cli/agent-onboard.js release --check",
+      "node cli/agent-onboard.js check --fast --json",
+      "node cli/agent-onboard.js claim --lifecycle-check --json",
+      "node cli/agent-onboard.js claim --validate-ledger --json",
+      "node cli/agent-onboard.js release --source-manifest-check",
+      "node cli/agent-onboard.js release --surface-check",
+      "node cli/agent-onboard.js authority --state-check",
+      "node cli/agent-onboard.js authority --index-check",
+      "node cli/agent-onboard.js authority --check",
+      "node cli/agent-onboard.js target metadata --check --target .",
+      "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+      "npm test",
+      "npm run check:public-artifact-boundary",
+      "npm pack --dry-run --json"
+    ],
+    "checks_not_run": [
+      "npm publish"
+    ],
+    "known_non_pass": [
+      "No deletion, movement, archival, taxonomy reduction, source extraction, package publication, registry mutation, dependency install, Git mutation, claim mutation, or work-item mutation is authorized by this gate."
+    ]
+  }
+}

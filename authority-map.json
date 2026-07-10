@@ -127,7 +127,11 @@
     },
     {
       "file_path": ".agent-onboard/public-clean-compaction-baseline-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-public-clean-compaction-baseline-gate-json-03169f44"
+      "file_urn": "urn:agent-onboard:file:agent-onboard-public-clean-compaction-baseline-gate-json-dbf0fd65"
+    },
+    {
+      "file_path": ".agent-onboard/public-clean-compaction-catalog-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-public-clean-compaction-catalog-gate-json-f6ddd2b5"
     },
     {
       "file_path": ".agent-onboard/public-contract-output-validator-gate.json",

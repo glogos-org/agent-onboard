@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_clean_compaction_baseline_gate';
+const EXPECTED_RELEASE_LINE = 'public_clean_compaction_catalog_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -5139,6 +5139,32 @@ fullSourceTest('public clean compaction baseline inventory and check are read-on
   assert.strictEqual(check.command, 'agent-onboard release --clean-check');
   assert.strictEqual(check.validated.no_write_boundary, true);
   assert.strictEqual(check.validated.m5_closed_m6_open, true);
+  assert.strictEqual(check.validated.current_work_item_closed, true);
+  assert.strictEqual(check.boundary.writes_files, false);
+});
+
+fullSourceTest('public clean compaction catalog classifies candidates before writes', () => {
+  const catalog = readJsonOutput(run(['release', '--clean-catalog']));
+  assert.strictEqual(catalog.schema, 'agent-onboard-public-clean-compaction-catalog-result-001');
+  assert.strictEqual(catalog.status, 'ok');
+  assert.strictEqual(catalog.version, EXPECTED_VERSION);
+  assert.strictEqual(catalog.release_line, EXPECTED_RELEASE_LINE);
+  assert.strictEqual(catalog.command, 'agent-onboard release --clean-catalog');
+  assert.strictEqual(catalog.classification_policy.delete_or_move_allowed_now, false);
+  assert.strictEqual(catalog.classification_policy.future_write_must_name_exact_surface_id, true);
+  assert.strictEqual(catalog.entries.length, 6);
+  assert.ok(catalog.entries.some((entry) => entry.id === 'closed-gate-artifacts'));
+  assert.ok(catalog.entries.every((entry) => entry.future_write_requires_admitted_work_item === true));
+  assert.strictEqual(catalog.boundary.writes_files, false);
+  assert.strictEqual(catalog.boundary.deletes_files, false);
+
+  const check = readJsonOutput(run(['release', '--clean-catalog-check']));
+  assert.strictEqual(check.schema, 'agent-onboard-public-clean-compaction-catalog-check-result-001');
+  assert.strictEqual(check.status, 'ok');
+  assert.strictEqual(check.command, 'agent-onboard release --clean-catalog-check');
+  assert.strictEqual(check.validated.baseline_check_passes, true);
+  assert.strictEqual(check.validated.required_candidate_count, true);
+  assert.strictEqual(check.validated.every_entry_requires_future_admission, true);
   assert.strictEqual(check.validated.current_work_item_closed, true);
   assert.strictEqual(check.boundary.writes_files, false);
 });
