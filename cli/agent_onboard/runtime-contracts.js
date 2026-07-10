@@ -2,7 +2,7 @@
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
-const RELEASE_LINE = 'public_source_manifest_hash_cache_budget_gate';
+const RELEASE_LINE = 'public_authority_compact_index_drift_guard_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
   agents: 'agents',
@@ -321,7 +321,7 @@ const PRODUCT_HELP_LINES = Object.freeze([
   'agent-onboard init --dry-run|--write [--force]',
   'agent-onboard agents --preview|--write [--force]',
   'agent-onboard guard --plan|--check-boundary',
-  'agent-onboard authority --first-read|--check',
+  'agent-onboard authority --first-read|--check|--index|--index-check',
   'agent-onboard architecture --map|--router|--facades|--check',
   'agent-onboard release --plan|--surface|--surface-check|--source-manifest|--source-manifest-check|--target-onboarding-smoke|--real-target-trial|--check',
   'agent-onboard target-config --schema|--template|--validate-template|--validate [.agent-onboard/target.json]'

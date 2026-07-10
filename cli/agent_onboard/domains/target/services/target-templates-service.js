@@ -126,16 +126,17 @@ function createTargetTemplatesService(deps) {
   1. \`AGENTS.md\`
   2. \`SOURCE_OF_TRUTH.md\`
   3. \`.agent-onboard/authority-path.json\`
-  4. \`llms.txt\`
-  5. \`package.json\`
-  6. \`authority-map.json\`
-  7. \`manifest.json\`
-  8. \`${TARGET_CONFIG_FILE}\`
-  9. \`.agent-onboard/runtime-namespace.json\`
-  10. \`.agent-onboard/project.json\`
-  11. \`.agent-onboard/work-items.json\`
-  12. \`README.md\`
-  13. raw evidence/source files on demand only after the authority and scope files above.
+  4. \`.agent-onboard/authority-index.json\`
+  5. \`llms.txt\`
+  6. \`package.json\`
+  7. \`authority-map.json\`
+  8. \`manifest.json\`
+  9. \`${TARGET_CONFIG_FILE}\`
+  10. \`.agent-onboard/runtime-namespace.json\`
+  11. \`.agent-onboard/project.json\`
+  12. \`.agent-onboard/work-items.json\`
+  13. \`README.md\`
+  14. raw evidence/source files on demand only after the authority and scope files above.
   
   If \`node_modules\` is missing, do not assume the package is installed locally. Prefer \`npx ${PACKAGE_NAME}@${VERSION} status\` or the package version requested by the repository owner.
   
@@ -244,16 +245,17 @@ function createTargetTemplatesService(deps) {
   1. AGENTS.md — human and agent operating rules.
   2. SOURCE_OF_TRUTH.md — human-readable authority precedence.
   3. .agent-onboard/authority-path.json — machine-readable authority path index.
-  4. llms.txt — AI-readable command and orientation entrypoint.
-  5. package.json — package identity, scripts, and pack surface.
-  6. authority-map.json — stable file URN and authority registry.
-  7. manifest.json — content identity and file coverage index.
-  8. .agent-onboard/target.json — target boundary declaration.
-  9. .agent-onboard/runtime-namespace.json — target runtime namespace declaration.
-  10. .agent-onboard/project.json — target runtime identity.
-  11. .agent-onboard/work-items.json — public work item ledger.
-  12. README.md — public package or repository documentation.
-  13. raw evidence/source files — on demand only after the authority and scope files above.
+  4. .agent-onboard/authority-index.json — compact authority digest and drift index.
+  5. llms.txt — AI-readable command and orientation entrypoint.
+  6. package.json — package identity, scripts, and pack surface.
+  7. authority-map.json — stable file URN and authority registry.
+  8. manifest.json — content identity and file coverage index.
+  9. .agent-onboard/target.json — target boundary declaration.
+  10. .agent-onboard/runtime-namespace.json — target runtime namespace declaration.
+  11. .agent-onboard/project.json — target runtime identity.
+  12. .agent-onboard/work-items.json — public work item ledger.
+  13. README.md — public package or repository documentation.
+  14. raw evidence/source files — on demand only after the authority and scope files above.
   
   Default boundary: start read-only. Do not install dependencies, run builds/tests/deploys, publish, push, or overwrite non-identical files unless the repository owner explicitly authorizes that action.
   `;
@@ -264,11 +266,14 @@ function createTargetTemplatesService(deps) {
     return {
       schema: 'agent-onboard-authority-path-001',
       package_name: PACKAGE_NAME,
-      package_version: VERSION,
+      package_version_source: 'package.json#version',
       release_line: PUBLIC_AUTHORITY_FIRST_READ_INDEX.release_line,
       target: { name, root: '.', kind },
       command: PUBLIC_AUTHORITY_FIRST_READ_INDEX.command,
       check_command: PUBLIC_AUTHORITY_FIRST_READ_INDEX.check_command,
+      compact_authority_index_file: PUBLIC_AUTHORITY_FIRST_READ_INDEX.compact_index_file,
+      compact_index_command: PUBLIC_AUTHORITY_FIRST_READ_INDEX.compact_index_command,
+      compact_index_check_command: PUBLIC_AUTHORITY_FIRST_READ_INDEX.compact_index_check_command,
       first_read_order: firstReadOrder(),
       canonical_authority_files: PUBLIC_AUTHORITY_FIRST_READ_INDEX.source_files.slice(),
       boundary: {
@@ -318,7 +323,8 @@ function createTargetTemplatesService(deps) {
           '.agent-onboard/work-items.json',
           'AGENTS.md',
           'llms.txt',
-          '.agent-onboard/authority-path.json'
+          '.agent-onboard/authority-path.json',
+          '.agent-onboard/authority-index.json'
         ],
         exclude: ['node_modules', '.git', 'dist', 'build', '.venv', '.lake']
       }

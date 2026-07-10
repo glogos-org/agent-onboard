@@ -14,6 +14,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-authority-command-adapter-extraction-json-d836eacf"
     },
     {
+      "file_path": ".agent-onboard/authority-index.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-authority-index-json-0bcd2304"
+    },
+    {
       "file_path": ".agent-onboard/authority-path.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-authority-path-json-9c1fc126"
     },
@@ -96,6 +100,10 @@
     {
       "file_path": ".agent-onboard/public-architecture-m1-closure-m2-seed.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-architecture-m1-closure-m2-seed-json-2aa8e507"
+    },
+    {
+      "file_path": ".agent-onboard/public-authority-compact-index-drift-guard-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-public-authority-compact-index-drift-guard-gate-json-b7fd1cfb"
     },
     {
       "file_path": ".agent-onboard/public-contract-output-validator-gate.json",

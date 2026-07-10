@@ -507,6 +507,7 @@ function discoveryFirstReadOrder() {
     'AGENTS.md',
     'SOURCE_OF_TRUTH.md',
     '.agent-onboard/authority-path.json',
+    '.agent-onboard/authority-index.json',
     'llms.txt',
     'package.json',
     'authority-map.json',
@@ -545,6 +546,8 @@ function discoveryStableCommands() {
     'agent-onboard target onboarding --plan',
     'agent-onboard work-items --next --text',
     'agent-onboard release --source-manifest',
+    'agent-onboard authority --index',
+    'agent-onboard authority --index-check',
     'agent-onboard release --check'
   ];
 }
@@ -559,6 +562,7 @@ function embeddedDiscoveryLlmsText() {
     '- AGENTS.md',
     '- SOURCE_OF_TRUTH.md',
     '- .agent-onboard/authority-path.json',
+    '- .agent-onboard/authority-index.json',
     '- llms.txt',
     '- package.json',
     '- authority-map.json',
@@ -576,7 +580,7 @@ function embeddedDiscoveryLlmsText() {
     '',
     'First-read order:',
     ...discoveryFirstReadOrder().map((entry, index) => `${index + 1}. ${entry}`),
-    '13. raw evidence/source files',
+    `${discoveryFirstReadOrder().length + 1}. raw evidence/source files`,
     '',
     'Source of truth order for agents: follow the First-read order above before raw evidence/source files.',
     '',
@@ -1703,6 +1707,7 @@ const TARGET_MEMORY_SURFACE_CANDIDATES = Object.freeze([
   { path: '.agent-onboard/project.json', kind: 'target_project_state', authority: 'target_owned_state', read_policy: 'schema_metadata_only_in_this_command' },
   { path: '.agent-onboard/work-items.json', kind: 'work_item_state', authority: 'target_owned_state', read_policy: 'schema_metadata_only_in_this_command' },
   { path: '.agent-onboard/authority-path.json', kind: 'authority_path', authority: 'target_owned_state', read_policy: 'schema_metadata_only_in_this_command' },
+  { path: '.agent-onboard/authority-index.json', kind: 'authority_compact_index', authority: 'target_owned_state', read_policy: 'schema_metadata_only_in_this_command' },
   { path: '.agent-onboard/claims.jsonl', kind: 'claims_ledger', authority: 'target_owned_state', read_policy: 'metadata_only_in_this_command' },
   { path: '.agent-onboard/target-memory.json', kind: 'target_memory_descriptor', authority: 'target_owned_state', read_policy: 'metadata_only_in_this_command' }
 ]);
@@ -1915,6 +1920,7 @@ const targetMemoryService = Object.freeze({
 
 const targetRuntimeService = createTargetRuntimeService({
   version: VERSION,
+  releaseLine: RELEASE_LINE,
   publicReleaseContract: PUBLIC_RELEASE_CONTRACT,
   publicAuthorityFirstReadIndex: PUBLIC_AUTHORITY_FIRST_READ_INDEX,
   publicTargetRuntimeNamespace: PUBLIC_TARGET_RUNTIME_NAMESPACE,
@@ -2207,6 +2213,8 @@ const {
   publicSourceDomainModulePartitionPlanCheck,
   publicAuthorityFirstRead,
   publicAuthorityFirstReadCheck,
+  publicAuthorityCompactIndexResult,
+  publicAuthorityCompactIndexCheck,
   publicTargetRuntimeNamespace,
   publicTargetRuntimeNamespaceCheck,
   publicSourceDomainExtractionRehearsal,
@@ -6689,6 +6697,8 @@ function publicTargetOnboardingPostPublishHandoff(root = packageRoot(), version 
     `npx agent-onboard@${version} release --version-sprawl-check`,
     `npx agent-onboard@${version} authority --first-read`,
     `npx agent-onboard@${version} authority --check`,
+    `npx agent-onboard@${version} authority --index`,
+    `npx agent-onboard@${version} authority --index-check`,
     `npx agent-onboard@${version} target runtime --namespace`,
     `npx agent-onboard@${version} target runtime --check`,
     `npx agent-onboard@${version} release --surface`,
@@ -6804,6 +6814,8 @@ function publicTargetOnboardingPublishedAcceptance(root = packageRoot()) {
     `npx agent-onboard@${VERSION} release --version-sprawl-check`,
     `npx agent-onboard@${VERSION} authority --first-read`,
     `npx agent-onboard@${VERSION} authority --check`,
+    `npx agent-onboard@${VERSION} authority --index`,
+    `npx agent-onboard@${VERSION} authority --index-check`,
     `npx agent-onboard@${VERSION} target runtime --namespace`,
     `npx agent-onboard@${VERSION} target runtime --check`,
     `npx agent-onboard@${VERSION} architecture --check`,
@@ -7262,11 +7274,20 @@ function runAuthority(args) {
     json(result);
     return result.status === 'ok' ? 0 : 1;
   }
+  if (args.length === 1 && args[0] === '--index') {
+    json(publicAuthorityCompactIndexResult());
+    return 0;
+  }
+  if (args.length === 1 && args[0] === '--index-check') {
+    const result = publicAuthorityCompactIndexCheck();
+    json(result);
+    return result.status === 'ok' ? 0 : 1;
+  }
   json({
     schema: 'agent-onboard-authority-command-error-001',
     status: 'error',
     command_family: 'authority',
-    message: 'authority requires --first-read or --check',
+    message: 'authority requires --first-read, --check, --index, or --index-check',
     writes_files: false,
     publishes_package: false
   });
@@ -7367,6 +7388,8 @@ function runRelease(args) {
       architecture_check_command: PUBLIC_RELEASE_CONTRACT.architecture_check_command,
       authority_first_read_command: PUBLIC_RELEASE_CONTRACT.authority_first_read_command,
       authority_check_command: PUBLIC_RELEASE_CONTRACT.authority_check_command,
+      authority_compact_index_command: PUBLIC_RELEASE_CONTRACT.authority_compact_index_command,
+      authority_compact_index_check_command: PUBLIC_RELEASE_CONTRACT.authority_compact_index_check_command,
       target_runtime_namespace_command: PUBLIC_RELEASE_CONTRACT.target_runtime_namespace_command,
       target_runtime_check_command: PUBLIC_RELEASE_CONTRACT.target_runtime_check_command,
       package_surface_command: PUBLIC_RELEASE_CONTRACT.package_surface_command,
@@ -8838,6 +8861,10 @@ module.exports = {
   publicCommandRouter,
   publicCommandRouterCheck,
   publicArchitectureCheck,
+  publicAuthorityFirstRead,
+  publicAuthorityFirstReadCheck,
+  publicAuthorityCompactIndexResult,
+  publicAuthorityCompactIndexCheck,
   publicSourceDomainExtractionRehearsal,
   publicSourceDomainExtractionRehearsalCheck,
   publicSourceModuleExtractionAuthorityBundleParity,

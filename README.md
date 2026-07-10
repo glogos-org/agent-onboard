@@ -201,6 +201,8 @@ npx agent-onboard guard --plan
 npx agent-onboard guard --check-boundary
 npx agent-onboard authority --first-read
 npx agent-onboard authority --check
+npx agent-onboard authority --index
+npx agent-onboard authority --index-check
 npx agent-onboard target doctor --json
 npx agent-onboard target doctor --text
 npx agent-onboard target profile --json
@@ -396,6 +398,8 @@ This release adds the public source module extraction first slice gate. The firs
 
 ## Public authority first-read index
 
+Current release: `authority --index` emits the compact authority digest index, and `authority --index-check` compares the stored source-only `.agent-onboard/authority-index.json` against live first-read file digests. Both commands are read-only, keep raw authority file contents out of the output, and preserve the npm package allowlist.
+
 Print the public authority read order without writing files:
 
 ```sh
@@ -408,7 +412,7 @@ Validate the source authority files when running from a source repo, or validate
 npx agent-onboard authority --check
 ```
 
-The canonical read order is `AGENTS.md`, `llms.txt`, `.agent-onboard/authority-path.json`, `.agent-onboard/target.json`, `.agent-onboard/runtime-namespace.json`, `.agent-onboard/project.json`, `.agent-onboard/work-items.json`, then `README.md`; raw evidence/source files are on-demand only after those authority files.
+The canonical read order is `AGENTS.md`, `SOURCE_OF_TRUTH.md`, `.agent-onboard/authority-path.json`, `.agent-onboard/authority-index.json`, `llms.txt`, `package.json`, `authority-map.json`, `manifest.json`, `.agent-onboard/target.json`, `.agent-onboard/runtime-namespace.json`, `.agent-onboard/project.json`, `.agent-onboard/work-items.json`, then `README.md`; raw evidence/source files are on-demand only after those authority files. The compact authority index records file digests and drift state without inlining raw authority file contents.
 
 ## Public target runtime namespace
 
@@ -995,7 +999,7 @@ This version does not:
 
 `0.0.30` adds the public domain service facade gate: `architecture --facades` reports the six admitted service facades, route-to-facade ownership, and the no-write facade inspection contract without requiring a physical source module split.
 
-`0.0.31` adds the public authority first-read index gate: `authority --first-read` reports the canonical read order, `authority --check` validates `llms.txt` and `.agent-onboard/authority-path.json`, and target onboarding now projects those first-read files as canonical target surface files.
+`0.0.31` adds the public authority first-read index gate: `authority --first-read` reports the canonical read order, `authority --check` validates `llms.txt` and `.agent-onboard/authority-path.json`, and target onboarding now projects those first-read files as canonical target surface files. Current authority checks also validate `.agent-onboard/authority-index.json` as a compact digest/drift guard through `authority --index` and `authority --index-check`, without loading raw authority contents by default.
 
 `0.0.32` adds the public target runtime namespace gate: `target runtime --namespace` reports the canonical `.agent-onboard/` namespace, `target runtime --check` validates `.agent-onboard/runtime-namespace.json`, and target onboarding projects the namespace file as a canonical target surface file.
 

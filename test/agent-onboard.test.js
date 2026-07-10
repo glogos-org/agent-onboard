@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_source_manifest_hash_cache_budget_gate';
+const EXPECTED_RELEASE_LINE = 'public_authority_compact_index_drift_guard_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -1306,6 +1306,8 @@ fullSourceTest('full source block line 169', () => {
   assert.strictEqual(output.architecture_check_command, 'agent-onboard architecture --check');
   assert.strictEqual(output.authority_first_read_command, 'agent-onboard authority --first-read');
   assert.strictEqual(output.authority_check_command, 'agent-onboard authority --check');
+  assert.strictEqual(output.authority_compact_index_command, 'agent-onboard authority --index');
+  assert.strictEqual(output.authority_compact_index_check_command, 'agent-onboard authority --index-check');
 });
 
 
@@ -1396,6 +1398,8 @@ fullSourceTest('full source block line 261', () => {
   assert.strictEqual(output.contract.architecture_check_command, 'agent-onboard architecture --check');
   assert.strictEqual(output.contract.authority_first_read_command, 'agent-onboard authority --first-read');
   assert.strictEqual(output.contract.authority_check_command, 'agent-onboard authority --check');
+  assert.strictEqual(output.contract.authority_compact_index_command, 'agent-onboard authority --index');
+  assert.strictEqual(output.contract.authority_compact_index_check_command, 'agent-onboard authority --index-check');
   assert.strictEqual(output.contract.target_runtime_namespace_command, 'agent-onboard target runtime --namespace');
   assert.strictEqual(output.contract.target_runtime_check_command, 'agent-onboard target runtime --check');
   assert.strictEqual(output.contract.package_surface_command, 'agent-onboard release --surface');
@@ -1592,7 +1596,7 @@ fullSourceTest('full source block line 535', () => {
   assert.strictEqual(output.version, EXPECTED_VERSION);
   assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
   assert.strictEqual(output.command, 'agent-onboard authority --first-read');
-  assert.deepStrictEqual(output.read_order.map((entry) => entry.path), ['AGENTS.md', 'SOURCE_OF_TRUTH.md', '.agent-onboard/authority-path.json', 'llms.txt', 'package.json', 'authority-map.json', 'manifest.json', '.agent-onboard/target.json', '.agent-onboard/runtime-namespace.json', '.agent-onboard/project.json', '.agent-onboard/work-items.json', 'README.md', 'raw evidence/source files']);
+  assert.deepStrictEqual(output.read_order.map((entry) => entry.path), ['AGENTS.md', 'SOURCE_OF_TRUTH.md', '.agent-onboard/authority-path.json', '.agent-onboard/authority-index.json', 'llms.txt', 'package.json', 'authority-map.json', 'manifest.json', '.agent-onboard/target.json', '.agent-onboard/runtime-namespace.json', '.agent-onboard/project.json', '.agent-onboard/work-items.json', 'README.md', 'raw evidence/source files']);
   assert.strictEqual(output.boundary.writes_files, false);
 });
 
@@ -1606,6 +1610,34 @@ fullSourceTest('full source block line 547', () => {
   assert.strictEqual(output.validated.source_authority_files, true);
   assert.ok(output.source_files_present.includes('llms.txt'));
   assert.ok(output.source_files_present.includes('.agent-onboard/authority-path.json'));
+  assert.strictEqual(output.validated.compact_authority_index, true);
+  assert.strictEqual(output.compact_authority_index_check.index_file_status, 'fresh');
+});
+
+fullSourceTest('public authority compact index command reports digest-only drift guard', () => {
+  const result = run(['authority', '--index']);
+  const output = readJsonOutput(result);
+  assert.strictEqual(output.schema, 'agent-onboard-public-authority-compact-index-result-001');
+  assert.strictEqual(output.status, 'ok');
+  assert.strictEqual(output.command, 'agent-onboard authority --index');
+  assert.strictEqual(output.authority_index.schema, 'agent-onboard-public-authority-compact-index-001');
+  assert.strictEqual(output.authority_index.raw_authority_loaded_by_default, false);
+  assert.strictEqual(output.authority_index.file_contents_inlined, false);
+  assert.ok(output.authority_index.indexed_authority_files.every((entry) => entry.content_inlined === false));
+  assert.ok(output.authority_index.indexed_authority_files.some((entry) => entry.file_path === 'AGENTS.md' && entry.file_id.startsWith('ni:///sha-256;')));
+});
+
+fullSourceTest('public authority compact index check validates stored index freshness', () => {
+  const result = run(['authority', '--index-check']);
+  const output = readJsonOutput(result);
+  assert.strictEqual(output.schema, 'agent-onboard-public-authority-compact-index-check-result-001');
+  assert.strictEqual(output.status, 'ok');
+  assert.strictEqual(output.index_file, '.agent-onboard/authority-index.json');
+  assert.strictEqual(output.index_file_status, 'fresh');
+  assert.strictEqual(output.validated.stored_index_fresh_or_installed_context_allowed, true);
+  assert.strictEqual(output.validated.raw_authority_loaded_by_default, true);
+  assert.strictEqual(output.validated.file_contents_not_inlined, true);
+  assert.strictEqual(output.validated.within_budget, true);
 });
 
 fullSourceTest('full source block line 559', () => {
@@ -3821,6 +3853,8 @@ fullSourceTest('full source block line 2095', () => {
   assert.ok(installedHandoffOutput.verification_commands.includes(`${EXPECTED_VERSIONED_NPX} architecture --extraction-check`));
   assert.ok(installedHandoffOutput.verification_commands.includes(`${EXPECTED_VERSIONED_NPX} authority --first-read`));
   assert.ok(installedHandoffOutput.verification_commands.includes(`${EXPECTED_VERSIONED_NPX} authority --check`));
+  assert.ok(installedHandoffOutput.verification_commands.includes(`${EXPECTED_VERSIONED_NPX} authority --index`));
+  assert.ok(installedHandoffOutput.verification_commands.includes(`${EXPECTED_VERSIONED_NPX} authority --index-check`));
   assert.ok(installedHandoffOutput.verification_commands.includes(`${EXPECTED_VERSIONED_NPX} target runtime --namespace`));
   assert.ok(installedHandoffOutput.verification_commands.includes(`${EXPECTED_VERSIONED_NPX} target runtime --check`));
   assert.ok(installedHandoffOutput.verification_commands.includes(`${EXPECTED_VERSIONED_NPX} release --surface`));
@@ -4000,6 +4034,8 @@ fullSourceTest('full source block line 2233', () => {
   assert.ok(readme.includes('npx agent-onboard release --source-manifest-check'));
   assert.ok(readme.includes('npx agent-onboard authority --first-read'));
   assert.ok(readme.includes('npx agent-onboard authority --check'));
+  assert.ok(readme.includes('npx agent-onboard authority --index'));
+  assert.ok(readme.includes('npx agent-onboard authority --index-check'));
   assert.ok(readme.includes('npx agent-onboard target doctor --json'));
   assert.ok(readme.includes('npx agent-onboard target profile --json'));
   assert.ok(readme.includes('npx agent-onboard target work-items --preview'));

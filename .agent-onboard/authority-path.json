@@ -1,7 +1,8 @@
 {
   "schema": "agent-onboard-authority-path-001",
   "package_name": "agent-onboard",
-  "release_line": "public_source_manifest_hash_cache_budget_gate",
+  "package_version_source": "package.json#version",
+  "release_line": "public_authority_compact_index_drift_guard_gate",
   "target": {
     "name": "agent-onboard",
     "root": ".",
@@ -9,6 +10,9 @@
   },
   "command": "agent-onboard authority --first-read",
   "check_command": "agent-onboard authority --check",
+  "compact_authority_index_file": ".agent-onboard/authority-index.json",
+  "compact_index_command": "agent-onboard authority --index",
+  "compact_index_check_command": "agent-onboard authority --index-check",
   "first_read_order": [
     {
       "order": 1,
@@ -25,65 +29,71 @@
     {
       "order": 3,
       "path": ".agent-onboard/authority-path.json",
-      "role": "machine_readable_authority_index",
+      "role": "machine_readable_authority_path_index",
       "required_when_present": true
     },
     {
       "order": 4,
+      "path": ".agent-onboard/authority-index.json",
+      "role": "compact_authority_digest_and_drift_index",
+      "required_when_present": true
+    },
+    {
+      "order": 5,
       "path": "llms.txt",
       "role": "ai_readable_command_and_orientation_entrypoint",
       "required_when_present": true
     },
     {
-      "order": 5,
+      "order": 6,
       "path": "package.json",
       "role": "package_identity_scripts_and_pack_surface",
       "required_when_present": true
     },
     {
-      "order": 6,
+      "order": 7,
       "path": "authority-map.json",
       "role": "stable_file_urn_and_authority_registry",
       "required_when_present": true
     },
     {
-      "order": 7,
+      "order": 8,
       "path": "manifest.json",
       "role": "content_identity_and_file_coverage_index",
       "required_when_present": true
     },
     {
-      "order": 8,
+      "order": 9,
       "path": ".agent-onboard/target.json",
       "role": "target_boundary_declaration",
       "required_when_present": true
     },
     {
-      "order": 9,
+      "order": 10,
       "path": ".agent-onboard/runtime-namespace.json",
       "role": "target_runtime_namespace_declaration",
       "required_when_present": true
     },
     {
-      "order": 10,
+      "order": 11,
       "path": ".agent-onboard/project.json",
       "role": "target_runtime_project_identity",
       "required_when_present": true
     },
     {
-      "order": 11,
+      "order": 12,
       "path": ".agent-onboard/work-items.json",
       "role": "public_work_item_ledger",
       "required_when_present": true
     },
     {
-      "order": 12,
+      "order": 13,
       "path": "README.md",
       "role": "public_package_documentation",
       "required_when_present": false
     },
     {
-      "order": 13,
+      "order": 14,
       "path": "raw evidence/source files",
       "role": "on_demand_only_after_authority_and_scope_files",
       "required_when_present": false
@@ -109,10 +119,5 @@
     "build_test_deploy_requires_owner_authorization": true,
     "publish_push_requires_owner_authorization": true,
     "raw_evidence_is_on_demand_only": true
-  },
-  "package_version_source": "package.json#version",
-  "authority_summary_file": "SOURCE_OF_TRUTH.md",
-  "package_metadata_file": "package.json",
-  "stable_authority_map_file": "authority-map.json",
-  "content_manifest_file": "manifest.json"
+  }
 }

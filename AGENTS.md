@@ -11,16 +11,17 @@ Before proposing or making changes, read:
 1. `AGENTS.md`
 2. `SOURCE_OF_TRUTH.md`
 3. `.agent-onboard/authority-path.json`
-4. `llms.txt`
-5. `package.json`
-6. `authority-map.json`
-7. `manifest.json`
-8. `.agent-onboard/target.json`
-9. `.agent-onboard/runtime-namespace.json`
-10. `.agent-onboard/project.json`
-11. `.agent-onboard/work-items.json`
-12. `README.md`
-13. Raw evidence/source files on demand only after the authority and scope files above.
+4. `.agent-onboard/authority-index.json`
+5. `llms.txt`
+6. `package.json`
+7. `authority-map.json`
+8. `manifest.json`
+9. `.agent-onboard/target.json`
+10. `.agent-onboard/runtime-namespace.json`
+11. `.agent-onboard/project.json`
+12. `.agent-onboard/work-items.json`
+13. `README.md`
+14. Raw evidence/source files on demand only after the authority and scope files above.
 
 ## Default boundary
 
@@ -55,6 +56,8 @@ node cli/agent-onboard.js quickstart --json
 node cli/agent-onboard.js discovery --llms
 node cli/agent-onboard.js discovery --text
 node cli/agent-onboard.js discovery --json
+node cli/agent-onboard.js authority --index
+node cli/agent-onboard.js authority --index-check
 node cli/agent-onboard.js target memory --text
 node cli/agent-onboard.js target memory --preview
 node cli/agent-onboard.js target work-items --text
@@ -141,6 +144,8 @@ Inspect the public authority first-read index before expanding authority or targ
 ```sh
 node cli/agent-onboard.js authority --first-read
 node cli/agent-onboard.js authority --check
+node cli/agent-onboard.js authority --index
+node cli/agent-onboard.js authority --index-check
 ```
 
 Inspect the public target runtime namespace before expanding target runtime files:
