@@ -1,0 +1,80 @@
+{
+  "schema": "agent-onboard-public-closed-gate-artifact-compaction-planning-gate-001",
+  "status": "closed",
+  "package_name": "agent-onboard",
+  "package_version": "0.0.156",
+  "release_line": "public_closed_gate_artifact_compaction_planning_gate",
+  "milestone_id": "P1S3M6",
+  "work_item_id": "P1S3M6W7",
+  "title": "Public closed gate artifact compaction planning gate",
+  "closed_at": "2026-07-06T17:20:00.000Z",
+  "surface_id": "closed-gate-artifacts",
+  "commands": {
+    "command": "agent-onboard release --closed-gates-plan",
+    "check_command": "agent-onboard release --closed-gates-plan-check"
+  },
+  "planned_future_surfaces": {
+    "index_candidate": ".agent-onboard/closed-gates.index.json",
+    "archive_candidate": ".agent-onboard/closed-gates.archive.jsonl"
+  },
+  "metrics": {
+    "gate_artifacts_seen_before_this_artifact": 46,
+    "gate_artifact_bytes_seen_before_this_artifact": 161447,
+    "authority_closed_gates_jsonl_present": true,
+    "authority_closed_gates_jsonl_bytes": 1413
+  },
+  "recovery_requirements": {
+    "raw_artifacts_preserved_until_apply_gate": true,
+    "raw_artifact_recovery_required_after_apply": true,
+    "index_must_not_be_sole_authority_without_archive": true,
+    "future_apply_gate_must_refresh_manifest_and_authority_indexes": true
+  },
+  "boundary": {
+    "writes_files_for_plan_command": false,
+    "creates_index_now": false,
+    "creates_archive_now": false,
+    "deleted_files": false,
+    "moved_files": false,
+    "compacted_raw_artifacts_now": false,
+    "published_package": false,
+    "mutated_registry": false,
+    "installed_dependencies": false,
+    "ran_package_manager_for_plan": false,
+    "git_mutation": false
+  },
+  "changed_files": [
+    "package.json",
+    "README.md",
+    "AGENTS.md",
+    "SOURCE_OF_TRUTH.md",
+    "llms.txt",
+    "cli/agent_onboard/runtime-composer.js",
+    "cli/agent_onboard/runtime-contracts.js",
+    "cli/agent_onboard/domains/architecture/static-catalog.js",
+    "cli/agent_onboard/domains/package/services/package-service.js",
+    "test/agent-onboard.test.js",
+    "test/run-tests.js",
+    ".agent-onboard/public-closed-gate-artifact-compaction-planning-gate.json",
+    ".agent-onboard/work-items.json",
+    ".agent-onboard/work-items.index.json",
+    ".agent-onboard/claims.jsonl",
+    ".agent-onboard/claims.index.json",
+    ".agent-onboard/authority-index.json",
+    ".agent-onboard/state/live-authority.json",
+    ".agent-onboard/state/policies.json",
+    ".agent-onboard/state/indexes.json",
+    ".agent-onboard/state/closed-gates.jsonl",
+    "authority-map.json",
+    "manifest.json"
+  ],
+  "verification_commands": [
+    "node cli/agent-onboard.js release --closed-gates-plan",
+    "node cli/agent-onboard.js release --closed-gates-plan-check",
+    "node cli/agent-onboard.js release --readme-apply-check",
+    "node cli/agent-onboard.js release --clean-catalog-check",
+    "node cli/agent-onboard.js release --check",
+    "node cli/agent-onboard.js check --fast --json",
+    "npm test",
+    "npm pack --dry-run --json"
+  ]
+}

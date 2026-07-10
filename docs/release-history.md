@@ -1,7 +1,7 @@
 # agent-onboard release history
 
-This archive preserves historical README release sections moved out of the live first-read README by the public clean-and-compaction README history archive split apply gate.
-The live README remains the first-read install, quickstart, current command, and safety-boundary surface.
+Historical release prose archived from README.md by P1S3M6W6.
+README.md remains the live first-read surface for install, quickstart, current commands, and no-mutation boundary material.
 ## Current release: public contract spine readiness output contract gate
 
 The current release adds `contracts --json|--text|--check` as a compact public contract/interface spine for stable CLI JSON outputs. The spine declares descriptor-based contracts for target handoff preview, handoff readiness checks, readiness reason entries, governance budget contract/check outputs, and the shared no-mutation runtime boundary. It validates the catalog and live runtime outputs through `contracts --check` and `check --fast` without writing files, exporting source-only implementation archives, requiring TypeScript, requiring abstract classes, installing dependencies, mutating Git, publishing, or using network access.
