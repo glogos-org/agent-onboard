@@ -207,6 +207,7 @@ function commandSurfaceCatalog() {
       'agent-onboard release --authority-state-parity-check',
       'agent-onboard release --clean-check',
       'agent-onboard release --clean-catalog-check',
+      'agent-onboard release --keyword-taxonomy-check',
       'agent-onboard release --check'
     ],
     output_modes: ['--json', '--text'],
@@ -561,6 +562,8 @@ function discoveryStableCommands() {
     'agent-onboard release --clean-check',
     'agent-onboard release --clean-catalog',
     'agent-onboard release --clean-catalog-check',
+    'agent-onboard release --keyword-taxonomy',
+    'agent-onboard release --keyword-taxonomy-check',
     'agent-onboard authority --index',
     'agent-onboard authority --index-check',
     'agent-onboard authority --state',
@@ -1269,6 +1272,7 @@ const CHECK_FAST_SLOW_REASON_TAXONOMY = Object.freeze({
 const CHECK_FAST_REGISTRY = Object.freeze([
   Object.freeze({ id: 'release-clean-check', command: 'agent-onboard release --clean-check', scope: 'source_clean_compaction_baseline', slow: false }),
   Object.freeze({ id: 'release-clean-catalog-check', command: 'agent-onboard release --clean-catalog-check', scope: 'source_clean_compaction_catalog', slow: false }),
+  Object.freeze({ id: 'release-keyword-taxonomy-check', command: 'agent-onboard release --keyword-taxonomy-check', scope: 'source_package_keyword_taxonomy', slow: false }),
   Object.freeze({ id: 'command-surface-catalog', command: 'agent-onboard commands --json', scope: 'product_discovery', slow: false }),
   Object.freeze({ id: 'operator-guide', command: 'agent-onboard guide --json', scope: 'operator_orientation', slow: false }),
   Object.freeze({ id: 'quickstart', command: 'agent-onboard quickstart --json', scope: 'first_run_recipe', slow: false }),
@@ -1559,6 +1563,7 @@ function runCheckFastPlan(root = packageRoot(), options = {}) {
     'release-source-manifest-check': () => publicPackageSourceManifestCheck(root),
     'release-clean-check': () => publicCleanCompactionBaselineCheck(root),
     'release-clean-catalog-check': () => publicCleanCompactionCatalogCheck(root),
+    'release-keyword-taxonomy-check': () => publicPackageKeywordTaxonomyCompactionCheck(root),
     'release-surface-check': () => publicPackageSurfaceCheck(root),
     'release-check': () => publicReleaseCheck(root),
     'ci-surface': () => ciSurfaceService.catalog(),
@@ -6920,6 +6925,235 @@ function publicCleanCompactionCatalogText(result = publicCleanCompactionCatalog(
   return `${lines.join('\n')}\n`;
 }
 
+const PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION = Object.freeze({
+  schema: 'agent-onboard-public-package-keyword-taxonomy-compaction-001',
+  package_name: PACKAGE_NAME,
+  release_line: RELEASE_LINE,
+  milestone_id: 'P1S3M6',
+  catalog_surface_id: 'package-keyword-taxonomy',
+  baseline_work_item_id: ['P1S3M6', 'W1'].join(''),
+  catalog_work_item_id: ['P1S3M6', 'W2'].join(''),
+  work_item_id: ['P1S3M6', 'W3'].join(''),
+  title: 'Public package keyword taxonomy compaction gate',
+  command: 'agent-onboard release --keyword-taxonomy',
+  check_command: 'agent-onboard release --keyword-taxonomy-check',
+  artifact_file: '.agent-onboard/public-package-keyword-taxonomy-compaction-gate.json',
+  purpose: 'Reduce package.json keyword sprawl into a compact public npm discovery taxonomy while preserving package identity, command-family discovery, target onboarding discovery, coordination, release, contract, and clean-compaction terms.',
+  previous_observed_keyword_count: 446,
+  max_keywords: 80,
+  min_keywords: 24,
+  required_keyword_groups: Object.freeze({
+    package_identity: Object.freeze(['agent-onboard', 'agent-onboard-cli', 'create-agent-onboard']),
+    target_onboarding: Object.freeze(['repository-onboarding', 'target-repository', 'target-onboarding', 'target-doctor', 'target-governance']),
+    coordination: Object.freeze(['work-items', 'work-item-ledger', 'work-item-claim', 'claim-ledger', 'claims-jsonl']),
+    authority_governance: Object.freeze(['repository-governance', 'governance-index', 'authority-check', 'authority-index', 'authority-state']),
+    release_package: Object.freeze(['release-check', 'source-manifest', 'content-addressed-manifest', 'package-surface', 'artifact-oracle', 'installed-package-parity']),
+    contracts_output: Object.freeze(['public-contracts', 'json-output-contract', 'contract-validation', 'command-router', 'command-catalog', 'runtime-contracts']),
+    agent_integration: Object.freeze(['agents-md', 'agent-instructions', 'llms-txt', 'mcp-bridge', 'github-actions', 'ci-recipe']),
+    clean_compaction: Object.freeze(['clean-compaction', 'public-clean-compaction', 'package-keyword-taxonomy', 'compaction-policy'])
+  }),
+  forbidden_keyword_patterns: Object.freeze([
+    'concrete work-item identifiers',
+    'release-era one-off gate names',
+    'opaque milestone-only labels',
+    'private/nonpublic process wording',
+    'duplicate keywords',
+    'non-slug keyword spelling'
+  ]),
+  boundary: Object.freeze({
+    command_writes_files: false,
+    check_command_writes_files: false,
+    deletes_files: false,
+    moves_files: false,
+    rewrites_history: false,
+    mutates_work_items: false,
+    mutates_claims: false,
+    mutates_git: false,
+    installs_dependencies: false,
+    runs_package_manager: false,
+    publishes_package: false,
+    mutates_registry: false,
+    network: false
+  })
+});
+
+function publicPackageKeywordTaxonomyCurrent(root = packageRoot()) {
+  const pkg = readJson(path.join(root, 'package.json'));
+  const keywords = Array.isArray(pkg.keywords) ? pkg.keywords.slice() : [];
+  const duplicates = keywords.filter((keyword, index) => keywords.indexOf(keyword) !== index);
+  const slugPattern = /^[a-z0-9][a-z0-9-]*$/;
+  const invalidSlugKeywords = keywords.filter((keyword) => typeof keyword !== 'string' || !slugPattern.test(keyword));
+  const concreteWorkItemPattern = /^p\d+s\d+m\d+w\d+$/i;
+  const milestoneOnlyPattern = /^p\d+s\d+m\d+$/i;
+  const releaseEraGatePattern = /(?:-gate$|^gate-|w\d+$)/i;
+  const forbiddenKeywords = keywords.filter((keyword) => concreteWorkItemPattern.test(keyword) || milestoneOnlyPattern.test(keyword) || releaseEraGatePattern.test(keyword));
+  const groups = PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.required_keyword_groups;
+  const groupCoverage = Object.fromEntries(Object.entries(groups).map(([group, required]) => [group, Object.freeze({
+    required: required.slice(),
+    present: required.filter((keyword) => keywords.includes(keyword)),
+    missing: required.filter((keyword) => !keywords.includes(keyword)),
+    complete: required.every((keyword) => keywords.includes(keyword))
+  })]));
+  return Object.freeze({
+    version: pkg.version,
+    keyword_count: keywords.length,
+    keywords,
+    duplicates,
+    invalid_slug_keywords: invalidSlugKeywords,
+    forbidden_keywords: forbiddenKeywords,
+    group_coverage: Object.freeze(groupCoverage),
+    reduction: Object.freeze({
+      previous_observed_keyword_count: PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.previous_observed_keyword_count,
+      current_keyword_count: keywords.length,
+      reduced_by: PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.previous_observed_keyword_count - keywords.length,
+      current_within_max: keywords.length <= PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.max_keywords
+    })
+  });
+}
+
+function publicPackageKeywordTaxonomyMilestoneState(root = packageRoot()) {
+  const ledgerPath = path.join(root, '.agent-onboard', 'work-items.json');
+  if (!fs.existsSync(ledgerPath)) {
+    return Object.freeze({
+      ledger_present: false,
+      milestone_id: PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.milestone_id,
+      baseline_work_item_id: PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.baseline_work_item_id,
+      catalog_work_item_id: PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.catalog_work_item_id,
+      work_item_id: PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.work_item_id,
+      milestone_status: 'not_present_installed_context_allowed',
+      baseline_work_item_status: 'not_present_installed_context_allowed',
+      catalog_work_item_status: 'not_present_installed_context_allowed',
+      work_item_status: 'not_present_installed_context_allowed'
+    });
+  }
+  let ledger = null;
+  try { ledger = readJson(ledgerPath); } catch { ledger = null; }
+  const milestones = ledger && Array.isArray(ledger.milestones) ? ledger.milestones : [];
+  const workItems = ledger && Array.isArray(ledger.work_items) ? ledger.work_items : [];
+  const milestone = milestones.find((item) => item.id === PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.milestone_id) || null;
+  const baselineWorkItem = workItems.find((item) => item.id === PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.baseline_work_item_id) || null;
+  const catalogWorkItem = workItems.find((item) => item.id === PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.catalog_work_item_id) || null;
+  const workItem = workItems.find((item) => item.id === PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.work_item_id) || null;
+  return Object.freeze({
+    ledger_present: true,
+    milestone_id: PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.milestone_id,
+    baseline_work_item_id: PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.baseline_work_item_id,
+    catalog_work_item_id: PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.catalog_work_item_id,
+    work_item_id: PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.work_item_id,
+    milestone_status: milestone ? milestone.status : 'missing',
+    baseline_work_item_status: baselineWorkItem ? baselineWorkItem.status : 'missing',
+    catalog_work_item_status: catalogWorkItem ? catalogWorkItem.status : 'missing',
+    work_item_status: workItem ? workItem.status : 'missing',
+    milestone_title: milestone ? milestone.title : null,
+    baseline_work_item_title: baselineWorkItem ? baselineWorkItem.title : null,
+    catalog_work_item_title: catalogWorkItem ? catalogWorkItem.title : null,
+    work_item_title: workItem ? workItem.title : null
+  });
+}
+
+function publicPackageKeywordTaxonomyCompaction(root = packageRoot()) {
+  const current = publicPackageKeywordTaxonomyCurrent(root);
+  const catalogCheck = publicCleanCompactionCatalogCheck(root);
+  return Object.freeze({
+    schema: 'agent-onboard-public-package-keyword-taxonomy-compaction-result-001',
+    status: 'ok',
+    package_name: PACKAGE_NAME,
+    version: VERSION,
+    release_line: RELEASE_LINE,
+    command: PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.command,
+    check_command: PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.check_command,
+    package_root: root,
+    package_json_path: 'package.json',
+    taxonomy: PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION,
+    catalog_surface: Object.freeze({
+      source_command: PUBLIC_CLEAN_COMPACTION_CATALOG.command,
+      source_check_command: PUBLIC_CLEAN_COMPACTION_CATALOG.check_command,
+      catalog_check_status: catalogCheck.status,
+      required_surface_id: PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.catalog_surface_id,
+      surface_present: catalogCheck.catalog.entries.some((entry) => entry.id === PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.catalog_surface_id)
+    }),
+    current,
+    boundary: PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.boundary
+  });
+}
+
+function publicPackageKeywordTaxonomyCompactionCheck(root = packageRoot()) {
+  const result = publicPackageKeywordTaxonomyCompaction(root);
+  const current = result.current;
+  const milestone = publicPackageKeywordTaxonomyMilestoneState(root);
+  const errors = [];
+  if (result.catalog_surface.catalog_check_status !== 'ok') errors.push('clean compaction catalog check must pass before keyword taxonomy compaction check');
+  if (!result.catalog_surface.surface_present) errors.push('clean compaction catalog must include package-keyword-taxonomy surface');
+  if (current.keyword_count > PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.max_keywords) errors.push(`package keyword count ${current.keyword_count} exceeds compact taxonomy budget ${PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.max_keywords}`);
+  if (current.keyword_count < PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.min_keywords) errors.push(`package keyword count ${current.keyword_count} is below required discovery floor ${PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.min_keywords}`);
+  if (current.duplicates.length > 0) errors.push(`package keywords contain duplicates: ${current.duplicates.join(', ')}`);
+  if (current.invalid_slug_keywords.length > 0) errors.push(`package keywords must be lowercase npm slugs: ${current.invalid_slug_keywords.join(', ')}`);
+  if (current.forbidden_keywords.length > 0) errors.push(`package keywords contain forbidden release-era terms: ${current.forbidden_keywords.join(', ')}`);
+  for (const [group, coverage] of Object.entries(current.group_coverage)) {
+    if (!coverage.complete) errors.push(`package keyword taxonomy group ${group} is missing: ${coverage.missing.join(', ')}`);
+  }
+  if (current.reduction.reduced_by <= 0) errors.push('package keyword taxonomy must reduce the previously observed keyword count');
+  if (result.boundary.command_writes_files !== false || result.boundary.check_command_writes_files !== false) errors.push('keyword taxonomy commands must remain read-only');
+  if (result.boundary.publishes_package !== false || result.boundary.mutates_registry !== false) errors.push('keyword taxonomy commands must not publish or mutate registry state');
+  if (milestone.ledger_present) {
+    if (milestone.milestone_status !== 'open') errors.push(`${PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.milestone_id} must remain open during keyword taxonomy compaction`);
+    if (milestone.baseline_work_item_status !== 'closed') errors.push(`${PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.baseline_work_item_id} must be closed before keyword taxonomy compaction`);
+    if (milestone.catalog_work_item_status !== 'closed') errors.push(`${PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.catalog_work_item_id} must be closed before keyword taxonomy compaction`);
+    if (milestone.work_item_status !== 'closed') errors.push(`${PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.work_item_id} must be closed by this keyword taxonomy gate`);
+  }
+  return Object.freeze({
+    schema: 'agent-onboard-public-package-keyword-taxonomy-compaction-check-result-001',
+    status: errors.length === 0 ? 'ok' : 'error',
+    package_name: PACKAGE_NAME,
+    version: VERSION,
+    release_line: RELEASE_LINE,
+    command: PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.check_command,
+    taxonomy_command: PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.command,
+    package_root: root,
+    validated: Object.freeze({
+      catalog_check_passes: result.catalog_surface.catalog_check_status === 'ok',
+      catalog_surface_present: result.catalog_surface.surface_present,
+      keyword_count_within_compact_budget: current.keyword_count <= PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.max_keywords,
+      keyword_count_above_discovery_floor: current.keyword_count >= PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.min_keywords,
+      keyword_count_reduced_from_previous_observation: current.reduction.reduced_by > 0,
+      no_duplicate_keywords: current.duplicates.length === 0,
+      keywords_are_lowercase_slugs: current.invalid_slug_keywords.length === 0,
+      release_era_keywords_removed: current.forbidden_keywords.length === 0,
+      every_required_group_complete: Object.values(current.group_coverage).every((coverage) => coverage.complete),
+      read_only_commands: result.boundary.command_writes_files === false && result.boundary.check_command_writes_files === false,
+      no_publish_or_registry_mutation: result.boundary.publishes_package === false && result.boundary.mutates_registry === false,
+      m6_open: !milestone.ledger_present || milestone.milestone_status === 'open',
+      baseline_work_item_closed: !milestone.ledger_present || milestone.baseline_work_item_status === 'closed',
+      catalog_work_item_closed: !milestone.ledger_present || milestone.catalog_work_item_status === 'closed',
+      current_work_item_closed: !milestone.ledger_present || milestone.work_item_status === 'closed'
+    }),
+    taxonomy: result,
+    milestone_state: milestone,
+    boundary: PUBLIC_PACKAGE_KEYWORD_TAXONOMY_COMPACTION.boundary,
+    errors
+  });
+}
+
+function publicPackageKeywordTaxonomyCompactionText(result = publicPackageKeywordTaxonomyCompaction()) {
+  const lines = [
+    `agent-onboard package keyword taxonomy ${result.version}`,
+    `Status: ${result.status}`,
+    `Command: ${result.command}`,
+    '',
+    'Keyword taxonomy:',
+    `- current keyword count: ${result.current.keyword_count}`,
+    `- previous observed keyword count: ${result.current.reduction.previous_observed_keyword_count}`,
+    `- reduced by: ${result.current.reduction.reduced_by}`,
+    `- compact budget: ${result.taxonomy.max_keywords}`,
+    '',
+    'Required groups:'
+  ];
+  for (const [group, coverage] of Object.entries(result.current.group_coverage)) lines.push(`- ${group}: ${coverage.complete ? 'complete' : `missing ${coverage.missing.join(', ')}`}`);
+  lines.push('', 'Boundary:', `- Writes files: ${result.boundary.command_writes_files}`, `- Publishes package: ${result.boundary.publishes_package}`, `- Mutates registry: ${result.boundary.mutates_registry}`);
+  if (Array.isArray(result.errors) && result.errors.length > 0) lines.push('', 'Errors:', ...result.errors.map((error) => `- ${error}`));
+  return `${lines.join('\n')}\n`;
+}
+
 function publicPackageSurfaceCheck(root = packageRoot()) {
   const surface = publicPackageSurface(root);
   const packageSourceManifest = createPublicPackageSourceManifestService().check(root);
@@ -7428,6 +7662,8 @@ function publicReleaseCheck(root = packageRoot()) {
   const cleanCompactionErrors = cleanCompaction.errors.map((error) => `clean compaction baseline: ${error}`);
   const cleanCompactionCatalog = publicCleanCompactionCatalogCheck(root);
   const cleanCompactionCatalogErrors = cleanCompactionCatalog.errors.map((error) => `clean compaction catalog: ${error}`);
+  const keywordTaxonomy = publicPackageKeywordTaxonomyCompactionCheck(root);
+  const keywordTaxonomyErrors = keywordTaxonomy.errors.map((error) => `package keyword taxonomy: ${error}`);
   const packageSurfaceErrors = packageSurface.errors.map((error) => `package surface: ${error}`);
   const architectureParity = { status: architecture.status === 'ok' ? 'ok' : 'error', errors: [] };
   const installedAuthorityStateParity = publicInstalledAuthorityStateShardParity(root);
@@ -7477,9 +7713,9 @@ function publicReleaseCheck(root = packageRoot()) {
   const routerAdapterDelegation = publicRouterCommandAdapterDelegationExpansionCheck(root);
   const routerAdapterDelegationErrors = routerAdapterDelegation.errors.map((error) => `router adapter delegation: ${error}`);
   const architectureParityErrors = architectureParity.errors.map((error) => `installed architecture parity: ${error}`);
-  const errors = [...metadataErrors, ...packErrors, ...messagingErrors, ...sourceLedgerErrors, ...architectureErrors, ...packageSurfaceErrors, ...architectureParityErrors, ...installedAuthorityStateParityErrors, ...targetRepoProductErrors, ...cliRuntimePlanErrors, ...thinCliRouterErrors, ...compatibilityPortErrors, ...coreAdapterErrors, ...packageAdapterErrors, ...architectureAdapterErrors, ...authorityAdapterErrors, ...moduleInclusionPlanErrors, ...packagedRouterPortErrors, ...thinEntrypointRehearsalErrors, ...thinEntrypointCutoverErrors, ...routerAdapterDelegationErrors, ...versionPolicyErrors, ...cleanCompactionErrors, ...cleanCompactionCatalogErrors];
+  const errors = [...metadataErrors, ...packErrors, ...messagingErrors, ...sourceLedgerErrors, ...architectureErrors, ...packageSurfaceErrors, ...architectureParityErrors, ...installedAuthorityStateParityErrors, ...targetRepoProductErrors, ...cliRuntimePlanErrors, ...thinCliRouterErrors, ...compatibilityPortErrors, ...coreAdapterErrors, ...packageAdapterErrors, ...architectureAdapterErrors, ...authorityAdapterErrors, ...moduleInclusionPlanErrors, ...packagedRouterPortErrors, ...thinEntrypointRehearsalErrors, ...thinEntrypointCutoverErrors, ...routerAdapterDelegationErrors, ...versionPolicyErrors, ...cleanCompactionErrors, ...cleanCompactionCatalogErrors, ...keywordTaxonomyErrors];
   return {
-    schema: 'agent-onboard-public-release-check-result-014',
+    schema: 'agent-onboard-public-release-check-result-015',
     status: errors.length === 0 ? 'ok' : 'error',
     package_name: PUBLIC_RELEASE_CONTRACT.package_name,
     version: VERSION,
@@ -7525,7 +7761,8 @@ function publicReleaseCheck(root = packageRoot()) {
       public_installed_parity_architecture_smoke: architectureParity.status === 'ok',
       public_installed_authority_state_shard_parity: installedAuthorityStateParity.status === 'ok',
       public_clean_compaction_baseline: cleanCompaction.status === 'ok',
-      public_clean_compaction_catalog: cleanCompactionCatalog.status === 'ok'
+      public_clean_compaction_catalog: cleanCompactionCatalog.status === 'ok',
+      public_package_keyword_taxonomy_compaction: keywordTaxonomy.status === 'ok'
     },
     expected_pack_files: expectedPackFiles,
     projected_pack_files: projectedPackFiles,
@@ -7551,6 +7788,7 @@ function publicReleaseCheck(root = packageRoot()) {
     public_installed_authority_state_shard_parity: installedAuthorityStateParity,
     public_clean_compaction_baseline: cleanCompaction,
     public_clean_compaction_catalog: cleanCompactionCatalog,
+    public_package_keyword_taxonomy_compaction: keywordTaxonomy,
     local_pre_publish_commands: PUBLIC_RELEASE_CONTRACT.local_pre_publish_commands.slice(),
     post_publish_verification_commands: publicReleasePostPublishCommands(VERSION),
     boundary: {
@@ -8786,6 +9024,12 @@ function runRelease(args) {
     json(result);
     return result.status === 'ok' ? 0 : 1;
   }
+  if (args.length === 1 && (args[0] === '--keyword-taxonomy' || args[0] === '--keyword-taxonomy-check')) {
+    const checkMode = args[0] === '--keyword-taxonomy-check';
+    const result = checkMode ? publicPackageKeywordTaxonomyCompactionCheck() : publicPackageKeywordTaxonomyCompaction();
+    json(result);
+    return result.status === 'ok' ? 0 : 1;
+  }
   if (args.length === 1 && (args[0] === '--authority-state-parity' || args[0] === '--authority-state-parity-check')) {
     const result = publicInstalledAuthorityStateShardParity();
     json(result);
@@ -8835,7 +9079,7 @@ function runRelease(args) {
     schema: 'agent-onboard-release-command-error-001',
     status: 'error',
     command_family: 'release',
-    message: 'release requires --plan, --contract, --fixture, --surface, --surface-check, --source-manifest, --source-manifest-check, --artifact-oracle, --artifact-oracle-check, --authority-state-parity, --authority-state-parity-check, --version-sprawl-check, --parity-smoke, --architecture-parity-smoke, --target-onboarding-smoke, --post-publish-handoff, --published-acceptance, --real-target-trial, or --check',
+    message: 'release requires --plan, --contract, --fixture, --surface, --surface-check, --source-manifest, --source-manifest-check, --artifact-oracle, --artifact-oracle-check, --authority-state-parity, --authority-state-parity-check, --clean-inventory, --clean-check, --clean-catalog, --clean-catalog-check, --keyword-taxonomy, --keyword-taxonomy-check, --version-sprawl-check, --parity-smoke, --architecture-parity-smoke, --target-onboarding-smoke, --post-publish-handoff, --published-acceptance, --real-target-trial, or --check',
     writes_files: false,
     publishes_package: false
   });

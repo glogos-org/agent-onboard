@@ -3,27 +3,11 @@
   "status": "active",
   "ledger_path": ".agent-onboard/claims.jsonl",
   "raw_ledger_loaded_by_default": false,
-  "claim_count": 16,
-  "proposed_count": 8,
-  "merged_count": 8,
+  "claim_count": 18,
+  "proposed_count": 9,
+  "merged_count": 9,
   "latest_claims_limit": 5,
   "latest_claims": [
-    {
-      "event_type": "claim_merged",
-      "work_item_id": "P1S3M5W42",
-      "claim_id": "claim-p1s3m5w42-public-claim-lifecycle-conflict-hardening-gate",
-      "claim_status": "merged",
-      "actor": "gpt-5.5-thinking",
-      "created_at": "2026-07-06T09:00:00.000Z"
-    },
-    {
-      "event_type": "claim_proposed",
-      "work_item_id": "P1S3M6W1",
-      "claim_id": "claim-p1s3m6w1-public-clean-compaction-baseline-gate",
-      "claim_status": "proposed",
-      "actor": "gpt-5.5-thinking",
-      "created_at": "2026-07-06T14:35:00.000Z"
-    },
     {
       "event_type": "claim_merged",
       "work_item_id": "P1S3M6W1",
@@ -47,15 +31,31 @@
       "claim_status": "merged",
       "actor": "gpt-5.5-thinking",
       "created_at": "2026-07-06T15:25:00.000Z"
+    },
+    {
+      "event_type": "claim_proposed",
+      "work_item_id": "P1S3M6W3",
+      "claim_id": "claim-p1s3m6w3-keyword-taxonomy",
+      "claim_status": "proposed",
+      "actor": "gpt-5.5-thinking",
+      "created_at": "2026-07-06T15:55:00.000Z"
+    },
+    {
+      "event_type": "claim_merged",
+      "work_item_id": "P1S3M6W3",
+      "claim_id": "claim-p1s3m6w3-keyword-taxonomy",
+      "claim_status": "merged",
+      "actor": "gpt-5.5-thinking",
+      "created_at": "2026-07-06T16:05:00.000Z"
     }
   ],
   "active_work_item_ids": [],
   "latest_merged_work_item_ids": [
-    "P1S3M5W40",
     "P1S3M5W41",
     "P1S3M5W42",
     "P1S3M6W1",
-    "P1S3M6W2"
+    "P1S3M6W2",
+    "P1S3M6W3"
   ],
   "lifecycle": {
     "active_claim_count": 0,
@@ -64,5 +64,5 @@
     "conflict_work_item_ids": [],
     "lifecycle_check_command": "agent-onboard claim --lifecycle-check --json"
   },
-  "updated_at": "2026-07-06T15:25:00.000Z"
+  "updated_at": "2026-07-06T15:08:35.317Z"
 }

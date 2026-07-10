@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_clean_compaction_catalog_gate';
+const EXPECTED_RELEASE_LINE = 'public_package_keyword_taxonomy_compaction_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -2156,7 +2156,7 @@ fullSourceTest('full source block line 780', () => {
   const result = run(['release', '--check']);
   const output = readJsonOutput(result);
   assert.strictEqual(output.status, 'ok');
-  assert.strictEqual(output.schema, 'agent-onboard-public-release-check-result-014');
+  assert.strictEqual(output.schema, 'agent-onboard-public-release-check-result-015');
   assert.strictEqual(output.version, EXPECTED_VERSION);
   assert.strictEqual(output.validated.package_metadata, true);
   assert.strictEqual(output.validated.projected_pack_allowlist, true);
@@ -4393,7 +4393,7 @@ fullSourceTest('full source block line 2323', () => {
   assert.ok(help.stdout.includes('work-items --close --dry-run|--write --id <public-work-item-id> --actor <actor> --summary <summary>'));
   assert.ok(help.stdout.includes('architecture --map|--router|--facades|--check'));
   assert.ok(!help.stdout.includes('claims-installed-fallback-smoke'));
-  assert.ok(help.stdout.includes('release --plan|--surface|--surface-check|--source-manifest|--source-manifest-check|--artifact-oracle|--artifact-oracle-check|--authority-state-parity|--authority-state-parity-check|--target-onboarding-smoke|--real-target-trial|--check'));
+  assert.ok(help.stdout.includes('release --plan|--surface|--surface-check|--source-manifest|--source-manifest-check|--artifact-oracle|--artifact-oracle-check|--authority-state-parity|--authority-state-parity-check|--clean-inventory|--clean-check|--clean-catalog|--clean-catalog-check|--keyword-taxonomy|--keyword-taxonomy-check|--target-onboarding-smoke|--real-target-trial|--check'));
   assert.ok(help.stdout.includes('target repair --plan|--write [--force] [--target <path>]'));
   assert.ok(help.stdout.includes('target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]'));
 });
@@ -5167,6 +5167,33 @@ fullSourceTest('public clean compaction catalog classifies candidates before wri
   assert.strictEqual(check.validated.every_entry_requires_future_admission, true);
   assert.strictEqual(check.validated.current_work_item_closed, true);
   assert.strictEqual(check.boundary.writes_files, false);
+});
+
+fullSourceTest('public package keyword taxonomy is compacted and release-checked', () => {
+  const taxonomy = readJsonOutput(run(['release', '--keyword-taxonomy']));
+  assert.strictEqual(taxonomy.schema, 'agent-onboard-public-package-keyword-taxonomy-compaction-result-001');
+  assert.strictEqual(taxonomy.status, 'ok');
+  assert.strictEqual(taxonomy.version, EXPECTED_VERSION);
+  assert.strictEqual(taxonomy.release_line, EXPECTED_RELEASE_LINE);
+  assert.strictEqual(taxonomy.command, 'agent-onboard release --keyword-taxonomy');
+  assert.strictEqual(taxonomy.current.keyword_count, PACKAGE_JSON.keywords.length);
+  assert.ok(taxonomy.current.keyword_count <= 80);
+  assert.ok(taxonomy.current.reduction.reduced_by > 0);
+  assert.strictEqual(taxonomy.current.group_coverage.package_identity.complete, true);
+  assert.strictEqual(taxonomy.current.group_coverage.clean_compaction.complete, true);
+  assert.strictEqual(taxonomy.catalog_surface.surface_present, true);
+  assert.strictEqual(taxonomy.boundary.command_writes_files, false);
+
+  const check = readJsonOutput(run(['release', '--keyword-taxonomy-check']));
+  assert.strictEqual(check.schema, 'agent-onboard-public-package-keyword-taxonomy-compaction-check-result-001');
+  assert.strictEqual(check.status, 'ok');
+  assert.strictEqual(check.command, 'agent-onboard release --keyword-taxonomy-check');
+  assert.strictEqual(check.validated.keyword_count_within_compact_budget, true);
+  assert.strictEqual(check.validated.keyword_count_reduced_from_previous_observation, true);
+  assert.strictEqual(check.validated.every_required_group_complete, true);
+  assert.strictEqual(check.validated.release_era_keywords_removed, true);
+  assert.strictEqual(check.validated.current_work_item_closed, true);
+  assert.strictEqual(check.boundary.check_command_writes_files, false);
 });
 
 runSelectedFullSourceTests();

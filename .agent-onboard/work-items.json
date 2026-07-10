@@ -6764,6 +6764,74 @@
           "No deletion, movement, archival, taxonomy reduction, source extraction, package publication, registry mutation, dependency install, Git mutation, claim mutation, or work-item mutation is authorized by this gate."
         ]
       }
+    },
+    {
+      "id": "P1S3M6W3",
+      "milestone_id": "P1S3M6",
+      "title": "Public package keyword taxonomy compaction gate",
+      "status": "closed",
+      "closure": {
+        "actor": "gpt-5.5-thinking",
+        "closed_at": "2026-07-06T16:10:00.000Z",
+        "summary": "Closed by reducing package.json keywords from release-era sprawl into a bounded public npm discovery taxonomy, adding release --keyword-taxonomy and release --keyword-taxonomy-check as read-only verification surfaces, and wiring the taxonomy check into release/check-fast/test/docs without deleting, moving, archiving, publishing, or touching unrelated compaction surfaces.",
+        "changed_files": [
+          "package.json",
+          "README.md",
+          "AGENTS.md",
+          "SOURCE_OF_TRUTH.md",
+          "llms.txt",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/runtime-contracts.js",
+          "cli/agent_onboard/domains/architecture/static-catalog.js",
+          "cli/agent_onboard/domains/package/services/package-service.js",
+          "test/agent-onboard.test.js",
+          "test/run-tests.js",
+          ".agent-onboard/work-items.json",
+          ".agent-onboard/work-items.index.json",
+          ".agent-onboard/claims.jsonl",
+          ".agent-onboard/claims.index.json",
+          ".agent-onboard/public-package-keyword-taxonomy-compaction-gate.json",
+          ".agent-onboard/authority-index.json",
+          ".agent-onboard/state/live-authority.json",
+          ".agent-onboard/state/policies.json",
+          ".agent-onboard/state/indexes.json",
+          ".agent-onboard/state/closed-gates.jsonl",
+          "authority-map.json",
+          "manifest.json"
+        ],
+        "checks_run": [
+          "node -c cli/agent_onboard/runtime-composer.js",
+          "node -c cli/agent_onboard/runtime-contracts.js",
+          "node -c cli/agent_onboard/domains/architecture/static-catalog.js",
+          "node -c cli/agent_onboard/domains/package/services/package-service.js",
+          "node -c test/agent-onboard.test.js",
+          "node -c test/run-tests.js",
+          "node cli/agent-onboard.js release --keyword-taxonomy",
+          "node cli/agent-onboard.js release --keyword-taxonomy-check",
+          "node cli/agent-onboard.js release --clean-catalog-check",
+          "node cli/agent-onboard.js release --clean-check",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js check --fast --json",
+          "node cli/agent-onboard.js claim --lifecycle-check --json",
+          "node cli/agent-onboard.js claim --validate-ledger --json",
+          "node cli/agent-onboard.js release --source-manifest-check",
+          "node cli/agent-onboard.js release --surface-check",
+          "node cli/agent-onboard.js authority --state-check",
+          "node cli/agent-onboard.js authority --index-check",
+          "node cli/agent-onboard.js authority --check",
+          "node cli/agent-onboard.js target metadata --check --target .",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "npm test",
+          "npm run check:public-artifact-boundary",
+          "npm pack --dry-run --json"
+        ],
+        "checks_not_run": [
+          "npm publish"
+        ],
+        "known_non_pass": [
+          "No package publication, registry mutation, dependency install, deletion, movement, archival, source extraction, README history split, work-items archival split, or closed-gate evidence compaction is authorized by this gate."
+        ]
+      }
     }
   ]
 }
