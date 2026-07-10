@@ -3,12 +3,33 @@
   "status": "active",
   "ledger_path": ".agent-onboard/claims.jsonl",
   "raw_ledger_loaded_by_default": false,
-  "claim_count": 0,
-  "proposed_count": 0,
-  "merged_count": 0,
+  "claim_count": 2,
+  "proposed_count": 1,
+  "merged_count": 1,
   "latest_claims_limit": 5,
-  "latest_claims": [],
-  "active_work_item_ids": [],
-  "latest_merged_work_item_ids": [],
-  "updated_at": "2026-07-05T19:50:00.000Z"
+  "latest_claims": [
+    {
+      "event_type": "claim_proposed",
+      "work_item_id": "P1S3M5W37",
+      "claim_id": "claim-p1s3m5w37-public-claim-ledger-jsonl-gate",
+      "claim_status": "proposed",
+      "actor": "gpt-5.5-thinking",
+      "created_at": "2026-07-06T04:20:00.000Z"
+    },
+    {
+      "event_type": "claim_merged",
+      "work_item_id": "P1S3M5W37",
+      "claim_id": "claim-p1s3m5w37-public-claim-ledger-jsonl-gate",
+      "claim_status": "merged",
+      "actor": "gpt-5.5-thinking",
+      "created_at": "2026-07-06T04:45:00.000Z"
+    }
+  ],
+  "active_work_item_ids": [
+    "P1S3M5W37"
+  ],
+  "latest_merged_work_item_ids": [
+    "P1S3M5W37"
+  ],
+  "updated_at": "2026-07-06T05:50:59.679Z"
 }

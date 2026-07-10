@@ -92,7 +92,7 @@ const PUBLIC_THIN_CLI_ROUTER_SEED = Object.freeze({
   entrypoint: 'cli/agent-onboard.js',
   router_seed_max_lines: 500,
   expected_router_export_names: Object.freeze(['ROUTER_SEED', 'describeRouterSeed', 'route']),
-  expected_top_level_commands: Object.freeze(['help', 'version', 'status', 'init', 'agents', 'bridge', 'guard', 'authority', 'architecture', 'release', 'target-config', 'work-items', 'target', 'target-instance']),
+  expected_top_level_commands: Object.freeze(['help', 'version', 'status', 'init', 'agents', 'bridge', 'guard', 'authority', 'architecture', 'release', 'target-config', 'work-items', 'claim', 'target', 'target-instance']),
   acceptance_criteria: Object.freeze([
     'Create the public source-only command router module at cli/agent_onboard/command-router.js.',
     'Keep cli/agent-onboard.js as the packaged runtime entrypoint for this seed gate.',
@@ -614,10 +614,10 @@ const PUBLIC_ROUTER_COMMAND_ADAPTER_DELEGATION_EXPANSION = Object.freeze({
       path: 'cli/agent_onboard/adapters/commands/work-items.js',
       factory: 'createWorkItemsCommandAdapter',
       describe: 'describeWorkItemsCommandAdapterExtraction',
-      commands: Object.freeze(['work-items'])
+      commands: Object.freeze(['work-items', 'claim'])
     })
   ]),
-  delegated_commands: Object.freeze(['--help', '--version', '-h', '-v', 'agents', 'architecture', 'authority', 'bridge', 'guard', 'help', 'init', 'release', 'status', 'target', 'target-config', 'target-instance', 'version', 'work-items']),
+  delegated_commands: Object.freeze(['--help', '--version', '-h', '-v', 'agents', 'architecture', 'authority', 'bridge', 'claim', 'guard', 'help', 'init', 'release', 'status', 'target', 'target-config', 'target-instance', 'version', 'work-items']),
   legacy_fallback_commands: Object.freeze([]),
   smoke_vectors: Object.freeze([
     Object.freeze({ id: 'status', argv: Object.freeze(['node', 'cli/agent-onboard.js', 'status']), expected_exit_code: 0 }),

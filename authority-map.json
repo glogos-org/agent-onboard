@@ -30,6 +30,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-claims-index-json-30119f4c"
     },
     {
+      "file_path": ".agent-onboard/claims.jsonl",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-claims-jsonl-dd87ff59"
+    },
+    {
       "file_path": ".agent-onboard/cli-runtime-de-monolith-planning.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-cli-runtime-de-monolith-planning-json-4876c2d0"
     },
@@ -108,6 +112,10 @@
     {
       "file_path": ".agent-onboard/public-authority-compact-index-drift-guard-gate.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-authority-compact-index-drift-guard-gate-json-b7fd1cfb"
+    },
+    {
+      "file_path": ".agent-onboard/public-claim-ledger-jsonl-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-public-claim-ledger-jsonl-gate-json-7a768ba3"
     },
     {
       "file_path": ".agent-onboard/public-contract-output-validator-gate.json",

@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_agents_bridge_marker_block_gate';
+const EXPECTED_RELEASE_LINE = 'public_claim_ledger_jsonl_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -239,7 +239,7 @@ fullSourceTest('public runtime contracts module centralizes command and package 
   assert.strictEqual(contracts.TARGET_PROFILE_COMMAND.flag.target, '--target');
   assert.ok(Object.isFrozen(contracts.TARGET_COMMAND));
   assert.ok(contracts.RUNTIME_CONTRACTS.top_level_commands.includes('target'));
-  assert.deepStrictEqual(contracts.ROUTER_COMMAND_ORDER, ['help', 'version', 'status', 'create', 'issue', 'contributor', 'contracts', 'check', 'ci', 'mcp', 'init', 'agents', 'guard', 'authority', 'architecture', 'release', 'target-config', 'work-items', 'target', 'target-instance']);
+  assert.deepStrictEqual(contracts.ROUTER_COMMAND_ORDER, ['help', 'version', 'status', 'create', 'issue', 'contributor', 'claim', 'contracts', 'check', 'ci', 'mcp', 'init', 'agents', 'guard', 'authority', 'architecture', 'release', 'target-config', 'work-items', 'target', 'target-instance']);
   assert.strictEqual(contracts.TOP_LEVEL_COMMAND_ALIAS.helpLong, '--help');
   assert.deepStrictEqual(contracts.RUNTIME_COMMAND_GROUP.target, ['init', 'target-config', 'target', 'target-instance']);
   assert.deepStrictEqual(contracts.RUNTIME_ADAPTER_GROUP.core, ['help', '--help', '-h', 'version', '--version', '-v', 'status']);
@@ -256,7 +256,7 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.strictEqual(output.status, 'ok');
   assert.strictEqual(output.version, EXPECTED_VERSION);
   assert.strictEqual(output.release_line, EXPECTED_RELEASE_LINE);
-  assert.deepStrictEqual(output.top_level_commands, ['help', 'version', 'status', 'commands', 'guide', 'quickstart', 'discovery', 'create', 'issue', 'contributor', 'contracts', 'check', 'ci', 'mcp', 'init', 'agents', 'guard', 'authority', 'architecture', 'release', 'target-config', 'work-items', 'target', 'target-instance']);
+  assert.deepStrictEqual(output.top_level_commands, ['help', 'version', 'status', 'commands', 'guide', 'quickstart', 'discovery', 'create', 'issue', 'contributor', 'claim', 'contracts', 'check', 'ci', 'mcp', 'init', 'agents', 'guard', 'authority', 'architecture', 'release', 'target-config', 'work-items', 'target', 'target-instance']);
   assert.ok(output.runtime_command_groups.core.includes('commands'));
   assert.ok(output.runtime_command_groups.core.includes('quickstart'));
   assert.ok(output.runtime_command_groups.core.includes('discovery'));
@@ -273,6 +273,8 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.ok(output.help_lines.includes('agent-onboard create --dry-run|--json|--text'));
   assert.ok(output.help_lines.some((line) => line.startsWith('agent-onboard issue --classify-dry-run|--json|--text')));
   assert.ok(output.help_lines.some((line) => line.startsWith('agent-onboard contributor --admission-dry-run|--json|--text')));
+  assert.ok(output.help_lines.includes('agent-onboard claim --validate-ledger [--file <path>] [--json|--text]'));
+  assert.ok(output.help_lines.some((line) => line.startsWith('agent-onboard claim --append --dry-run|--write')));
   assert.ok(output.help_lines.includes('agent-onboard check --plan|--fast [--json|--text]'));
   assert.ok(output.help_lines.includes('agent-onboard ci --github-action|--json|--text'));
   assert.ok(output.help_lines.includes('agent-onboard mcp --plan|--json|--text'));
@@ -288,6 +290,7 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.ok(output.recommended_first_commands.includes('agent-onboard create --dry-run'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard issue --classify-dry-run --text'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard contributor --admission-dry-run --text'));
+  assert.ok(output.recommended_first_commands.includes('agent-onboard claim --validate-ledger --text'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard check --plan --text'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard check --fast --text'));
   assert.ok(output.recommended_first_commands.includes('agent-onboard ci --github-action'));
@@ -310,6 +313,7 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.ok(textResult.stdout.includes('agent-onboard create --dry-run|--json|--text'));
   assert.ok(textResult.stdout.includes('agent-onboard issue --classify-dry-run|--json|--text'));
   assert.ok(textResult.stdout.includes('agent-onboard contributor --admission-dry-run|--json|--text'));
+  assert.ok(textResult.stdout.includes('agent-onboard claim --validate-ledger [--file <path>] [--json|--text]'));
   assert.ok(textResult.stdout.includes('agent-onboard check --plan|--fast [--json|--text]'));
   assert.ok(textResult.stdout.includes('agent-onboard ci --github-action|--json|--text'));
   assert.ok(textResult.stdout.includes('agent-onboard mcp --plan|--json|--text'));
@@ -318,6 +322,47 @@ fullSourceTest('public command surface catalog is directly discoverable', () => 
   assert.ok(textResult.stdout.includes('agent-onboard target work-items --preview|--json|--text [--target <path>]'));
   assert.ok(textResult.stdout.includes('agent-onboard target governance --preview|--check|--budget-contract|--budget-check|--materialize-dry-run|--materialize --write [--force]|--json|--text [--target <path>]'));
   assert.ok(textResult.stdout.includes('agent-onboard target handoff --preview|--readiness-check|--json|--text [--target <path>]'));
+});
+
+
+fullSourceTest('public claim ledger JSONL command validates and appends explicitly', () => {
+  const dir = tempRepo();
+  const ledgerFile = path.join(dir, '.agent-onboard', 'claims.jsonl');
+  fs.mkdirSync(path.dirname(ledgerFile), { recursive: true });
+  fs.writeFileSync(ledgerFile, [
+    JSON.stringify({ schema: 'agent-onboard-public-claim-ledger-entry-001', event_type: 'claim_proposed', claim_status: 'proposed', claim_id: 'claim-fixture-001', work_item_id: 'P1S3M5W37', actor: 'agent-a', created_at: '2026-07-06T00:00:00.000Z' }),
+    JSON.stringify({ schema: 'agent-onboard-public-claim-ledger-entry-001', event_type: 'claim_merged', claim_status: 'merged', claim_id: 'claim-fixture-001', work_item_id: 'P1S3M5W37', actor: 'agent-a', created_at: '2026-07-06T00:01:00.000Z' })
+  ].join('\n') + '\n');
+
+  const validateResult = run(['claim', '--validate-ledger', '--json'], { cwd: dir });
+  const output = readJsonOutput(validateResult);
+  assert.strictEqual(output.schema, 'agent-onboard-public-claim-ledger-validation-001');
+  assert.strictEqual(output.status, 'ok');
+  assert.strictEqual(output.file, '.agent-onboard/claims.jsonl');
+  assert.strictEqual(output.line_count, 2);
+  assert.strictEqual(output.event_counts.claim_proposed, 1);
+  assert.strictEqual(output.event_counts.claim_merged, 1);
+  assert.strictEqual(output.output_policy.raw_claims_ledger_inlined, false);
+  assert.strictEqual(output.boundary.writes_files, false);
+
+  const textResult = run(['claim', '--validate-ledger', '--text'], { cwd: dir });
+  assert.strictEqual(textResult.status, 0, textResult.stderr || textResult.stdout);
+  assert.ok(textResult.stdout.includes('agent-onboard claim ledger validation'));
+  assert.ok(textResult.stdout.includes('Writes performed: false'));
+
+  const dryRun = run(['claim', '--append', '--dry-run', '--work-item-id', 'P1S3M5W38', '--actor', 'agent-b', '--event-type', 'claim_proposed', '--claim-id', 'claim-fixture-002', '--created-at', '2026-07-06T00:02:00.000Z'], { cwd: dir });
+  const dryOutput = readJsonOutput(dryRun);
+  assert.strictEqual(dryOutput.schema, 'agent-onboard-public-claim-ledger-append-result-001');
+  assert.strictEqual(dryOutput.status, 'ok');
+  assert.strictEqual(dryOutput.writes_performed, false);
+  assert.strictEqual(fs.readFileSync(ledgerFile, 'utf8').trim().split(/\r?\n/).length, 2);
+
+  const write = run(['claim', '--append', '--write', '--work-item-id', 'P1S3M5W38', '--actor', 'agent-b', '--event-type', 'claim_proposed', '--claim-id', 'claim-fixture-002', '--created-at', '2026-07-06T00:02:00.000Z'], { cwd: dir });
+  const writeOutput = readJsonOutput(write);
+  assert.strictEqual(writeOutput.status, 'ok');
+  assert.strictEqual(writeOutput.writes_performed, true);
+  assert.strictEqual(writeOutput.boundary.mutates_only_claims_ledger, true);
+  assert.strictEqual(fs.readFileSync(ledgerFile, 'utf8').trim().split(/\r?\n/).length, 3);
 });
 
 fullSourceTest('public discovery is directly usable', () => {

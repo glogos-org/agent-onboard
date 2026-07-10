@@ -2,7 +2,7 @@
   "schema": "agent-onboard-authority-path-001",
   "package_name": "agent-onboard",
   "package_version_source": "package.json#version",
-  "release_line": "public_agents_bridge_marker_block_gate",
+  "release_line": "public_claim_ledger_jsonl_gate",
   "target": {
     "name": "agent-onboard",
     "root": ".",

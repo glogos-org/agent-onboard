@@ -179,6 +179,7 @@ function commandSurfaceCatalog() {
       'agent-onboard create --dry-run',
       'agent-onboard issue --classify-dry-run --text',
       'agent-onboard contributor --admission-dry-run --text',
+      'agent-onboard claim --validate-ledger --text',
       'agent-onboard contracts --text',
       'agent-onboard contracts --check --json',
       'agent-onboard contracts --validate-output --contract <id> --file <path> --json',
@@ -7700,6 +7701,10 @@ function runWorkItems() {
   throw new Error('work-items is served by the packaged work-items runtime service; no legacy work-items fallback is available');
 }
 
+function runClaim() {
+  throw new Error('claim is served by the packaged work-items runtime service; no legacy claim fallback is available');
+}
+
 
 const BRIDGE_MARKER_START = '<!-- agent-onboard:bridge:start -->';
 const BRIDGE_MARKER_END = '<!-- agent-onboard:bridge:end -->';
@@ -8987,10 +8992,11 @@ const DOMAIN_SERVICE_FACADES = Object.freeze({
     runAuthority
   }),
   workItemsService: Object.freeze({
-    runWorkItems
+    runWorkItems,
+    runClaim
   }),
   claimsService: Object.freeze({
-    runWorkItems
+    runClaim
   }),
   targetService: Object.freeze({
     runInit,
@@ -9022,6 +9028,7 @@ const COMMAND_ROUTE_HANDLERS = Object.freeze({
   [TOP_LEVEL_COMMAND.issue]: DOMAIN_SERVICE_FACADES.coreService.runIssue,
   [CONTRIBUTOR_COMMAND]: DOMAIN_SERVICE_FACADES.coreService.runContributor,
   [TOP_LEVEL_COMMAND.contributor]: DOMAIN_SERVICE_FACADES.coreService.runContributor,
+  [TOP_LEVEL_COMMAND.claim]: DOMAIN_SERVICE_FACADES.workItemsService.runClaim,
   [CONTRACTS_COMMAND]: DOMAIN_SERVICE_FACADES.coreService.runContracts,
   [TOP_LEVEL_COMMAND.contracts]: DOMAIN_SERVICE_FACADES.coreService.runContracts,
   [CHECK_COMMAND]: DOMAIN_SERVICE_FACADES.coreService.runCheck,
@@ -9133,7 +9140,8 @@ function createRuntimeCompatibilityPort() {
     [TOP_LEVEL_COMMAND.targetConfig]: targetAdapter,
     [TOP_LEVEL_COMMAND.target]: targetAdapter,
     [TOP_LEVEL_COMMAND.targetInstance]: targetAdapter,
-    [TOP_LEVEL_COMMAND.workItems]: workItemsAdapter
+    [TOP_LEVEL_COMMAND.workItems]: workItemsAdapter,
+    [TOP_LEVEL_COMMAND.claim]: workItemsAdapter
   });
   const handlers = {};
   for (const command of Object.keys(COMMAND_ROUTE_HANDLERS)) {

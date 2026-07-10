@@ -2,7 +2,7 @@
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
-const RELEASE_LINE = 'public_agents_bridge_marker_block_gate';
+const RELEASE_LINE = 'public_claim_ledger_jsonl_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
   agents: 'agents',
@@ -20,6 +20,7 @@ const TOP_LEVEL_COMMAND = Object.freeze({
   create: 'create',
   issue: 'issue',
   contributor: 'contributor',
+  claim: 'claim',
   check: 'check',
   ci: 'ci',
   mcp: 'mcp',
@@ -42,6 +43,7 @@ const ROUTER_COMMAND_ORDER = Object.freeze([
   TOP_LEVEL_COMMAND.create,
   TOP_LEVEL_COMMAND.issue,
   TOP_LEVEL_COMMAND.contributor,
+  TOP_LEVEL_COMMAND.claim,
   TOP_LEVEL_COMMAND.contracts,
   TOP_LEVEL_COMMAND.check,
   TOP_LEVEL_COMMAND.ci,
@@ -67,6 +69,7 @@ const RUNTIME_COMMAND_GROUP = Object.freeze({
     TOP_LEVEL_COMMAND.create,
     TOP_LEVEL_COMMAND.issue,
     TOP_LEVEL_COMMAND.contributor,
+    TOP_LEVEL_COMMAND.claim,
     TOP_LEVEL_COMMAND.contracts,
     TOP_LEVEL_COMMAND.check,
     TOP_LEVEL_COMMAND.ci,
@@ -96,11 +99,13 @@ const RUNTIME_COMMAND_GROUP = Object.freeze({
     TOP_LEVEL_COMMAND.targetInstance
   ]),
   workItems: Object.freeze([
-    TOP_LEVEL_COMMAND.workItems
+    TOP_LEVEL_COMMAND.workItems,
+    TOP_LEVEL_COMMAND.claim
   ]),
   coordination: Object.freeze([
     TOP_LEVEL_COMMAND.authority,
     TOP_LEVEL_COMMAND.workItems,
+    TOP_LEVEL_COMMAND.claim,
     TOP_LEVEL_COMMAND.issue,
     TOP_LEVEL_COMMAND.contributor
   ])
@@ -299,6 +304,8 @@ const PRODUCT_HELP_LINES = Object.freeze([
   'agent-onboard create --dry-run|--json|--text',
   'agent-onboard issue --classify-dry-run|--json|--text [--title <title>] [--label <label>] [--actor <kind>] [--source <kind>] [--repo <owner/name>] [--issue-number <number>]',
   'agent-onboard contributor --admission-dry-run|--json|--text [--actor <kind>] [--handle <handle>] [--email <email>] [--repo <owner/name>] [--identity-surface <surface>] [--agreement <surface>] [--ai-assisted yes|no] [--assisted-by <trailer>]',
+  'agent-onboard claim --validate-ledger [--file <path>] [--json|--text]',
+  'agent-onboard claim --append --dry-run|--write --work-item-id <id> --actor <actor> [--event-type claim_proposed|claim_merged] [--claim-id <id>] [--note <note>]',
   'agent-onboard contracts --json|--text|--check|--validate-output --contract <id> --file <path>',
   'agent-onboard check --plan|--fast [--json|--text]',
   'agent-onboard ci --github-action|--json|--text',

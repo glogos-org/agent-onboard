@@ -6,7 +6,7 @@ const WORK_ITEMS_COMMAND_ADAPTER_EXTRACTION = Object.freeze({
   role: 'packaged_runtime_work_items_command_adapter',
   planned_adapter_path: 'cli/agent_onboard/adapters/commands/work-items.js',
   compatibility_port_group: 'work_items',
-  owned_top_level_commands: Object.freeze(['work-items']),
+  owned_top_level_commands: Object.freeze(['work-items', 'claim']),
   extracted_read_only_commands: Object.freeze([
     'work-items --schema',
     'work-items --template',
@@ -15,13 +15,15 @@ const WORK_ITEMS_COMMAND_ADAPTER_EXTRACTION = Object.freeze({
     'work-items --summary',
     'work-items --next',
     'work-items --mine',
-    'work-items --validate'
+    'work-items --validate',
+    'claim --validate-ledger'
   ]),
   extracted_write_boundary_commands: Object.freeze([
     'work-items --init',
     'work-items --append',
     'work-items --claim',
-    'work-items --close'
+    'work-items --close',
+    'claim --append'
   ]),
   fallback_commands: Object.freeze([]),
   excluded_top_level_commands: Object.freeze(['help', 'version', 'status', 'commands', 'architecture', 'release', 'authority', 'target', 'target-instance', 'init', 'agents', 'bridge', 'guard', 'target-config']),
@@ -38,7 +40,9 @@ const WORK_ITEMS_COMMAND_ADAPTER_EXTRACTION = Object.freeze({
     append: 'work-items --append is served by the packaged work-items runtime service with explicit --write boundary',
     claim: 'work-items --claim is served by the packaged work-items runtime service with explicit --write boundary',
     close: 'work-items --close is served by the packaged work-items runtime service with explicit --write boundary',
-    fallback: 'no work-items subcommands require bundled CLI fallback in this gate'
+    fallback: 'no work-items subcommands require bundled CLI fallback in this gate',
+    claim_validate_ledger: 'claim --validate-ledger is served by the packaged work-items runtime service against .agent-onboard/claims.jsonl',
+    claim_append: 'claim --append is served by the packaged work-items runtime service with explicit --write boundary'
   }),
   boundary: Object.freeze({
     used_by_runtime_entrypoint_in_this_gate: true,
@@ -51,6 +55,7 @@ const WORK_ITEMS_COMMAND_ADAPTER_EXTRACTION = Object.freeze({
     no_child_process: true,
     init_append_commands_use_explicit_write_boundary: true,
     claim_close_commands_use_explicit_write_boundary: true,
+    claim_jsonl_append_uses_explicit_write_boundary: true,
     no_legacy_work_items_fallback_commands: true
   })
 });
@@ -65,6 +70,12 @@ function createWorkItemsCommandAdapter(options = Object.freeze({})) {
     schema: 'agent-onboard-public-work-items-command-adapter-instance-001',
     adapter: WORK_ITEMS_COMMAND_ADAPTER_EXTRACTION,
     commands: WORK_ITEMS_COMMAND_ADAPTER_EXTRACTION.owned_top_level_commands,
+    claim(argv) {
+      const args = Array.isArray(argv) ? argv.slice(3) : [];
+      if (args.includes('--validate-ledger') && service && typeof service.validateClaimLedger === 'function') return service.validateClaimLedger(args);
+      if (args.includes('--append') && service && typeof service.appendClaimLedger === 'function') return service.appendClaimLedger(args);
+      throw new Error('claim requires --validate-ledger [--file <path>] [--json|--text] or --append --dry-run|--write --work-item-id <id> --actor <actor> [--event-type claim_proposed|claim_merged] [--claim-id <id>] [--note <note>]');
+    },
     workItems(argv) {
       const args = Array.isArray(argv) ? argv.slice(3) : [];
       if (args.includes('--init') && service && typeof service.init === 'function') return service.init(args);
@@ -84,6 +95,7 @@ function createWorkItemsCommandAdapter(options = Object.freeze({})) {
     run(argv) {
       const command = Array.isArray(argv) ? (argv[2] || 'help') : 'help';
       if (command === 'work-items') return this.workItems(argv);
+      if (command === 'claim') return this.claim(argv);
       return Object.freeze({
         schema: 'agent-onboard-public-work-items-command-adapter-run-result-001',
         status: 'unhandled_source_only_work_items_adapter',

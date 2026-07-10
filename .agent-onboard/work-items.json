@@ -6292,6 +6292,57 @@
         ],
         "known_non_pass": []
       }
+    },
+    {
+      "id": "P1S3M5W37",
+      "milestone_id": "P1S3M5",
+      "title": "Public claim ledger JSONL gate",
+      "status": "closed",
+      "closure": {
+        "actor": "gpt-5.5-thinking",
+        "closed_at": "2026-07-06T04:45:00.000Z",
+        "summary": "Closed by adding a public-safe claim JSONL command surface. claim --validate-ledger validates .agent-onboard/claims.jsonl as compact event state without inlining raw entries, and claim --append --dry-run|--write appends exactly one claim event only under explicit write authority while leaving work-items, Git, dependency, build, publish, registry, and network state untouched.",
+        "changed_files": [
+          "package.json",
+          "README.md",
+          "AGENTS.md",
+          "SOURCE_OF_TRUTH.md",
+          "llms.txt",
+          ".agent-onboard/claims.jsonl",
+          ".agent-onboard/claims.index.json",
+          ".agent-onboard/authority-path.json",
+          ".agent-onboard/authority-index.json",
+          ".agent-onboard/work-items.json",
+          ".agent-onboard/work-items.index.json",
+          ".agent-onboard/public-claim-ledger-jsonl-gate.json",
+          "authority-map.json",
+          "manifest.json",
+          "cli/agent_onboard/runtime-contracts.js",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/adapters/commands/work-items.js",
+          "cli/agent_onboard/domains/work-items/services/work-items-service.js",
+          "test/agent-onboard.test.js",
+          "test/run-tests.js"
+        ],
+        "checks_run": [
+          "node -c cli/agent_onboard/runtime-contracts.js",
+          "node -c cli/agent_onboard/runtime-composer.js",
+          "node -c cli/agent_onboard/adapters/commands/work-items.js",
+          "node -c cli/agent_onboard/domains/work-items/services/work-items-service.js",
+          "node cli/agent-onboard.js claim --validate-ledger --json",
+          "node cli/agent-onboard.js claim --validate-ledger --text",
+          "node cli/agent-onboard.js claim --append --dry-run --work-item-id P1S3M5W37 --actor gpt-5.5-thinking --event-type claim_proposed --claim-id dry-run-smoke --created-at 2026-07-06T04:40:00.000Z",
+          "node cli/agent-onboard.js target governance --materialize --write --force --target . --json",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "npm test",
+          "npm run check:public-artifact-boundary",
+          "npm pack --dry-run --json"
+        ],
+        "checks_not_run": [
+          "npm run test:full was not run end-to-end in this local tool window"
+        ],
+        "known_non_pass": []
+      }
     }
   ]
 }

@@ -1,10 +1,12 @@
 'use strict';
 
+const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 
 const COMMAND_FAMILY = 'work-items';
 const CANONICAL_WORK_ITEMS_FILE = '.agent-onboard/work-items.json';
+const CANONICAL_CLAIMS_FILE = '.agent-onboard/claims.jsonl';
 
 const STATUS = Object.freeze({
   OK: 'ok',
@@ -50,6 +52,7 @@ const FLAG = Object.freeze({
   NOTE: '--note',
   CHANGED_FILE: '--changed-file',
   CHECK: '--check',
+  SUMMARY: '--summary',
   CHECK_NOT_RUN: '--check-not-run',
   KNOWN_NON_PASS: '--known-non-pass'
 });
@@ -86,11 +89,16 @@ const WORK_ITEMS_RESULT_SCHEMA = Object.freeze({
   LIST: 'agent-onboard-work-items-list-response-001',
   SUMMARY: 'agent-onboard-work-items-summary-response-001',
   NEXT: 'agent-onboard-work-items-next-response-001',
-  MINE: 'agent-onboard-work-items-mine-response-001'
+  MINE: 'agent-onboard-work-items-mine-response-001',
+  CLAIM_LEDGER_VALIDATION: 'agent-onboard-public-claim-ledger-validation-001',
+  CLAIM_LEDGER_APPEND: 'agent-onboard-public-claim-ledger-append-result-001'
 });
+
+const CLAIM_EVENT_TYPE = Object.freeze(['claim_proposed', 'claim_merged']);
 
 const WORK_ITEMS_REASON = Object.freeze({
   MISSING_LEDGER: 'missing .agent-onboard/work-items.json in current target repo root',
+  MISSING_CLAIMS_LEDGER: 'missing .agent-onboard/claims.jsonl in current target repo root',
   INVALID_LEDGER: 'current work-item ledger is invalid'
 });
 
@@ -189,6 +197,10 @@ function optionAfterFlag(args, flag) {
   const value = args[index + 1];
   if (!value || value.startsWith('-')) throw new Error(`${flag} requires a value`);
   return value;
+}
+
+function sha256Hex(text) {
+  return crypto.createHash('sha256').update(String(text)).digest('hex');
 }
 
 function repeatedOptionsAfterFlag(args, flag) {
@@ -982,6 +994,191 @@ function createWorkItemsService(options = Object.freeze({})) {
     return 0;
   }
 
+
+  function claimsFileFromArgs(args) {
+    return optionAfterFlag(args, FLAG.FILE) || CANONICAL_CLAIMS_FILE;
+  }
+
+  function parseClaimsLedger(file) {
+    const absolutePath = path.resolve(cwd(), file);
+    const present = exists(absolutePath);
+    if (!present) {
+      return {
+        file,
+        absolutePath,
+        present: false,
+        entries: [],
+        errors: []
+      };
+    }
+    const text = fs.readFileSync(absolutePath, 'utf8');
+    const lines = text.split(/\r?\n/);
+    const entries = [];
+    const errors = [];
+    for (let index = 0; index < lines.length; index += 1) {
+      const raw = lines[index];
+      if (!raw.trim()) continue;
+      let entry;
+      try {
+        entry = JSON.parse(raw);
+      } catch (error) {
+        errors.push(`line ${index + 1} must be valid JSON: ${error && error.message ? error.message : String(error)}`);
+        continue;
+      }
+      if (!entry || typeof entry !== 'object' || Array.isArray(entry)) {
+        errors.push(`line ${index + 1} must be a JSON object`);
+        continue;
+      }
+      entries.push({ line_number: index + 1, entry });
+    }
+    return { file, absolutePath, present, entries, errors };
+  }
+
+  function validateClaimEntry(entry, lineNumber) {
+    const errors = [];
+    const prefix = `line ${lineNumber}`;
+    if (!entry.event_type || typeof entry.event_type !== 'string') errors.push(`${prefix} requires event_type`);
+    else if (!CLAIM_EVENT_TYPE.includes(entry.event_type)) errors.push(`${prefix} event_type must be one of ${CLAIM_EVENT_TYPE.join(', ')}`);
+    if (!entry.claim_id || typeof entry.claim_id !== 'string') errors.push(`${prefix} requires claim_id`);
+    if (!entry.work_item_id || typeof entry.work_item_id !== 'string') errors.push(`${prefix} requires work_item_id`);
+    if (!entry.actor || typeof entry.actor !== 'string') errors.push(`${prefix} requires actor`);
+    if (!entry.created_at || typeof entry.created_at !== 'string') errors.push(`${prefix} requires created_at`);
+    else if (Number.isNaN(Date.parse(entry.created_at))) errors.push(`${prefix} created_at must be an ISO timestamp`);
+    const status = entry.claim_status || entry.status;
+    if (status && !['proposed', 'merged'].includes(status)) errors.push(`${prefix} claim_status/status must be proposed or merged when present`);
+    return errors;
+  }
+
+  function claimLedgerValidationPayload(file) {
+    const parsed = parseClaimsLedger(file);
+    const errors = parsed.errors.slice();
+    const eventCounts = Object.fromEntries(CLAIM_EVENT_TYPE.map((type) => [type, 0]));
+    const workItemIds = new Set();
+    const actors = new Set();
+    const claimIds = new Set();
+    for (const item of parsed.entries) {
+      errors.push(...validateClaimEntry(item.entry, item.line_number));
+      if (CLAIM_EVENT_TYPE.includes(item.entry.event_type)) eventCounts[item.entry.event_type] += 1;
+      if (typeof item.entry.work_item_id === 'string') workItemIds.add(item.entry.work_item_id);
+      if (typeof item.entry.actor === 'string') actors.add(item.entry.actor);
+      if (typeof item.entry.claim_id === 'string') claimIds.add(item.entry.claim_id);
+    }
+    return {
+      schema: WORK_ITEMS_RESULT_SCHEMA.CLAIM_LEDGER_VALIDATION,
+      status: errors.length === 0 ? STATUS.OK : STATUS.ERROR,
+      command_family: 'claim',
+      command: 'agent-onboard claim --validate-ledger',
+      file,
+      present: parsed.present,
+      validated: true,
+      line_count: parsed.entries.length,
+      event_counts: eventCounts,
+      work_item_count: workItemIds.size,
+      actor_count: actors.size,
+      claim_count: claimIds.size,
+      output_policy: {
+        raw_claims_ledger_inlined: false,
+        raw_claim_event_notes_inlined: false,
+        compact_counts_only: true
+      },
+      boundary: {
+        reads_claims_ledger: true,
+        writes_files: false,
+        mutates_work_items_ledger: false,
+        mutates_claims_ledger: false,
+        installs_dependencies: false,
+        runs_build_test_deploy: false,
+        publishes_or_pushes: false,
+        network: false
+      },
+      errors
+    };
+  }
+
+  function formatClaimLedgerValidationText(payload) {
+    return [
+      'agent-onboard claim ledger validation',
+      `Status: ${payload.status}`,
+      `File: ${payload.file}`,
+      `Present: ${payload.present ? 'yes' : 'no'}`,
+      `Events: ${payload.line_count}`,
+      `Proposed: ${payload.event_counts.claim_proposed}`,
+      `Merged: ${payload.event_counts.claim_merged}`,
+      `Writes performed: ${payload.boundary.writes_files}`,
+      payload.errors.length > 0 ? `Errors: ${payload.errors.join('; ')}` : 'Errors: none'
+    ].join('\n') + '\n';
+  }
+
+  function validateClaimLedger(args) {
+    const wantsText = args.includes(OUTPUT_FLAG.TEXT);
+    const wantsJson = args.includes(OUTPUT_FLAG.JSON);
+    if (wantsText && wantsJson) throw new Error('claim --validate-ledger accepts either --json or --text, not both');
+    const file = claimsFileFromArgs(args);
+    const result = claimLedgerValidationPayload(file);
+    if (wantsText) emitText(formatClaimLedgerValidationText(result).trimEnd());
+    else emit(result);
+    return result.status === STATUS.OK ? 0 : 1;
+  }
+
+  function appendClaimLedger(args) {
+    const dry = args.includes(FLAG.DRY_RUN);
+    const write = args.includes(FLAG.WRITE);
+    if (!write && !dry) throw new Error('claim --append requires --dry-run or --write');
+    if (write && dry) throw new Error('claim --append accepts only one of --dry-run or --write');
+    const mode = modeFromWrite(write);
+    const file = claimsFileFromArgs(args);
+    const workItemId = optionAfterFlag(args, '--work-item-id');
+    const actor = optionAfterFlag(args, FLAG.ACTOR);
+    const eventType = optionAfterFlag(args, '--event-type') || 'claim_proposed';
+    if (!CLAIM_EVENT_TYPE.includes(eventType)) throw new Error(`claim --append --event-type must be one of ${CLAIM_EVENT_TYPE.join(', ')}`);
+    const createdAt = optionAfterFlag(args, '--created-at') || new Date().toISOString();
+    const claimId = optionAfterFlag(args, '--claim-id') || `claim-${sha256Hex(`${workItemId}\n${actor}\n${eventType}\n${createdAt}`).slice(0, 16)}`;
+    const entry = {
+      schema: 'agent-onboard-public-claim-ledger-entry-001',
+      event_type: eventType,
+      claim_status: eventType === 'claim_merged' ? 'merged' : 'proposed',
+      claim_id: claimId,
+      work_item_id: workItemId,
+      actor,
+      created_at: createdAt
+    };
+    const note = optionAfterFlag(args, FLAG.NOTE);
+    const summary = optionAfterFlag(args, FLAG.SUMMARY);
+    if (note) entry.note = note;
+    if (summary) entry.summary = summary;
+    const entryErrors = validateClaimEntry(entry, 1);
+    const plannedLine = JSON.stringify(entry);
+    if (write && entryErrors.length === 0) {
+      fs.mkdirSync(path.dirname(path.resolve(cwd(), file)), { recursive: true });
+      fs.appendFileSync(path.resolve(cwd(), file), `${plannedLine}\n`);
+    }
+    const validationAfter = write && entryErrors.length === 0 ? claimLedgerValidationPayload(file) : null;
+    const ok = entryErrors.length === 0 && (!validationAfter || validationAfter.status === STATUS.OK);
+    emit({
+      schema: WORK_ITEMS_RESULT_SCHEMA.CLAIM_LEDGER_APPEND,
+      status: ok ? STATUS.OK : STATUS.ERROR,
+      command_family: 'claim',
+      command: `agent-onboard claim --append --${mode}`,
+      file,
+      mode,
+      writes_performed: write && ok,
+      planned_entry: entry,
+      validation_after_write: validationAfter,
+      boundary: {
+        writes_only_under_explicit_write: true,
+        mutates_claims_ledger: write,
+        mutates_only_claims_ledger: write,
+        mutates_work_items_ledger: false,
+        installs_dependencies: false,
+        runs_build_test_deploy: false,
+        publishes_or_pushes: false,
+        network: false
+      },
+      errors: ok ? [] : entryErrors.concat(validationAfter && validationAfter.errors ? validationAfter.errors : [])
+    });
+    return ok ? 0 : 1;
+  }
+
   return Object.freeze({
     instance_schema: 'agent-onboard-public-work-items-runtime-service-instance-001',
     seed: WORK_ITEMS_SERVICE_SEED,
@@ -996,7 +1193,9 @@ function createWorkItemsService(options = Object.freeze({})) {
     list,
     summary,
     next,
-    mine
+    mine,
+    validateClaimLedger,
+    appendClaimLedger
   });
 }
 
