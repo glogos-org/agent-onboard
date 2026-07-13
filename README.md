@@ -7,7 +7,7 @@ CLI for onboarding and managing target repositories.
 The generated files are intended to be read by agents, wrappers, CI hooks, or future runtimes that choose to honor the declared boundaries.
 
 
-Current release: this line starts runtime composer decomposition by extracting the public runtime surface services for commands, guide, quickstart, discovery, create dry-run, issue intake, contributor admission, and CI recipe output into `cli/agent_onboard/domains/core/services/public-runtime-surface-service.js`. `runtime-composer.js` remains the compatibility composer and public export surface, but it no longer owns those first-read service implementations. No SQLite, Lightning Memory-Mapped Database, MDBX, Git mutation, network access, registry mutation, or package publish is admitted.
+Current release: this line continues runtime composer decomposition by extracting the release command dispatcher and release plan body into `cli/agent_onboard/domains/package/services/public-runtime-release-service.js`. `runtime-composer.js` remains the compatibility composer and public export surface, but it no longer owns the release command surface. The storage backend remains text-first JSON plus JavaScript Object Notation Lines; no SQLite, Lightning Memory-Mapped Database, MDBX, Git mutation, network access, registry mutation, or package publish is admitted.
 
 ## Install
 

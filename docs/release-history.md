@@ -1,19 +1,16 @@
-## Current release: runtime composer decomposition gate
-
-This release extracts the public runtime surface service group from `cli/agent_onboard/runtime-composer.js` into `cli/agent_onboard/domains/core/services/public-runtime-surface-service.js`. The extracted service now owns command catalog, operator guide, quickstart, AI discovery, create dry-run, issue intake, contributor admission, and CI recipe output. The composer remains the compatibility export and runtime wiring surface. `scripts/check-runtime-composer-decomposition.js` verifies the service export contract, package inclusion, runtime-contract inclusion, and composer line-count budget without admitting SQLite, Lightning Memory-Mapped Database, MDBX, Git mutation, network access, registry mutation, or package publish.
-
-## Previous release: closed gate state layout migration gate
-
-This release migrates the closed-gate recovery surface into the active text-first state layout: `.agent-onboard/state/live/closed-gates.json`, `.agent-onboard/state/events/closed-gates.jsonl`, `.agent-onboard/state/closures/closed-gate-closures.jsonl`, and `.agent-onboard/state/indexes/closed-gates.index.json`. The root `.agent-onboard/closed-gates.archive.jsonl` and `.agent-onboard/closed-gates.index.json` remain compatibility surfaces; W17 adds `scripts/check-closed-gate-state-layout.js` to verify count and digest parity without admitting SQLite, Lightning Memory-Mapped Database, MDBX, Git mutation, network access, package publishing, or raw artifact deletion.
-
-## Previous release: work item ledger compaction migration gate
-
-The current release migrates work item closure payloads out of `.agent-onboard/work-items.json` into `.agent-onboard/state/closures/work-items-closures.jsonl`. The compatibility ledger now stays compact by storing `closure_ref` pointers, while `.agent-onboard/state/live/work-items.json`, `.agent-onboard/state/events/work-items.jsonl`, and `.agent-onboard/state/indexes/work-items.index.json` provide the live snapshot, event log, and derived navigation index. SQLite, Lightning Memory-Mapped Database, MDBX, and other binary stores remain future optional adapters only.
-
 # agent-onboard release history
 
 Historical release prose archived from README.md by P1S3M6W6.
 README.md remains the live first-read surface for install, quickstart, current commands, and no-mutation boundary material.
+
+## Current release: runtime release service decomposition gate
+
+The current release extracts the release command dispatcher and release plan body from `cli/agent_onboard/runtime-composer.js` into `cli/agent_onboard/domains/package/services/public-runtime-release-service.js`. The composer now composes that service instead of inlining the release command surface. Package projection and runtime contracts include the new service, and `scripts/check-runtime-release-service-decomposition.js` guards the boundary. Storage remains text-first JSON plus JavaScript Object Notation Lines; SQLite, Lightning Memory-Mapped Database, MDBX, network access, registry mutation, Git mutation, and package publish remain outside this gate.
+
+## Previous release: runtime composer decomposition gate
+
+The previous release started runtime composer decomposition by extracting the public runtime surface services for commands, guide, quickstart, discovery, create dry-run, issue intake, contributor admission, and CI recipe output into `cli/agent_onboard/domains/core/services/public-runtime-surface-service.js`. `runtime-composer.js` remained the compatibility composer and public export surface, but it no longer owned those first-read service implementations.
+
 ## Previous release: runtime and state architecture growth arrest gate
 
 The current release seeds a text-first runtime and state growth-arrest layout. It keeps `.agent-onboard/work-items.json` as the compatibility ledger while adding `.agent-onboard/state/live/work-items.json`, `.agent-onboard/state/events/work-items.jsonl`, `.agent-onboard/state/closures/work-items-closures.jsonl`, and `.agent-onboard/state/indexes/work-items.index.json` as the new parallel storage shape. It also adds a storage backend policy that keeps SQLite, Lightning Memory-Mapped Database, MDBX, and other binary stores as future optional repository adapters only, not current sources of truth.

@@ -1411,6 +1411,17 @@
         "claimed_at": "2026-07-07T18:17:08.765Z"
       },
       "closure_ref": "closures:P1S3M6W18"
+    },
+    {
+      "id": "P1S3M6W19",
+      "milestone_id": "P1S3M6",
+      "title": "Public runtime release service decomposition gate",
+      "status": "closed",
+      "claim": {
+        "actor": "chatgpt",
+        "claimed_at": "2026-07-07T19:04:47.217Z"
+      },
+      "closure_ref": "closures:P1S3M6W19"
     }
   ]
 }

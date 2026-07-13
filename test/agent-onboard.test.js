@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_closed_gate_state_layout_migration_gate';
+const EXPECTED_RELEASE_LINE = 'public_runtime_release_service_decomposition_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -38,11 +38,13 @@ const EXPECTED_PACK_FILES = [
   'cli/agent_onboard/domains/core/index.js',
   'cli/agent_onboard/domains/core/services/config-guard-service.js',
   'cli/agent_onboard/domains/core/services/ni-uri-service.js',
+  'cli/agent_onboard/domains/core/services/public-runtime-surface-service.js',
   'cli/agent_onboard/domains/package/index.js',
   'cli/agent_onboard/domains/package/services/installed-first-read-contract.js',
   'cli/agent_onboard/domains/package/services/package-coordinate-service.js',
   'cli/agent_onboard/domains/package/services/package-service.js',
   'cli/agent_onboard/domains/package/services/package-surface-service.js',
+  'cli/agent_onboard/domains/package/services/public-runtime-release-service.js',
   'cli/agent_onboard/domains/package/services/source-manifest-service.js',
   'cli/agent_onboard/domains/service-partitions.js',
   'cli/agent_onboard/domains/target/services/target-constants.js',
@@ -5117,6 +5119,7 @@ fullSourceTest('package runtime service partition seed admits release package do
   assert.deepStrictEqual(releasePackage.services, [
     'cli/agent_onboard/domains/package/services/package-service.js',
     'cli/agent_onboard/domains/package/services/package-surface-service.js',
+  'cli/agent_onboard/domains/package/services/public-runtime-release-service.js',
     'cli/agent_onboard/domains/package/services/source-manifest-service.js',
     'cli/agent_onboard/domains/package/services/package-coordinate-service.js',
     'cli/agent_onboard/domains/package/services/installed-first-read-contract.js'

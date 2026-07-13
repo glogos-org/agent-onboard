@@ -1,7 +1,7 @@
 {
   "schema": "agent-onboard-public-authority-indexes-state-shard-001",
   "package_name": "agent-onboard",
-  "release_line": "public_runtime_composer_decomposition_gate",
+  "release_line": "public_runtime_release_service_decomposition_gate",
   "raw_registries_loaded_by_default": false,
   "file_contents_inlined": false,
   "indexes": [
@@ -9,8 +9,8 @@
       "file_path": ".agent-onboard/authority-index.json",
       "kind": "compact_authority_index",
       "present": true,
-      "bytes": 7503,
-      "file_id": "ni:///sha-256;xzqMTuEMT_8W3h40X39A_2HZ7s60uIBNjVM48x_jDvI",
+      "bytes": 7510,
+      "file_id": "ni:///sha-256;NAyLuBEHPB97jYFY7ArygWzLYYTCKa47v3ljFFnJ2k8",
       "schema": "agent-onboard-public-authority-compact-index-001",
       "status": null,
       "raw_registry_loaded_by_default": null,
@@ -21,15 +21,15 @@
       "file_path": ".agent-onboard/work-items.index.json",
       "kind": "work_items_compact_index",
       "present": true,
-      "bytes": 1439,
-      "file_id": "ni:///sha-256;50OAtBnUKDPtwuM2D-aZbs3JSWTbFqTV4Yg4g2Ppzm8",
+      "bytes": 1430,
+      "file_id": "ni:///sha-256;nl7r0eI0Dgum2MaW20uXWVxdNbaOa7V605uXUmqNMSI",
       "schema": "agent-onboard-target-work-items-index-001",
       "status": "active",
       "raw_registry_loaded_by_default": false,
       "content_inlined": false,
-      "item_count": 155,
+      "item_count": 156,
       "open_count": 0,
-      "closed_count": 155
+      "closed_count": 156
     },
     {
       "file_path": ".agent-onboard/claims.index.json",
@@ -50,8 +50,8 @@
       "file_path": ".agent-onboard/work-items.json",
       "present": true,
       "kind": "work_items_raw_ledger",
-      "bytes": 40224,
-      "file_id": "ni:///sha-256;S49uX0-IKoe2k5vhX62zoerJ41mgyMD4V0VCn0jEW2U",
+      "bytes": 40533,
+      "file_id": "ni:///sha-256;r0M8BACwsmg1j3o5jQEWVFx8f3_stFTC5VUn13SPWw4",
       "content_inlined": false,
       "loaded_by_default": false
     },
@@ -65,7 +65,7 @@
       "loaded_by_default": false
     }
   ],
-  "authority_index_digest": "ni:///sha-256;xzqMTuEMT_8W3h40X39A_2HZ7s60uIBNjVM48x_jDvI",
-  "work_items_index_digest": "ni:///sha-256;50OAtBnUKDPtwuM2D-aZbs3JSWTbFqTV4Yg4g2Ppzm8",
+  "authority_index_digest": "ni:///sha-256;NAyLuBEHPB97jYFY7ArygWzLYYTCKa47v3ljFFnJ2k8",
+  "work_items_index_digest": "ni:///sha-256;nl7r0eI0Dgum2MaW20uXWVxdNbaOa7V605uXUmqNMSI",
   "claims_index_digest": "ni:///sha-256;otIDDGJGcys456Ufaq9WPeWXVrjiCX9kkTWzXjQyHGo"
 }

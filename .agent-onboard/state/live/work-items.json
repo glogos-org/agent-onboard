@@ -1,13 +1,8 @@
 {
-  "schema": "agent-onboard-work-items-live-001",
+  "schema": "agent-onboard-work-items-live-state-001",
   "package_name": "agent-onboard",
-  "status": "active",
-  "source_of_truth": ".agent-onboard/work-items.json compatibility ledger until full repository migration",
-  "compatibility_ledger_path": ".agent-onboard/work-items.json",
-  "closure_archive_path": ".agent-onboard/state/closures/work-items-closures.jsonl",
-  "backend": "json_and_jsonl_text_first",
-  "generated_at": "2026-07-07T18:17:13.772Z",
-  "item_count": 155,
+  "source": "derived_from_.agent-onboard/work-items.json",
+  "canonical_until_migration_gate": true,
   "items": [
     {
       "id": "P1S1M1W1",
@@ -1313,6 +1308,17 @@
         "claimed_at": "2026-07-07T18:17:08.765Z"
       },
       "closure_ref": "closures:P1S3M6W18"
+    },
+    {
+      "id": "P1S3M6W19",
+      "milestone_id": "P1S3M6",
+      "title": "Public runtime release service decomposition gate",
+      "status": "closed",
+      "claim": {
+        "actor": "chatgpt",
+        "claimed_at": "2026-07-07T19:04:47.217Z"
+      },
+      "closure_ref": "closures:P1S3M6W19"
     }
   ]
 }

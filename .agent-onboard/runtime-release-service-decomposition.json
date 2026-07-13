@@ -1,0 +1,70 @@
+{
+  "schema": "agent-onboard-public-runtime-release-service-decomposition-gate-001",
+  "package_name": "agent-onboard",
+  "version": "0.0.168",
+  "release_line": "public_runtime_release_service_decomposition_gate",
+  "milestone_id": "P1S3M6",
+  "work_item_id": "P1S3M6W19",
+  "title": "Public runtime release service decomposition gate",
+  "purpose": "Continue god-file reduction by moving the release command dispatcher and release plan body out of runtime-composer.js into a packaged domain service while preserving public CLI behavior and text-first storage.",
+  "source": {
+    "from": "cli/agent_onboard/runtime-composer.js",
+    "to": "cli/agent_onboard/domains/package/services/public-runtime-release-service.js"
+  },
+  "decomposition": {
+    "runtime_composer_before_lines": 13008,
+    "runtime_composer_after_lines": 12673,
+    "extracted_service_lines": 539,
+    "release_plan_body_moved": true,
+    "release_command_dispatcher_moved": true,
+    "composer_composes_release_service": true,
+    "public_cli_behavior_changed_intentionally": false
+  },
+  "package_projection": {
+    "new_packaged_file": "cli/agent_onboard/domains/package/services/public-runtime-release-service.js",
+    "package_json_files_updated": true,
+    "runtime_contracts_files_updated": true,
+    "npm_pack_projected_file_count": 56
+  },
+  "storage_backend_boundary": {
+    "current_source_of_truth": "json_and_jsonl_text_first",
+    "sqlite_current_source_of_truth": false,
+    "lightning_memory_mapped_database_current_source_of_truth": false,
+    "mdbx_current_source_of_truth": false,
+    "binary_database_added": false
+  },
+  "checker": "scripts/check-runtime-release-service-decomposition.js",
+  "checks_run": [
+    "node scripts/check-runtime-release-service-decomposition.js",
+    "node scripts/check-runtime-composer-decomposition.js",
+    "node scripts/check-work-item-ledger-compaction.js",
+    "node scripts/check-runtime-state-storage-layout.js",
+    "node scripts/check-closed-gate-state-layout.js",
+    "node scripts/check-public-artifact-boundary.js",
+    "node cli/agent-onboard.js authority --index-check",
+    "node cli/agent-onboard.js authority --state-check",
+    "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+    "node cli/agent-onboard.js claim --validate-ledger --json",
+    "node cli/agent-onboard.js claim --lifecycle-check --json",
+    "node cli/agent-onboard.js release --version-sprawl-check",
+    "node cli/agent-onboard.js release --artifact-oracle-check",
+    "node cli/agent-onboard.js release --check",
+    "node cli/agent-onboard.js check --fast --json",
+    "node cli/agent-onboard.js target metadata --check --target .",
+    "npm test",
+    "npm pack --dry-run --json"
+  ],
+  "known_non_pass": [
+    "npm run test:full was not run.",
+    "runtime-composer.js remains a god file at more than twelve thousand lines; W19 only extracts the release command surface.",
+    "test/agent-onboard.test.js remains a god test file."
+  ],
+  "boundary": {
+    "writes_files": true,
+    "git_mutation": false,
+    "network": false,
+    "publishes_package": false,
+    "mutates_registry": false,
+    "installs_dependencies": false
+  }
+}
