@@ -32,7 +32,7 @@ Work-item semantics remain delegated to `agent-onboard`.
 
 ## Runtime composer decomposition boundary
 
-The current runtime composer is being decomposed through source-domain service extraction rather than by adding a new storage backend. First-read public runtime surface services live in `cli/agent_onboard/domains/core/services/public-runtime-surface-service.js`, and the release command dispatcher now lives in `cli/agent_onboard/domains/package/services/public-runtime-release-service.js`; `runtime-composer.js` remains the compatibility composer and export aggregator. Future runtime logic should be added to domain services, command adapters, repositories, or ports, not directly to the composer unless a compatibility bridge requires it.
+The current runtime composer is being decomposed through source-domain service extraction rather than by adding a new storage backend. First-read public runtime surface services live in `cli/agent_onboard/domains/core/services/public-runtime-surface-service.js`, the release command dispatcher lives in `cli/agent_onboard/domains/package/services/public-runtime-release-service.js`, and the public check plan plus fast-check runner now live in `cli/agent_onboard/domains/core/services/public-runtime-check-fast-service.js`; `runtime-composer.js` remains the compatibility composer and export aggregator. Future runtime logic should be added to domain services, command adapters, repositories, or ports, not directly to the composer unless a compatibility bridge requires it.
 
 ## Runtime and state storage boundary
 

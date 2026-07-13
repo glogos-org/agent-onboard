@@ -1422,6 +1422,17 @@
         "claimed_at": "2026-07-07T19:04:47.217Z"
       },
       "closure_ref": "closures:P1S3M6W19"
+    },
+    {
+      "id": "P1S3M6W20",
+      "milestone_id": "P1S3M6",
+      "title": "Public runtime check fast service decomposition gate",
+      "status": "closed",
+      "claim": {
+        "actor": "chatgpt",
+        "claimed_at": "2026-07-07T19:45:09.892Z"
+      },
+      "closure_ref": "closures:P1S3M6W20"
     }
   ]
 }

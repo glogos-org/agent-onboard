@@ -9,7 +9,7 @@ const COMPOSER = 'cli/agent_onboard/runtime-composer.js';
 const SERVICE = 'cli/agent_onboard/domains/package/services/public-runtime-release-service.js';
 const PACKAGE_JSON = 'package.json';
 const RUNTIME_CONTRACTS = 'cli/agent_onboard/runtime-contracts.js';
-const EXPECTED_RELEASE_LINE = 'public_runtime_release_service_decomposition_gate';
+const EXPECTED_RELEASE_LINE = 'public_runtime_check_fast_service_decomposition_gate';
 const MAX_RUNTIME_COMPOSER_LINES = 12750;
 const MIN_SERVICE_LINES = 400;
 

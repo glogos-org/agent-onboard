@@ -3,9 +3,13 @@
 Historical release prose archived from README.md by P1S3M6W6.
 README.md remains the live first-read surface for install, quickstart, current commands, and no-mutation boundary material.
 
-## Current release: runtime release service decomposition gate
+## Current release: runtime check fast service decomposition gate
 
-The current release extracts the release command dispatcher and release plan body from `cli/agent_onboard/runtime-composer.js` into `cli/agent_onboard/domains/package/services/public-runtime-release-service.js`. The composer now composes that service instead of inlining the release command surface. Package projection and runtime contracts include the new service, and `scripts/check-runtime-release-service-decomposition.js` guards the boundary. Storage remains text-first JSON plus JavaScript Object Notation Lines; SQLite, Lightning Memory-Mapped Database, MDBX, network access, registry mutation, Git mutation, and package publish remain outside this gate.
+The current release extracts the public check plan and fast-check runner from `cli/agent_onboard/runtime-composer.js` into `cli/agent_onboard/domains/core/services/public-runtime-check-fast-service.js`. The composer now composes that service instead of inlining the fast-check engine, registry, progress JSONL, and output budget logic. Package projection and runtime contracts include the new service, and `scripts/check-runtime-check-fast-service-decomposition.js` guards the boundary. Storage remains text-first JSON plus JavaScript Object Notation Lines; SQLite, Lightning Memory-Mapped Database, MDBX, network access, registry mutation, Git mutation, and package publish remain outside this gate.
+
+## Previous release: runtime release service decomposition gate
+
+The previous release extracted the release command dispatcher and release plan body from `cli/agent_onboard/runtime-composer.js` into `cli/agent_onboard/domains/package/services/public-runtime-release-service.js`. The composer composes that service instead of inlining the release command surface. Package projection and runtime contracts include the release service, and `scripts/check-runtime-release-service-decomposition.js` guards that boundary.
 
 ## Previous release: runtime composer decomposition gate
 

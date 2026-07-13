@@ -2,7 +2,7 @@
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
-const RELEASE_LINE = 'public_runtime_release_service_decomposition_gate';
+const RELEASE_LINE = 'public_runtime_check_fast_service_decomposition_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
   agents: 'agents',
@@ -366,6 +366,7 @@ const PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES = Object.freeze([
   'cli/agent_onboard/domains/core/services/config-guard-service.js',
   'cli/agent_onboard/domains/core/services/ni-uri-service.js',
   'cli/agent_onboard/domains/core/services/public-runtime-surface-service.js',
+  'cli/agent_onboard/domains/core/services/public-runtime-check-fast-service.js',
   'cli/agent_onboard/domains/package/index.js',
   'cli/agent_onboard/domains/package/services/installed-first-read-contract.js',
   'cli/agent_onboard/domains/package/services/package-coordinate-service.js',

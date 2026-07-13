@@ -1,0 +1,36 @@
+{
+  "schema": "agent-onboard-public-runtime-check-fast-service-decomposition-gate-001",
+  "package_name": "agent-onboard",
+  "version": "0.0.169",
+  "release_line": "public_runtime_check_fast_service_decomposition_gate",
+  "work_item_id": "P1S3M6W20",
+  "title": "Public runtime check fast service decomposition gate",
+  "objective": "Extract the public check plan and fast-check runner from runtime-composer.js into a packaged core domain service while preserving CLI behavior and text-first storage boundaries.",
+  "extraction": {
+    "from": "cli/agent_onboard/runtime-composer.js",
+    "to": "cli/agent_onboard/domains/core/services/public-runtime-check-fast-service.js",
+    "moved_surfaces": [
+      "check --plan catalog/text",
+      "check --fast in-process runner",
+      "check --fast progress JSONL",
+      "fast-runner output budget measurement",
+      "fast-check omitted slow check taxonomy"
+    ]
+  },
+  "boundaries": {
+    "runtime_composer_remains_compatibility_composer": true,
+    "service_direct_process_access": false,
+    "storage_backend": "json_jsonl_text_first_unchanged",
+    "sqlite_introduced": false,
+    "lightning_memory_mapped_database_introduced": false,
+    "mdbx_introduced": false,
+    "git_mutation": false,
+    "network": false,
+    "package_publish": false
+  },
+  "checker": "scripts/check-runtime-check-fast-service-decomposition.js",
+  "checks": [
+    "node scripts/check-runtime-check-fast-service-decomposition.js",
+    "node cli/agent-onboard.js check --fast --json"
+  ]
+}
