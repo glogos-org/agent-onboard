@@ -1,8 +1,8 @@
 {
   "schema": "agent-onboard-closed-gates-derived-index-001",
   "package_name": "agent-onboard",
-  "package_version": "0.0.166",
-  "release_line": "public_closed_gate_state_layout_migration_gate",
+  "package_version": "0.0.167",
+  "release_line": "public_runtime_composer_decomposition_gate",
   "status": "active",
   "source": "derived_from_.agent-onboard/state/closures/closed-gate-closures.jsonl",
   "compatibility_archive_path": ".agent-onboard/closed-gates.archive.jsonl",

@@ -1,13 +1,13 @@
 {
   "schema": "agent-onboard-work-items-live-001",
   "package_name": "agent-onboard",
-  "status": "active_compacted",
-  "source_of_truth": "live_registry_with_jsonl_closure_archive",
+  "status": "active",
+  "source_of_truth": ".agent-onboard/work-items.json compatibility ledger until full repository migration",
   "compatibility_ledger_path": ".agent-onboard/work-items.json",
   "closure_archive_path": ".agent-onboard/state/closures/work-items-closures.jsonl",
   "backend": "json_and_jsonl_text_first",
-  "generated_at": "2026-07-07T16:20:00.000Z",
-  "item_count": 154,
+  "generated_at": "2026-07-07T18:17:13.772Z",
+  "item_count": 155,
   "items": [
     {
       "id": "P1S1M1W1",
@@ -1302,6 +1302,17 @@
       "title": "Public closed gate state layout migration gate",
       "status": "closed",
       "closure_ref": "closures:P1S3M6W17"
+    },
+    {
+      "id": "P1S3M6W18",
+      "milestone_id": "P1S3M6",
+      "title": "Public runtime composer decomposition gate",
+      "status": "closed",
+      "claim": {
+        "actor": "chatgpt",
+        "claimed_at": "2026-07-07T18:17:08.765Z"
+      },
+      "closure_ref": "closures:P1S3M6W18"
     }
   ]
 }

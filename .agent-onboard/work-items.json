@@ -1400,6 +1400,17 @@
       "title": "Public closed gate state layout migration gate",
       "status": "closed",
       "closure_ref": "closures:P1S3M6W17"
+    },
+    {
+      "id": "P1S3M6W18",
+      "milestone_id": "P1S3M6",
+      "title": "Public runtime composer decomposition gate",
+      "status": "closed",
+      "claim": {
+        "actor": "chatgpt",
+        "claimed_at": "2026-07-07T18:17:08.765Z"
+      },
+      "closure_ref": "closures:P1S3M6W18"
     }
   ]
 }

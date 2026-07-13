@@ -30,6 +30,10 @@ Bridge marker block: `AGENTS.md` may contain the bounded `agent-onboard:bridge` 
 Work-item semantics remain delegated to `agent-onboard`.
 
 
+## Runtime composer decomposition boundary
+
+The current runtime composer is being decomposed through source-domain service extraction rather than by adding a new storage backend. First-read public runtime surface services now live in `cli/agent_onboard/domains/core/services/public-runtime-surface-service.js`; `runtime-composer.js` remains the compatibility composer and export aggregator. Future runtime logic should be added to domain services, command adapters, repositories, or ports, not directly to the composer unless a compatibility bridge requires it.
+
 ## Runtime and state storage boundary
 
 The current source storage remains text-first: compact JSON snapshots plus JavaScript Object Notation Lines event and closure ledgers. `.agent-onboard/work-items.json` is now a compact compatibility ledger: closed work items carry `closure_ref` values and closure evidence lives in `.agent-onboard/state/closures/work-items-closures.jsonl`. `.agent-onboard/state/live/work-items.json`, `.agent-onboard/state/events/work-items.jsonl`, `.agent-onboard/state/closures/work-items-closures.jsonl`, and `.agent-onboard/state/indexes/work-items.index.json` are the active work item state shards. SQLite, Lightning Memory-Mapped Database, MDBX, and other binary stores are not current sources of truth; they may only be admitted later behind repository interfaces with a replayable text export.

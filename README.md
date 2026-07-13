@@ -7,7 +7,7 @@ CLI for onboarding and managing target repositories.
 The generated files are intended to be read by agents, wrappers, CI hooks, or future runtimes that choose to honor the declared boundaries.
 
 
-Current release: this line migrates closed-gate recovery state into the active text-first state layout. `.agent-onboard/closed-gates.archive.jsonl` and `.agent-onboard/closed-gates.index.json` remain as compatibility surfaces, while `.agent-onboard/state/live/closed-gates.json`, `.agent-onboard/state/events/closed-gates.jsonl`, `.agent-onboard/state/closures/closed-gate-closures.jsonl`, and `.agent-onboard/state/indexes/closed-gates.index.json` provide the compact live/events/closures/indexes layout. SQLite, Lightning Memory-Mapped Database, MDBX, and other binary stores are still not admitted as current sources of truth.
+Current release: this line starts runtime composer decomposition by extracting the public runtime surface services for commands, guide, quickstart, discovery, create dry-run, issue intake, contributor admission, and CI recipe output into `cli/agent_onboard/domains/core/services/public-runtime-surface-service.js`. `runtime-composer.js` remains the compatibility composer and public export surface, but it no longer owns those first-read service implementations. No SQLite, Lightning Memory-Mapped Database, MDBX, Git mutation, network access, registry mutation, or package publish is admitted.
 
 ## Install
 

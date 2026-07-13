@@ -24,6 +24,8 @@ Before proposing or making changes, read:
 14. Raw evidence/source files on demand only after the authority and scope files above.
 
 
+Runtime composer decomposition note: do not add new first-read command-surface, guide, quickstart, discovery, issue, contributor, or CI recipe logic directly to `cli/agent_onboard/runtime-composer.js`. That logic belongs in `cli/agent_onboard/domains/core/services/public-runtime-surface-service.js` or a later domain service. The composer remains a compatibility bridge and export aggregator only.
+
 Runtime/state storage note: use the text-first state layout for work item state. `.agent-onboard/work-items.json` is compact and must not inline closure payloads; use `closure_ref` values that resolve to `.agent-onboard/state/closures/work-items-closures.jsonl`. `.agent-onboard/state/live/work-items.json`, `.agent-onboard/state/events/work-items.jsonl`, `.agent-onboard/state/closures/work-items-closures.jsonl`, and `.agent-onboard/state/indexes/work-items.index.json` are the active work item shards. Do not introduce SQLite, Lightning Memory-Mapped Database, MDBX, or other binary storage as authority without a separate migration gate and a replayable text export.
 
 Authority state shard note: `.agent-onboard/state/live-authority.json`, `.agent-onboard/state/policies.json`, `.agent-onboard/state/indexes.json`, and `.agent-onboard/state/closed-gates.jsonl` are compact source-only shards. Validate them with `node cli/agent-onboard.js authority --state-check` and `node cli/agent-onboard.js release --authority-state-parity-check`; do not treat them as permission to read raw growth files by default, and do not project these shards into the npm package.

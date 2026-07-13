@@ -1,8 +1,12 @@
-## Current release: closed gate state layout migration gate
+## Current release: runtime composer decomposition gate
+
+This release extracts the public runtime surface service group from `cli/agent_onboard/runtime-composer.js` into `cli/agent_onboard/domains/core/services/public-runtime-surface-service.js`. The extracted service now owns command catalog, operator guide, quickstart, AI discovery, create dry-run, issue intake, contributor admission, and CI recipe output. The composer remains the compatibility export and runtime wiring surface. `scripts/check-runtime-composer-decomposition.js` verifies the service export contract, package inclusion, runtime-contract inclusion, and composer line-count budget without admitting SQLite, Lightning Memory-Mapped Database, MDBX, Git mutation, network access, registry mutation, or package publish.
+
+## Previous release: closed gate state layout migration gate
 
 This release migrates the closed-gate recovery surface into the active text-first state layout: `.agent-onboard/state/live/closed-gates.json`, `.agent-onboard/state/events/closed-gates.jsonl`, `.agent-onboard/state/closures/closed-gate-closures.jsonl`, and `.agent-onboard/state/indexes/closed-gates.index.json`. The root `.agent-onboard/closed-gates.archive.jsonl` and `.agent-onboard/closed-gates.index.json` remain compatibility surfaces; W17 adds `scripts/check-closed-gate-state-layout.js` to verify count and digest parity without admitting SQLite, Lightning Memory-Mapped Database, MDBX, Git mutation, network access, package publishing, or raw artifact deletion.
 
-## Current release: work item ledger compaction migration gate
+## Previous release: work item ledger compaction migration gate
 
 The current release migrates work item closure payloads out of `.agent-onboard/work-items.json` into `.agent-onboard/state/closures/work-items-closures.jsonl`. The compatibility ledger now stays compact by storing `closure_ref` pointers, while `.agent-onboard/state/live/work-items.json`, `.agent-onboard/state/events/work-items.jsonl`, and `.agent-onboard/state/indexes/work-items.index.json` provide the live snapshot, event log, and derived navigation index. SQLite, Lightning Memory-Mapped Database, MDBX, and other binary stores remain future optional adapters only.
 
@@ -14,7 +18,7 @@ README.md remains the live first-read surface for install, quickstart, current c
 
 The current release seeds a text-first runtime and state growth-arrest layout. It keeps `.agent-onboard/work-items.json` as the compatibility ledger while adding `.agent-onboard/state/live/work-items.json`, `.agent-onboard/state/events/work-items.jsonl`, `.agent-onboard/state/closures/work-items-closures.jsonl`, and `.agent-onboard/state/indexes/work-items.index.json` as the new parallel storage shape. It also adds a storage backend policy that keeps SQLite, Lightning Memory-Mapped Database, MDBX, and other binary stores as future optional repository adapters only, not current sources of truth.
 
-## Current release: closed gate raw artifact prune dry-run gate
+## Previous release: closed gate raw artifact prune dry-run gate
 
 The current release adds `release --closed-gates-prune-dry-run` and `release --closed-gates-prune-dry-run-check` as the exact dry-run surface for future raw closed-gate artifact pruning. The checker validates the compact archive/index recovery path, archive coverage of every raw `*-gate.json` artifact, raw file-id parity, the archive-backed candidate delete set, and the preserved no-delete/no-move/no-rewrite boundary. Raw `*-gate.json` artifacts remain preserved; no prune, move, registry mutation, publish, or network operation is admitted.
 
@@ -36,7 +40,7 @@ The previous release added `target governance --budget-contract --json|--text` a
 
 The previous release wires governance index drift into first-read surfaces: `target handoff --json|--text` now includes a compact `governance_index_drift_summary`, and `check --fast --json|--text` emits governance stale-read advisories when stored indexes are `stale`, `missing`, or blocked. The wiring is read-only and advisory: it does not refresh indexes, write files, mutate raw ledgers, admit or close work items, create claims, install dependencies, run managed project commands, publish, mutate Git, or use network access.
 
-## Current release: exact artifact oracle gate
+## Previous release: exact artifact oracle gate
 
 The current release adds `agent-onboard release --artifact-oracle` and `agent-onboard release --artifact-oracle-check` as a local exact artifact oracle. The oracle runs `npm pack` into a temporary directory, records the exact package file list, integrity metadata, and tarball SHA-256, then fresh-installs that local tarball into a temporary project and smoke-tests the installed CLI with `--version` and `release --check`. It removes temporary artifacts after the run. The oracle does not write the package root, mutate target repositories, publish, mutate registry state, or require network access. Because it runs npm and creates temporary files, `check --fast` reports it as an omitted slow/package-manager check instead of executing it in the in-process fast runner.
 
@@ -104,6 +108,6 @@ MCP bridge boundary summary: without starting an MCP server, adding MCP dependen
 
 This release adds the public contract output validator gate: `contracts --validate-output --contract <id> --file <path> --json|--text` validates a captured JSON output against one public contract ID, checks schema/required paths/status/readiness reasons/no-mutation boundaries, does not re-emit file contents, and fails non-zero on mismatch.
 
-## Current release: claim lifecycle conflict hardening gate
+## Previous release: claim lifecycle conflict hardening gate
 
 The current release adds `agent-onboard claim --lifecycle-check` and hardens `agent-onboard claim --append --dry-run|--write`. The lifecycle check validates `.agent-onboard/claims.jsonl` sequencing, detects terminal events without matching proposed events, rejects multiple active claims for the same work item as conflicts, and reports stale active claims as compact advisories without inlining raw ledger entries. `claim --append` now plans the post-append lifecycle first and refuses both dry-run success and explicit writes when the planned event would create an active-claim conflict. The command remains read-only unless `--write` is explicitly supplied, never mutates `.agent-onboard/work-items.json`, does not mutate Git, does not run package managers, does not publish, and does not require network access.

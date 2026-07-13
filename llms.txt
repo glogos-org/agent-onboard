@@ -29,6 +29,8 @@ Canonical AI-readable files:
 - .agent-onboard/work-items.json
 - README.md
 
+Runtime composer decomposition: first-read public runtime surface services are owned by `cli/agent_onboard/domains/core/services/public-runtime-surface-service.js`; do not add new command-surface, guide, quickstart, discovery, issue, contributor, or CI recipe implementation logic directly to `runtime-composer.js`.
+
 Stable commands:
 
 - agent-onboard discovery --llms

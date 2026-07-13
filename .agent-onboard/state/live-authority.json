@@ -1,1 +1,56 @@
-{"schema":"agent-onboard-public-authority-live-state-shard-001","package_name":"agent-onboard","package_version_source":"package.json#version","release_line":"public_closed_gate_state_layout_migration_gate","authority_state_source_layout":"sharded_seed","state_root":".agent-onboard/state","current_work_item":"P1S3M6W17","current_work_item_title":"Public closed gate state layout migration gate","last_closed_work_item":"P1S3M6W17","last_closed_title":"Public closed gate state layout migration gate","default_first_read":true,"compact_authority_index_file":".agent-onboard/authority-index.json","state_command":"agent-onboard authority --state","state_check_command":"agent-onboard authority --state-check","raw_authority_loaded_by_default":false,"raw_growth_files_loaded_by_default":false,"file_contents_inlined":false,"latest_closed_work_items":[{"id":"P1S3M6W13","milestone_id":"P1S3M6","title":"Public closed gate raw artifact prune dry-run gate","status":"closed","closure_ref":"closures:P1S3M6W13","domain":null},{"id":"P1S3M6W14","milestone_id":"P1S3M6","title":"Public closed gate raw artifact prune apply admission gate","status":"closed","closure_ref":"closures:P1S3M6W14","domain":null},{"id":"P1S3M6W15","milestone_id":"P1S3M6","title":"Public runtime and state architecture growth arrest gate","status":"closed","closure_ref":"closures:P1S3M6W15","domain":null},{"id":"P1S3M6W16","milestone_id":"P1S3M6","title":"Public work item ledger compaction migration gate","status":"closed","closure_ref":"closures:P1S3M6W16","domain":null},{"id":"P1S3M6W17","milestone_id":"P1S3M6","title":"Public closed gate state layout migration gate","status":"closed","closure_ref":"closures:P1S3M6W17","domain":null}]}
+{
+  "schema": "agent-onboard-public-authority-live-state-shard-001",
+  "package_name": "agent-onboard",
+  "package_version_source": "package.json#version",
+  "release_line": "public_runtime_composer_decomposition_gate",
+  "authority_state_source_layout": "sharded_seed",
+  "state_root": ".agent-onboard/state",
+  "current_work_item": "P1S3M6W18",
+  "current_work_item_title": "Public runtime composer decomposition gate",
+  "last_closed_work_item": "P1S3M6W18",
+  "last_closed_title": "Public runtime composer decomposition gate",
+  "default_first_read": true,
+  "compact_authority_index_file": ".agent-onboard/authority-index.json",
+  "state_command": "agent-onboard authority --state",
+  "state_check_command": "agent-onboard authority --state-check",
+  "raw_authority_loaded_by_default": false,
+  "raw_growth_files_loaded_by_default": false,
+  "file_contents_inlined": false,
+  "latest_closed_work_items": [
+    {
+      "id": "P1S3M6W14",
+      "title": "Public closed gate raw artifact prune apply admission gate",
+      "status": "closed",
+      "milestone_id": "P1S3M6",
+      "domain": null
+    },
+    {
+      "id": "P1S3M6W15",
+      "title": "Public runtime and state architecture growth arrest gate",
+      "status": "closed",
+      "milestone_id": "P1S3M6",
+      "domain": null
+    },
+    {
+      "id": "P1S3M6W16",
+      "title": "Public work item ledger compaction migration gate",
+      "status": "closed",
+      "milestone_id": "P1S3M6",
+      "domain": null
+    },
+    {
+      "id": "P1S3M6W17",
+      "title": "Public closed gate state layout migration gate",
+      "status": "closed",
+      "milestone_id": "P1S3M6",
+      "domain": null
+    },
+    {
+      "id": "P1S3M6W18",
+      "title": "Public runtime composer decomposition gate",
+      "status": "closed",
+      "milestone_id": "P1S3M6",
+      "domain": null
+    }
+  ]
+}
