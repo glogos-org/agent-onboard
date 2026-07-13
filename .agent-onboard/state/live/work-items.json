@@ -1385,6 +1385,17 @@
         "claimed_at": "2026-07-08T05:34:55.215Z"
       },
       "closure_ref": "closures:P1S3M6W25"
+    },
+    {
+      "id": "P1S3M6W26",
+      "milestone_id": "P1S3M6",
+      "title": "Public Release Clean Closed Gates Runtime Slice Extraction Gate",
+      "status": "closed",
+      "claim": {
+        "actor": "chatgpt",
+        "claimed_at": "2026-07-08T06:10:12.810Z"
+      },
+      "closure_ref": "closures:P1S3M6W26"
     }
   ]
 }

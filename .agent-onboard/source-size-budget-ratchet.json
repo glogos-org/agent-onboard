@@ -247,8 +247,8 @@
     },
     "cli/agent_onboard/runtime-composer.js": {
       "category": "runtime_source",
-      "max_lines": 11614,
-      "max_bytes": 669217,
+      "max_lines": 7906,
+      "max_bytes": 440574,
       "baseline_lines": 11753,
       "baseline_bytes": 676851,
       "target_lines": 500,
@@ -262,6 +262,14 @@
           "new_max_lines": 11614,
           "previous_max_bytes": 676851,
           "new_max_bytes": 669217
+        },
+        {
+          "work_item_id": "P1S3M6W26",
+          "reason": "release clean closed gates runtime slice extraction moved clean, README history, and closed gate runtime commands into bounded package slice modules",
+          "previous_max_lines": 11614,
+          "new_max_lines": 7906,
+          "previous_max_bytes": 669217,
+          "new_max_bytes": 440574
         }
       ]
     },
@@ -277,13 +285,23 @@
     },
     "test/agent-onboard.test.js": {
       "category": "test_source",
-      "max_lines": 5707,
+      "max_lines": 5710,
       "max_bytes": 374551,
       "baseline_lines": 5687,
       "baseline_bytes": 366359,
       "target_lines": 700,
       "target_bytes": 98304,
-      "reason": "existing oversized file admitted as clean-and-compaction migration debt"
+      "reason": "existing oversized file admitted as clean-and-compaction migration debt",
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M6W26",
+          "reason": "expected npm pack file fixture includes the newly extracted release clean closed gates slice modules",
+          "previous_max_lines": 5707,
+          "new_max_lines": 5710,
+          "previous_max_bytes": 374551,
+          "new_max_bytes": 374551
+        }
+      ]
     }
   },
   "report": {

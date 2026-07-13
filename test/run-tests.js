@@ -266,6 +266,7 @@ function syntaxTasks() {
     nodeTask('syntax: public artifact boundary check', ['-c', path.join(ROOT, 'scripts', 'check-public-artifact-boundary.js')]),
     nodeTask('syntax: source size budget ratchet check', ['-c', path.join(ROOT, 'scripts', 'check-source-size-budget-ratchet.js')]),
     nodeTask('syntax: runtime command registry extraction check', ['-c', path.join(ROOT, 'scripts', 'check-runtime-command-registry-extraction.js')]),
+    nodeTask('syntax: release clean closed gates runtime slice extraction check', ['-c', path.join(ROOT, 'scripts', 'check-release-clean-closed-gates-runtime-slice-extraction.js')]),
     nodeTask('syntax: full source test', ['-c', FULL_SOURCE_TEST]),
     nodeTask('syntax: parallel runner', ['-c', __filename])
   ];
@@ -352,6 +353,7 @@ function quickTasks() {
     nodeTask('closed gate state layout check', [path.join(ROOT, 'scripts', 'check-closed-gate-state-layout.js')], expectStatusOk),
     nodeTask('source size budget ratchet check', [path.join(ROOT, 'scripts', 'check-source-size-budget-ratchet.js')], expectStatusOk),
     nodeTask('runtime command registry extraction check', [path.join(ROOT, 'scripts', 'check-runtime-command-registry-extraction.js')], expectStatusOk),
+    nodeTask('release clean closed gates runtime slice extraction check', [path.join(ROOT, 'scripts', 'check-release-clean-closed-gates-runtime-slice-extraction.js')], expectStatusOk),
     nodeTask('public artifact boundary check', [path.join(ROOT, 'scripts', 'check-public-artifact-boundary.js')], expectStatusOk),
     npmTask('npm pack dry run', ['pack', '--dry-run', '--json'], expectPackFiles)
   ];

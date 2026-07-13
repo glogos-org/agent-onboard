@@ -1,6 +1,6 @@
 {
   "name": "agent-onboard",
-  "version": "0.0.174",
+  "version": "0.0.175",
   "description": "CLI for onboarding and managing target repositories.",
   "license": "Apache-2.0",
   "author": "Thanh Le <vnlemanhthanh@gmail.com>",
@@ -98,7 +98,8 @@
     "check:runtime-mcp-bridge-service-decomposition": "node scripts/check-runtime-mcp-bridge-service-decomposition.js",
     "check:runtime-agents-bridge-service-decomposition": "node scripts/check-runtime-agents-bridge-service-decomposition.js",
     "check:source-size-budget": "node scripts/check-source-size-budget-ratchet.js",
-    "check:runtime-command-registry-extraction": "node scripts/check-runtime-command-registry-extraction.js"
+    "check:runtime-command-registry-extraction": "node scripts/check-runtime-command-registry-extraction.js",
+    "check:release-clean-closed-gates-runtime-slice": "node scripts/check-release-clean-closed-gates-runtime-slice-extraction.js"
   },
   "bin": {
     "agent-onboard": "cli/agent-onboard.js",
@@ -141,6 +142,17 @@
     "cli/agent_onboard/domains/package/services/package-service.js",
     "cli/agent_onboard/domains/package/services/package-surface-service.js",
     "cli/agent_onboard/domains/package/services/public-runtime-release-service.js",
+    "cli/agent_onboard/domains/package/services/release-clean-closed-gates-runtime-slice-service.js",
+    "cli/agent_onboard/domains/package/services/release-clean-closed-gates/clean-compaction-runtime.js",
+    "cli/agent_onboard/domains/package/services/release-clean-closed-gates/keyword-readme-plan-runtime.js",
+    "cli/agent_onboard/domains/package/services/release-clean-closed-gates/readme-history-archive-runtime.js",
+    "cli/agent_onboard/domains/package/services/release-clean-closed-gates/readme-history-apply-runtime.js",
+    "cli/agent_onboard/domains/package/services/release-clean-closed-gates/closed-gate-compaction-runtime.js",
+    "cli/agent_onboard/domains/package/services/release-clean-closed-gates/closed-gate-apply-runtime.js",
+    "cli/agent_onboard/domains/package/services/release-clean-closed-gates/closed-gate-reader-runtime.js",
+    "cli/agent_onboard/domains/package/services/release-clean-closed-gates/closed-gate-prune-plan-runtime.js",
+    "cli/agent_onboard/domains/package/services/release-clean-closed-gates/closed-gate-prune-dry-run-runtime.js",
+    "cli/agent_onboard/domains/package/services/release-clean-closed-gates/closed-gate-prune-apply-runtime.js",
     "cli/agent_onboard/domains/package/services/source-manifest-service.js",
     "cli/agent_onboard/domains/service-partitions.js",
     "cli/agent_onboard/domains/target/services/target-constants.js",

@@ -1,0 +1,412 @@
+'use strict';
+
+const fs = require('fs');
+const path = require('path');
+const crypto = require('crypto');
+
+function createClosedGatePrunePlanRuntime(ctx = Object.freeze({})) {
+  const { PACKAGE_NAME, RELEASE_LINE, VERSION, packageRoot, readJson, sourceContext, publicClosedGateArtifactFiles, publicClosedGateArchiveReaderCheck, publicFullTestRunnerCompletionCheck, readPublicClosedGateArchiveJsonl, textFileId } = ctx;
+
+function publicClosedGateRawArtifactPruneApplyArtifactPath(root = packageRoot()) {
+  return path.join(root, '.agent-onboard', 'public-closed-gate-raw-artifact-prune-apply-admission.json');
+}
+
+function publicClosedGateRawArtifactPruneApplyAdmitted(root = packageRoot()) {
+  const artifactPath = publicClosedGateRawArtifactPruneApplyArtifactPath(root);
+  const indexPath = path.join(root, '.agent-onboard', 'closed-gates.index.json');
+  if (!fs.existsSync(artifactPath) || !fs.existsSync(indexPath)) return false;
+  try {
+    const artifact = readJson(artifactPath);
+    const index = readJson(indexPath);
+    return artifact && artifact.status === 'ok'
+      && artifact.applied === true
+      && artifact.raw_gate_artifacts_pruned === true
+      && index && index.recovery && index.recovery.raw_artifacts_pruned === true
+      && index.recovery.prune_apply_artifact_file === '.agent-onboard/public-closed-gate-raw-artifact-prune-apply-admission.json';
+  } catch {
+    return false;
+  }
+}
+
+function publicClosedGateRawArtifactPruneApplyIndexState(root = packageRoot()) {
+  const indexPath = path.join(root, '.agent-onboard', 'closed-gates.index.json');
+  const archivePath = path.join(root, '.agent-onboard', 'closed-gates.archive.jsonl');
+  const artifactPath = publicClosedGateRawArtifactPruneApplyArtifactPath(root);
+  let index = null;
+  let indexStatus = 'missing';
+  let indexParseError = null;
+  if (fs.existsSync(indexPath)) {
+    try {
+      index = readJson(indexPath);
+      indexStatus = 'present_valid_json';
+    } catch (error) {
+      indexStatus = 'present_invalid_json';
+      indexParseError = error && error.message ? error.message : String(error);
+    }
+  }
+  const archive = readPublicClosedGateArchiveJsonl(root, archivePath);
+  const indexedPaths = index && Array.isArray(index.raw_artifact_paths) ? index.raw_artifact_paths.filter((rel) => typeof rel === 'string') : [];
+  const indexedFileIds = index && Array.isArray(index.raw_artifact_file_ids) ? index.raw_artifact_file_ids.filter((rel) => typeof rel === 'string') : [];
+  const archiveFileId = fs.existsSync(archivePath) ? textFileId(archive.text) : null;
+  const remainingIndexedPaths = indexedPaths.filter((rel) => fs.existsSync(path.join(root, rel)));
+  const archiveRecordFileIds = archive.records.map((record) => record && record.raw_artifact_file_id).filter((value) => typeof value === 'string');
+  const archiveRecordPaths = archive.records.map((record) => record && record.path).filter((value) => typeof value === 'string');
+  const archivePathsMatchIndex = indexedPaths.length === archiveRecordPaths.length && indexedPaths.every((rel, index) => rel === archiveRecordPaths[index]);
+  const archiveFileIdsMatchIndex = indexedFileIds.length === archiveRecordFileIds.length && indexedFileIds.every((fileId, index) => fileId === archiveRecordFileIds[index]);
+  return Object.freeze({
+    index_path: '.agent-onboard/closed-gates.index.json',
+    index_present: fs.existsSync(indexPath),
+    index_status: indexStatus,
+    index_parse_error: indexParseError,
+    index,
+    index_file_id: fs.existsSync(indexPath) ? textFileId(fs.readFileSync(indexPath, 'utf8')) : null,
+    archive_path: '.agent-onboard/closed-gates.archive.jsonl',
+    archive_present: fs.existsSync(archivePath),
+    archive_file_id: archiveFileId,
+    archive_record_count: archive.records.length,
+    archive_parse_error_count: archive.parse_errors.length,
+    index_record_count: index && typeof index.record_count === 'number' ? index.record_count : 0,
+    index_raw_artifact_count: index && typeof index.raw_artifact_count === 'number' ? index.raw_artifact_count : indexedPaths.length,
+    index_archive_file_id: index && index.archive_candidate_file_id ? index.archive_candidate_file_id : null,
+    indexed_paths: indexedPaths,
+    indexed_file_ids: indexedFileIds,
+    remaining_indexed_paths: remainingIndexedPaths,
+    archive_paths_match_index: archivePathsMatchIndex,
+    archive_file_ids_match_index: archiveFileIdsMatchIndex,
+    artifact_path: '.agent-onboard/public-closed-gate-raw-artifact-prune-apply-admission.json',
+    artifact_present: fs.existsSync(artifactPath),
+    index_recovery: index && index.recovery ? index.recovery : null
+  });
+}
+
+
+const PUBLIC_CLOSED_GATE_RAW_ARTIFACT_PRUNE_PLANNING = Object.freeze({
+  schema: 'agent-onboard-public-closed-gate-raw-artifact-prune-planning-001',
+  package_name: PACKAGE_NAME,
+  release_line: RELEASE_LINE,
+  milestone_id: 'P1S3M6',
+  prerequisite_work_item_id: ['P1S3M6', 'W11'].join(''),
+  work_item_id: ['P1S3M6', 'W12'].join(''),
+  title: 'Public closed gate raw artifact prune planning gate',
+  surface_id: 'closed-gate-raw-artifact-prune-planning',
+  command: 'agent-onboard release --closed-gates-prune-plan',
+  check_command: 'agent-onboard release --closed-gates-prune-plan-check',
+  artifact_file: '.agent-onboard/public-closed-gate-raw-artifact-prune-planning-gate.json',
+  index_path: '.agent-onboard/closed-gates.index.json',
+  archive_path: '.agent-onboard/closed-gates.archive.jsonl',
+  future_dry_run_command: 'agent-onboard release --closed-gates-prune-dry-run',
+  future_apply_command: 'agent-onboard release --closed-gates-prune-apply',
+  minimum_record_count: 30,
+  boundary: Object.freeze({
+    writes_files: false,
+    deletes_raw_gate_artifacts: false,
+    moves_raw_gate_artifacts: false,
+    rewrites_raw_gate_artifacts: false,
+    prunes_now: false,
+    authorizes_future_apply: false,
+    raw_artifact_content_inlined: false,
+    archive_record_content_inlined: false,
+    mutates_work_items: false,
+    mutates_claims: false,
+    mutates_git: false,
+    installs_dependencies: false,
+    runs_package_manager: false,
+    publishes_package: false,
+    mutates_registry: false,
+    network: false
+  })
+});
+
+function publicClosedGateRawArtifactPrunePlanningMilestoneState(root = packageRoot()) {
+  const ledgerPath = path.join(root, '.agent-onboard', 'work-items.json');
+  if (!fs.existsSync(ledgerPath)) {
+    return Object.freeze({
+      ledger_present: false,
+      milestone_id: PUBLIC_CLOSED_GATE_RAW_ARTIFACT_PRUNE_PLANNING.milestone_id,
+      prerequisite_work_item_id: PUBLIC_CLOSED_GATE_RAW_ARTIFACT_PRUNE_PLANNING.prerequisite_work_item_id,
+      work_item_id: PUBLIC_CLOSED_GATE_RAW_ARTIFACT_PRUNE_PLANNING.work_item_id,
+      milestone_status: 'not_present_installed_context_allowed',
+      prerequisite_work_item_status: 'not_present_installed_context_allowed',
+      work_item_status: 'not_present_installed_context_allowed'
+    });
+  }
+  let ledger = null;
+  try { ledger = readJson(ledgerPath); } catch { ledger = null; }
+  const milestones = ledger && Array.isArray(ledger.milestones) ? ledger.milestones : [];
+  const workItems = ledger && Array.isArray(ledger.work_items) ? ledger.work_items : [];
+  const milestone = milestones.find((item) => item.id === PUBLIC_CLOSED_GATE_RAW_ARTIFACT_PRUNE_PLANNING.milestone_id) || null;
+  const prerequisiteWorkItem = workItems.find((item) => item.id === PUBLIC_CLOSED_GATE_RAW_ARTIFACT_PRUNE_PLANNING.prerequisite_work_item_id) || null;
+  const workItem = workItems.find((item) => item.id === PUBLIC_CLOSED_GATE_RAW_ARTIFACT_PRUNE_PLANNING.work_item_id) || null;
+  return Object.freeze({
+    ledger_present: true,
+    milestone_id: PUBLIC_CLOSED_GATE_RAW_ARTIFACT_PRUNE_PLANNING.milestone_id,
+    prerequisite_work_item_id: PUBLIC_CLOSED_GATE_RAW_ARTIFACT_PRUNE_PLANNING.prerequisite_work_item_id,
+    work_item_id: PUBLIC_CLOSED_GATE_RAW_ARTIFACT_PRUNE_PLANNING.work_item_id,
+    milestone_status: milestone ? milestone.status : 'missing',
+    prerequisite_work_item_status: prerequisiteWorkItem ? prerequisiteWorkItem.status : 'missing',
+    work_item_status: workItem ? workItem.status : 'missing',
+    milestone_title: milestone ? milestone.title : null,
+    prerequisite_work_item_title: prerequisiteWorkItem ? prerequisiteWorkItem.title : null,
+    work_item_title: workItem ? workItem.title : null
+  });
+}
+
+function publicClosedGateRawArtifactPrunePlanning(root = packageRoot()) {
+  const plan = PUBLIC_CLOSED_GATE_RAW_ARTIFACT_PRUNE_PLANNING;
+  const context = sourceContext(root).package_context;
+  const installedContext = context === 'installed_package';
+  const indexPath = path.join(root, plan.index_path);
+  const archivePath = path.join(root, plan.archive_path);
+  const artifactPath = path.join(root, plan.artifact_file);
+  const indexPresent = fs.existsSync(indexPath);
+  const archivePresent = fs.existsSync(archivePath);
+  let index = null;
+  let indexStatus = 'missing';
+  let indexParseError = null;
+  if (indexPresent) {
+    try {
+      index = readJson(indexPath);
+      indexStatus = 'present_valid_json';
+    } catch (error) {
+      indexStatus = 'present_invalid_json';
+      indexParseError = error && error.message ? error.message : String(error);
+    }
+  }
+  const archive = readPublicClosedGateArchiveJsonl(root, archivePath);
+  const rawGateArtifacts = installedContext ? [] : publicClosedGateArtifactFiles(root);
+  const archivePathSet = new Set(archive.records.map((record) => record && record.path).filter((value) => typeof value === 'string'));
+  const rawFileIdByPath = new Map(rawGateArtifacts.map((artifact) => [artifact.path, artifact.file_id]));
+  const archivedRawReports = archive.records.map((record) => {
+    const rel = record && typeof record.path === 'string' ? record.path : '';
+    const absolute = path.join(root, rel);
+    const present = rel.length > 0 && fs.existsSync(absolute);
+    const currentFileId = present ? textFileId(fs.readFileSync(absolute, 'utf8')) : null;
+    return Object.freeze({
+      path: rel,
+      present,
+      archive_file_id: record && record.raw_artifact_file_id ? record.raw_artifact_file_id : null,
+      current_file_id_matches_archive: present && record && record.raw_artifact_file_id ? currentFileId === record.raw_artifact_file_id : false,
+      eligible_for_future_prune_after_apply_gate: present && record && record.raw_artifact_file_id ? currentFileId === record.raw_artifact_file_id : false,
+      content_inlined: false
+    });
+  });
+  const missingFromArchive = rawGateArtifacts
+    .filter((artifact) => !archivePathSet.has(artifact.path))
+    .map((artifact) => Object.freeze({ path: artifact.path, file_id: artifact.file_id, content_inlined: false }));
+  const mismatchedArchiveRecords = archive.records
+    .filter((record) => record && typeof record.path === 'string' && rawFileIdByPath.has(record.path) && rawFileIdByPath.get(record.path) !== record.raw_artifact_file_id)
+    .map((record) => Object.freeze({ path: record.path, archive_file_id: record.raw_artifact_file_id, current_file_id: rawFileIdByPath.get(record.path), content_inlined: false }));
+  const archiveCoversRawArtifacts = installedContext || missingFromArchive.length === 0;
+  const archiveFileIdsMatchRaw = installedContext || (mismatchedArchiveRecords.length === 0 && archivedRawReports.every((report) => report.current_file_id_matches_archive === true));
+  const readerCheck = publicClosedGateArchiveReaderCheck(root);
+  const fullTestRunnerCheck = publicFullTestRunnerCompletionCheck(root);
+  const candidateCount = installedContext ? 0 : (archiveCoversRawArtifacts && archiveFileIdsMatchRaw ? rawGateArtifacts.length : 0);
+  const latestCandidatePaths = rawGateArtifacts.slice(-5).map((artifact) => Object.freeze({
+    path: artifact.path,
+    work_item_id: artifact.work_item_id,
+    milestone_id: artifact.milestone_id,
+    file_id: artifact.file_id,
+    content_inlined: false
+  }));
+  return Object.freeze({
+    schema: 'agent-onboard-public-closed-gate-raw-artifact-prune-planning-result-001',
+    status: 'ok',
+    package_name: PACKAGE_NAME,
+    version: VERSION,
+    release_line: RELEASE_LINE,
+    milestone_id: plan.milestone_id,
+    prerequisite_work_item_id: plan.prerequisite_work_item_id,
+    work_item_id: plan.work_item_id,
+    title: plan.title,
+    command: plan.command,
+    check_command: plan.check_command,
+    package_root: root,
+    package_context: context,
+    surface_id: plan.surface_id,
+    prerequisite_checks: Object.freeze({
+      closed_gate_archive_reader_check: readerCheck.status,
+      full_test_runner_completion_check: fullTestRunnerCheck.status
+    }),
+    current_surface: Object.freeze({
+      raw_gate_artifact_count: rawGateArtifacts.length,
+      raw_gate_artifact_parse_error_count: rawGateArtifacts.filter((artifact) => artifact.parse_error).length,
+      index_present: indexPresent,
+      index_status: indexStatus,
+      index_parse_error: indexParseError,
+      index_record_count: index && typeof index.record_count === 'number' ? index.record_count : 0,
+      index_archive_file_id: index && index.archive_candidate_file_id ? index.archive_candidate_file_id : null,
+      archive_present: archivePresent,
+      archive_record_count: archive.records.length,
+      archive_file_id: archivePresent ? textFileId(archive.text) : null,
+      archive_parse_error_count: archive.parse_errors.length,
+      archive_covers_raw_artifacts: archiveCoversRawArtifacts,
+      archive_file_ids_match_raw: archiveFileIdsMatchRaw,
+      missing_raw_artifacts_from_archive_count: missingFromArchive.length,
+      mismatched_archive_record_count: mismatchedArchiveRecords.length,
+      raw_artifact_content_inlined: false,
+      archive_record_content_inlined: false
+    }),
+    prune_plan: Object.freeze({
+      planning_only: true,
+      delete_now: false,
+      move_now: false,
+      rewrite_now: false,
+      future_prune_requires_explicit_apply_gate: true,
+      future_dry_run_command_reserved: plan.future_dry_run_command,
+      future_apply_command_reserved: plan.future_apply_command,
+      candidate_path_glob: '.agent-onboard/*-gate.json',
+      candidate_count_after_future_apply_gate: candidateCount,
+      latest_candidate_paths: latestCandidatePaths,
+      protected_non_candidate_paths: Object.freeze([
+        '.agent-onboard/closed-gates.index.json',
+        '.agent-onboard/closed-gates.archive.jsonl',
+        '.agent-onboard/work-items.json',
+        '.agent-onboard/claims.jsonl',
+        '.agent-onboard/authority-index.json',
+        '.agent-onboard/state/*',
+        'manifest.json',
+        'authority-map.json'
+      ]),
+      future_apply_must_refresh: Object.freeze([
+        '.agent-onboard/closed-gates.index.json',
+        '.agent-onboard/closed-gates.archive.jsonl',
+        '.agent-onboard/authority-index.json',
+        '.agent-onboard/state/live-authority.json',
+        '.agent-onboard/state/indexes.json',
+        '.agent-onboard/state/closed-gates.jsonl',
+        'manifest.json',
+        'authority-map.json'
+      ]),
+      rollback_requirement: 'restore raw gate artifacts from version control or retained handoff zip if future prune apply is rejected',
+      raw_prune_authorized_by_this_gate: false
+    }),
+    recovery: Object.freeze({
+      reader_check_passes: readerCheck.status === 'ok',
+      full_test_runner_check_passes: fullTestRunnerCheck.status === 'ok',
+      index_archive_digest_matches_archive: index && index.archive_candidate_file_id ? index.archive_candidate_file_id === (archivePresent ? textFileId(archive.text) : null) : installedContext,
+      raw_artifacts_present_for_archived_records: installedContext || archivedRawReports.every((report) => report.present === true),
+      raw_file_ids_match_archive: archiveFileIdsMatchRaw,
+      missing_from_archive_count: missingFromArchive.length,
+      mismatched_archive_record_count: mismatchedArchiveRecords.length,
+      report_count: archivedRawReports.length,
+      reports_content_inlined: false
+    }),
+    artifact: Object.freeze({
+      path: plan.artifact_file,
+      present: fs.existsSync(artifactPath),
+      content_inlined: false
+    }),
+    boundary: plan.boundary
+  });
+}
+
+function publicClosedGateRawArtifactPrunePlanningCheck(root = packageRoot()) {
+  const result = publicClosedGateRawArtifactPrunePlanning(root);
+  const plan = PUBLIC_CLOSED_GATE_RAW_ARTIFACT_PRUNE_PLANNING;
+  const milestone = publicClosedGateRawArtifactPrunePlanningMilestoneState(root);
+  const installedContext = result.package_context === 'installed_package';
+  const rawPruneApplied = publicClosedGateRawArtifactPruneApplyAdmitted(root);
+  const pruneState = publicClosedGateRawArtifactPruneApplyIndexState(root);
+  const errors = [];
+  if (result.prerequisite_checks.closed_gate_archive_reader_check !== 'ok') errors.push('raw artifact prune planning requires closed gate archive reader check to pass');
+  if (result.prerequisite_checks.full_test_runner_completion_check !== 'ok') errors.push('raw artifact prune planning requires full-test runner completion check to pass');
+  if (!installedContext && !rawPruneApplied && result.artifact.present !== true) errors.push(`${plan.artifact_file} must exist after W12 closes`);
+  if (!installedContext && !rawPruneApplied && result.current_surface.raw_gate_artifact_count < plan.minimum_record_count) errors.push(`raw artifact prune planning requires at least ${plan.minimum_record_count} raw gate artifacts`);
+  if (!installedContext && result.current_surface.raw_gate_artifact_parse_error_count !== 0) errors.push('raw artifact prune planning requires all raw gate artifacts to parse as JSON');
+  if (!installedContext && result.current_surface.index_present !== true) errors.push(`${plan.index_path} must be present before prune planning`);
+  if (!installedContext && result.current_surface.index_status !== 'present_valid_json') errors.push(`${plan.index_path} must parse as JSON`);
+  if (!installedContext && result.current_surface.archive_present !== true) errors.push(`${plan.archive_path} must be present before prune planning`);
+  if (!installedContext && result.current_surface.archive_parse_error_count !== 0) errors.push('closed gate archive must parse before prune planning');
+  if (!installedContext && result.current_surface.index_record_count !== result.current_surface.archive_record_count) errors.push('closed gate index record count must match archive before prune planning');
+  if (!installedContext && result.recovery.index_archive_digest_matches_archive !== true) errors.push('closed gate index archive digest must match archive before prune planning');
+  if (!installedContext && !rawPruneApplied && result.current_surface.archive_covers_raw_artifacts !== true) errors.push('closed gate archive must cover all raw gate artifacts before future prune admission');
+  if (!installedContext && !rawPruneApplied && result.current_surface.archive_file_ids_match_raw !== true) errors.push('closed gate archive file ids must match raw artifacts before future prune admission');
+  if (result.prune_plan.planning_only !== true || result.prune_plan.delete_now !== false || result.prune_plan.move_now !== false || result.prune_plan.rewrite_now !== false) errors.push('W12 must remain planning-only and must not delete, move, or rewrite raw artifacts');
+  if (result.prune_plan.future_prune_requires_explicit_apply_gate !== true) errors.push('raw artifact prune planning must require a future explicit apply gate');
+  if (result.prune_plan.raw_prune_authorized_by_this_gate !== false) errors.push('W12 must not authorize raw artifact pruning');
+  if (result.boundary.writes_files !== false) errors.push('raw artifact prune planning command must be no-write');
+  if (result.boundary.deletes_raw_gate_artifacts !== false || result.boundary.moves_raw_gate_artifacts !== false || result.boundary.rewrites_raw_gate_artifacts !== false) errors.push('raw artifact prune planning must not delete, move, or rewrite raw gate artifacts');
+  if (result.boundary.prunes_now !== false || result.boundary.authorizes_future_apply !== false) errors.push('raw artifact prune planning must not prune now or authorize future apply by itself');
+  if (result.boundary.publishes_package !== false || result.boundary.mutates_registry !== false) errors.push('raw artifact prune planning must not publish or mutate registry state');
+  if (milestone.ledger_present) {
+    if (milestone.milestone_status !== 'open') errors.push(`${plan.milestone_id} must remain open during W12`);
+    if (milestone.prerequisite_work_item_status !== 'closed') errors.push(`${plan.prerequisite_work_item_id} must be closed before W12 passes`);
+    if (milestone.work_item_status !== 'closed') errors.push(`${plan.work_item_id} must be closed by W12`);
+  }
+  return Object.freeze({
+    schema: 'agent-onboard-public-closed-gate-raw-artifact-prune-planning-check-result-001',
+    status: errors.length === 0 ? 'ok' : 'error',
+    package_name: PACKAGE_NAME,
+    version: VERSION,
+    release_line: RELEASE_LINE,
+    command: plan.check_command,
+    planning_command: plan.command,
+    package_root: root,
+    validated: Object.freeze({
+      archive_reader_check_passes: result.prerequisite_checks.closed_gate_archive_reader_check === 'ok',
+      full_test_runner_check_passes: result.prerequisite_checks.full_test_runner_completion_check === 'ok',
+      planning_artifact_present: installedContext || rawPruneApplied || result.artifact.present === true,
+      enough_raw_gate_artifacts: installedContext || rawPruneApplied || result.current_surface.raw_gate_artifact_count >= plan.minimum_record_count,
+      raw_gate_artifacts_parse_as_json: installedContext || result.current_surface.raw_gate_artifact_parse_error_count === 0,
+      index_present_valid_json: installedContext || (result.current_surface.index_present === true && result.current_surface.index_status === 'present_valid_json'),
+      archive_present_and_parses: installedContext || (result.current_surface.archive_present === true && result.current_surface.archive_parse_error_count === 0),
+      index_record_count_matches_archive: installedContext || result.current_surface.index_record_count === result.current_surface.archive_record_count,
+      index_archive_digest_matches_archive: installedContext || result.recovery.index_archive_digest_matches_archive === true,
+      archive_covers_raw_artifacts: installedContext || rawPruneApplied || result.current_surface.archive_covers_raw_artifacts === true,
+      archive_file_ids_match_raw: installedContext || rawPruneApplied || result.current_surface.archive_file_ids_match_raw === true,
+      planning_only_no_prune: result.prune_plan.planning_only === true && result.prune_plan.delete_now === false && result.prune_plan.raw_prune_authorized_by_this_gate === false,
+      future_apply_gate_required: result.prune_plan.future_prune_requires_explicit_apply_gate === true,
+      no_write_boundary: result.boundary.writes_files === false,
+      no_delete_move_rewrite_boundary: result.boundary.deletes_raw_gate_artifacts === false && result.boundary.moves_raw_gate_artifacts === false && result.boundary.rewrites_raw_gate_artifacts === false,
+      no_publish_or_registry_mutation: result.boundary.publishes_package === false && result.boundary.mutates_registry === false,
+      m6_open: !milestone.ledger_present || milestone.milestone_status === 'open',
+      prerequisite_work_item_closed: !milestone.ledger_present || milestone.prerequisite_work_item_status === 'closed',
+      current_work_item_closed: !milestone.ledger_present || milestone.work_item_status === 'closed'
+    }),
+    plan: result,
+    milestone_state: milestone,
+    boundary: plan.boundary,
+    errors
+  });
+}
+
+function publicClosedGateRawArtifactPrunePlanningText(result = publicClosedGateRawArtifactPrunePlanning()) {
+  const lines = [
+    `agent-onboard closed gate raw artifact prune planning ${result.version}`,
+    `Status: ${result.status}`,
+    `Command: ${result.command}`,
+    '',
+    'Current surface:',
+    `- raw gate artifacts: ${result.current_surface.raw_gate_artifact_count}`,
+    `- archive records: ${result.current_surface.archive_record_count}`,
+    `- archive covers raw artifacts: ${result.current_surface.archive_covers_raw_artifacts}`,
+    '',
+    'Plan:',
+    `- planning only: ${result.prune_plan.planning_only}`,
+    `- delete now: ${result.prune_plan.delete_now}`,
+    `- future apply required: ${result.prune_plan.future_prune_requires_explicit_apply_gate}`,
+    '',
+    'Boundary:',
+    `- writes files: ${result.boundary.writes_files}`,
+    `- deletes raw artifacts: ${result.boundary.deletes_raw_gate_artifacts}`,
+    `- publishes package: ${result.boundary.publishes_package}`
+  ];
+  return `${lines.join('\n')}\n`;
+}
+
+
+
+  return Object.freeze({
+    PUBLIC_CLOSED_GATE_RAW_ARTIFACT_PRUNE_PLANNING,
+    publicClosedGateRawArtifactPruneApplyArtifactPath,
+    publicClosedGateRawArtifactPruneApplyAdmitted,
+    publicClosedGateRawArtifactPruneApplyIndexState,
+    publicClosedGateRawArtifactPrunePlanning,
+    publicClosedGateRawArtifactPrunePlanningCheck,
+    publicClosedGateRawArtifactPrunePlanningText,
+  });
+}
+
+module.exports = Object.freeze({
+  createClosedGatePrunePlanRuntime
+});
