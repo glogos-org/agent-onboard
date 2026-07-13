@@ -1,6 +1,6 @@
 {
   "name": "agent-onboard",
-  "version": "0.0.169",
+  "version": "0.0.170",
   "description": "CLI for onboarding and managing target repositories.",
   "license": "Apache-2.0",
   "author": "Thanh Le <vnlemanhthanh@gmail.com>",
@@ -94,7 +94,8 @@
     "check:work-item-ledger-compaction": "node scripts/check-work-item-ledger-compaction.js",
     "check:closed-gate-state-layout": "node scripts/check-closed-gate-state-layout.js",
     "check:runtime-composer-decomposition": "node scripts/check-runtime-composer-decomposition.js",
-    "check:runtime-check-fast-service-decomposition": "node scripts/check-runtime-check-fast-service-decomposition.js"
+    "check:runtime-check-fast-service-decomposition": "node scripts/check-runtime-check-fast-service-decomposition.js",
+    "check:runtime-mcp-bridge-service-decomposition": "node scripts/check-runtime-mcp-bridge-service-decomposition.js"
   },
   "bin": {
     "agent-onboard": "cli/agent-onboard.js",
@@ -128,6 +129,7 @@
     "cli/agent_onboard/domains/core/services/ni-uri-service.js",
     "cli/agent_onboard/domains/core/services/public-runtime-surface-service.js",
     "cli/agent_onboard/domains/core/services/public-runtime-check-fast-service.js",
+    "cli/agent_onboard/domains/core/services/public-runtime-mcp-bridge-service.js",
     "cli/agent_onboard/domains/package/index.js",
     "cli/agent_onboard/domains/package/services/installed-first-read-contract.js",
     "cli/agent_onboard/domains/package/services/package-coordinate-service.js",

@@ -86,12 +86,24 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-router-command-adapter-delegation-expansion-json-ae638e03"
     },
     {
+      "file_path": ".agent-onboard/runtime-check-fast-service-decomposition.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-runtime-check-fast-service-decomposition-json-e0c1d194"
+    },
+    {
       "file_path": ".agent-onboard/runtime-composer-decomposition.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-runtime-composer-decomposition-json-1dce6a60"
     },
     {
+      "file_path": ".agent-onboard/runtime-mcp-bridge-service-decomposition.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-runtime-mcp-bridge-service-decomposition-json-36a42669"
+    },
+    {
       "file_path": ".agent-onboard/runtime-namespace.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-runtime-namespace-json-f9932fdd"
+    },
+    {
+      "file_path": ".agent-onboard/runtime-release-service-decomposition.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-runtime-release-service-decomposition-json-3d0fa65e"
     },
     {
       "file_path": ".agent-onboard/runtime-state-architecture-growth-arrest.json",
@@ -402,6 +414,14 @@
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-core-services-ni-uri-service-js-a57bcf9f"
     },
     {
+      "file_path": "cli/agent_onboard/domains/core/services/public-runtime-check-fast-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-core-services-public-runtime-check-fast-service-js-cae97d51"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/core/services/public-runtime-mcp-bridge-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-core-services-public-runtime-mcp-bridge-service-js-9d28343e"
+    },
+    {
       "file_path": "cli/agent_onboard/domains/core/services/public-runtime-surface-service.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-core-services-public-runtime-surface-service-js-16b39684"
     },
@@ -424,6 +444,10 @@
     {
       "file_path": "cli/agent_onboard/domains/package/services/package-surface-service.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-package-surface-service-js-6f8b2bad"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/package/services/public-runtime-release-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-public-runtime-release-service-js-00ec3924"
     },
     {
       "file_path": "cli/agent_onboard/domains/package/services/source-manifest-service.js",
@@ -546,8 +570,20 @@
       "file_urn": "urn:agent-onboard:file:scripts-check-public-artifact-boundary-js-90be14c8"
     },
     {
+      "file_path": "scripts/check-runtime-check-fast-service-decomposition.js",
+      "file_urn": "urn:agent-onboard:file:scripts-check-runtime-check-fast-service-decomposition-js-885a9041"
+    },
+    {
       "file_path": "scripts/check-runtime-composer-decomposition.js",
       "file_urn": "urn:agent-onboard:file:scripts-check-runtime-composer-decomposition-js-b75a319c"
+    },
+    {
+      "file_path": "scripts/check-runtime-mcp-bridge-service-decomposition.js",
+      "file_urn": "urn:agent-onboard:file:scripts-check-runtime-mcp-bridge-service-decomposition-js-380ef325"
+    },
+    {
+      "file_path": "scripts/check-runtime-release-service-decomposition.js",
+      "file_urn": "urn:agent-onboard:file:scripts-check-runtime-release-service-decomposition-js-fe024cc1"
     },
     {
       "file_path": "scripts/check-runtime-state-storage-layout.js",

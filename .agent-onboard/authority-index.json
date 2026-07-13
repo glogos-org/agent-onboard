@@ -2,7 +2,7 @@
   "schema": "agent-onboard-public-authority-compact-index-001",
   "package_name": "agent-onboard",
   "package_version_source": "package.json#version",
-  "release_line": "public_runtime_check_fast_service_decomposition_gate",
+  "release_line": "public_runtime_mcp_bridge_service_decomposition_gate",
   "index_file": ".agent-onboard/authority-index.json",
   "first_read_command": "agent-onboard authority --first-read",
   "check_command": "agent-onboard authority --check",
@@ -113,16 +113,16 @@
       "file_path": "AGENTS.md",
       "present": true,
       "kind": "file",
-      "bytes": 44964,
-      "file_id": "ni:///sha-256;g3IMNzxTzHlkbg-f4koXCc1l8rI5xxzQTmW-ID7FrjE",
+      "bytes": 45094,
+      "file_id": "ni:///sha-256;zdB47VpLoFy2ZQ3t3fmUYYO_-b7stTDtQkmnVxWyXIo",
       "content_inlined": false
     },
     {
       "file_path": "SOURCE_OF_TRUTH.md",
       "present": true,
       "kind": "file",
-      "bytes": 9726,
-      "file_id": "ni:///sha-256;qmWb5uJOggFFc3rysK9ezdAduDUEmtmzwJYWchKBTuc",
+      "bytes": 9846,
+      "file_id": "ni:///sha-256;A2dBoFPGDLPGjjS_rrR1K-9aIAbJUa6R3_hkFxjBdTg",
       "content_inlined": false
     },
     {
@@ -145,8 +145,8 @@
       "file_path": "package.json",
       "present": true,
       "kind": "file",
-      "bytes": 6899,
-      "file_id": "ni:///sha-256;wELg62tgQVK14mjkHh8T-j_fIg7JdN9_0uRt3p9VjCM",
+      "bytes": 7103,
+      "file_id": "ni:///sha-256;8rApk2fYZkHq49uE4RIk0UVZnGbUnVDLnqpVD_0XpQg",
       "content_inlined": false
     },
     {
@@ -177,8 +177,8 @@
       "file_path": ".agent-onboard/work-items.json",
       "present": true,
       "kind": "file",
-      "bytes": 40845,
-      "file_id": "ni:///sha-256;lr6qrM2WRA2-Bqa5p45Y8RAGZubRFYGF7UN8iSoXZSI",
+      "bytes": 41157,
+      "file_id": "ni:///sha-256;wvtd7zXT1lvBxbuE00Ciro7YinnIkJXM1dS4NqRcHNc",
       "content_inlined": false
     }
   ],
@@ -216,7 +216,7 @@
     "indexed_file_count": 9,
     "present_file_count": 9,
     "missing_file_count": 0,
-    "present_bytes": 123753,
+    "present_bytes": 124519,
     "missing_files": [],
     "excluded_file_count": 7,
     "state_shard_count": 4,

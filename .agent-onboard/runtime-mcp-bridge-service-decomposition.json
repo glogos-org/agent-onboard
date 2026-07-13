@@ -1,0 +1,39 @@
+{
+  "schema": "agent-onboard-public-runtime-mcp-bridge-service-decomposition-001",
+  "status": "closed",
+  "version": "0.0.170",
+  "release_line": "public_runtime_mcp_bridge_service_decomposition_gate",
+  "work_item_id": "P1S3M6W21",
+  "title": "Public runtime MCP bridge service decomposition gate",
+  "objective": "Extract the public MCP bridge plan catalog, text renderer, and command runner from runtime-composer.js into a packaged domain service while preserving the no-server and no-write public boundary.",
+  "source": {
+    "before": "cli/agent_onboard/runtime-composer.js",
+    "after": "cli/agent_onboard/domains/core/services/public-runtime-mcp-bridge-service.js"
+  },
+  "extracted_surface": [
+    "MCP tool candidate catalog",
+    "MCP bridge plan catalog",
+    "MCP bridge plan text renderer",
+    "MCP command argument validation",
+    "MCP not-admitted server/write error surface"
+  ],
+  "boundary": {
+    "storage_backend_changed": false,
+    "sqlite_added": false,
+    "lmdb_added": false,
+    "mdbx_added": false,
+    "starts_mcp_server": false,
+    "starts_stdio_transport": false,
+    "opens_socket": false,
+    "adds_runtime_dependency": false,
+    "writes_files": false,
+    "network": false,
+    "git_mutation": false,
+    "publishes_package": false
+  },
+  "checks": [
+    "node scripts/check-runtime-mcp-bridge-service-decomposition.js",
+    "node cli/agent-onboard.js mcp --json",
+    "node cli/agent-onboard.js mcp --serve"
+  ]
+}

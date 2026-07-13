@@ -1,7 +1,7 @@
 {
   "schema": "agent-onboard-public-authority-indexes-state-shard-001",
   "package_name": "agent-onboard",
-  "release_line": "public_runtime_check_fast_service_decomposition_gate",
+  "release_line": "public_runtime_mcp_bridge_service_decomposition_gate",
   "raw_registries_loaded_by_default": false,
   "file_contents_inlined": false,
   "indexes": [
@@ -10,7 +10,7 @@
       "kind": "compact_authority_index",
       "present": true,
       "bytes": 7513,
-      "file_id": "ni:///sha-256;BuFotCBjYuWYf4RtuK7hY_UGlN87BMMS1txG18J5sPw",
+      "file_id": "ni:///sha-256;vMG9OiVnocHSAFezYqeOKAC-zUnc4N0JXdZEJ1xcgBA",
       "schema": "agent-onboard-public-authority-compact-index-001",
       "status": null,
       "raw_registry_loaded_by_default": null,
@@ -21,15 +21,15 @@
       "file_path": ".agent-onboard/work-items.index.json",
       "kind": "work_items_compact_index",
       "present": true,
-      "bytes": 1426,
-      "file_id": "ni:///sha-256;nzH6giljcfHzRR4KXo4q4wgxDkDmXeSHJc_0oap14wg",
+      "bytes": 1429,
+      "file_id": "ni:///sha-256;zyir1X5266sBSy2oGPGAGP9T6TPUAj16WXKp7qaCFv0",
       "schema": "agent-onboard-target-work-items-index-001",
       "status": "active",
       "raw_registry_loaded_by_default": false,
       "content_inlined": false,
-      "item_count": 157,
+      "item_count": 158,
       "open_count": 0,
-      "closed_count": 157
+      "closed_count": 158
     },
     {
       "file_path": ".agent-onboard/claims.index.json",
@@ -50,8 +50,8 @@
       "file_path": ".agent-onboard/work-items.json",
       "present": true,
       "kind": "work_items_raw_ledger",
-      "bytes": 40845,
-      "file_id": "ni:///sha-256;lr6qrM2WRA2-Bqa5p45Y8RAGZubRFYGF7UN8iSoXZSI",
+      "bytes": 41157,
+      "file_id": "ni:///sha-256;wvtd7zXT1lvBxbuE00Ciro7YinnIkJXM1dS4NqRcHNc",
       "content_inlined": false,
       "loaded_by_default": false
     },
@@ -65,7 +65,7 @@
       "loaded_by_default": false
     }
   ],
-  "authority_index_digest": "ni:///sha-256;BuFotCBjYuWYf4RtuK7hY_UGlN87BMMS1txG18J5sPw",
-  "work_items_index_digest": "ni:///sha-256;nzH6giljcfHzRR4KXo4q4wgxDkDmXeSHJc_0oap14wg",
+  "authority_index_digest": "ni:///sha-256;vMG9OiVnocHSAFezYqeOKAC-zUnc4N0JXdZEJ1xcgBA",
+  "work_items_index_digest": "ni:///sha-256;zyir1X5266sBSy2oGPGAGP9T6TPUAj16WXKp7qaCFv0",
   "claims_index_digest": "ni:///sha-256;otIDDGJGcys456Ufaq9WPeWXVrjiCX9kkTWzXjQyHGo"
 }

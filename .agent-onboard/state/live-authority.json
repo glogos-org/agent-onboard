@@ -2,13 +2,13 @@
   "schema": "agent-onboard-public-authority-live-state-shard-001",
   "package_name": "agent-onboard",
   "package_version_source": "package.json#version",
-  "release_line": "public_runtime_check_fast_service_decomposition_gate",
+  "release_line": "public_runtime_mcp_bridge_service_decomposition_gate",
   "authority_state_source_layout": "sharded_seed",
   "state_root": ".agent-onboard/state",
-  "current_work_item": "P1S3M6W20",
-  "current_work_item_title": "Public runtime check fast service decomposition gate",
-  "last_closed_work_item": "P1S3M6W20",
-  "last_closed_title": "Public runtime check fast service decomposition gate",
+  "current_work_item": "P1S3M6W21",
+  "current_work_item_title": "Public runtime MCP bridge service decomposition gate",
+  "last_closed_work_item": "P1S3M6W21",
+  "last_closed_title": "Public runtime MCP bridge service decomposition gate",
   "default_first_read": true,
   "compact_authority_index_file": ".agent-onboard/authority-index.json",
   "state_command": "agent-onboard authority --state",
@@ -17,13 +17,6 @@
   "raw_growth_files_loaded_by_default": false,
   "file_contents_inlined": false,
   "latest_closed_work_items": [
-    {
-      "id": "P1S3M6W16",
-      "title": "Public work item ledger compaction migration gate",
-      "status": "closed",
-      "milestone_id": "P1S3M6",
-      "domain": null
-    },
     {
       "id": "P1S3M6W17",
       "title": "Public closed gate state layout migration gate",
@@ -48,6 +41,13 @@
     {
       "id": "P1S3M6W20",
       "title": "Public runtime check fast service decomposition gate",
+      "status": "closed",
+      "milestone_id": "P1S3M6",
+      "domain": null
+    },
+    {
+      "id": "P1S3M6W21",
+      "title": "Public runtime MCP bridge service decomposition gate",
       "status": "closed",
       "milestone_id": "P1S3M6",
       "domain": null

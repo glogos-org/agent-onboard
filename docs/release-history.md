@@ -3,9 +3,13 @@
 Historical release prose archived from README.md by P1S3M6W6.
 README.md remains the live first-read surface for install, quickstart, current commands, and no-mutation boundary material.
 
-## Current release: runtime check fast service decomposition gate
+## Current release: runtime MCP bridge service decomposition gate
 
-The current release extracts the public check plan and fast-check runner from `cli/agent_onboard/runtime-composer.js` into `cli/agent_onboard/domains/core/services/public-runtime-check-fast-service.js`. The composer now composes that service instead of inlining the fast-check engine, registry, progress JSONL, and output budget logic. Package projection and runtime contracts include the new service, and `scripts/check-runtime-check-fast-service-decomposition.js` guards the boundary. Storage remains text-first JSON plus JavaScript Object Notation Lines; SQLite, Lightning Memory-Mapped Database, MDBX, network access, registry mutation, Git mutation, and package publish remain outside this gate.
+The current release extracts the public MCP bridge plan surface from `cli/agent_onboard/runtime-composer.js` into `cli/agent_onboard/domains/core/services/public-runtime-mcp-bridge-service.js`. The composer now composes that service instead of inlining the MCP tool-candidate catalog, bridge plan text renderer, and MCP argument validation body. Package projection and runtime contracts include the new service, and `scripts/check-runtime-mcp-bridge-service-decomposition.js` guards the boundary. The MCP surface remains plan-only and read-only: no server, stdio transport, socket, dependency addition, file write, SQLite, Lightning Memory-Mapped Database, MDBX, network access, registry mutation, Git mutation, or package publish is admitted.
+
+## Previous release: runtime check fast service decomposition gate
+
+The previous release extracted the public check plan and fast-check runner from `cli/agent_onboard/runtime-composer.js` into `cli/agent_onboard/domains/core/services/public-runtime-check-fast-service.js`. The composer composes that service instead of inlining the fast-check engine, registry, progress JSONL, and output budget logic. Package projection and runtime contracts include the check-fast service, and `scripts/check-runtime-check-fast-service-decomposition.js` guards that boundary.
 
 ## Previous release: runtime release service decomposition gate
 

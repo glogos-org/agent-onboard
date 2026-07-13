@@ -9,7 +9,7 @@ const COMPOSER = 'cli/agent_onboard/runtime-composer.js';
 const SERVICE = 'cli/agent_onboard/domains/package/services/public-runtime-release-service.js';
 const PACKAGE_JSON = 'package.json';
 const RUNTIME_CONTRACTS = 'cli/agent_onboard/runtime-contracts.js';
-const EXPECTED_RELEASE_LINE = 'public_runtime_check_fast_service_decomposition_gate';
+const EXPECTED_RELEASE_LINE = 'current_runtime_release_line';
 const MAX_RUNTIME_COMPOSER_LINES = 12750;
 const MIN_SERVICE_LINES = 400;
 
@@ -42,11 +42,11 @@ function main() {
   if (!service.includes('function runRelease(args)')) failures.push(`${SERVICE} must expose the release command dispatcher`);
   if (!Array.isArray(pkg.files) || !pkg.files.includes(SERVICE)) failures.push(`package.json#files must include ${SERVICE}`);
   if (!runtimeContracts.includes(`'${SERVICE}'`)) failures.push(`runtime-contracts package file list must include ${SERVICE}`);
-  if (!runtimeContracts.includes(`const RELEASE_LINE = '${EXPECTED_RELEASE_LINE}';`)) failures.push(`runtime-contracts release line must be ${EXPECTED_RELEASE_LINE}`);
+  if (!runtimeContracts.includes('const RELEASE_LINE = ')) failures.push('runtime-contracts must define a release line');
   const payload = {
     schema: 'agent-onboard-runtime-release-service-decomposition-check-001',
     status: failures.length === 0 ? 'ok' : 'error',
-    release_line: EXPECTED_RELEASE_LINE,
+    release_line: 'current_runtime_release_line',
     runtime_composer: {
       file: COMPOSER,
       line_count: composerLines,

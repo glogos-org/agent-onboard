@@ -1433,6 +1433,17 @@
         "claimed_at": "2026-07-07T19:45:09.892Z"
       },
       "closure_ref": "closures:P1S3M6W20"
+    },
+    {
+      "id": "P1S3M6W21",
+      "milestone_id": "P1S3M6",
+      "title": "Public runtime MCP bridge service decomposition gate",
+      "status": "closed",
+      "claim": {
+        "actor": "chatgpt",
+        "claimed_at": "2026-07-08T01:57:21.622Z"
+      },
+      "closure_ref": "closures:P1S3M6W21"
     }
   ]
 }
