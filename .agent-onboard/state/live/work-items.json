@@ -1,0 +1,1137 @@
+{
+  "schema": "agent-onboard-work-items-live-001",
+  "package_name": "agent-onboard",
+  "status": "seeded_parallel_layout",
+  "source_of_truth": "compatibility_ledger_until_migration_gate",
+  "compatibility_ledger_path": ".agent-onboard/work-items.json",
+  "backend": "json_text_snapshot",
+  "generated_at": "2026-07-07T14:25:00.000Z",
+  "item_count": 152,
+  "items": [
+    {
+      "id": "P1S1M1W1",
+      "milestone_id": "P1S1M1",
+      "title": "Public self-dogfood participation gate",
+      "status": "closed"
+    },
+    {
+      "id": "P1S1M1W2",
+      "milestone_id": "P1S1M1",
+      "title": "Public source participation lifecycle gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S1M1W2"
+    },
+    {
+      "id": "P1S1M1W3",
+      "milestone_id": "P1S1M1",
+      "title": "Public handoff and closure evidence gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S1M1W3"
+    },
+    {
+      "id": "P1S1M1W4",
+      "milestone_id": "P1S1M1",
+      "title": "Public source closure test fixture alignment gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S1M1W4"
+    },
+    {
+      "id": "P1S1M1W5",
+      "milestone_id": "P1S1M1",
+      "title": "Public package publish verification gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S1M1W5"
+    },
+    {
+      "id": "P1S1M2W1",
+      "milestone_id": "P1S1M2",
+      "title": "Public release contract integration gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S1M2W1"
+    },
+    {
+      "id": "P1S1M2W2",
+      "milestone_id": "P1S1M2",
+      "title": "Public package contract fixture gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S1M2W2"
+    },
+    {
+      "id": "P1S1M2W3",
+      "milestone_id": "P1S1M2",
+      "title": "Public installed package parity smoke gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S1M2W3"
+    },
+    {
+      "id": "P1S2M1W1",
+      "milestone_id": "P1S2M1",
+      "title": "Public target onboarding surface planning gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S2M1W1"
+    },
+    {
+      "id": "P1S2M1W2",
+      "milestone_id": "P1S2M1",
+      "title": "Public target onboarding dry-run fixture gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S2M1W2"
+    },
+    {
+      "id": "P1S2M1W3",
+      "milestone_id": "P1S2M1",
+      "title": "Public target onboarding explicit write boundary gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S2M1W3"
+    },
+    {
+      "id": "P1S2M1W4",
+      "milestone_id": "P1S2M1",
+      "title": "Public target onboarding installed package smoke gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S2M1W4"
+    },
+    {
+      "id": "P1S2M1W5",
+      "milestone_id": "P1S2M1",
+      "title": "Public target onboarding post-publish verification handoff gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S2M1W5"
+    },
+    {
+      "id": "P1S2M1W6",
+      "milestone_id": "P1S2M1",
+      "title": "Public target onboarding published package acceptance gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S2M1W6"
+    },
+    {
+      "id": "P1S2M1W7",
+      "milestone_id": "P1S2M1",
+      "title": "Public target onboarding real target repo trial gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S2M1W7"
+    },
+    {
+      "id": "P1S2M1W8",
+      "milestone_id": "P1S2M1",
+      "title": "Public target onboarding owner handoff evidence gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S2M1W8"
+    },
+    {
+      "id": "P1S3M1W1",
+      "milestone_id": "P1S3M1",
+      "title": "Public architecture map gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W1"
+    },
+    {
+      "id": "P1S3M1W2",
+      "milestone_id": "P1S3M1",
+      "title": "Public command router boundary gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W2"
+    },
+    {
+      "id": "P1S3M1W3",
+      "milestone_id": "P1S3M1",
+      "title": "Public domain service facade gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W3"
+    },
+    {
+      "id": "P1S3M1W4",
+      "milestone_id": "P1S3M1",
+      "title": "Public authority first-read index gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W4"
+    },
+    {
+      "id": "P1S3M1W5",
+      "milestone_id": "P1S3M1",
+      "title": "Public target runtime namespace gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W5"
+    },
+    {
+      "id": "P1S3M1W6",
+      "milestone_id": "P1S3M1",
+      "title": "Public package surface preservation gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W6"
+    },
+    {
+      "id": "P1S3M1W7",
+      "milestone_id": "P1S3M1",
+      "title": "Public installed parity architecture smoke gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W7"
+    },
+    {
+      "id": "P1S3M1W8",
+      "milestone_id": "P1S3M1",
+      "title": "Public source domain module partition planning gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W8"
+    },
+    {
+      "id": "P1S3M1W9",
+      "milestone_id": "P1S3M1",
+      "title": "Public source domain extraction rehearsal gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W9"
+    },
+    {
+      "id": "P1S3M1W10",
+      "milestone_id": "P1S3M1",
+      "title": "Public source extraction golden output freeze gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W10"
+    },
+    {
+      "id": "P1S3M1W11",
+      "milestone_id": "P1S3M1",
+      "title": "Public source module extraction adapter boundary gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W11"
+    },
+    {
+      "id": "P1S3M1W12",
+      "milestone_id": "P1S3M1",
+      "title": "Public source module extraction first slice gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W12"
+    },
+    {
+      "id": "P1S3M1W13",
+      "milestone_id": "P1S3M1",
+      "title": "Public source module extraction bundle parity gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W13"
+    },
+    {
+      "id": "P1S3M1W14",
+      "milestone_id": "P1S3M1",
+      "title": "Public source module extraction runtime bridge gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W14"
+    },
+    {
+      "id": "P1S3M1W15",
+      "milestone_id": "P1S3M1",
+      "title": "Public source module extraction installed fallback smoke gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W15"
+    },
+    {
+      "id": "P1S3M1W16",
+      "milestone_id": "P1S3M1",
+      "title": "Public source module extraction second slice planning gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W16"
+    },
+    {
+      "id": "P1S3M1W17",
+      "milestone_id": "P1S3M1",
+      "title": "Public source module extraction second slice first-slice gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W17"
+    },
+    {
+      "id": "P1S3M1W18",
+      "milestone_id": "P1S3M1",
+      "title": "Public source module extraction authority bundle parity gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W18"
+    },
+    {
+      "id": "P1S3M1W19",
+      "milestone_id": "P1S3M1",
+      "title": "Public source module extraction authority runtime bridge gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W19"
+    },
+    {
+      "id": "P1S3M2W1",
+      "milestone_id": "P1S3M2",
+      "title": "Public architecture M1 closure and M2 seed gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M2W1"
+    },
+    {
+      "id": "P1S3M2W2",
+      "milestone_id": "P1S3M2",
+      "title": "Public work-items domain source extraction planning gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M2W2"
+    },
+    {
+      "id": "P1S3M2W3",
+      "milestone_id": "P1S3M2",
+      "title": "Public work-items domain source extraction first-slice gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M2W3"
+    },
+    {
+      "id": "P1S3M2W4",
+      "milestone_id": "P1S3M2",
+      "title": "Public work-items domain source extraction bundle parity gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M2W4"
+    },
+    {
+      "id": "P1S3M2W5",
+      "milestone_id": "P1S3M2",
+      "title": "Public work-items domain source extraction runtime bridge gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M2W5"
+    },
+    {
+      "id": "P1S3M2W6",
+      "milestone_id": "P1S3M2",
+      "title": "Public work-items domain source extraction installed fallback smoke gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M2W6"
+    },
+    {
+      "id": "P1S3M2W7",
+      "milestone_id": "P1S3M2",
+      "title": "Public claims domain source extraction planning gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M2W7"
+    },
+    {
+      "id": "P1S3M2W8",
+      "milestone_id": "P1S3M2",
+      "title": "Public claims domain source extraction first-slice gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M2W8"
+    },
+    {
+      "id": "P1S3M2W9",
+      "milestone_id": "P1S3M2",
+      "title": "Public claims domain source extraction bundle parity gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M2W9"
+    },
+    {
+      "id": "P1S3M2W10",
+      "milestone_id": "P1S3M2",
+      "title": "Public claims domain source extraction runtime bridge gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M2W10"
+    },
+    {
+      "id": "P1S3M2W11",
+      "milestone_id": "P1S3M2",
+      "title": "Public claims domain source extraction installed fallback smoke gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M2W11"
+    },
+    {
+      "id": "P1S3M2W12",
+      "milestone_id": "P1S3M2",
+      "title": "Public source-domain extraction stabilization closure review gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M2W12"
+    },
+    {
+      "id": "P1S3M3W1",
+      "milestone_id": "P1S3M3",
+      "title": "Public CLI runtime de-monolith planning gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M3W1"
+    },
+    {
+      "id": "P1S3M3W2",
+      "milestone_id": "P1S3M3",
+      "title": "Public thin CLI router seed gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M3W2"
+    },
+    {
+      "id": "P1S3M3W3",
+      "milestone_id": "P1S3M3",
+      "title": "Public compatibility command port seed gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M3W3"
+    },
+    {
+      "id": "P1S3M3W4",
+      "milestone_id": "P1S3M3",
+      "title": "Public core command adapter extraction gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M3W4"
+    },
+    {
+      "id": "P1S3M3W5",
+      "milestone_id": "P1S3M3",
+      "title": "Public package command adapter extraction gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M3W5"
+    },
+    {
+      "id": "P1S3M3W6",
+      "milestone_id": "P1S3M3",
+      "title": "Public architecture command adapter extraction gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M3W6"
+    },
+    {
+      "id": "P1S3M3W7",
+      "milestone_id": "P1S3M3",
+      "title": "Public authority command adapter extraction gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M3W7"
+    },
+    {
+      "id": "P1S3M3W8",
+      "milestone_id": "P1S3M3",
+      "title": "Public modular runtime package inclusion planning gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M3W8"
+    },
+    {
+      "id": "P1S3M3W9",
+      "milestone_id": "P1S3M3",
+      "title": "Public packaged router port inclusion gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M3W9"
+    },
+    {
+      "id": "P1S3M3W10",
+      "milestone_id": "P1S3M3",
+      "title": "Public thin entrypoint router cutover rehearsal gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M3W10"
+    },
+    {
+      "id": "P1S3M3W11",
+      "milestone_id": "P1S3M3",
+      "title": "Public thin entrypoint router cutover application gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M3W11"
+    },
+    {
+      "id": "P1S3M3W12",
+      "milestone_id": "P1S3M3",
+      "title": "Public router command adapter delegation expansion gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M3W12",
+      "closure_ref": "closures:P1S3M3W12"
+    },
+    {
+      "id": "P1S3M3W13",
+      "milestone_id": "P1S3M3",
+      "title": "Public source test parallel quick gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M3W13",
+      "closure_ref": "closures:P1S3M3W13"
+    },
+    {
+      "id": "P1S3M3W14",
+      "milestone_id": "P1S3M3",
+      "title": "Public target command adapter extraction gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M3W14"
+    },
+    {
+      "id": "P1S3M3W15",
+      "milestone_id": "P1S3M3",
+      "title": "Public full source test parallelization gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M3W15",
+      "closure_ref": "closures:P1S3M3W15"
+    },
+    {
+      "id": "P1S3M3W16",
+      "milestone_id": "P1S3M3",
+      "title": "Public full source test shard balancing gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M3W16",
+      "closure_ref": "closures:P1S3M3W16"
+    },
+    {
+      "id": "P1S3M3W17",
+      "milestone_id": "P1S3M3",
+      "title": "Public work-items runtime service partition seed gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M3W17",
+      "closure_ref": "closures:P1S3M3W17"
+    },
+    {
+      "id": "P1S3M3W18",
+      "milestone_id": "P1S3M3",
+      "title": "Public work-items read-only runtime completion gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M3W18",
+      "closure_ref": "closures:P1S3M3W18"
+    },
+    {
+      "id": "P1S3M3W19",
+      "milestone_id": "P1S3M3",
+      "title": "Public work-items init append runtime write-boundary gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M3W19",
+      "closure_ref": "closures:P1S3M3W19"
+    },
+    {
+      "id": "P1S3M3W20",
+      "milestone_id": "P1S3M3",
+      "title": "Public work-items claim close runtime handoff gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M3W20",
+      "closure_ref": "closures:P1S3M3W20"
+    },
+    {
+      "id": "P1S3M3W21",
+      "milestone_id": "P1S3M3",
+      "title": "Public work-items legacy fallback deletion gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M3W21",
+      "closure_ref": "closures:P1S3M3W21"
+    },
+    {
+      "id": "P1S3M3W22",
+      "milestone_id": "P1S3M3",
+      "title": "Public architecture static catalog runtime module extraction gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M3W22",
+      "closure_ref": "closures:P1S3M3W22"
+    },
+    {
+      "id": "P1S3M3W23",
+      "milestone_id": "P1S3M3",
+      "title": "Public target runtime service extraction gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M3W23",
+      "closure_ref": "closures:P1S3M3W23"
+    },
+    {
+      "id": "P1S3M3W24",
+      "milestone_id": "P1S3M3",
+      "title": "Public target runtime service body extraction gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M3W24",
+      "closure_ref": "closures:P1S3M3W24"
+    },
+    {
+      "id": "P1S3M3W25",
+      "milestone_id": "P1S3M3",
+      "title": "Public target service utility split gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M3W25",
+      "closure_ref": "closures:P1S3M3W25"
+    },
+    {
+      "id": "P1S3M3W26",
+      "milestone_id": "P1S3M3",
+      "title": "Public architecture M3 runtime catalog split gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M3W26",
+      "closure_ref": "closures:P1S3M3W26"
+    },
+    {
+      "id": "P1S3M3W27",
+      "milestone_id": "P1S3M3",
+      "title": "Public architecture runtime service extraction batch gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M3W27",
+      "closure_ref": "closures:P1S3M3W27"
+    },
+    {
+      "id": "P1S3M3W28",
+      "milestone_id": "P1S3M3",
+      "title": "Public architecture source extraction service split gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M3W28",
+      "closure_ref": "closures:P1S3M3W28"
+    },
+    {
+      "id": "P1S3M3W29",
+      "milestone_id": "P1S3M3",
+      "title": "Public architecture source domain service split gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M3W29",
+      "closure_ref": "closures:P1S3M3W29"
+    },
+    {
+      "id": "P1S3M3W30",
+      "milestone_id": "P1S3M3",
+      "title": "Public architecture aggregate check service extraction gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M3W30",
+      "closure_ref": "closures:P1S3M3W30"
+    },
+    {
+      "id": "P1S3M3W31",
+      "milestone_id": "P1S3M3",
+      "title": "Public release package runtime service extraction gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M3W31",
+      "closure_ref": "closures:P1S3M3W31"
+    },
+    {
+      "id": "P1S3M3W32",
+      "milestone_id": "P1S3M3",
+      "title": "Public core config guard service extraction gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M3W32",
+      "closure_ref": "closures:P1S3M3W32"
+    },
+    {
+      "id": "P1S3M3W33",
+      "milestone_id": "P1S3M3",
+      "title": "Public thin entrypoint runtime composer cutover gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M3W33",
+      "closure_ref": "closures:P1S3M3W33"
+    },
+    {
+      "id": "P1S3M4W1",
+      "milestone_id": "P1S3M4",
+      "title": "Public target-repo product refactor kickoff gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M4W1",
+      "closure_ref": "closures:P1S3M4W1"
+    },
+    {
+      "id": "P1S3M4W2",
+      "milestone_id": "P1S3M4",
+      "title": "Public target repo doctor command gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M4W2",
+      "closure_ref": "closures:P1S3M4W2"
+    },
+    {
+      "id": "P1S3M4W3",
+      "milestone_id": "P1S3M4",
+      "title": "Public target onboarding repair command gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M4W3",
+      "closure_ref": "closures:P1S3M4W3"
+    },
+    {
+      "id": "P1S3M4W4",
+      "milestone_id": "P1S3M4",
+      "title": "Public target repo profile detection gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M4W4",
+      "closure_ref": "closures:P1S3M4W4"
+    },
+    {
+      "id": "P1S3M4W5",
+      "milestone_id": "P1S3M4",
+      "title": "Public work item usability views gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M4W5",
+      "closure_ref": "closures:P1S3M4W5"
+    },
+    {
+      "id": "P1S3M4W6",
+      "milestone_id": "P1S3M4",
+      "title": "Public human readable output mode gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M4W6",
+      "closure_ref": "closures:P1S3M4W6"
+    },
+    {
+      "id": "P1S3M4W7",
+      "milestone_id": "P1S3M4",
+      "title": "Public retired architecture checker reduction gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M4W7",
+      "closure_ref": "closures:P1S3M4W7"
+    },
+    {
+      "id": "P1S3M4W8",
+      "milestone_id": "P1S3M4",
+      "title": "Public comprehensive repo architecture refactor gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M4W8",
+      "closure_ref": "closures:P1S3M4W8"
+    },
+    {
+      "id": "P1S3M4W9",
+      "milestone_id": "P1S3M4",
+      "title": "Public package surface diet gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M4W9",
+      "closure_ref": "closures:P1S3M4W9"
+    },
+    {
+      "id": "P1S3M4W10",
+      "milestone_id": "P1S3M4",
+      "title": "Public target service module split gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M4W10",
+      "closure_ref": "closures:P1S3M4W10"
+    },
+    {
+      "id": "P1S3M4W11",
+      "milestone_id": "P1S3M4",
+      "title": "Public command constants and enum cleanup gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M4W11",
+      "closure_ref": "closures:P1S3M4W11"
+    },
+    {
+      "id": "P1S3M4W12",
+      "milestone_id": "P1S3M4",
+      "title": "Public release check target-repo refocus gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M4W12",
+      "closure_ref": "closures:P1S3M4W12"
+    },
+    {
+      "id": "P1S3M4W13",
+      "milestone_id": "P1S3M4",
+      "title": "Public CLI docs and help product rewrite gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M4W13",
+      "closure_ref": "closures:P1S3M4W13"
+    },
+    {
+      "id": "P1S3M4W14",
+      "milestone_id": "P1S3M4",
+      "title": "Public target metadata manifest authority gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M4W14",
+      "closure_ref": "closures:P1S3M4W14"
+    },
+    {
+      "id": "P1S3M4W15",
+      "milestone_id": "P1S3M4",
+      "title": "Public M4 acceptance and publish readiness gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M4W15",
+      "closure_ref": "closures:P1S3M4W15"
+    },
+    {
+      "id": "P1S3M5W1",
+      "milestone_id": "P1S3M5",
+      "title": "Public target metadata policy adapter gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M5W1",
+      "closure_ref": "closures:P1S3M5W1"
+    },
+    {
+      "id": "P1S3M5W2",
+      "milestone_id": "P1S3M5",
+      "title": "Public target manifest drift guard gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M5W2",
+      "closure_ref": "closures:P1S3M5W2"
+    },
+    {
+      "id": "P1S3M5W3",
+      "milestone_id": "P1S3M5",
+      "title": "Public package source manifest service gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M5W3",
+      "closure_ref": "closures:P1S3M5W3"
+    },
+    {
+      "id": "P1S3M5W4",
+      "milestone_id": "P1S3M5",
+      "title": "Public package source manifest command gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M5W4",
+      "closure_ref": "closures:P1S3M5W4"
+    },
+    {
+      "id": "P1S3M5W5",
+      "milestone_id": "P1S3M5",
+      "title": "Public command surface catalog product gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M5W5",
+      "closure_ref": "closures:P1S3M5W5"
+    },
+    {
+      "id": "P1S3M5W6",
+      "milestone_id": "P1S3M5",
+      "title": "Public operator guide product gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W6"
+    },
+    {
+      "id": "P1S3M5W7",
+      "milestone_id": "P1S3M5",
+      "title": "Public quickstart product gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W7"
+    },
+    {
+      "id": "P1S3M5W8",
+      "milestone_id": "P1S3M5",
+      "title": "Public AI discovery product gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M5W8",
+      "closure_ref": "closures:P1S3M5W8"
+    },
+    {
+      "id": "P1S3M5W9",
+      "milestone_id": "P1S3M5",
+      "title": "Public create dry-run product gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M5W9",
+      "closure_ref": "closures:P1S3M5W9"
+    },
+    {
+      "id": "P1S3M5W10",
+      "milestone_id": "P1S3M5",
+      "title": "Public target memory descriptor product gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M5W10",
+      "closure_ref": "closures:P1S3M5W10"
+    },
+    {
+      "id": "P1S3M5W11",
+      "milestone_id": "P1S3M5",
+      "title": "Public issue intake dry-run product gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M5W11",
+      "closure_ref": "closures:P1S3M5W11"
+    },
+    {
+      "id": "P1S3M5W12",
+      "milestone_id": "P1S3M5",
+      "title": "Public contributor admission dry-run product gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M5W12",
+      "closure_ref": "closures:P1S3M5W12"
+    },
+    {
+      "id": "P1S3M5W13",
+      "milestone_id": "P1S3M5",
+      "title": "Public check plan / fast runner product gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M5W13",
+      "closure_ref": "closures:P1S3M5W13"
+    },
+    {
+      "id": "P1S3M5W14",
+      "milestone_id": "P1S3M5",
+      "title": "Public GitHub Action / CI surface product gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M5W14",
+      "closure_ref": "closures:P1S3M5W14"
+    },
+    {
+      "id": "P1S3M5W15",
+      "milestone_id": "P1S3M5",
+      "title": "Public MCP bridge plan / skeleton product gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M5W15",
+      "closure_ref": "closures:P1S3M5W15"
+    },
+    {
+      "id": "P1S3M5W16",
+      "milestone_id": "P1S3M5",
+      "title": "Public target inventory preview product gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W16"
+    },
+    {
+      "id": "P1S3M5W17",
+      "milestone_id": "P1S3M5",
+      "title": "Public target work-items preview product gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M5W17",
+      "closure_ref": "closures:P1S3M5W17"
+    },
+    {
+      "id": "P1S3M5W18",
+      "milestone_id": "P1S3M5",
+      "title": "Public target handoff preview product gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M5W18",
+      "closure_ref": "closures:P1S3M5W18"
+    },
+    {
+      "id": "P1S3M5W19",
+      "milestone_id": "P1S3M5",
+      "title": "Public target governance preview product gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M5W19",
+      "closure_ref": "closures:P1S3M5W19"
+    },
+    {
+      "id": "P1S3M5W20",
+      "milestone_id": "P1S3M5",
+      "title": "Public target governance index materialization dry-run gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M5W20",
+      "closure_ref": "closures:P1S3M5W20"
+    },
+    {
+      "id": "P1S3M5W21",
+      "milestone_id": "P1S3M5",
+      "title": "Public target governance index explicit write gate",
+      "status": "closed",
+      "claim_ref": "claims:P1S3M5W21",
+      "closure_ref": "closures:P1S3M5W21"
+    },
+    {
+      "id": "P1S3M5W22",
+      "milestone_id": "P1S3M5",
+      "title": "Public target governance index refresh integration gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W22"
+    },
+    {
+      "id": "P1S3M5W23",
+      "milestone_id": "P1S3M5",
+      "title": "Public target governance index drift check gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W23"
+    },
+    {
+      "id": "P1S3M5W24",
+      "milestone_id": "P1S3M5",
+      "title": "Public target governance stale-read fast-check wiring gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W24"
+    },
+    {
+      "id": "P1S3M5W25",
+      "milestone_id": "P1S3M5",
+      "title": "Public target governance budget contract product gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W25"
+    },
+    {
+      "id": "P1S3M5W26",
+      "milestone_id": "P1S3M5",
+      "title": "Public target governance budget check product gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W26"
+    },
+    {
+      "id": "P1S3M5W27",
+      "milestone_id": "P1S3M5",
+      "title": "Public target handoff governance budget summary product gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W27"
+    },
+    {
+      "id": "P1S3M5W28",
+      "milestone_id": "P1S3M5",
+      "title": "Public target handoff readiness reasons product gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W28"
+    },
+    {
+      "id": "P1S3M5W29",
+      "milestone_id": "P1S3M5",
+      "title": "Public target handoff readiness check product gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W29"
+    },
+    {
+      "id": "P1S3M5W30",
+      "milestone_id": "P1S3M5",
+      "title": "Public contract spine readiness output contract gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W30"
+    },
+    {
+      "id": "P1S3M5W31",
+      "milestone_id": "P1S3M5",
+      "title": "Public contract output validator gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W31"
+    },
+    {
+      "id": "P1S3M5W32",
+      "milestone_id": "P1S3M5",
+      "title": "Public release surface vocabulary gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W32"
+    },
+    {
+      "id": "P1S3M5W33",
+      "milestone_id": "P1S3M5",
+      "title": "Public first-read ladder manifest gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W33"
+    },
+    {
+      "id": "P1S3M5W34",
+      "milestone_id": "P1S3M5",
+      "title": "Public source manifest hash cache budget gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W34"
+    },
+    {
+      "id": "P1S3M5W35",
+      "milestone_id": "P1S3M5",
+      "title": "Public authority compact index drift guard gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W35"
+    },
+    {
+      "id": "P1S3M5W36",
+      "milestone_id": "P1S3M5",
+      "title": "Public AGENTS bridge marker block gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W36"
+    },
+    {
+      "id": "P1S3M5W37",
+      "milestone_id": "P1S3M5",
+      "title": "Public claim ledger JSONL gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W37"
+    },
+    {
+      "id": "P1S3M5W38",
+      "milestone_id": "P1S3M5",
+      "title": "Public package fast runner engine gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W38"
+    },
+    {
+      "id": "P1S3M5W39",
+      "milestone_id": "P1S3M5",
+      "title": "Public exact artifact oracle gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W39"
+    },
+    {
+      "id": "P1S3M5W40",
+      "milestone_id": "P1S3M5",
+      "title": "Public authority state sharding seed gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W40"
+    },
+    {
+      "id": "P1S3M5W41",
+      "milestone_id": "P1S3M5",
+      "title": "Public installed authority state shard parity gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W41"
+    },
+    {
+      "id": "P1S3M5W42",
+      "milestone_id": "P1S3M5",
+      "title": "Public claim lifecycle conflict hardening gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W42"
+    },
+    {
+      "id": "P1S3M6W1",
+      "milestone_id": "P1S3M6",
+      "title": "Public clean and compaction baseline gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W1"
+    },
+    {
+      "id": "P1S3M6W2",
+      "milestone_id": "P1S3M6",
+      "title": "Public clean and compaction candidate catalog gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W2"
+    },
+    {
+      "id": "P1S3M6W3",
+      "milestone_id": "P1S3M6",
+      "title": "Public package keyword taxonomy compaction gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W3"
+    },
+    {
+      "id": "P1S3M6W4",
+      "milestone_id": "P1S3M6",
+      "title": "Public README first-read history split planning gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W4"
+    },
+    {
+      "id": "P1S3M6W5",
+      "milestone_id": "P1S3M6",
+      "title": "Public README history archive split dry-run gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W5"
+    },
+    {
+      "id": "P1S3M6W6",
+      "milestone_id": "P1S3M6",
+      "title": "Public README history archive split apply gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W6"
+    },
+    {
+      "id": "P1S3M6W7",
+      "milestone_id": "P1S3M6",
+      "title": "Public closed gate artifact compaction planning gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W7"
+    },
+    {
+      "id": "P1S3M6W8",
+      "milestone_id": "P1S3M6",
+      "title": "Public closed gate artifact compaction dry-run gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W8"
+    },
+    {
+      "id": "P1S3M6W9",
+      "milestone_id": "P1S3M6",
+      "title": "Public closed gate artifact compaction apply gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W9"
+    },
+    {
+      "id": "P1S3M6W10",
+      "milestone_id": "P1S3M6",
+      "title": "Public closed gate archive reader and full-test timeout hardening gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W10"
+    },
+    {
+      "id": "P1S3M6W11",
+      "milestone_id": "P1S3M6",
+      "title": "Public full-test runner completion compaction gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W11"
+    },
+    {
+      "id": "P1S3M6W12",
+      "milestone_id": "P1S3M6",
+      "title": "Public closed gate raw artifact prune planning gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W12"
+    },
+    {
+      "id": "P1S3M6W13",
+      "milestone_id": "P1S3M6",
+      "title": "Public closed gate raw artifact prune dry-run gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W13"
+    },
+    {
+      "id": "P1S3M6W14",
+      "milestone_id": "P1S3M6",
+      "title": "Public closed gate raw artifact prune apply admission gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W14"
+    },
+    {
+      "id": "P1S3M6W15",
+      "milestone_id": "P1S3M6",
+      "title": "Public runtime and state architecture growth arrest gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W15"
+    }
+  ],
+  "boundary": {
+    "loaded_by_default": false,
+    "closure_payload_inlined": false,
+    "raw_legacy_ledger_rewrite": false,
+    "sqlite_source_of_truth": false,
+    "lightning_memory_mapped_database_source_of_truth": false,
+    "mdbx_source_of_truth": false
+  }
+}

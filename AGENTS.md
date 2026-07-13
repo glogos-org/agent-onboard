@@ -23,6 +23,9 @@ Before proposing or making changes, read:
 13. `README.md`
 14. Raw evidence/source files on demand only after the authority and scope files above.
 
+
+Runtime/state storage note: use the text-first state layout for new growth-arrest work. `.agent-onboard/work-items.json` remains the compatibility ledger, while `.agent-onboard/state/live/work-items.json`, `.agent-onboard/state/events/work-items.jsonl`, `.agent-onboard/state/closures/work-items-closures.jsonl`, and `.agent-onboard/state/indexes/work-items.index.json` are the seeded parallel layout. Do not introduce SQLite, Lightning Memory-Mapped Database, MDBX, or other binary storage as authority without a separate migration gate and a replayable text export.
+
 Authority state shard note: `.agent-onboard/state/live-authority.json`, `.agent-onboard/state/policies.json`, `.agent-onboard/state/indexes.json`, and `.agent-onboard/state/closed-gates.jsonl` are compact source-only shards. Validate them with `node cli/agent-onboard.js authority --state-check` and `node cli/agent-onboard.js release --authority-state-parity-check`; do not treat them as permission to read raw growth files by default, and do not project these shards into the npm package.
 
 Closed-gate compaction note: `.agent-onboard/closed-gates.archive.jsonl` and `.agent-onboard/closed-gates.index.json` are source-only recovery/index surfaces for closed gate artifacts. Validate them with `node cli/agent-onboard.js release --closed-gates-apply-check`, `node cli/agent-onboard.js release --closed-gates-read-check`, `node cli/agent-onboard.js release --closed-gates-prune-plan-check`, `node cli/agent-onboard.js release --closed-gates-prune-dry-run-check`, and `node cli/agent-onboard.js release --full-test-runner-check`; do not delete, move, or rewrite raw `*-gate.json` artifacts unless a later prune gate explicitly admits that mutation.

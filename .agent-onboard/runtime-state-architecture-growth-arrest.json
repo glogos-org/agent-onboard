@@ -1,0 +1,57 @@
+{
+  "schema": "agent-onboard-public-runtime-state-architecture-growth-arrest-gate-001",
+  "package_name": "agent-onboard",
+  "version": "0.0.164",
+  "release_line": "public_runtime_state_architecture_growth_arrest_gate",
+  "work_item_id": "P1S3M6W15",
+  "title": "Public runtime and state architecture growth arrest gate",
+  "status": "closed",
+  "closed_at": "2026-07-07T14:25:00.000Z",
+  "problem_statement": {
+    "runtime_god_file": "cli/agent_onboard/runtime-composer.js remains a compatibility composer and must not receive new domain behavior by default.",
+    "state_god_file": ".agent-onboard/work-items.json is retained as compatibility source but must stop absorbing unbounded closure payloads after the migration line is admitted."
+  },
+  "architecture": {
+    "runtime_layers": [
+      "entrypoint",
+      "router",
+      "command_adapter",
+      "domain_service",
+      "repository",
+      "port"
+    ],
+    "storage_layers": [
+      "state/live",
+      "state/events",
+      "state/closures",
+      "state/indexes"
+    ],
+    "current_backend": "JSON + JSONL text-first",
+    "future_backends": [
+      "SQLite optional repository adapter",
+      "Lightning Memory-Mapped Database optional repository adapter",
+      "MDBX optional repository adapter"
+    ],
+    "future_backends_currently_authoritative": false
+  },
+  "seeded_files": [
+    ".agent-onboard/storage-backend-policy.json",
+    ".agent-onboard/state/live/work-items.json",
+    ".agent-onboard/state/events/work-items.jsonl",
+    ".agent-onboard/state/closures/work-items-closures.jsonl",
+    ".agent-onboard/state/indexes/work-items.index.json",
+    "scripts/check-runtime-state-storage-layout.js"
+  ],
+  "migration_status": "parallel_layout_seeded_legacy_ledger_retained",
+  "next_gate": "P1S3M6W16 — Public Work Item Ledger Compaction Migration Gate",
+  "boundary": {
+    "writes_files": true,
+    "mutates_git": false,
+    "runs_package_manager_during_gate_logic": false,
+    "network": false,
+    "publishes_package": false,
+    "admits_sqlite_now": false,
+    "admits_lightning_memory_mapped_database_now": false,
+    "admits_mdbx_now": false
+  }
+}

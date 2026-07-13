@@ -6,6 +6,9 @@ CLI for onboarding and managing target repositories.
 
 The generated files are intended to be read by agents, wrappers, CI hooks, or future runtimes that choose to honor the declared boundaries.
 
+
+Current release: this line seeds a text-first runtime and state growth-arrest layout. The compatibility work-item ledger remains in place, while new source-only state files under `.agent-onboard/state/live`, `.agent-onboard/state/events`, `.agent-onboard/state/closures`, and `.agent-onboard/state/indexes` establish the future storage boundary. SQLite, Lightning Memory-Mapped Database, MDBX, and other binary stores are not admitted as current sources of truth.
+
 ## Install
 
 For the `0.0.x` line, install with `latest` for the current public line, or pin a specific published version only in release verification evidence:

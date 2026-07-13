@@ -2,7 +2,7 @@
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
-const RELEASE_LINE = 'public_closed_gate_raw_artifact_prune_apply_admission_gate';
+const RELEASE_LINE = 'public_runtime_state_architecture_growth_arrest_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
   agents: 'agents',

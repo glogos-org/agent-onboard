@@ -3,17 +3,11 @@
   "status": "active",
   "ledger_path": ".agent-onboard/work-items.json",
   "raw_ledger_loaded_by_default": false,
-  "item_count": 151,
+  "item_count": 152,
   "open_count": 0,
-  "closed_count": 151,
+  "closed_count": 152,
   "latest_items_limit": 5,
   "latest_items": [
-    {
-      "id": "P1S3M6W10",
-      "milestone_id": "P1S3M6",
-      "title": "Public closed gate archive reader and full-test timeout hardening gate",
-      "status": "closed"
-    },
     {
       "id": "P1S3M6W11",
       "milestone_id": "P1S3M6",
@@ -37,7 +31,50 @@
       "milestone_id": "P1S3M6",
       "title": "Public closed gate raw artifact prune apply admission gate",
       "status": "closed"
+    },
+    {
+      "id": "P1S3M6W15",
+      "milestone_id": "P1S3M6",
+      "title": "Public runtime and state architecture growth arrest gate",
+      "status": "closed"
     }
   ],
-  "updated_at": "2026-07-07T13:20:00.000Z"
+  "latest_closed_work_items": [
+    {
+      "id": "P1S3M6W11",
+      "milestone_id": "P1S3M6",
+      "title": "Public full-test runner completion compaction gate",
+      "status": "closed",
+      "domain": null
+    },
+    {
+      "id": "P1S3M6W12",
+      "milestone_id": "P1S3M6",
+      "title": "Public closed gate raw artifact prune planning gate",
+      "status": "closed",
+      "domain": null
+    },
+    {
+      "id": "P1S3M6W13",
+      "milestone_id": "P1S3M6",
+      "title": "Public closed gate raw artifact prune dry-run gate",
+      "status": "closed",
+      "domain": null
+    },
+    {
+      "id": "P1S3M6W14",
+      "milestone_id": "P1S3M6",
+      "title": "Public closed gate raw artifact prune apply admission gate",
+      "status": "closed",
+      "domain": null
+    },
+    {
+      "id": "P1S3M6W15",
+      "milestone_id": "P1S3M6",
+      "title": "Public runtime and state architecture growth arrest gate",
+      "status": "closed",
+      "domain": null
+    }
+  ],
+  "updated_at": "2026-07-07T14:25:00.000Z"
 }

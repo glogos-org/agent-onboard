@@ -1,0 +1,25 @@
+{
+  "schema": "agent-onboard-storage-backend-policy-001",
+  "package_name": "agent-onboard",
+  "release_line": "public_runtime_state_architecture_growth_arrest_gate",
+  "status": "active",
+  "policy": {
+    "current_canonical_backend": "json_and_jsonl_text_first",
+    "live_snapshot_format": "JSON",
+    "event_log_format": "JSONL",
+    "closure_archive_format": "JSONL",
+    "derived_index_format": "JSON",
+    "sqlite_current_source_of_truth": false,
+    "lightning_memory_mapped_database_current_source_of_truth": false,
+    "mdbx_current_source_of_truth": false,
+    "binary_storage_admitted_now": false,
+    "future_backend_rule": "A future backend may be admitted only behind repository interfaces and only by a separate migration gate that keeps a replayable text export."
+  },
+  "repository_boundary": {
+    "domain_services_must_not_read_process_argv": true,
+    "domain_services_must_not_write_console": true,
+    "domain_services_must_access_state_through_repositories": true,
+    "ports_may_touch_file_system": true,
+    "adapters_parse_and_dispatch_only": true
+  }
+}

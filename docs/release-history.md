@@ -2,6 +2,10 @@
 
 Historical release prose archived from README.md by P1S3M6W6.
 README.md remains the live first-read surface for install, quickstart, current commands, and no-mutation boundary material.
+## Current release: runtime and state architecture growth arrest gate
+
+The current release seeds a text-first runtime and state growth-arrest layout. It keeps `.agent-onboard/work-items.json` as the compatibility ledger while adding `.agent-onboard/state/live/work-items.json`, `.agent-onboard/state/events/work-items.jsonl`, `.agent-onboard/state/closures/work-items-closures.jsonl`, and `.agent-onboard/state/indexes/work-items.index.json` as the new parallel storage shape. It also adds a storage backend policy that keeps SQLite, Lightning Memory-Mapped Database, MDBX, and other binary stores as future optional repository adapters only, not current sources of truth.
+
 ## Current release: closed gate raw artifact prune dry-run gate
 
 The current release adds `release --closed-gates-prune-dry-run` and `release --closed-gates-prune-dry-run-check` as the exact dry-run surface for future raw closed-gate artifact pruning. The checker validates the compact archive/index recovery path, archive coverage of every raw `*-gate.json` artifact, raw file-id parity, the archive-backed candidate delete set, and the preserved no-delete/no-move/no-rewrite boundary. Raw `*-gate.json` artifacts remain preserved; no prune, move, registry mutation, publish, or network operation is admitted.

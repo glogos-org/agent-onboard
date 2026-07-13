@@ -29,6 +29,11 @@ Bridge marker block: `AGENTS.md` may contain the bounded `agent-onboard:bridge` 
 
 Work-item semantics remain delegated to `agent-onboard`.
 
+
+## Runtime and state storage boundary
+
+The current source storage remains text-first: compact JSON snapshots plus JavaScript Object Notation Lines event and closure ledgers. `.agent-onboard/work-items.json` remains the compatibility ledger until a later migration gate, while `.agent-onboard/state/live/work-items.json`, `.agent-onboard/state/events/work-items.jsonl`, `.agent-onboard/state/closures/work-items-closures.jsonl`, and `.agent-onboard/state/indexes/work-items.index.json` seed the new parallel layout. SQLite, Lightning Memory-Mapped Database, MDBX, and other binary stores are not current sources of truth; they may only be admitted later behind repository interfaces with a replayable text export.
+
 ## Claim ledger JSONL boundary
 
 `agent-onboard claim --validate-ledger` validates `.agent-onboard/claims.jsonl` as compact JSONL coordination state without inlining raw entries. `agent-onboard claim --lifecycle-check` checks proposed/merged sequencing, active claim conflicts, and stale active claims as compact lifecycle state. `agent-onboard claim --append --write` may append exactly one claim event to that ledger only when the repository owner explicitly authorizes the write and only after lifecycle conflict planning passes; it does not mutate the work-item ledger, Git, dependencies, build/test/deploy state, publication state, registry state, or network state.
