@@ -1,0 +1,48 @@
+{
+  "schema": "agent-onboard-public-closed-gate-state-layout-migration-001",
+  "work_item_id": "P1S3M6W17",
+  "package_name": "agent-onboard",
+  "package_version": "0.0.166",
+  "release_line": "public_closed_gate_state_layout_migration_gate",
+  "status": "closed",
+  "created_at": "2026-07-07T16:05:00.000Z",
+  "closed_at": "2026-07-07T16:20:00.000Z",
+  "objective": "Migrate closed-gate archive/index recovery state into the same text-first state layout used for work items: live snapshot, event log, closure archive, and derived index.",
+  "migration": {
+    "compatibility_archive_path": ".agent-onboard/closed-gates.archive.jsonl",
+    "compatibility_index_path": ".agent-onboard/closed-gates.index.json",
+    "live_snapshot_path": ".agent-onboard/state/live/closed-gates.json",
+    "event_log_path": ".agent-onboard/state/events/closed-gates.jsonl",
+    "closure_archive_path": ".agent-onboard/state/closures/closed-gate-closures.jsonl",
+    "derived_index_path": ".agent-onboard/state/indexes/closed-gates.index.json",
+    "record_count": 53,
+    "compatibility_archive_file_id": "ni:///sha-256;-PvjcqBPRmXSFzi10P8Igs3xGqsu4__7HPWGsE5K4QQ",
+    "state_closure_archive_file_id": "ni:///sha-256;-PvjcqBPRmXSFzi10P8Igs3xGqsu4__7HPWGsE5K4QQ",
+    "legacy_index_file_id": "ni:///sha-256;j1089Y0GVJ6_ZPeFdN5kw8ZFZTnUVo3syvl_2Hu54Ls"
+  },
+  "storage_backend_policy": {
+    "current_canonical_backend": "json_and_jsonl_text_first",
+    "live_snapshot_format": "JSON",
+    "event_log_format": "JSONL",
+    "closure_archive_format": "JSONL",
+    "derived_index_format": "JSON",
+    "sqlite_current_source_of_truth": false,
+    "lightning_memory_mapped_database_current_source_of_truth": false,
+    "mdbx_current_source_of_truth": false,
+    "binary_storage_admitted_now": false,
+    "future_backend_rule": "A future backend may be admitted only behind repository interfaces and only by a separate migration gate that keeps a replayable text export."
+  },
+  "boundary": {
+    "writes_files": true,
+    "mutates_git": false,
+    "network": false,
+    "publishes_package": false,
+    "deletes_legacy_archive": false,
+    "deletes_legacy_index": false,
+    "admits_sqlite_now": false,
+    "admits_lightning_memory_mapped_database_now": false,
+    "admits_mdbx_now": false,
+    "content_inlined_in_live_registry": false
+  },
+  "next_candidate": "P1S3M6W18 — Public Runtime Composer Decomposition Gate"
+}

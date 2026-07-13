@@ -6,8 +6,8 @@
   "compatibility_ledger_path": ".agent-onboard/work-items.json",
   "closure_archive_path": ".agent-onboard/state/closures/work-items-closures.jsonl",
   "backend": "json_and_jsonl_text_first",
-  "generated_at": "2026-07-07T15:20:00.000Z",
-  "item_count": 153,
+  "generated_at": "2026-07-07T16:20:00.000Z",
+  "item_count": 154,
   "items": [
     {
       "id": "P1S1M1W1",
@@ -1295,12 +1295,13 @@
       "title": "Public work item ledger compaction migration gate",
       "status": "closed",
       "closure_ref": "closures:P1S3M6W16"
+    },
+    {
+      "id": "P1S3M6W17",
+      "milestone_id": "P1S3M6",
+      "title": "Public closed gate state layout migration gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W17"
     }
-  ],
-  "boundary": {
-    "content_inlined_in_live_registry": false,
-    "sqlite_current_source_of_truth": false,
-    "lightning_memory_mapped_database_current_source_of_truth": false,
-    "mdbx_current_source_of_truth": false
-  }
+  ]
 }

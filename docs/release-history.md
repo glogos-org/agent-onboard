@@ -1,3 +1,7 @@
+## Current release: closed gate state layout migration gate
+
+This release migrates the closed-gate recovery surface into the active text-first state layout: `.agent-onboard/state/live/closed-gates.json`, `.agent-onboard/state/events/closed-gates.jsonl`, `.agent-onboard/state/closures/closed-gate-closures.jsonl`, and `.agent-onboard/state/indexes/closed-gates.index.json`. The root `.agent-onboard/closed-gates.archive.jsonl` and `.agent-onboard/closed-gates.index.json` remain compatibility surfaces; W17 adds `scripts/check-closed-gate-state-layout.js` to verify count and digest parity without admitting SQLite, Lightning Memory-Mapped Database, MDBX, Git mutation, network access, package publishing, or raw artifact deletion.
+
 ## Current release: work item ledger compaction migration gate
 
 The current release migrates work item closure payloads out of `.agent-onboard/work-items.json` into `.agent-onboard/state/closures/work-items-closures.jsonl`. The compatibility ledger now stays compact by storing `closure_ref` pointers, while `.agent-onboard/state/live/work-items.json`, `.agent-onboard/state/events/work-items.jsonl`, and `.agent-onboard/state/indexes/work-items.index.json` provide the live snapshot, event log, and derived navigation index. SQLite, Lightning Memory-Mapped Database, MDBX, and other binary stores remain future optional adapters only.

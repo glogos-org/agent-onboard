@@ -1393,6 +1393,13 @@
       "title": "Public work item ledger compaction migration gate",
       "status": "closed",
       "closure_ref": "closures:P1S3M6W16"
+    },
+    {
+      "id": "P1S3M6W17",
+      "milestone_id": "P1S3M6",
+      "title": "Public closed gate state layout migration gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W17"
     }
   ]
 }

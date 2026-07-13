@@ -1,0 +1,80 @@
+{
+  "schema": "agent-onboard-closed-gates-live-001",
+  "package_name": "agent-onboard",
+  "package_version": "0.0.166",
+  "release_line": "public_closed_gate_state_layout_migration_gate",
+  "status": "active_compacted",
+  "source_of_truth": "state_closure_archive_with_legacy_compatibility_archive",
+  "state_root": ".agent-onboard/state",
+  "compatibility_archive_path": ".agent-onboard/closed-gates.archive.jsonl",
+  "compatibility_index_path": ".agent-onboard/closed-gates.index.json",
+  "closure_archive_path": ".agent-onboard/state/closures/closed-gate-closures.jsonl",
+  "event_log_path": ".agent-onboard/state/events/closed-gates.jsonl",
+  "derived_index_path": ".agent-onboard/state/indexes/closed-gates.index.json",
+  "record_count": 53,
+  "compatibility_archive_file_id": "ni:///sha-256;-PvjcqBPRmXSFzi10P8Igs3xGqsu4__7HPWGsE5K4QQ",
+  "compatibility_index_file_id": "ni:///sha-256;j1089Y0GVJ6_ZPeFdN5kw8ZFZTnUVo3syvl_2Hu54Ls",
+  "closure_archive_file_id": "ni:///sha-256;-PvjcqBPRmXSFzi10P8Igs3xGqsu4__7HPWGsE5K4QQ",
+  "raw_artifact_count": 53,
+  "raw_artifacts_preserved": false,
+  "raw_growth_files_loaded_by_default": false,
+  "file_contents_inlined": false,
+  "latest_records_limit": 5,
+  "latest_records": [
+    {
+      "ordinal": 49,
+      "path": ".agent-onboard/target-handoff-readiness-check-product-gate.json",
+      "work_item_id": null,
+      "title": null,
+      "status": null,
+      "raw_digest": "ni:///sha-256;v_IO4tkui--26-qeh2mxzVjbOrCuiqhgOYJD3AeUuOE",
+      "content_inlined": false
+    },
+    {
+      "ordinal": 50,
+      "path": ".agent-onboard/target-handoff-readiness-reasons-product-gate.json",
+      "work_item_id": null,
+      "title": null,
+      "status": null,
+      "raw_digest": "ni:///sha-256;IKmQopFNFFB_JHixrhGDH62kmzgWm4ndUtM8jMHHavA",
+      "content_inlined": false
+    },
+    {
+      "ordinal": 51,
+      "path": ".agent-onboard/target-inventory-preview-product-gate.json",
+      "work_item_id": null,
+      "title": "Public target inventory preview product gate",
+      "status": "closed",
+      "raw_digest": "ni:///sha-256;uTjBFK4yRfP8TTIsICJRbvWi--OBg48yPBwV5XvdBNA",
+      "content_inlined": false
+    },
+    {
+      "ordinal": 52,
+      "path": ".agent-onboard/target-memory-descriptor-product-gate.json",
+      "work_item_id": "P1S3M5W10",
+      "title": "Public target memory descriptor product gate",
+      "status": "closed",
+      "raw_digest": "ni:///sha-256;KilW1cc8mTvSWNhlQhyJmxbRIBi5L3Ky--xG7r6sDQM",
+      "content_inlined": false
+    },
+    {
+      "ordinal": 53,
+      "path": ".agent-onboard/target-work-items-preview-product-gate.json",
+      "work_item_id": null,
+      "title": "Public target work-items preview product gate",
+      "status": "closed",
+      "raw_digest": "ni:///sha-256;7rJ_hL1NPRpO8VXEwg-ZvMPOefRhoifPmhCCIO0sUMU",
+      "content_inlined": false
+    }
+  ],
+  "updated_at": "2026-07-07T16:20:00.000Z",
+  "boundary": {
+    "writes_files": true,
+    "mutates_git": false,
+    "network": false,
+    "publishes_package": false,
+    "drops_archive_records": false,
+    "deletes_legacy_archive": false,
+    "deletes_legacy_index": false
+  }
+}

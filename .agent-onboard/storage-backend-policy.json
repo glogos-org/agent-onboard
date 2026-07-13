@@ -1,7 +1,7 @@
 {
   "schema": "agent-onboard-storage-backend-policy-001",
   "package_name": "agent-onboard",
-  "release_line": "public_work_item_ledger_compaction_migration_gate",
+  "release_line": "public_closed_gate_state_layout_migration_gate",
   "status": "active",
   "policy": {
     "current_canonical_backend": "json_and_jsonl_text_first",

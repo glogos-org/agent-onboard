@@ -7,7 +7,7 @@ CLI for onboarding and managing target repositories.
 The generated files are intended to be read by agents, wrappers, CI hooks, or future runtimes that choose to honor the declared boundaries.
 
 
-Current release: this line compacts the public work item ledger. `.agent-onboard/work-items.json` now carries compact work item state and `closure_ref` pointers, while closure evidence lives in `.agent-onboard/state/closures/work-items-closures.jsonl`. The active text-first storage boundary is `.agent-onboard/state/live`, `.agent-onboard/state/events`, `.agent-onboard/state/closures`, and `.agent-onboard/state/indexes`. SQLite, Lightning Memory-Mapped Database, MDBX, and other binary stores are not admitted as current sources of truth.
+Current release: this line migrates closed-gate recovery state into the active text-first state layout. `.agent-onboard/closed-gates.archive.jsonl` and `.agent-onboard/closed-gates.index.json` remain as compatibility surfaces, while `.agent-onboard/state/live/closed-gates.json`, `.agent-onboard/state/events/closed-gates.jsonl`, `.agent-onboard/state/closures/closed-gate-closures.jsonl`, and `.agent-onboard/state/indexes/closed-gates.index.json` provide the compact live/events/closures/indexes layout. SQLite, Lightning Memory-Mapped Database, MDBX, and other binary stores are still not admitted as current sources of truth.
 
 ## Install
 

@@ -1,0 +1,287 @@
+{
+  "schema": "agent-onboard-closed-gates-derived-index-001",
+  "package_name": "agent-onboard",
+  "package_version": "0.0.166",
+  "release_line": "public_closed_gate_state_layout_migration_gate",
+  "status": "active",
+  "source": "derived_from_.agent-onboard/state/closures/closed-gate-closures.jsonl",
+  "compatibility_archive_path": ".agent-onboard/closed-gates.archive.jsonl",
+  "compatibility_index_path": ".agent-onboard/closed-gates.index.json",
+  "live_snapshot_path": ".agent-onboard/state/live/closed-gates.json",
+  "event_log_path": ".agent-onboard/state/events/closed-gates.jsonl",
+  "closure_archive_path": ".agent-onboard/state/closures/closed-gate-closures.jsonl",
+  "record_count": 53,
+  "legacy_index_record_count": 53,
+  "archive_digest_matches_compatibility": true,
+  "raw_artifact_count": 53,
+  "raw_artifacts_preserved": false,
+  "raw_growth_files_loaded_by_default": false,
+  "file_contents_inlined": false,
+  "latest_ordinal": 53,
+  "latest_path": ".agent-onboard/target-work-items-preview-product-gate.json",
+  "by_work_item": {
+    "P1S3M5W8": [
+      1
+    ],
+    "unassigned": [
+      2,
+      4,
+      6,
+      8,
+      10,
+      11,
+      13,
+      18,
+      26,
+      28,
+      32,
+      33,
+      35,
+      36,
+      37,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      53
+    ],
+    "P1S3M5W5": [
+      3
+    ],
+    "P1S3M5W9": [
+      5
+    ],
+    "P1S3M5W11": [
+      7
+    ],
+    "P1S3M5W6": [
+      9
+    ],
+    "P1S3M5W36": [
+      12
+    ],
+    "P1S3M5W40": [
+      14
+    ],
+    "P1S3M5W37": [
+      15
+    ],
+    "P1S3M5W42": [
+      16
+    ],
+    "P1S3M6W1": [
+      17
+    ],
+    "P1S3M6W10": [
+      19
+    ],
+    "P1S3M6W9": [
+      20
+    ],
+    "P1S3M6W8": [
+      21
+    ],
+    "P1S3M6W7": [
+      22
+    ],
+    "P1S3M6W13": [
+      23
+    ],
+    "P1S3M6W12": [
+      24
+    ],
+    "P1S3M5W31": [
+      25
+    ],
+    "P1S3M5W39": [
+      27
+    ],
+    "P1S3M6W11": [
+      29
+    ],
+    "P1S3M5W41": [
+      30
+    ],
+    "P1S3M5W38": [
+      31
+    ],
+    "P1S3M6W6": [
+      34
+    ],
+    "P1S3M5W7": [
+      38
+    ],
+    "P1S3M5W10": [
+      52
+    ]
+  },
+  "by_release_line": {
+    "public_ai_discovery_product_gate": [
+      1
+    ],
+    "public_check_plan_fast_runner_product_gate": [
+      2
+    ],
+    "public_command_surface_catalog_gate": [
+      3
+    ],
+    "public_contributor_admission_dry_run_product_gate": [
+      4
+    ],
+    "public_create_dry_run_product_gate": [
+      5
+    ],
+    "public_github_action_ci_surface_product_gate": [
+      6
+    ],
+    "public_issue_intake_dry_run_product_gate": [
+      7
+    ],
+    "public_mcp_bridge_plan_skeleton_product_gate": [
+      8
+    ],
+    "public_operator_guide_product_gate": [
+      9
+    ],
+    "public_package_source_manifest_command_gate": [
+      10
+    ],
+    "public_package_source_manifest_service_gate": [
+      11
+    ],
+    "public_agents_bridge_marker_block_gate": [
+      12
+    ],
+    "public_authority_compact_index_drift_guard_gate": [
+      13
+    ],
+    "public_authority_state_sharding_seed_gate": [
+      14
+    ],
+    "public_claim_ledger_jsonl_gate": [
+      15
+    ],
+    "public_claim_lifecycle_conflict_hardening_gate": [
+      16
+    ],
+    "public_clean_compaction_baseline_gate": [
+      17
+    ],
+    "public_clean_compaction_catalog_gate": [
+      18
+    ],
+    "public_closed_gate_archive_reader_full_test_hardening_gate": [
+      19
+    ],
+    "public_closed_gate_artifact_compaction_apply_gate": [
+      20
+    ],
+    "public_closed_gate_artifact_compaction_dry_run_gate": [
+      21
+    ],
+    "public_closed_gate_artifact_compaction_planning_gate": [
+      22
+    ],
+    "public_closed_gate_raw_artifact_prune_dry_run_gate": [
+      23
+    ],
+    "public_closed_gate_raw_artifact_prune_planning_gate": [
+      24
+    ],
+    "public_release_surface_vocabulary_gate": [
+      25,
+      36
+    ],
+    "public_contract_spine_readiness_output_contract_gate": [
+      26
+    ],
+    "public_exact_artifact_oracle_gate": [
+      27
+    ],
+    "public_first_read_ladder_manifest_gate": [
+      28
+    ],
+    "public_full_test_runner_completion_compaction_gate": [
+      29
+    ],
+    "public_installed_authority_state_shard_parity_gate": [
+      30
+    ],
+    "public_package_fast_runner_engine_gate": [
+      31
+    ],
+    "public_package_keyword_taxonomy_compaction_gate": [
+      32
+    ],
+    "public_readme_first_read_history_split_planning_gate": [
+      33
+    ],
+    "public_readme_history_archive_split_apply_gate": [
+      34
+    ],
+    "public_readme_history_archive_split_dry_run_gate": [
+      35
+    ],
+    "public_source_manifest_hash_cache_budget_gate": [
+      37
+    ],
+    "public_quickstart_product_gate": [
+      38
+    ],
+    "public_target_governance_budget_check_product_gate": [
+      39
+    ],
+    "public_target_governance_budget_contract_product_gate": [
+      40
+    ],
+    "public_target_governance_index_drift_check_gate": [
+      41
+    ],
+    "public_target_governance_index_explicit_write_gate": [
+      42
+    ],
+    "public_target_governance_index_materialization_dry_run_gate": [
+      43
+    ],
+    "public_target_governance_index_refresh_integration_gate": [
+      44
+    ],
+    "public_target_governance_preview_product_gate": [
+      45
+    ],
+    "public_target_governance_stale_read_fast_check_wiring_gate": [
+      46
+    ],
+    "public_target_handoff_governance_budget_summary_product_gate": [
+      47
+    ],
+    "public_target_handoff_preview_product_gate": [
+      48
+    ],
+    "public_target_handoff_readiness_check_product_gate": [
+      49
+    ],
+    "public_target_handoff_readiness_reasons_product_gate": [
+      50
+    ],
+    "public_target_inventory_preview_product_gate": [
+      51
+    ],
+    "public_target_memory_descriptor_product_gate": [
+      52
+    ],
+    "public_target_work_items_preview_product_gate": [
+      53
+    ]
+  },
+  "updated_at": "2026-07-07T16:20:00.000Z"
+}

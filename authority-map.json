@@ -2,10 +2,6 @@
   "authorities": [],
   "file_urns": [
     {
-      "file_path": ".agent-onboard/ai-discovery-product-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-ai-discovery-product-gate-json-f62e4038"
-    },
-    {
       "file_path": ".agent-onboard/architecture-command-adapter-extraction.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-architecture-command-adapter-extraction-json-c138388e"
     },
@@ -22,10 +18,6 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-authority-path-json-9c1fc126"
     },
     {
-      "file_path": ".agent-onboard/check-plan-fast-runner-product-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-check-plan-fast-runner-product-gate-json-994f46b2"
-    },
-    {
       "file_path": ".agent-onboard/claims.index.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-claims-index-json-30119f4c"
     },
@@ -38,6 +30,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-cli-runtime-de-monolith-planning-json-4876c2d0"
     },
     {
+      "file_path": ".agent-onboard/closed-gate-state-layout-migration.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-closed-gate-state-layout-migration-json-d5aad149"
+    },
+    {
       "file_path": ".agent-onboard/closed-gates.archive.jsonl",
       "file_urn": "urn:agent-onboard:file:agent-onboard-closed-gates-archive-jsonl-76e50641"
     },
@@ -46,36 +42,12 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-closed-gates-index-json-7d4285a2"
     },
     {
-      "file_path": ".agent-onboard/command-surface-catalog-product-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-command-surface-catalog-product-gate-json-72811734"
-    },
-    {
       "file_path": ".agent-onboard/compatibility-command-port-seed.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-compatibility-command-port-seed-json-e63f5635"
     },
     {
-      "file_path": ".agent-onboard/contributor-admission-dry-run-product-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-contributor-admission-dry-run-product-gate-json-44f5057c"
-    },
-    {
       "file_path": ".agent-onboard/core-command-adapter-extraction.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-core-command-adapter-extraction-json-da3b0b54"
-    },
-    {
-      "file_path": ".agent-onboard/create-dry-run-product-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-create-dry-run-product-gate-json-197ac43b"
-    },
-    {
-      "file_path": ".agent-onboard/github-action-ci-surface-product-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-github-action-ci-surface-product-gate-json-b4bc0552"
-    },
-    {
-      "file_path": ".agent-onboard/issue-intake-dry-run-product-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-issue-intake-dry-run-product-gate-json-322444c2"
-    },
-    {
-      "file_path": ".agent-onboard/mcp-bridge-plan-skeleton-product-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-mcp-bridge-plan-skeleton-product-gate-json-27460e26"
     },
     {
       "file_path": ".agent-onboard/metadata-policy.json",
@@ -86,20 +58,8 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-modular-runtime-package-inclusion-plan-json-f5289e97"
     },
     {
-      "file_path": ".agent-onboard/operator-guide-product-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-operator-guide-product-gate-json-9956764b"
-    },
-    {
       "file_path": ".agent-onboard/package-command-adapter-extraction.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-package-command-adapter-extraction-json-d64d35fb"
-    },
-    {
-      "file_path": ".agent-onboard/package-source-manifest-command-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-package-source-manifest-command-gate-json-316093dc"
-    },
-    {
-      "file_path": ".agent-onboard/package-source-manifest-service-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-package-source-manifest-service-gate-json-b49ef47b"
     },
     {
       "file_path": ".agent-onboard/packaged-router-port-inclusion.json",
@@ -110,116 +70,12 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-project-json-8a439734"
     },
     {
-      "file_path": ".agent-onboard/public-agents-bridge-marker-block-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-public-agents-bridge-marker-block-gate-json-2cf8eb39"
-    },
-    {
       "file_path": ".agent-onboard/public-architecture-m1-closure-m2-seed.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-architecture-m1-closure-m2-seed-json-2aa8e507"
     },
     {
-      "file_path": ".agent-onboard/public-authority-compact-index-drift-guard-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-public-authority-compact-index-drift-guard-gate-json-b7fd1cfb"
-    },
-    {
-      "file_path": ".agent-onboard/public-authority-state-sharding-seed-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-public-authority-state-sharding-seed-gate-json-601275ed"
-    },
-    {
-      "file_path": ".agent-onboard/public-claim-ledger-jsonl-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-public-claim-ledger-jsonl-gate-json-7a768ba3"
-    },
-    {
-      "file_path": ".agent-onboard/public-claim-lifecycle-conflict-hardening-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-public-claim-lifecycle-conflict-hardening-gate-json-396c4497"
-    },
-    {
-      "file_path": ".agent-onboard/public-clean-compaction-baseline-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-public-clean-compaction-baseline-gate-json-dbf0fd65"
-    },
-    {
-      "file_path": ".agent-onboard/public-clean-compaction-catalog-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-public-clean-compaction-catalog-gate-json-f6ddd2b5"
-    },
-    {
-      "file_path": ".agent-onboard/public-closed-gate-archive-reader-full-test-hardening-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-public-closed-gate-archive-reader-full-test-hardening-gate-json-da2a864a"
-    },
-    {
-      "file_path": ".agent-onboard/public-closed-gate-artifact-compaction-apply-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-public-closed-gate-artifact-compaction-apply-gate-json-96a4cd2b"
-    },
-    {
-      "file_path": ".agent-onboard/public-closed-gate-artifact-compaction-dry-run-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-public-closed-gate-artifact-compaction-dry-run-gate-json-c9afa89f"
-    },
-    {
-      "file_path": ".agent-onboard/public-closed-gate-artifact-compaction-planning-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-public-closed-gate-artifact-compaction-planning-gate-json-bd4c6539"
-    },
-    {
-      "file_path": ".agent-onboard/public-closed-gate-raw-artifact-prune-dry-run-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-public-closed-gate-raw-artifact-prune-dry-run-gate-json-49913fa3"
-    },
-    {
-      "file_path": ".agent-onboard/public-closed-gate-raw-artifact-prune-planning-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-public-closed-gate-raw-artifact-prune-planning-gate-json-4fa89c76"
-    },
-    {
-      "file_path": ".agent-onboard/public-contract-output-validator-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-public-contract-output-validator-gate-json-aa8ca966"
-    },
-    {
-      "file_path": ".agent-onboard/public-contract-spine-readiness-output-contract-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-public-contract-spine-readiness-output-contract-gate-json-26f33d14"
-    },
-    {
-      "file_path": ".agent-onboard/public-exact-artifact-oracle-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-public-exact-artifact-oracle-gate-json-74a925f0"
-    },
-    {
-      "file_path": ".agent-onboard/public-first-read-ladder-manifest-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-public-first-read-ladder-manifest-gate-json-379e683b"
-    },
-    {
-      "file_path": ".agent-onboard/public-full-test-runner-completion-compaction-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-public-full-test-runner-completion-compaction-gate-json-1e24d6bb"
-    },
-    {
-      "file_path": ".agent-onboard/public-installed-authority-state-shard-parity-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-public-installed-authority-state-shard-parity-gate-json-345a58b1"
-    },
-    {
-      "file_path": ".agent-onboard/public-package-fast-runner-engine-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-public-package-fast-runner-engine-gate-json-52aaf819"
-    },
-    {
-      "file_path": ".agent-onboard/public-package-keyword-taxonomy-compaction-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-public-package-keyword-taxonomy-compaction-gate-json-50eab3fa"
-    },
-    {
-      "file_path": ".agent-onboard/public-readme-first-read-history-split-plan-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-public-readme-first-read-history-split-plan-gate-json-3746dbf4"
-    },
-    {
-      "file_path": ".agent-onboard/public-readme-history-archive-split-apply-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-public-readme-history-archive-split-apply-gate-json-979735eb"
-    },
-    {
-      "file_path": ".agent-onboard/public-readme-history-archive-split-dry-run-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-public-readme-history-archive-split-dry-run-gate-json-1ba9dab3"
-    },
-    {
-      "file_path": ".agent-onboard/public-release-surface-vocabulary-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-public-release-surface-vocabulary-gate-json-ca7d6fb4"
-    },
-    {
-      "file_path": ".agent-onboard/public-source-manifest-hash-cache-budget-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-public-source-manifest-hash-cache-budget-gate-json-17e3c676"
-    },
-    {
-      "file_path": ".agent-onboard/quickstart-product-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-quickstart-product-gate-json-eb9f94bd"
+      "file_path": ".agent-onboard/public-closed-gate-raw-artifact-prune-apply-admission.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-public-closed-gate-raw-artifact-prune-apply-admission-json-9a699294"
     },
     {
       "file_path": ".agent-onboard/readme-history.index.json",
@@ -232,6 +88,10 @@
     {
       "file_path": ".agent-onboard/runtime-namespace.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-runtime-namespace-json-f9932fdd"
+    },
+    {
+      "file_path": ".agent-onboard/runtime-state-architecture-growth-arrest.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-runtime-state-architecture-growth-arrest-json-97311ebb"
     },
     {
       "file_path": ".agent-onboard/source-domain-extraction-stabilization-closure-review.json",
@@ -330,8 +190,16 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-state-closed-gates-jsonl-b6b6876e"
     },
     {
+      "file_path": ".agent-onboard/state/closures/closed-gate-closures.jsonl",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-state-closures-closed-gate-closures-jsonl-f1dae317"
+    },
+    {
       "file_path": ".agent-onboard/state/closures/work-items-closures.jsonl",
       "file_urn": "urn:agent-onboard:file:agent-onboard-state-closures-work-items-closures-jsonl-4be43fe5"
+    },
+    {
+      "file_path": ".agent-onboard/state/events/closed-gates.jsonl",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-state-events-closed-gates-jsonl-052b75cb"
     },
     {
       "file_path": ".agent-onboard/state/events/work-items.jsonl",
@@ -342,12 +210,20 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-state-indexes-json-1f8ab4d4"
     },
     {
+      "file_path": ".agent-onboard/state/indexes/closed-gates.index.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-state-indexes-closed-gates-index-json-5fda47de"
+    },
+    {
       "file_path": ".agent-onboard/state/indexes/work-items.index.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-state-indexes-work-items-index-json-33068bba"
     },
     {
       "file_path": ".agent-onboard/state/live-authority.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-state-live-authority-json-aadb77a0"
+    },
+    {
+      "file_path": ".agent-onboard/state/live/closed-gates.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-state-live-closed-gates-json-68d5ffab"
     },
     {
       "file_path": ".agent-onboard/state/live/work-items.json",
@@ -358,72 +234,16 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-state-policies-json-59cfb4e7"
     },
     {
+      "file_path": ".agent-onboard/storage-backend-policy.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-storage-backend-policy-json-9afda83b"
+    },
+    {
       "file_path": ".agent-onboard/target-command-adapter-extraction.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-target-command-adapter-extraction-json-47b189e2"
     },
     {
-      "file_path": ".agent-onboard/target-governance-budget-check-product-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-target-governance-budget-check-product-gate-json-9c89fb26"
-    },
-    {
-      "file_path": ".agent-onboard/target-governance-budget-contract-product-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-target-governance-budget-contract-product-gate-json-50a51f46"
-    },
-    {
-      "file_path": ".agent-onboard/target-governance-index-drift-check-product-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-target-governance-index-drift-check-product-gate-json-3bf1634e"
-    },
-    {
-      "file_path": ".agent-onboard/target-governance-index-explicit-write-product-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-target-governance-index-explicit-write-product-gate-json-39bd99b1"
-    },
-    {
-      "file_path": ".agent-onboard/target-governance-index-materialization-dry-run-product-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-target-governance-index-materialization-dry-run-product-gate-json-a64ca318"
-    },
-    {
-      "file_path": ".agent-onboard/target-governance-index-refresh-integration-product-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-target-governance-index-refresh-integration-product-gate-json-057a3df5"
-    },
-    {
-      "file_path": ".agent-onboard/target-governance-preview-product-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-target-governance-preview-product-gate-json-eb89da54"
-    },
-    {
-      "file_path": ".agent-onboard/target-governance-stale-read-fast-check-wiring-product-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-target-governance-stale-read-fast-check-wiring-product-gate-json-2eacae04"
-    },
-    {
-      "file_path": ".agent-onboard/target-handoff-governance-budget-summary-product-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-target-handoff-governance-budget-summary-product-gate-json-29d42bbb"
-    },
-    {
-      "file_path": ".agent-onboard/target-handoff-preview-product-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-target-handoff-preview-product-gate-json-fcfbf502"
-    },
-    {
-      "file_path": ".agent-onboard/target-handoff-readiness-check-product-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-target-handoff-readiness-check-product-gate-json-55be30e8"
-    },
-    {
-      "file_path": ".agent-onboard/target-handoff-readiness-reasons-product-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-target-handoff-readiness-reasons-product-gate-json-466180f7"
-    },
-    {
-      "file_path": ".agent-onboard/target-inventory-preview-product-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-target-inventory-preview-product-gate-json-d33bd0d4"
-    },
-    {
-      "file_path": ".agent-onboard/target-memory-descriptor-product-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-target-memory-descriptor-product-gate-json-6bb2b744"
-    },
-    {
       "file_path": ".agent-onboard/target-repo-product-refactor-plan.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-target-repo-product-refactor-plan-json-0bcc1b6c"
-    },
-    {
-      "file_path": ".agent-onboard/target-work-items-preview-product-gate.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-target-work-items-preview-product-gate-json-81e38fd0"
     },
     {
       "file_path": ".agent-onboard/target.json",
@@ -702,12 +522,24 @@
       "file_urn": "urn:agent-onboard:file:llms-txt-f43a9e2f"
     },
     {
+      "file_path": "manifest.json",
+      "file_urn": "urn:agent-onboard:file:manifest-json-ffa5b716"
+    },
+    {
       "file_path": "package.json",
       "file_urn": "urn:agent-onboard:file:package-json-7ae45ad1"
     },
     {
+      "file_path": "scripts/check-closed-gate-state-layout.js",
+      "file_urn": "urn:agent-onboard:file:scripts-check-closed-gate-state-layout-js-f8eb794b"
+    },
+    {
       "file_path": "scripts/check-public-artifact-boundary.js",
       "file_urn": "urn:agent-onboard:file:scripts-check-public-artifact-boundary-js-90be14c8"
+    },
+    {
+      "file_path": "scripts/check-runtime-state-storage-layout.js",
+      "file_urn": "urn:agent-onboard:file:scripts-check-runtime-state-storage-layout-js-3bf1e57f"
     },
     {
       "file_path": "scripts/check-work-item-ledger-compaction.js",
@@ -728,14 +560,6 @@
     {
       "file_path": "src/domains/work-items.js",
       "file_urn": "urn:agent-onboard:file:src-domains-work-items-js-88eba391"
-    },
-    {
-      "file_path": "target-pilot/README.md",
-      "file_urn": "urn:agent-onboard:file:target-pilot-readme-md-5b2f626b"
-    },
-    {
-      "file_path": "target-pilot/package.json",
-      "file_urn": "urn:agent-onboard:file:target-pilot-package-json-75ecb3a2"
     },
     {
       "file_path": "test/agent-onboard.test.js",

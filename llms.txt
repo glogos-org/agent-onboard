@@ -18,6 +18,10 @@ Canonical AI-readable files:
 - .agent-onboard/state/policies.json
 - .agent-onboard/state/indexes.json
 - .agent-onboard/state/closed-gates.jsonl
+- .agent-onboard/state/live/closed-gates.json
+- .agent-onboard/state/events/closed-gates.jsonl
+- .agent-onboard/state/closures/closed-gate-closures.jsonl
+- .agent-onboard/state/indexes/closed-gates.index.json
 - llms.txt
 - package.json
 - authority-map.json

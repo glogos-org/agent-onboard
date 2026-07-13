@@ -347,6 +347,7 @@ function quickTasks() {
     cliTask('claim ledger append dry-run', ['claim', '--append', '--dry-run', '--work-item-id', APPEND_SMOKE_WORK_ITEM_ID, '--actor', 'test-runner', '--event-type', 'claim_proposed', '--claim-id', 'quick-smoke-claim', '--created-at', '2026-07-06T00:00:00.000Z'], expectStatusOk),
     cliTask('work-items init dry-run through runtime service', ['work-items', '--init', '--dry-run', '--force'], expectStatusOk),
     cliTask('work-items append dry-run through runtime service', ['work-items', '--append', '--dry-run', '--id', APPEND_SMOKE_WORK_ITEM_ID, '--title', 'Runtime append dry-run smoke'], expectStatusOk),
+    nodeTask('closed gate state layout check', [path.join(ROOT, 'scripts', 'check-closed-gate-state-layout.js')], expectStatusOk),
     nodeTask('public artifact boundary check', [path.join(ROOT, 'scripts', 'check-public-artifact-boundary.js')], expectStatusOk),
     npmTask('npm pack dry run', ['pack', '--dry-run', '--json'], expectPackFiles)
   ];

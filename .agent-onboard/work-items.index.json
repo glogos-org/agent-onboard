@@ -5,20 +5,13 @@
   "closure_archive_path": ".agent-onboard/state/closures/work-items-closures.jsonl",
   "raw_ledger_loaded_by_default": false,
   "closure_payloads_inlined": false,
-  "item_count": 153,
+  "item_count": 154,
   "open_count": 0,
   "claimed_count": 0,
-  "closed_count": 153,
-  "archived_closure_count": 152,
+  "closed_count": 154,
+  "archived_closure_count": 153,
   "latest_items_limit": 5,
   "latest_items": [
-    {
-      "id": "P1S3M6W12",
-      "milestone_id": "P1S3M6",
-      "title": "Public closed gate raw artifact prune planning gate",
-      "status": "closed",
-      "closure_ref": "closures:P1S3M6W12"
-    },
     {
       "id": "P1S3M6W13",
       "milestone_id": "P1S3M6",
@@ -46,17 +39,16 @@
       "title": "Public work item ledger compaction migration gate",
       "status": "closed",
       "closure_ref": "closures:P1S3M6W16"
+    },
+    {
+      "id": "P1S3M6W17",
+      "milestone_id": "P1S3M6",
+      "title": "Public closed gate state layout migration gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W17"
     }
   ],
   "latest_closed_work_items": [
-    {
-      "id": "P1S3M6W12",
-      "milestone_id": "P1S3M6",
-      "title": "Public closed gate raw artifact prune planning gate",
-      "status": "closed",
-      "closure_ref": "closures:P1S3M6W12",
-      "domain": null
-    },
     {
       "id": "P1S3M6W13",
       "milestone_id": "P1S3M6",
@@ -88,7 +80,15 @@
       "status": "closed",
       "closure_ref": "closures:P1S3M6W16",
       "domain": null
+    },
+    {
+      "id": "P1S3M6W17",
+      "milestone_id": "P1S3M6",
+      "title": "Public closed gate state layout migration gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W17",
+      "domain": null
     }
   ],
-  "updated_at": "2026-07-07T15:20:00.000Z"
+  "updated_at": "2026-07-07T16:20:00.000Z"
 }
