@@ -87,13 +87,22 @@
   "tracked_files": {
     ".agent-onboard/state/closures/work-items-closures.jsonl": {
       "category": "authority_state",
-      "max_lines": 168,
-      "max_bytes": 76889,
+      "max_lines": 169,
+      "max_bytes": 77348,
       "baseline_lines": 168,
       "baseline_bytes": 76889,
       "target_lines": 200,
       "target_bytes": 65536,
-      "reason": "W32 compacted full closure payloads into on-demand payload shards; compact JSONL may not re-inline payload arrays"
+      "reason": "W32 compacted full closure payloads into on-demand payload shards; compact JSONL may not re-inline payload arrays",
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M6W33",
+          "gate": "Public Check Registry Compaction Gate",
+          "reason": "compact closure archive grew by one reference row after P1S3M6W33 closure; payload remains sharded",
+          "max_lines": 169,
+          "max_bytes": 77348
+        }
+      ]
     },
     ".agent-onboard/state/live/work-items.json": {
       "category": "authority_state",
@@ -107,13 +116,29 @@
     },
     ".agent-onboard/work-items.json": {
       "category": "authority_registry",
-      "max_lines": 1573,
-      "max_bytes": 44798,
+      "max_lines": 1584,
+      "max_bytes": 45104,
       "baseline_lines": 1573,
       "baseline_bytes": 44798,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "root work-items ledger retained as compatibility projection until root projection cutover; W32 admits only this closed gate row growth"
+      "reason": "root work-items ledger retained as compatibility projection until root projection cutover; W32 admits only this closed gate row growth",
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M6W33",
+          "gate": "Public Check Registry Compaction Gate",
+          "reason": "legacy root compatibility projection grows until root projection cutover; sharded authority remains canonical",
+          "max_lines": 1583,
+          "max_bytes": 45062
+        },
+        {
+          "work_item_id": "P1S3M6W33",
+          "gate": "Public Check Registry Compaction Gate",
+          "reason": "legacy root compatibility projection grew when P1S3M6W33 closed; sharded authority remains canonical until root projection cutover",
+          "max_lines": 1584,
+          "max_bytes": 45104
+        }
+      ]
     },
     "AGENTS.md": {
       "category": "documentation",
@@ -440,6 +465,36 @@
       "target_lines": 300,
       "target_bytes": 65536,
       "reason": "W32 closure payload reference authority metadata; must stay compact and not inline full closure payloads"
+    },
+    "scripts/check.js": {
+      "category": "check_script",
+      "max_lines": 52,
+      "max_bytes": 1485,
+      "baseline_lines": 52,
+      "baseline_bytes": 1485,
+      "target_lines": 120,
+      "target_bytes": 16384,
+      "reason": "check dispatcher admitted by P1S3M6W33; future checks route through registry instead of top-level script sprawl"
+    },
+    "scripts/checks/registry.js": {
+      "category": "check_script",
+      "max_lines": 51,
+      "max_bytes": 2319,
+      "baseline_lines": 51,
+      "baseline_bytes": 2319,
+      "target_lines": 120,
+      "target_bytes": 16384,
+      "reason": "check registry admitted by P1S3M6W33; maps stable check identifiers to bounded modules"
+    },
+    "scripts/checks/check-registry-compaction.js": {
+      "category": "check_script",
+      "max_lines": 142,
+      "max_bytes": 6161,
+      "baseline_lines": 142,
+      "baseline_bytes": 6161,
+      "target_lines": 200,
+      "target_bytes": 32768,
+      "reason": "registry compaction checker admitted by P1S3M6W33"
     }
   },
   "report": {

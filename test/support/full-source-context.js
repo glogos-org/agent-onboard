@@ -60,7 +60,19 @@ function readJsonlFile(file) {
 
 function readClosureArchiveByRef(root) {
   const archivePath = path.join(root, '.agent-onboard', 'state', 'closures', 'work-items-closures.jsonl');
-  return new Map(readJsonlFile(archivePath).map((record) => [record.closure_id, record]));
+  const payloadCache = new Map();
+  function payloadRows(rel) {
+    if (!payloadCache.has(rel)) payloadCache.set(rel, readJsonlFile(path.join(root, rel)));
+    return payloadCache.get(rel);
+  }
+  return new Map(readJsonlFile(archivePath).map((record) => {
+    if (record && record.schema === 'agent-onboard-work-item-closure-compact-reference-001' && typeof record.payload_ref === 'string') {
+      const rows = payloadRows(record.payload_ref);
+      const payload = Number.isInteger(record.payload_record_index) ? rows[record.payload_record_index] : rows.find((row) => row.closure_id === record.closure_id);
+      if (payload) return [record.closure_id, payload];
+    }
+    return [record.closure_id, record];
+  }));
 }
 
 function runNpmPackDryRun() {

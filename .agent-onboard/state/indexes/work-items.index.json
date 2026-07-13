@@ -12,14 +12,14 @@
     ".agent-onboard/state/closures/work-items-closures.jsonl",
     ".agent-onboard/state/closures/work-items/manifest.json"
   ],
-  "item_count": 169,
+  "item_count": 170,
   "open_count": 0,
   "claimed_count": 0,
-  "closed_count": 169,
-  "latest_closed_work_item_id": "P1S3M6W32",
-  "archived_closure_count": 168,
+  "closed_count": 170,
+  "latest_closed_work_item_id": "P1S3M6W33",
+  "archived_closure_count": 169,
   "inline_closure_count": 0,
-  "closure_ref_count": 168,
+  "closure_ref_count": 169,
   "closure_payload_shard_count": 10,
   "by_status": {
     "open": [],
@@ -193,7 +193,8 @@
       "P1S3M6W29",
       "P1S3M6W30",
       "P1S3M6W31",
-      "P1S3M6W32"
+      "P1S3M6W32",
+      "P1S3M6W33"
     ]
   },
   "by_milestone": {
@@ -382,8 +383,9 @@
       "P1S3M6W29",
       "P1S3M6W30",
       "P1S3M6W31",
-      "P1S3M6W32"
+      "P1S3M6W32",
+      "P1S3M6W33"
     ]
   },
-  "updated_at": "2026-07-08T11:24:32.000Z"
+  "updated_at": "2026-07-08T12:35:00.000Z"
 }

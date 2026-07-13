@@ -356,7 +356,7 @@ module.exports = function registerFullSourceShard(fullSourceTest, context) {
 
 
   fullSourceTest('work item ledger compaction checker validates closure archive references', () => {
-    const result = spawnSync(process.execPath, [path.join(ROOT, 'scripts', 'check-work-item-ledger-compaction.js')], {
+    const result = spawnSync(process.execPath, [path.join(ROOT, 'scripts', 'check.js'), 'work-item-ledger-compaction'], {
       cwd: ROOT,
       encoding: 'utf8',
       timeout: 60000,

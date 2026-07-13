@@ -6,12 +6,31 @@
   "authority_role": "compact_closure_archive_with_external_payload_shards",
   "compact_archive": {
     "path": ".agent-onboard/state/closures/work-items-closures.jsonl",
-    "record_count": 168,
-    "bytes": 76889,
-    "sha256": "9e217a63b7e46b6ae29f00b978351e7eac0312324df7d880d42623773481ad2d",
-    "file_id": "ni:///sha-256;niF6Y7fka2rinwC5eDUefqwDEjJN99iA1CYjdzSBrS0"
+    "record_count": 169,
+    "bytes": 77348,
+    "sha256": "c4885f03742c49583a9714a761ec6d17d104cee3ae9ffde62b754530c2131711",
+    "file_id": "ni:///sha-256;xIhfA3QsSVg6lxSnYextF9EEzuOun_3mK3VFMMITFxE"
   },
   "payload_root": ".agent-onboard/state/closures/work-items/payloads",
+  "projection_policy": {
+    "compact_archive_keeps_summary_and_payload_ref": true,
+    "full_payload_rebuildable_from_shards": true,
+    "payload_arrays_inlined_in_compact_archive": false,
+    "raw_growth_files_loaded_by_default": false
+  },
+  "storage_backend_policy": {
+    "current_canonical_backend": "json_and_jsonl_text_first",
+    "sqlite_current_source_of_truth": false,
+    "lightning_memory_mapped_database_current_source_of_truth": false,
+    "mdbx_current_source_of_truth": false,
+    "binary_storage_admitted_now": false
+  },
+  "counts": {
+    "compact_records": 169,
+    "payload_records": 169,
+    "payload_shards": 10
+  },
+  "checker": "node scripts/check.js closure-payload-reference-compaction",
   "payload_shards": [
     {
       "path": ".agent-onboard/state/closures/work-items/payloads/by-milestone/P1S1M1/part-001.jsonl",
@@ -80,47 +99,28 @@
       "path": ".agent-onboard/state/closures/work-items/payloads/by-milestone/P1S3M5/part-001.jsonl",
       "milestone_id": "P1S3M5",
       "part": 1,
-      "record_count": 25,
-      "bytes": 67836,
-      "sha256": "9a1a768e85a1f923b61dd4fcf69c06802cc00a41c8e12f4ebb5d820c7030bafd",
-      "file_id": "ni:///sha-256;mhp2joWh-SO2HdT89pwGgCzACkHI4S9Ou12CDHAwuv0"
+      "record_count": 27,
+      "bytes": 72764,
+      "sha256": "fc0aa6642671f24b682bd72eff28f7288a2b08d0475b683590a400fc2a89b6a3",
+      "file_id": "ni:///sha-256;_AqmZCZx8ktoK9cu_yj3KIorCNBHW2g1kKQA_CqJtqM"
     },
     {
       "path": ".agent-onboard/state/closures/work-items/payloads/by-milestone/P1S3M5/part-002.jsonl",
       "milestone_id": "P1S3M5",
       "part": 2,
-      "record_count": 17,
-      "bytes": 45699,
-      "sha256": "cfeb3283328a206d0896dd7d8562781a48bad396b70ff7a135792d3beb364cdb",
-      "file_id": "ni:///sha-256;z-sygzKKIG0Ilt19hWJ4Gki605a3D_ehNXktO-s2TNs"
+      "record_count": 15,
+      "bytes": 40771,
+      "sha256": "627c3bfa8bc9ad2f2b1ed0ad9a7ad242ee2c58c94cbef4a390b2d58f4a4280fb",
+      "file_id": "ni:///sha-256;Ynw7-ovJrS8rHtCtmnrSQu4sWMlMvvSjkLLVj0pCgPs"
     },
     {
       "path": ".agent-onboard/state/closures/work-items/payloads/by-milestone/P1S3M6/part-001.jsonl",
       "milestone_id": "P1S3M6",
       "part": 1,
-      "record_count": 32,
-      "bytes": 62560,
-      "sha256": "86bb8b081fa1af449725cccc74b63009694b1567ae449783d2cf42a4e7425730",
-      "file_id": "ni:///sha-256;hruLCB-hr0SXJczMdLYwCWlLFWeuRJeD0s9CpOdCVzA"
+      "record_count": 33,
+      "bytes": 63908,
+      "sha256": "c4efadffc1876d344b1cf8532da15ceaa2d26bacc8acd0ef5a8981ca20780d5b",
+      "file_id": "ni:///sha-256;xO-t_8GHbTRLHPhTLaFc6qLSa6zIrNDvWomByiB4DVs"
     }
-  ],
-  "projection_policy": {
-    "compact_archive_keeps_summary_and_payload_ref": true,
-    "full_payload_rebuildable_from_shards": true,
-    "payload_arrays_inlined_in_compact_archive": false,
-    "raw_growth_files_loaded_by_default": false
-  },
-  "storage_backend_policy": {
-    "current_canonical_backend": "json_and_jsonl_text_first",
-    "sqlite_current_source_of_truth": false,
-    "lightning_memory_mapped_database_current_source_of_truth": false,
-    "mdbx_current_source_of_truth": false,
-    "binary_storage_admitted_now": false
-  },
-  "counts": {
-    "compact_records": 168,
-    "payload_records": 168,
-    "payload_shards": 10
-  },
-  "checker": "node scripts/check-closure-payload-reference-compaction.js"
+  ]
 }

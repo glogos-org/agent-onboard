@@ -3,7 +3,7 @@
   "package_name": "agent-onboard",
   "source": "sharded_work_items_authority",
   "milestone_id": "P1S3M6",
-  "item_count": 31,
+  "item_count": 33,
   "items": [
     {
       "id": "P1S3M6W1",
@@ -291,6 +291,17 @@
         "note": "Compact work-item closure payloads into reference-indexed shards."
       },
       "closure_ref": "closures:P1S3M6W32"
+    },
+    {
+      "id": "P1S3M6W33",
+      "milestone_id": "P1S3M6",
+      "title": "Public Check Registry Compaction Gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-08T12:05:00.000Z"
+      },
+      "closure_ref": "closures:P1S3M6W33"
     }
   ]
 }

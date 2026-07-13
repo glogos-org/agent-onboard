@@ -142,7 +142,7 @@ module.exports = function registerFullSourceShard(fullSourceTest, context) {
       if (text.includes(forbiddenKey)) violations.push(`${rel}: reserved implementation key token`);
       const match = forbiddenWorkItemPattern.exec(text);
       const sourceControlArtifact = rel.startsWith('.agent-onboard/') && rel.endsWith('.json');
-      const archivedOrTestArtifact = rel === 'docs/release-history.md' || rel === 'SOURCE_OF_TRUTH.md' || rel.startsWith('test/') || rel.startsWith('scripts/check-');
+      const archivedOrTestArtifact = rel === 'docs/release-history.md' || rel === 'SOURCE_OF_TRUTH.md' || rel.startsWith('test/') || rel.startsWith('scripts/checks/');
       if (match && rel !== '.agent-onboard/work-items.json' && !sourceControlArtifact && !archivedOrTestArtifact) {
         violations.push(`${rel}: reserved concrete work-item token ${match[0]}`);
       }

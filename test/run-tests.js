@@ -36,6 +36,11 @@ function cliTask(name, args, validate, options = {}) {
   return nodeTask(name, [CLI, ...args], validate, options);
 }
 
+
+function checkRegistryTask(name, checkId, validate = expectStatusOk, options = {}) {
+  return nodeTask(name, [path.join(ROOT, 'scripts', 'check.js'), checkId], validate, options);
+}
+
 function npmTask(name, args, validate) {
   if (process.platform === 'win32') {
     return {
@@ -287,16 +292,12 @@ function syntaxTasks() {
     nodeTask('syntax: work-items runtime service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'work-items', 'services', 'work-items-service.js')]),
     nodeTask('syntax: work-items mutation service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'work-items', 'services', 'work-items-mutation-service.js')]),
     nodeTask('syntax: work-items claim ledger service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'work-items', 'services', 'work-items-claim-ledger-service.js')]),
-    nodeTask('syntax: public artifact boundary check', ['-c', path.join(ROOT, 'scripts', 'check-public-artifact-boundary.js')]),
-    nodeTask('syntax: source size budget ratchet check', ['-c', path.join(ROOT, 'scripts', 'check-source-size-budget-ratchet.js')]),
-    nodeTask('syntax: runtime command registry extraction check', ['-c', path.join(ROOT, 'scripts', 'check-runtime-command-registry-extraction.js')]),
-    nodeTask('syntax: release clean closed gates runtime slice extraction check', ['-c', path.join(ROOT, 'scripts', 'check-release-clean-closed-gates-runtime-slice-extraction.js')]),
-    nodeTask('syntax: architecture catalog sharding check', ['-c', path.join(ROOT, 'scripts', 'check-architecture-catalog-sharding.js')]),
-    nodeTask('syntax: work-items service split check', ['-c', path.join(ROOT, 'scripts', 'check-work-items-service-split.js')]),
-    nodeTask('syntax: target governance service split check', ['-c', path.join(ROOT, 'scripts', 'check-target-governance-service-split.js')]),
-    nodeTask('syntax: test suite sharding check', ['-c', path.join(ROOT, 'scripts', 'check-test-suite-sharding.js')]),
-    nodeTask('syntax: state projection authority cutover check', ['-c', path.join(ROOT, 'scripts', 'check-state-projection-authority-cutover.js')]),
-    nodeTask('syntax: closure payload reference compaction check', ['-c', path.join(ROOT, 'scripts', 'check-closure-payload-reference-compaction.js')]),
+    nodeTask('syntax: check dispatcher', ['-c', path.join(ROOT, 'scripts', 'check.js')]),
+    nodeTask('syntax: check registry', ['-c', path.join(ROOT, 'scripts', 'checks', 'registry.js')]),
+    ...fs.readdirSync(path.join(ROOT, 'scripts', 'checks'))
+      .filter((entry) => entry.endsWith('.js'))
+      .sort()
+      .map((entry) => nodeTask(`syntax: check registry module ${entry}`, ['-c', path.join(ROOT, 'scripts', 'checks', entry)])),
     nodeTask('syntax: full source test context', ['-c', FULL_SOURCE_CONTEXT]),
     ...fullSourceShardSyntaxTasks(),
     nodeTask('syntax: full source test aggregator', ['-c', FULL_SOURCE_TEST]),
@@ -382,17 +383,18 @@ function quickTasks() {
     cliTask('claim ledger append dry-run', ['claim', '--append', '--dry-run', '--work-item-id', APPEND_SMOKE_WORK_ITEM_ID, '--actor', 'test-runner', '--event-type', 'claim_proposed', '--claim-id', 'quick-smoke-claim', '--created-at', '2026-07-06T00:00:00.000Z'], expectStatusOk),
     cliTask('work-items init dry-run through runtime service', ['work-items', '--init', '--dry-run', '--force'], expectStatusOk),
     cliTask('work-items append dry-run through runtime service', ['work-items', '--append', '--dry-run', '--id', APPEND_SMOKE_WORK_ITEM_ID, '--title', 'Runtime append dry-run smoke'], expectStatusOk),
-    nodeTask('closed gate state layout check', [path.join(ROOT, 'scripts', 'check-closed-gate-state-layout.js')], expectStatusOk),
-    nodeTask('source size budget ratchet check', [path.join(ROOT, 'scripts', 'check-source-size-budget-ratchet.js')], expectStatusOk),
-    nodeTask('runtime command registry extraction check', [path.join(ROOT, 'scripts', 'check-runtime-command-registry-extraction.js')], expectStatusOk),
-    nodeTask('release clean closed gates runtime slice extraction check', [path.join(ROOT, 'scripts', 'check-release-clean-closed-gates-runtime-slice-extraction.js')], expectStatusOk),
-    nodeTask('architecture catalog sharding check', [path.join(ROOT, 'scripts', 'check-architecture-catalog-sharding.js')], expectStatusOk),
-    nodeTask('work-items service split check', [path.join(ROOT, 'scripts', 'check-work-items-service-split.js')], expectStatusOk),
-    nodeTask('target governance service split check', [path.join(ROOT, 'scripts', 'check-target-governance-service-split.js')], expectStatusOk),
-    nodeTask('test suite sharding check', [path.join(ROOT, 'scripts', 'check-test-suite-sharding.js')], expectStatusOk),
-    nodeTask('state projection authority cutover check', [path.join(ROOT, 'scripts', 'check-state-projection-authority-cutover.js')], expectStatusOk),
-    nodeTask('closure payload reference compaction check', [path.join(ROOT, 'scripts', 'check-closure-payload-reference-compaction.js')], expectStatusOk),
-    nodeTask('public artifact boundary check', [path.join(ROOT, 'scripts', 'check-public-artifact-boundary.js')], expectStatusOk),
+    checkRegistryTask('closed gate state layout check', 'closed-gate-state-layout'),
+    checkRegistryTask('source size budget ratchet check', 'source-size-budget'),
+    checkRegistryTask('runtime command registry extraction check', 'runtime-command-registry-extraction'),
+    checkRegistryTask('release clean closed gates runtime slice extraction check', 'release-clean-closed-gates-runtime-slice'),
+    checkRegistryTask('architecture catalog sharding check', 'architecture-catalog-sharding'),
+    checkRegistryTask('work-items service split check', 'work-items-service-split'),
+    checkRegistryTask('target governance service split check', 'target-governance-service-split'),
+    checkRegistryTask('test suite sharding check', 'test-suite-sharding'),
+    checkRegistryTask('state projection authority cutover check', 'state-projection-authority-cutover'),
+    checkRegistryTask('closure payload reference compaction check', 'closure-payload-reference-compaction'),
+    checkRegistryTask('public artifact boundary check', 'public-artifact-boundary'),
+    checkRegistryTask('check registry compaction check', 'check-registry-compaction'),
     npmTask('npm pack dry run', ['pack', '--dry-run', '--json'], expectPackFiles)
   ];
 }
