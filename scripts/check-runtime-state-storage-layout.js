@@ -62,8 +62,11 @@ function main() {
 
   const legacyItems = legacy && Array.isArray(legacy.work_items) ? legacy.work_items : [];
   const liveItems = live && Array.isArray(live.items) ? live.items : [];
-  if (legacy && live && legacyItems.length !== liveItems.length) errors.push(`live item count ${liveItems.length} does not match legacy count ${legacyItems.length}`);
-  if (index && live && index.item_count !== liveItems.length) errors.push('derived index item count must match live item count');
+  const liveItemCount = live && Number.isInteger(live.item_count) ? live.item_count : liveItems.length;
+  const liveProjectionMode = live && live.schema === 'agent-onboard-work-items-live-projection-002';
+  if (liveProjectionMode && Array.isArray(live.items)) errors.push('W31 live projection must not inline full work item records');
+  if (legacy && live && legacyItems.length !== liveItemCount) errors.push(`live item count ${liveItemCount} does not match legacy count ${legacyItems.length}`);
+  if (index && live && index.item_count !== liveItemCount) errors.push('derived index item count must match live item count');
   if (events.length === 0) errors.push('event log must contain at least one event');
   if (!events.some((event) => event.event_type === 'work_items_parallel_storage_seeded')) errors.push('event log must contain work_items_parallel_storage_seeded');
   if (!closures.some((record) => record.work_item_id === 'P1S3M6W15')) errors.push('closure archive must contain the growth arrest closure record');
@@ -77,7 +80,8 @@ function main() {
     status: errors.length === 0 ? 'ok' : 'error',
     required_files: requiredFiles,
     legacy_item_count: legacyItems.length,
-    live_item_count: liveItems.length,
+    live_item_count: liveItemCount,
+    live_projection_mode: liveProjectionMode,
     event_count: events.length,
     closure_record_count: closures.length,
     binary_state_files: binaryStateFiles,

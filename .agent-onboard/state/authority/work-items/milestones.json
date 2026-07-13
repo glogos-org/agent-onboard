@@ -1,0 +1,61 @@
+{
+  "schema": "agent-onboard-work-items-authority-milestones-shard-001",
+  "package_name": "agent-onboard",
+  "source": "sharded_work_items_authority",
+  "items": [
+    {
+      "id": "P1S1M1",
+      "stage_id": "P1S1",
+      "title": "Public self-dogfood baseline milestone",
+      "status": "closed"
+    },
+    {
+      "id": "P1S1M2",
+      "stage_id": "P1S1",
+      "title": "Public release contract milestone",
+      "status": "closed"
+    },
+    {
+      "id": "P1S2M1",
+      "stage_id": "P1S2",
+      "title": "Public target onboarding surface milestone",
+      "status": "closed"
+    },
+    {
+      "id": "P1S3M1",
+      "stage_id": "P1S3",
+      "title": "Public architecture kernel milestone",
+      "status": "closed"
+    },
+    {
+      "id": "P1S3M2",
+      "stage_id": "P1S3",
+      "title": "Public source-domain extraction stabilization milestone",
+      "status": "closed"
+    },
+    {
+      "id": "P1S3M3",
+      "stage_id": "P1S3",
+      "title": "Public CLI runtime de-monolith milestone",
+      "status": "closed"
+    },
+    {
+      "id": "P1S3M4",
+      "stage_id": "P1S3",
+      "title": "Public target-repo product refactor milestone",
+      "status": "closed"
+    },
+    {
+      "id": "P1S3M5",
+      "stage_id": "P1S3",
+      "title": "Public target policy adapter milestone",
+      "status": "closed"
+    },
+    {
+      "id": "P1S3M6",
+      "stage_id": "P1S3",
+      "title": "Public clean and compaction milestone",
+      "status": "open"
+    }
+  ]
+}

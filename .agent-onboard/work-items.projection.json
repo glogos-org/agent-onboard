@@ -1,0 +1,26 @@
+{
+  "schema": "agent-onboard-work-items-legacy-root-projection-sidecar-001",
+  "package_name": "agent-onboard",
+  "work_item_id": "P1S3M6W31",
+  "legacy_root_projection": ".agent-onboard/work-items.json",
+  "canonical_authority": ".agent-onboard/state/authority/work-items/manifest.json",
+  "reason": "root work-items.json remains a full compatibility projection for older target repo tooling; sharded state authority is the canonical source for this source repository line.",
+  "projection_policy": {
+    "legacy_root_projection_remains_for_target_compatibility": true,
+    "live_projection_is_rebuildable_from_shards": true,
+    "root_projection_is_rebuildable_from_shards": true,
+    "raw_growth_files_loaded_by_default": false,
+    "sqlite_current_source_of_truth": false,
+    "lightning_memory_mapped_database_current_source_of_truth": false,
+    "mdbx_current_source_of_truth": false
+  },
+  "counts": {
+    "open": 0,
+    "claimed": 0,
+    "closed": 168,
+    "programs": 1,
+    "stages": 3,
+    "milestones": 9,
+    "work_items": 168
+  }
+}

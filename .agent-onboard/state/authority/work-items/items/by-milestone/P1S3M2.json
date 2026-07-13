@@ -1,0 +1,93 @@
+{
+  "schema": "agent-onboard-work-items-authority-items-by-milestone-shard-001",
+  "package_name": "agent-onboard",
+  "source": "sharded_work_items_authority",
+  "milestone_id": "P1S3M2",
+  "item_count": 12,
+  "items": [
+    {
+      "id": "P1S3M2W1",
+      "milestone_id": "P1S3M2",
+      "title": "Public architecture M1 closure and M2 seed gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M2W1"
+    },
+    {
+      "id": "P1S3M2W2",
+      "milestone_id": "P1S3M2",
+      "title": "Public work-items domain source extraction planning gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M2W2"
+    },
+    {
+      "id": "P1S3M2W3",
+      "milestone_id": "P1S3M2",
+      "title": "Public work-items domain source extraction first-slice gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M2W3"
+    },
+    {
+      "id": "P1S3M2W4",
+      "milestone_id": "P1S3M2",
+      "title": "Public work-items domain source extraction bundle parity gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M2W4"
+    },
+    {
+      "id": "P1S3M2W5",
+      "milestone_id": "P1S3M2",
+      "title": "Public work-items domain source extraction runtime bridge gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M2W5"
+    },
+    {
+      "id": "P1S3M2W6",
+      "milestone_id": "P1S3M2",
+      "title": "Public work-items domain source extraction installed fallback smoke gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M2W6"
+    },
+    {
+      "id": "P1S3M2W7",
+      "milestone_id": "P1S3M2",
+      "title": "Public claims domain source extraction planning gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M2W7"
+    },
+    {
+      "id": "P1S3M2W8",
+      "milestone_id": "P1S3M2",
+      "title": "Public claims domain source extraction first-slice gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M2W8"
+    },
+    {
+      "id": "P1S3M2W9",
+      "milestone_id": "P1S3M2",
+      "title": "Public claims domain source extraction bundle parity gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M2W9"
+    },
+    {
+      "id": "P1S3M2W10",
+      "milestone_id": "P1S3M2",
+      "title": "Public claims domain source extraction runtime bridge gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M2W10"
+    },
+    {
+      "id": "P1S3M2W11",
+      "milestone_id": "P1S3M2",
+      "title": "Public claims domain source extraction installed fallback smoke gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M2W11"
+    },
+    {
+      "id": "P1S3M2W12",
+      "milestone_id": "P1S3M2",
+      "title": "Public source-domain extraction stabilization closure review gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M2W12"
+    }
+  ]
+}

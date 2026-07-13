@@ -1,0 +1,142 @@
+{
+  "schema": "agent-onboard-work-items-authority-items-by-milestone-shard-001",
+  "package_name": "agent-onboard",
+  "source": "sharded_work_items_authority",
+  "milestone_id": "P1S3M1",
+  "item_count": 19,
+  "items": [
+    {
+      "id": "P1S3M1W1",
+      "milestone_id": "P1S3M1",
+      "title": "Public architecture map gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W1"
+    },
+    {
+      "id": "P1S3M1W2",
+      "milestone_id": "P1S3M1",
+      "title": "Public command router boundary gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W2"
+    },
+    {
+      "id": "P1S3M1W3",
+      "milestone_id": "P1S3M1",
+      "title": "Public domain service facade gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W3"
+    },
+    {
+      "id": "P1S3M1W4",
+      "milestone_id": "P1S3M1",
+      "title": "Public authority first-read index gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W4"
+    },
+    {
+      "id": "P1S3M1W5",
+      "milestone_id": "P1S3M1",
+      "title": "Public target runtime namespace gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W5"
+    },
+    {
+      "id": "P1S3M1W6",
+      "milestone_id": "P1S3M1",
+      "title": "Public package surface preservation gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W6"
+    },
+    {
+      "id": "P1S3M1W7",
+      "milestone_id": "P1S3M1",
+      "title": "Public installed parity architecture smoke gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W7"
+    },
+    {
+      "id": "P1S3M1W8",
+      "milestone_id": "P1S3M1",
+      "title": "Public source domain module partition planning gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W8"
+    },
+    {
+      "id": "P1S3M1W9",
+      "milestone_id": "P1S3M1",
+      "title": "Public source domain extraction rehearsal gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W9"
+    },
+    {
+      "id": "P1S3M1W10",
+      "milestone_id": "P1S3M1",
+      "title": "Public source extraction golden output freeze gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W10"
+    },
+    {
+      "id": "P1S3M1W11",
+      "milestone_id": "P1S3M1",
+      "title": "Public source module extraction adapter boundary gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W11"
+    },
+    {
+      "id": "P1S3M1W12",
+      "milestone_id": "P1S3M1",
+      "title": "Public source module extraction first slice gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W12"
+    },
+    {
+      "id": "P1S3M1W13",
+      "milestone_id": "P1S3M1",
+      "title": "Public source module extraction bundle parity gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W13"
+    },
+    {
+      "id": "P1S3M1W14",
+      "milestone_id": "P1S3M1",
+      "title": "Public source module extraction runtime bridge gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W14"
+    },
+    {
+      "id": "P1S3M1W15",
+      "milestone_id": "P1S3M1",
+      "title": "Public source module extraction installed fallback smoke gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W15"
+    },
+    {
+      "id": "P1S3M1W16",
+      "milestone_id": "P1S3M1",
+      "title": "Public source module extraction second slice planning gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W16"
+    },
+    {
+      "id": "P1S3M1W17",
+      "milestone_id": "P1S3M1",
+      "title": "Public source module extraction second slice first-slice gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W17"
+    },
+    {
+      "id": "P1S3M1W18",
+      "milestone_id": "P1S3M1",
+      "title": "Public source module extraction authority bundle parity gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W18"
+    },
+    {
+      "id": "P1S3M1W19",
+      "milestone_id": "P1S3M1",
+      "title": "Public source module extraction authority runtime bridge gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M1W19"
+    }
+  ]
+}

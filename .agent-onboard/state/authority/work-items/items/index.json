@@ -1,22 +1,22 @@
 {
-  "schema": "agent-onboard-work-items-derived-index-002",
+  "schema": "agent-onboard-work-items-sharded-authority-index-001",
   "package_name": "agent-onboard",
+  "work_item_id": "P1S3M6W31",
   "status": "active",
-  "source": ".agent-onboard/state/authority/work-items/manifest.json",
-  "legacy_root_projection": ".agent-onboard/work-items.json",
-  "live_projection": ".agent-onboard/state/live/work-items.json",
-  "rebuildable_from": [
-    ".agent-onboard/state/authority/work-items/manifest.json",
-    ".agent-onboard/state/authority/work-items/items/index.json",
-    ".agent-onboard/state/closures/work-items-closures.jsonl"
-  ],
-  "item_count": 168,
-  "open_count": 0,
-  "claimed_count": 0,
-  "closed_count": 168,
+  "authority_role": "canonical_sharded_work_items_authority",
+  "root_compatibility_projection": ".agent-onboard/work-items.json",
+  "live_compatibility_projection": ".agent-onboard/state/live/work-items.json",
+  "counts": {
+    "open": 0,
+    "claimed": 0,
+    "closed": 168,
+    "programs": 1,
+    "stages": 3,
+    "milestones": 9,
+    "work_items": 168
+  },
+  "latest_work_item_id": "P1S3M6W31",
   "latest_closed_work_item_id": "P1S3M6W31",
-  "archived_closure_count": 167,
-  "inline_closure_count": 0,
   "by_status": {
     "closed": [
       "P1S1M1W1",
@@ -377,5 +377,69 @@
       "P1S3M6W31"
     ]
   },
-  "updated_at": "2026-07-08T10:46:30.000Z"
+  "item_shards": [
+    {
+      "milestone_id": "P1S1M1",
+      "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S1M1.json",
+      "item_count": 5,
+      "file_id": "ni:///sha-256;k6qkOFaubRxANFtvadrWSXTjWuez3ek4INXCa2EQlOE",
+      "bytes": 1167
+    },
+    {
+      "milestone_id": "P1S1M2",
+      "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S1M2.json",
+      "item_count": 3,
+      "file_id": "ni:///sha-256;d-LOovCSC4acSgx7vU7zob2QKavj6hZRwoe7auaAlS4",
+      "bytes": 808
+    },
+    {
+      "milestone_id": "P1S2M1",
+      "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S2M1.json",
+      "item_count": 8,
+      "file_id": "ni:///sha-256;J2b4KJLtgsuWDL9gne3z7pUuXh8zntz8m0FKPeOEneo",
+      "bytes": 1887
+    },
+    {
+      "milestone_id": "P1S3M1",
+      "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M1.json",
+      "item_count": 19,
+      "file_id": "ni:///sha-256;4FMsuWAye5HDovkZtG-WkQUcpB1JxLRlyhqWTOrAsBI",
+      "bytes": 4098
+    },
+    {
+      "milestone_id": "P1S3M2",
+      "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M2.json",
+      "item_count": 12,
+      "file_id": "ni:///sha-256;eziIITVcdzXxkUeH78aBsGKHBk9koO8bbf_Yi8XOwr0",
+      "bytes": 2804
+    },
+    {
+      "milestone_id": "P1S3M3",
+      "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M3.json",
+      "item_count": 33,
+      "file_id": "ni:///sha-256;m781BrWC-kpblxfHYv4gJATZDH1J1aZwj0-nNk5TOzI",
+      "bytes": 9256
+    },
+    {
+      "milestone_id": "P1S3M4",
+      "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M4.json",
+      "item_count": 15,
+      "file_id": "ni:///sha-256;iNQ-x95ea80CSWa9qHm9WgwP9qU3vkNiwCgdtD5v0LE",
+      "bytes": 4925
+    },
+    {
+      "milestone_id": "P1S3M5",
+      "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M5.json",
+      "item_count": 42,
+      "file_id": "ni:///sha-256;vKGxIKCI18tv0FgWHXBOh94Xu4oKgzelPtl8KkgPr4w",
+      "bytes": 10690
+    },
+    {
+      "milestone_id": "P1S3M6",
+      "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M6.json",
+      "item_count": 31,
+      "file_id": "ni:///sha-256;vkMpbhRDeBpHCJ7sy0ZlH8f-scI9mmn2cXYEmSxm1oI",
+      "bytes": 8217
+    }
+  ]
 }

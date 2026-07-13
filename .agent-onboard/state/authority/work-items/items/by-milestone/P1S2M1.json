@@ -1,0 +1,65 @@
+{
+  "schema": "agent-onboard-work-items-authority-items-by-milestone-shard-001",
+  "package_name": "agent-onboard",
+  "source": "sharded_work_items_authority",
+  "milestone_id": "P1S2M1",
+  "item_count": 8,
+  "items": [
+    {
+      "id": "P1S2M1W1",
+      "milestone_id": "P1S2M1",
+      "title": "Public target onboarding surface planning gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S2M1W1"
+    },
+    {
+      "id": "P1S2M1W2",
+      "milestone_id": "P1S2M1",
+      "title": "Public target onboarding dry-run fixture gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S2M1W2"
+    },
+    {
+      "id": "P1S2M1W3",
+      "milestone_id": "P1S2M1",
+      "title": "Public target onboarding explicit write boundary gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S2M1W3"
+    },
+    {
+      "id": "P1S2M1W4",
+      "milestone_id": "P1S2M1",
+      "title": "Public target onboarding installed package smoke gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S2M1W4"
+    },
+    {
+      "id": "P1S2M1W5",
+      "milestone_id": "P1S2M1",
+      "title": "Public target onboarding post-publish verification handoff gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S2M1W5"
+    },
+    {
+      "id": "P1S2M1W6",
+      "milestone_id": "P1S2M1",
+      "title": "Public target onboarding published package acceptance gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S2M1W6"
+    },
+    {
+      "id": "P1S2M1W7",
+      "milestone_id": "P1S2M1",
+      "title": "Public target onboarding real target repo trial gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S2M1W7"
+    },
+    {
+      "id": "P1S2M1W8",
+      "milestone_id": "P1S2M1",
+      "title": "Public target onboarding owner handoff evidence gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S2M1W8"
+    }
+  ]
+}

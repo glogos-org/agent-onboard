@@ -1,0 +1,375 @@
+{
+  "schema": "agent-onboard-work-items-authority-items-by-milestone-shard-001",
+  "package_name": "agent-onboard",
+  "source": "sharded_work_items_authority",
+  "milestone_id": "P1S3M5",
+  "item_count": 42,
+  "items": [
+    {
+      "id": "P1S3M5W1",
+      "milestone_id": "P1S3M5",
+      "title": "Public target metadata policy adapter gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-03T20:23:45.183Z"
+      },
+      "closure_ref": "closures:P1S3M5W1"
+    },
+    {
+      "id": "P1S3M5W2",
+      "milestone_id": "P1S3M5",
+      "title": "Public target manifest drift guard gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-04T12:00:00.000Z"
+      },
+      "closure_ref": "closures:P1S3M5W2"
+    },
+    {
+      "id": "P1S3M5W3",
+      "milestone_id": "P1S3M5",
+      "title": "Public package source manifest service gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-04T12:21:34.000Z"
+      },
+      "closure_ref": "closures:P1S3M5W3"
+    },
+    {
+      "id": "P1S3M5W4",
+      "milestone_id": "P1S3M5",
+      "title": "Public package source manifest command gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-04T12:44:00.000Z"
+      },
+      "closure_ref": "closures:P1S3M5W4"
+    },
+    {
+      "id": "P1S3M5W5",
+      "milestone_id": "P1S3M5",
+      "title": "Public command surface catalog product gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-04T12:50:13.000Z"
+      },
+      "closure_ref": "closures:P1S3M5W5"
+    },
+    {
+      "id": "P1S3M5W6",
+      "milestone_id": "P1S3M5",
+      "title": "Public operator guide product gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W6"
+    },
+    {
+      "id": "P1S3M5W7",
+      "milestone_id": "P1S3M5",
+      "title": "Public quickstart product gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W7"
+    },
+    {
+      "id": "P1S3M5W8",
+      "milestone_id": "P1S3M5",
+      "title": "Public AI discovery product gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-04T13:45:00.000Z"
+      },
+      "closure_ref": "closures:P1S3M5W8"
+    },
+    {
+      "id": "P1S3M5W9",
+      "milestone_id": "P1S3M5",
+      "title": "Public create dry-run product gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-04T14:30:00.000Z"
+      },
+      "closure_ref": "closures:P1S3M5W9"
+    },
+    {
+      "id": "P1S3M5W10",
+      "milestone_id": "P1S3M5",
+      "title": "Public target memory descriptor product gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-04T15:05:00.000Z"
+      },
+      "closure_ref": "closures:P1S3M5W10"
+    },
+    {
+      "id": "P1S3M5W11",
+      "milestone_id": "P1S3M5",
+      "title": "Public issue intake dry-run product gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-04T16:00:00.000Z"
+      },
+      "closure_ref": "closures:P1S3M5W11"
+    },
+    {
+      "id": "P1S3M5W12",
+      "milestone_id": "P1S3M5",
+      "title": "Public contributor admission dry-run product gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-04T16:35:00.000Z"
+      },
+      "closure_ref": "closures:P1S3M5W12"
+    },
+    {
+      "id": "P1S3M5W13",
+      "milestone_id": "P1S3M5",
+      "title": "Public check plan / fast runner product gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-04T17:10:00.000Z"
+      },
+      "closure_ref": "closures:P1S3M5W13"
+    },
+    {
+      "id": "P1S3M5W14",
+      "milestone_id": "P1S3M5",
+      "title": "Public GitHub Action / CI surface product gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-04T18:00:00.000Z"
+      },
+      "closure_ref": "closures:P1S3M5W14"
+    },
+    {
+      "id": "P1S3M5W15",
+      "milestone_id": "P1S3M5",
+      "title": "Public MCP bridge plan / skeleton product gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-04T18:40:00.000Z"
+      },
+      "closure_ref": "closures:P1S3M5W15"
+    },
+    {
+      "id": "P1S3M5W16",
+      "milestone_id": "P1S3M5",
+      "title": "Public target inventory preview product gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W16"
+    },
+    {
+      "id": "P1S3M5W17",
+      "milestone_id": "P1S3M5",
+      "title": "Public target work-items preview product gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-04T20:05:00.000+07:00"
+      },
+      "closure_ref": "closures:P1S3M5W17"
+    },
+    {
+      "id": "P1S3M5W18",
+      "milestone_id": "P1S3M5",
+      "title": "Public target handoff preview product gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-04T21:00:00.000+07:00"
+      },
+      "closure_ref": "closures:P1S3M5W18"
+    },
+    {
+      "id": "P1S3M5W19",
+      "milestone_id": "P1S3M5",
+      "title": "Public target governance preview product gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-04T22:40:00.000+07:00"
+      },
+      "closure_ref": "closures:P1S3M5W19"
+    },
+    {
+      "id": "P1S3M5W20",
+      "milestone_id": "P1S3M5",
+      "title": "Public target governance index materialization dry-run gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-04T23:24:00.000+07:00"
+      },
+      "closure_ref": "closures:P1S3M5W20"
+    },
+    {
+      "id": "P1S3M5W21",
+      "milestone_id": "P1S3M5",
+      "title": "Public target governance index explicit write gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-04T23:57:00.000+07:00"
+      },
+      "closure_ref": "closures:P1S3M5W21"
+    },
+    {
+      "id": "P1S3M5W22",
+      "milestone_id": "P1S3M5",
+      "title": "Public target governance index refresh integration gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W22"
+    },
+    {
+      "id": "P1S3M5W23",
+      "milestone_id": "P1S3M5",
+      "title": "Public target governance index drift check gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W23"
+    },
+    {
+      "id": "P1S3M5W24",
+      "milestone_id": "P1S3M5",
+      "title": "Public target governance stale-read fast-check wiring gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W24"
+    },
+    {
+      "id": "P1S3M5W25",
+      "milestone_id": "P1S3M5",
+      "title": "Public target governance budget contract product gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W25"
+    },
+    {
+      "id": "P1S3M5W26",
+      "milestone_id": "P1S3M5",
+      "title": "Public target governance budget check product gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W26"
+    },
+    {
+      "id": "P1S3M5W27",
+      "milestone_id": "P1S3M5",
+      "title": "Public target handoff governance budget summary product gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W27"
+    },
+    {
+      "id": "P1S3M5W28",
+      "milestone_id": "P1S3M5",
+      "title": "Public target handoff readiness reasons product gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W28"
+    },
+    {
+      "id": "P1S3M5W29",
+      "milestone_id": "P1S3M5",
+      "title": "Public target handoff readiness check product gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W29"
+    },
+    {
+      "id": "P1S3M5W30",
+      "milestone_id": "P1S3M5",
+      "title": "Public contract spine readiness output contract gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W30"
+    },
+    {
+      "id": "P1S3M5W31",
+      "milestone_id": "P1S3M5",
+      "title": "Public contract output validator gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W31"
+    },
+    {
+      "id": "P1S3M5W32",
+      "milestone_id": "P1S3M5",
+      "title": "Public release surface vocabulary gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W32"
+    },
+    {
+      "id": "P1S3M5W33",
+      "milestone_id": "P1S3M5",
+      "title": "Public first-read ladder manifest gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W33"
+    },
+    {
+      "id": "P1S3M5W34",
+      "milestone_id": "P1S3M5",
+      "title": "Public source manifest hash cache budget gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W34"
+    },
+    {
+      "id": "P1S3M5W35",
+      "milestone_id": "P1S3M5",
+      "title": "Public authority compact index drift guard gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W35"
+    },
+    {
+      "id": "P1S3M5W36",
+      "milestone_id": "P1S3M5",
+      "title": "Public AGENTS bridge marker block gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W36"
+    },
+    {
+      "id": "P1S3M5W37",
+      "milestone_id": "P1S3M5",
+      "title": "Public claim ledger JSONL gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W37"
+    },
+    {
+      "id": "P1S3M5W38",
+      "milestone_id": "P1S3M5",
+      "title": "Public package fast runner engine gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W38"
+    },
+    {
+      "id": "P1S3M5W39",
+      "milestone_id": "P1S3M5",
+      "title": "Public exact artifact oracle gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W39"
+    },
+    {
+      "id": "P1S3M5W40",
+      "milestone_id": "P1S3M5",
+      "title": "Public authority state sharding seed gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W40"
+    },
+    {
+      "id": "P1S3M5W41",
+      "milestone_id": "P1S3M5",
+      "title": "Public installed authority state shard parity gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W41"
+    },
+    {
+      "id": "P1S3M5W42",
+      "milestone_id": "P1S3M5",
+      "title": "Public claim lifecycle conflict hardening gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M5W42"
+    }
+  ]
+}

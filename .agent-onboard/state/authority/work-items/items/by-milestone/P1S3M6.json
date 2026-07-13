@@ -1,0 +1,284 @@
+{
+  "schema": "agent-onboard-work-items-authority-items-by-milestone-shard-001",
+  "package_name": "agent-onboard",
+  "source": "sharded_work_items_authority",
+  "milestone_id": "P1S3M6",
+  "item_count": 31,
+  "items": [
+    {
+      "id": "P1S3M6W1",
+      "milestone_id": "P1S3M6",
+      "title": "Public clean and compaction baseline gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W1"
+    },
+    {
+      "id": "P1S3M6W2",
+      "milestone_id": "P1S3M6",
+      "title": "Public clean and compaction candidate catalog gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W2"
+    },
+    {
+      "id": "P1S3M6W3",
+      "milestone_id": "P1S3M6",
+      "title": "Public package keyword taxonomy compaction gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W3"
+    },
+    {
+      "id": "P1S3M6W4",
+      "milestone_id": "P1S3M6",
+      "title": "Public README first-read history split planning gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W4"
+    },
+    {
+      "id": "P1S3M6W5",
+      "milestone_id": "P1S3M6",
+      "title": "Public README history archive split dry-run gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W5"
+    },
+    {
+      "id": "P1S3M6W6",
+      "milestone_id": "P1S3M6",
+      "title": "Public README history archive split apply gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W6"
+    },
+    {
+      "id": "P1S3M6W7",
+      "milestone_id": "P1S3M6",
+      "title": "Public closed gate artifact compaction planning gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W7"
+    },
+    {
+      "id": "P1S3M6W8",
+      "milestone_id": "P1S3M6",
+      "title": "Public closed gate artifact compaction dry-run gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W8"
+    },
+    {
+      "id": "P1S3M6W9",
+      "milestone_id": "P1S3M6",
+      "title": "Public closed gate artifact compaction apply gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W9"
+    },
+    {
+      "id": "P1S3M6W10",
+      "milestone_id": "P1S3M6",
+      "title": "Public closed gate archive reader and full-test timeout hardening gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W10"
+    },
+    {
+      "id": "P1S3M6W11",
+      "milestone_id": "P1S3M6",
+      "title": "Public full-test runner completion compaction gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W11"
+    },
+    {
+      "id": "P1S3M6W12",
+      "milestone_id": "P1S3M6",
+      "title": "Public closed gate raw artifact prune planning gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W12"
+    },
+    {
+      "id": "P1S3M6W13",
+      "milestone_id": "P1S3M6",
+      "title": "Public closed gate raw artifact prune dry-run gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W13"
+    },
+    {
+      "id": "P1S3M6W14",
+      "milestone_id": "P1S3M6",
+      "title": "Public closed gate raw artifact prune apply admission gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W14"
+    },
+    {
+      "id": "P1S3M6W15",
+      "milestone_id": "P1S3M6",
+      "title": "Public runtime and state architecture growth arrest gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W15"
+    },
+    {
+      "id": "P1S3M6W16",
+      "milestone_id": "P1S3M6",
+      "title": "Public work item ledger compaction migration gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W16"
+    },
+    {
+      "id": "P1S3M6W17",
+      "milestone_id": "P1S3M6",
+      "title": "Public closed gate state layout migration gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W17"
+    },
+    {
+      "id": "P1S3M6W18",
+      "milestone_id": "P1S3M6",
+      "title": "Public runtime composer decomposition gate",
+      "status": "closed",
+      "claim": {
+        "actor": "chatgpt",
+        "claimed_at": "2026-07-07T18:17:08.765Z"
+      },
+      "closure_ref": "closures:P1S3M6W18"
+    },
+    {
+      "id": "P1S3M6W19",
+      "milestone_id": "P1S3M6",
+      "title": "Public runtime release service decomposition gate",
+      "status": "closed",
+      "claim": {
+        "actor": "chatgpt",
+        "claimed_at": "2026-07-07T19:04:47.217Z"
+      },
+      "closure_ref": "closures:P1S3M6W19"
+    },
+    {
+      "id": "P1S3M6W20",
+      "milestone_id": "P1S3M6",
+      "title": "Public runtime check fast service decomposition gate",
+      "status": "closed",
+      "claim": {
+        "actor": "chatgpt",
+        "claimed_at": "2026-07-07T19:45:09.892Z"
+      },
+      "closure_ref": "closures:P1S3M6W20"
+    },
+    {
+      "id": "P1S3M6W21",
+      "milestone_id": "P1S3M6",
+      "title": "Public runtime MCP bridge service decomposition gate",
+      "status": "closed",
+      "claim": {
+        "actor": "chatgpt",
+        "claimed_at": "2026-07-08T01:57:21.622Z"
+      },
+      "closure_ref": "closures:P1S3M6W21"
+    },
+    {
+      "id": "P1S3M6W22",
+      "milestone_id": "P1S3M6",
+      "title": "Public runtime AGENTS bridge service decomposition gate",
+      "status": "closed",
+      "claim": {
+        "actor": "chatgpt",
+        "claimed_at": "2026-07-08T02:46:13.794Z"
+      },
+      "closure_ref": "closures:P1S3M6W22"
+    },
+    {
+      "id": "P1S3M6W23",
+      "milestone_id": "P1S3M6",
+      "title": "Public runtime guard service decomposition gate",
+      "status": "closed",
+      "claim": {
+        "actor": "chatgpt",
+        "claimed_at": "2026-07-08T04:46:43.917Z"
+      },
+      "closure_ref": "closures:P1S3M6W23"
+    },
+    {
+      "id": "P1S3M6W24",
+      "milestone_id": "P1S3M6",
+      "title": "Public source size budget and ratchet gate",
+      "status": "closed",
+      "claim": {
+        "actor": "chatgpt",
+        "claimed_at": "2026-07-08T05:23:27.409Z"
+      },
+      "closure_ref": "closures:P1S3M6W24"
+    },
+    {
+      "id": "P1S3M6W25",
+      "milestone_id": "P1S3M6",
+      "title": "Public Runtime Command Registry Extraction Gate",
+      "status": "closed",
+      "claim": {
+        "actor": "chatgpt",
+        "claimed_at": "2026-07-08T05:34:55.215Z"
+      },
+      "closure_ref": "closures:P1S3M6W25"
+    },
+    {
+      "id": "P1S3M6W26",
+      "milestone_id": "P1S3M6",
+      "title": "Public Release Clean Closed Gates Runtime Slice Extraction Gate",
+      "status": "closed",
+      "claim": {
+        "actor": "chatgpt",
+        "claimed_at": "2026-07-08T06:10:12.810Z"
+      },
+      "closure_ref": "closures:P1S3M6W26"
+    },
+    {
+      "id": "P1S3M6W27",
+      "milestone_id": "P1S3M6",
+      "title": "Public Architecture Catalog Sharding Gate",
+      "status": "closed",
+      "claim": {
+        "actor": "chatgpt",
+        "claimed_at": "2026-07-08T08:42:27.295Z"
+      },
+      "closure_ref": "closures:P1S3M6W27"
+    },
+    {
+      "id": "P1S3M6W28",
+      "milestone_id": "P1S3M6",
+      "title": "Public Work Items Service Split Gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-08T09:10:00.000Z",
+        "note": "Split work-items service by use case while preserving JSON/JSONL storage boundary."
+      },
+      "closure_ref": "closures:P1S3M6W28"
+    },
+    {
+      "id": "P1S3M6W29",
+      "milestone_id": "P1S3M6",
+      "title": "Public Target Governance Service Split Gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-08T09:27:53.957Z"
+      },
+      "closure_ref": "closures:P1S3M6W29"
+    },
+    {
+      "id": "P1S3M6W30",
+      "milestone_id": "P1S3M6",
+      "title": "Public Test Suite Sharding Gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-08T09:41:46.862Z"
+      },
+      "closure_ref": "closures:P1S3M6W30"
+    },
+    {
+      "id": "P1S3M6W31",
+      "milestone_id": "P1S3M6",
+      "title": "Public State Projection Authority Cutover Gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-08T10:46:11.057Z",
+        "note": "Implement state projection authority cutover."
+      },
+      "closure_ref": "closures:P1S3M6W31"
+    }
+  ]
+}

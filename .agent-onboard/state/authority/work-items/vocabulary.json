@@ -1,0 +1,27 @@
+{
+  "schema": "agent-onboard-work-items-authority-vocabulary-shard-001",
+  "package_name": "agent-onboard",
+  "source": "sharded_work_items_authority",
+  "items": {
+    "program": {
+      "prefix": "P",
+      "name": "Program",
+      "description": "A top-level line of coordinated work inside a target repo."
+    },
+    "stage": {
+      "prefix": "S",
+      "name": "Stage",
+      "description": "A phase within a program."
+    },
+    "milestone": {
+      "prefix": "M",
+      "name": "Milestone",
+      "description": "A bounded delivery checkpoint within a stage."
+    },
+    "work_item": {
+      "prefix": "W",
+      "name": "Work Item",
+      "description": "A concrete unit of agent-addressable work within a milestone."
+    }
+  }
+}

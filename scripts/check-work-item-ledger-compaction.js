@@ -51,6 +51,8 @@ function main() {
 
   const items = ledger && Array.isArray(ledger.work_items) ? ledger.work_items : [];
   const liveItems = live && Array.isArray(live.items) ? live.items : [];
+  const liveItemCount = live && Number.isInteger(live.item_count) ? live.item_count : liveItems.length;
+  const liveProjectionMode = live && live.schema === 'agent-onboard-work-items-live-projection-002';
   const closureByRef = new Map();
   for (const record of closures) {
     if (!record || typeof record.closure_id !== 'string') {
@@ -65,7 +67,8 @@ function main() {
   const inlineClosureItems = items.filter(hasInlineClosure);
   if (inlineClosureItems.length > 0) errors.push(`compatibility ledger must not inline closure payloads after W16: ${inlineClosureItems.map((item) => item.id).join(', ')}`);
   if (liveItems.some(hasInlineClosure)) errors.push('live work-items snapshot must not inline closure payloads');
-  if (ledger && live && items.length !== liveItems.length) errors.push(`ledger item count ${items.length} does not match live item count ${liveItems.length}`);
+  if (liveProjectionMode && Array.isArray(live.items)) errors.push('W31 live projection must not inline full work item records');
+  if (ledger && live && items.length !== liveItemCount) errors.push(`ledger item count ${items.length} does not match live item count ${liveItemCount}`);
 
   const closedWithRefs = items.filter((item) => item.status === 'closed' && item.closure_ref);
   for (const item of closedWithRefs) {
@@ -101,6 +104,7 @@ function main() {
     status: errors.length === 0 ? 'ok' : 'error',
     ledger_path: FILES.ledger,
     live_snapshot_path: FILES.live,
+    live_projection_mode: liveProjectionMode,
     closure_archive_path: FILES.closures,
     item_count: items.length,
     archived_closure_count: closures.length,

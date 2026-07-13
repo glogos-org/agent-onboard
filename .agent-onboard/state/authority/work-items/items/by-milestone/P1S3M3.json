@@ -1,0 +1,324 @@
+{
+  "schema": "agent-onboard-work-items-authority-items-by-milestone-shard-001",
+  "package_name": "agent-onboard",
+  "source": "sharded_work_items_authority",
+  "milestone_id": "P1S3M3",
+  "item_count": 33,
+  "items": [
+    {
+      "id": "P1S3M3W1",
+      "milestone_id": "P1S3M3",
+      "title": "Public CLI runtime de-monolith planning gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M3W1"
+    },
+    {
+      "id": "P1S3M3W2",
+      "milestone_id": "P1S3M3",
+      "title": "Public thin CLI router seed gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M3W2"
+    },
+    {
+      "id": "P1S3M3W3",
+      "milestone_id": "P1S3M3",
+      "title": "Public compatibility command port seed gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M3W3"
+    },
+    {
+      "id": "P1S3M3W4",
+      "milestone_id": "P1S3M3",
+      "title": "Public core command adapter extraction gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M3W4"
+    },
+    {
+      "id": "P1S3M3W5",
+      "milestone_id": "P1S3M3",
+      "title": "Public package command adapter extraction gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M3W5"
+    },
+    {
+      "id": "P1S3M3W6",
+      "milestone_id": "P1S3M3",
+      "title": "Public architecture command adapter extraction gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M3W6"
+    },
+    {
+      "id": "P1S3M3W7",
+      "milestone_id": "P1S3M3",
+      "title": "Public authority command adapter extraction gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M3W7"
+    },
+    {
+      "id": "P1S3M3W8",
+      "milestone_id": "P1S3M3",
+      "title": "Public modular runtime package inclusion planning gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M3W8"
+    },
+    {
+      "id": "P1S3M3W9",
+      "milestone_id": "P1S3M3",
+      "title": "Public packaged router port inclusion gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M3W9"
+    },
+    {
+      "id": "P1S3M3W10",
+      "milestone_id": "P1S3M3",
+      "title": "Public thin entrypoint router cutover rehearsal gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M3W10"
+    },
+    {
+      "id": "P1S3M3W11",
+      "milestone_id": "P1S3M3",
+      "title": "Public thin entrypoint router cutover application gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M3W11"
+    },
+    {
+      "id": "P1S3M3W12",
+      "milestone_id": "P1S3M3",
+      "title": "Public router command adapter delegation expansion gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-01T11:46:38.772Z"
+      },
+      "closure_ref": "closures:P1S3M3W12"
+    },
+    {
+      "id": "P1S3M3W13",
+      "milestone_id": "P1S3M3",
+      "title": "Public source test parallel quick gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-01T11:42:05.421Z"
+      },
+      "closure_ref": "closures:P1S3M3W13"
+    },
+    {
+      "id": "P1S3M3W14",
+      "milestone_id": "P1S3M3",
+      "title": "Public target command adapter extraction gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M3W14"
+    },
+    {
+      "id": "P1S3M3W15",
+      "milestone_id": "P1S3M3",
+      "title": "Public full source test parallelization gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-01T16:57:03.782Z"
+      },
+      "closure_ref": "closures:P1S3M3W15"
+    },
+    {
+      "id": "P1S3M3W16",
+      "milestone_id": "P1S3M3",
+      "title": "Public full source test shard balancing gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-01T17:06:41.389Z"
+      },
+      "closure_ref": "closures:P1S3M3W16"
+    },
+    {
+      "id": "P1S3M3W17",
+      "milestone_id": "P1S3M3",
+      "title": "Public work-items runtime service partition seed gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-02T05:21:14.636Z"
+      },
+      "closure_ref": "closures:P1S3M3W17"
+    },
+    {
+      "id": "P1S3M3W18",
+      "milestone_id": "P1S3M3",
+      "title": "Public work-items read-only runtime completion gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-02T05:33:59.317Z"
+      },
+      "closure_ref": "closures:P1S3M3W18"
+    },
+    {
+      "id": "P1S3M3W19",
+      "milestone_id": "P1S3M3",
+      "title": "Public work-items init append runtime write-boundary gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-02T05:41:52.386Z"
+      },
+      "closure_ref": "closures:P1S3M3W19"
+    },
+    {
+      "id": "P1S3M3W20",
+      "milestone_id": "P1S3M3",
+      "title": "Public work-items claim close runtime handoff gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-02T05:53:00.134Z"
+      },
+      "closure_ref": "closures:P1S3M3W20"
+    },
+    {
+      "id": "P1S3M3W21",
+      "milestone_id": "P1S3M3",
+      "title": "Public work-items legacy fallback deletion gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-02T06:04:58.268Z"
+      },
+      "closure_ref": "closures:P1S3M3W21"
+    },
+    {
+      "id": "P1S3M3W22",
+      "milestone_id": "P1S3M3",
+      "title": "Public architecture static catalog runtime module extraction gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-02T10:28:44.165Z"
+      },
+      "closure_ref": "closures:P1S3M3W22"
+    },
+    {
+      "id": "P1S3M3W23",
+      "milestone_id": "P1S3M3",
+      "title": "Public target runtime service extraction gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-02T10:38:52.235Z"
+      },
+      "closure_ref": "closures:P1S3M3W23"
+    },
+    {
+      "id": "P1S3M3W24",
+      "milestone_id": "P1S3M3",
+      "title": "Public target runtime service body extraction gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-02T10:47:50.741Z"
+      },
+      "closure_ref": "closures:P1S3M3W24"
+    },
+    {
+      "id": "P1S3M3W25",
+      "milestone_id": "P1S3M3",
+      "title": "Public target service utility split gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-02T10:55:16.750Z"
+      },
+      "closure_ref": "closures:P1S3M3W25"
+    },
+    {
+      "id": "P1S3M3W26",
+      "milestone_id": "P1S3M3",
+      "title": "Public architecture M3 runtime catalog split gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-02T11:14:29.038Z"
+      },
+      "closure_ref": "closures:P1S3M3W26"
+    },
+    {
+      "id": "P1S3M3W27",
+      "milestone_id": "P1S3M3",
+      "title": "Public architecture runtime service extraction batch gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-02T11:19:34.330Z"
+      },
+      "closure_ref": "closures:P1S3M3W27"
+    },
+    {
+      "id": "P1S3M3W28",
+      "milestone_id": "P1S3M3",
+      "title": "Public architecture source extraction service split gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-02T15:41:52.322Z"
+      },
+      "closure_ref": "closures:P1S3M3W28"
+    },
+    {
+      "id": "P1S3M3W29",
+      "milestone_id": "P1S3M3",
+      "title": "Public architecture source domain service split gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-02T15:53:22.551Z"
+      },
+      "closure_ref": "closures:P1S3M3W29"
+    },
+    {
+      "id": "P1S3M3W30",
+      "milestone_id": "P1S3M3",
+      "title": "Public architecture aggregate check service extraction gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-02T16:23:08.812Z"
+      },
+      "closure_ref": "closures:P1S3M3W30"
+    },
+    {
+      "id": "P1S3M3W31",
+      "milestone_id": "P1S3M3",
+      "title": "Public release package runtime service extraction gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-03T00:00:00.000Z"
+      },
+      "closure_ref": "closures:P1S3M3W31"
+    },
+    {
+      "id": "P1S3M3W32",
+      "milestone_id": "P1S3M3",
+      "title": "Public core config guard service extraction gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-02T17:35:29.998Z"
+      },
+      "closure_ref": "closures:P1S3M3W32"
+    },
+    {
+      "id": "P1S3M3W33",
+      "milestone_id": "P1S3M3",
+      "title": "Public thin entrypoint runtime composer cutover gate",
+      "status": "closed",
+      "claim": {
+        "actor": "Antigravity",
+        "claimed_at": "2026-07-03T05:57:46.612Z"
+      },
+      "closure_ref": "closures:P1S3M3W33"
+    }
+  ]
+}

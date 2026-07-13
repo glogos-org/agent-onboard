@@ -1,0 +1,12 @@
+{
+  "schema": "agent-onboard-work-items-authority-programs-shard-001",
+  "package_name": "agent-onboard",
+  "source": "sharded_work_items_authority",
+  "items": [
+    {
+      "id": "P1",
+      "title": "Public source dogfood program",
+      "status": "open"
+    }
+  ]
+}

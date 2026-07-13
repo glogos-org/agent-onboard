@@ -1,0 +1,25 @@
+{
+  "schema": "agent-onboard-work-items-authority-stages-shard-001",
+  "package_name": "agent-onboard",
+  "source": "sharded_work_items_authority",
+  "items": [
+    {
+      "id": "P1S1",
+      "program_id": "P1",
+      "title": "Public source participation stage",
+      "status": "open"
+    },
+    {
+      "id": "P1S2",
+      "program_id": "P1",
+      "title": "Public target onboarding stage",
+      "status": "closed"
+    },
+    {
+      "id": "P1S3",
+      "program_id": "P1",
+      "title": "Public architecture maturation stage",
+      "status": "open"
+    }
+  ]
+}

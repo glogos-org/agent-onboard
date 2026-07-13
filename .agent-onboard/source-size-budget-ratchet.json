@@ -1,8 +1,8 @@
 {
   "schema": "agent-onboard-public-source-size-budget-ratchet-001",
   "status": "active",
-  "work_item_id": "P1S3M6W24",
-  "release_line": "public_source_size_budget_ratchet_gate",
+  "work_item_id": "P1S3M6W31",
+  "release_line": "public_state_projection_authority_cutover_gate",
   "ratchet_mode": "no_tracked_growth_beyond_maximum_and_no_new_oversized_files",
   "god_file_thresholds": {
     "god_lines": 1000,
@@ -97,23 +97,23 @@
     },
     ".agent-onboard/state/live/work-items.json": {
       "category": "authority_state",
-      "max_lines": 1459,
-      "max_bytes": 59732,
-      "baseline_lines": 1379,
-      "baseline_bytes": 39732,
-      "target_lines": 500,
-      "target_bytes": 65536,
-      "reason": "existing oversized file admitted as clean-and-compaction migration debt"
+      "max_lines": 24,
+      "max_bytes": 849,
+      "baseline_lines": 24,
+      "baseline_bytes": 849,
+      "target_lines": 60,
+      "target_bytes": 8192,
+      "reason": "W31 cutover converted live work-items state to compact projection rebuilt from sharded authority"
     },
     ".agent-onboard/work-items.json": {
       "category": "authority_registry",
-      "max_lines": 1562,
-      "max_bytes": 62081,
-      "baseline_lines": 1482,
-      "baseline_bytes": 42081,
+      "max_lines": 1561,
+      "max_bytes": 44396,
+      "baseline_lines": 1561,
+      "baseline_bytes": 44396,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "existing oversized file admitted as clean-and-compaction migration debt"
+      "reason": "root work-items ledger retained as compatibility projection; may not grow before root projection cutover"
     },
     "AGENTS.md": {
       "category": "documentation",

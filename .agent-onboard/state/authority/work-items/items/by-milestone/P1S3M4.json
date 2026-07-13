@@ -1,0 +1,175 @@
+{
+  "schema": "agent-onboard-work-items-authority-items-by-milestone-shard-001",
+  "package_name": "agent-onboard",
+  "source": "sharded_work_items_authority",
+  "milestone_id": "P1S3M4",
+  "item_count": 15,
+  "items": [
+    {
+      "id": "P1S3M4W1",
+      "milestone_id": "P1S3M4",
+      "title": "Public target-repo product refactor kickoff gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-03T07:42:04.844Z",
+        "note": "Plan M4 target-repo product refactor and reduce self-dogfood architecture checker surface"
+      },
+      "closure_ref": "closures:P1S3M4W1"
+    },
+    {
+      "id": "P1S3M4W2",
+      "milestone_id": "P1S3M4",
+      "title": "Public target repo doctor command gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-03T07:51:45.653Z"
+      },
+      "closure_ref": "closures:P1S3M4W2"
+    },
+    {
+      "id": "P1S3M4W3",
+      "milestone_id": "P1S3M4",
+      "title": "Public target onboarding repair command gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-03T08:13:31.362Z"
+      },
+      "closure_ref": "closures:P1S3M4W3"
+    },
+    {
+      "id": "P1S3M4W4",
+      "milestone_id": "P1S3M4",
+      "title": "Public target repo profile detection gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-03T12:39:25.190Z"
+      },
+      "closure_ref": "closures:P1S3M4W4"
+    },
+    {
+      "id": "P1S3M4W5",
+      "milestone_id": "P1S3M4",
+      "title": "Public work item usability views gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-03T12:48:53.279Z"
+      },
+      "closure_ref": "closures:P1S3M4W5"
+    },
+    {
+      "id": "P1S3M4W6",
+      "milestone_id": "P1S3M4",
+      "title": "Public human readable output mode gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-03T13:03:06.381Z"
+      },
+      "closure_ref": "closures:P1S3M4W6"
+    },
+    {
+      "id": "P1S3M4W7",
+      "milestone_id": "P1S3M4",
+      "title": "Public retired architecture checker reduction gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-03T13:16:18.580Z"
+      },
+      "closure_ref": "closures:P1S3M4W7"
+    },
+    {
+      "id": "P1S3M4W8",
+      "milestone_id": "P1S3M4",
+      "title": "Public comprehensive repo architecture refactor gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-03T13:26:08.195Z"
+      },
+      "closure_ref": "closures:P1S3M4W8"
+    },
+    {
+      "id": "P1S3M4W9",
+      "milestone_id": "P1S3M4",
+      "title": "Public package surface diet gate",
+      "status": "closed",
+      "claim": {
+        "actor": "Antigravity",
+        "claimed_at": "2026-07-03T14:00:12.893Z"
+      },
+      "closure_ref": "closures:P1S3M4W9"
+    },
+    {
+      "id": "P1S3M4W10",
+      "milestone_id": "P1S3M4",
+      "title": "Public target service module split gate",
+      "status": "closed",
+      "claim": {
+        "actor": "Antigravity",
+        "claimed_at": "2026-07-03T14:10:00.000Z"
+      },
+      "closure_ref": "closures:P1S3M4W10"
+    },
+    {
+      "id": "P1S3M4W11",
+      "milestone_id": "P1S3M4",
+      "title": "Public command constants and enum cleanup gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-03T19:22:05.530Z"
+      },
+      "closure_ref": "closures:P1S3M4W11"
+    },
+    {
+      "id": "P1S3M4W12",
+      "milestone_id": "P1S3M4",
+      "title": "Public release check target-repo refocus gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-03T19:28:22.642Z"
+      },
+      "closure_ref": "closures:P1S3M4W12"
+    },
+    {
+      "id": "P1S3M4W13",
+      "milestone_id": "P1S3M4",
+      "title": "Public CLI docs and help product rewrite gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-03T19:37:11.838Z"
+      },
+      "closure_ref": "closures:P1S3M4W13"
+    },
+    {
+      "id": "P1S3M4W14",
+      "milestone_id": "P1S3M4",
+      "title": "Public target metadata manifest authority gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-03T19:49:59.657Z"
+      },
+      "closure_ref": "closures:P1S3M4W14"
+    },
+    {
+      "id": "P1S3M4W15",
+      "milestone_id": "P1S3M4",
+      "title": "Public M4 acceptance and publish readiness gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-03T20:05:56.641Z"
+      },
+      "closure_ref": "closures:P1S3M4W15"
+    }
+  ]
+}

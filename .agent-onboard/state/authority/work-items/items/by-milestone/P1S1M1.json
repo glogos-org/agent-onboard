@@ -1,0 +1,43 @@
+{
+  "schema": "agent-onboard-work-items-authority-items-by-milestone-shard-001",
+  "package_name": "agent-onboard",
+  "source": "sharded_work_items_authority",
+  "milestone_id": "P1S1M1",
+  "item_count": 5,
+  "items": [
+    {
+      "id": "P1S1M1W1",
+      "milestone_id": "P1S1M1",
+      "title": "Public self-dogfood participation gate",
+      "status": "closed"
+    },
+    {
+      "id": "P1S1M1W2",
+      "milestone_id": "P1S1M1",
+      "title": "Public source participation lifecycle gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S1M1W2"
+    },
+    {
+      "id": "P1S1M1W3",
+      "milestone_id": "P1S1M1",
+      "title": "Public handoff and closure evidence gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S1M1W3"
+    },
+    {
+      "id": "P1S1M1W4",
+      "milestone_id": "P1S1M1",
+      "title": "Public source closure test fixture alignment gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S1M1W4"
+    },
+    {
+      "id": "P1S1M1W5",
+      "milestone_id": "P1S1M1",
+      "title": "Public package publish verification gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S1M1W5"
+    }
+  ]
+}
