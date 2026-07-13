@@ -1,0 +1,126 @@
+{
+  "schema": "agent-onboard-work-item-closure-payload-reference-compaction-001",
+  "package_name": "agent-onboard",
+  "work_item_id": "P1S3M6W32",
+  "status": "active",
+  "authority_role": "compact_closure_archive_with_external_payload_shards",
+  "compact_archive": {
+    "path": ".agent-onboard/state/closures/work-items-closures.jsonl",
+    "record_count": 168,
+    "bytes": 76889,
+    "sha256": "9e217a63b7e46b6ae29f00b978351e7eac0312324df7d880d42623773481ad2d",
+    "file_id": "ni:///sha-256;niF6Y7fka2rinwC5eDUefqwDEjJN99iA1CYjdzSBrS0"
+  },
+  "payload_root": ".agent-onboard/state/closures/work-items/payloads",
+  "payload_shards": [
+    {
+      "path": ".agent-onboard/state/closures/work-items/payloads/by-milestone/P1S1M1/part-001.jsonl",
+      "milestone_id": "P1S1M1",
+      "part": 1,
+      "record_count": 4,
+      "bytes": 4610,
+      "sha256": "ea6ad3bfe75666f1e12b6ddc2cd02246880ebaf12c306b3803544a0d633a60b1",
+      "file_id": "ni:///sha-256;6mrTv-dWZvHhK23cLNAiRogOuvEsMGs4A1RKDWM6YLE"
+    },
+    {
+      "path": ".agent-onboard/state/closures/work-items/payloads/by-milestone/P1S1M2/part-001.jsonl",
+      "milestone_id": "P1S1M2",
+      "part": 1,
+      "record_count": 3,
+      "bytes": 4511,
+      "sha256": "5f40225edcb3eacb3896b15b5614e5dc4daf396a98c7712c4abd1a6ec21dc024",
+      "file_id": "ni:///sha-256;X0AiXtyz6ss4lrFbVhTl3E2vOWqYx3EsSr0absIdwCQ"
+    },
+    {
+      "path": ".agent-onboard/state/closures/work-items/payloads/by-milestone/P1S2M1/part-001.jsonl",
+      "milestone_id": "P1S2M1",
+      "part": 1,
+      "record_count": 8,
+      "bytes": 17002,
+      "sha256": "39fb049fe5721ad084102ffd9e24dcb7a5f6505e7b31ee7cfe15d8cdd6bca50e",
+      "file_id": "ni:///sha-256;OfsEn-VyGtCEEC_9niTct6X2UF57Me58_hXYzda8pQ4"
+    },
+    {
+      "path": ".agent-onboard/state/closures/work-items/payloads/by-milestone/P1S3M1/part-001.jsonl",
+      "milestone_id": "P1S3M1",
+      "part": 1,
+      "record_count": 19,
+      "bytes": 33116,
+      "sha256": "b5ba7b01db10f11f4edea9118f4e2c77d14e415cadd084e2e5773f22c0aa38e1",
+      "file_id": "ni:///sha-256;tbp7AdsQ8R9O3qkRj04sd9FOQVyt0ITi5Xc_IsCqOOE"
+    },
+    {
+      "path": ".agent-onboard/state/closures/work-items/payloads/by-milestone/P1S3M2/part-001.jsonl",
+      "milestone_id": "P1S3M2",
+      "part": 1,
+      "record_count": 12,
+      "bytes": 21644,
+      "sha256": "376ddb738a466d433ec057f2d0dda4c0abe253da8dc98ef10a9ab9ca57ebce0c",
+      "file_id": "ni:///sha-256;N23bc4pGbUM-wFfy0N2kwKviU9qNyY7xCpq5ylfrzgw"
+    },
+    {
+      "path": ".agent-onboard/state/closures/work-items/payloads/by-milestone/P1S3M3/part-001.jsonl",
+      "milestone_id": "P1S3M3",
+      "part": 1,
+      "record_count": 33,
+      "bytes": 56456,
+      "sha256": "c1c8f41ae6dcbbb4dc93f2ebc2d3901c725611fc8937df9d7c6310bc9b62cf1c",
+      "file_id": "ni:///sha-256;wcj0Gubcu7Tck_LrwtOQHHJWEfyJN9-dfGMQvJtizxw"
+    },
+    {
+      "path": ".agent-onboard/state/closures/work-items/payloads/by-milestone/P1S3M4/part-001.jsonl",
+      "milestone_id": "P1S3M4",
+      "part": 1,
+      "record_count": 15,
+      "bytes": 25021,
+      "sha256": "30eaac1ee7348de0f2f485a5bd1a4f65118e280e236b0312b1e8ec6acb9beae3",
+      "file_id": "ni:///sha-256;MOqsHuc0jeDy9IWlvRpPZRGOKA4jawMSsejsasub6uM"
+    },
+    {
+      "path": ".agent-onboard/state/closures/work-items/payloads/by-milestone/P1S3M5/part-001.jsonl",
+      "milestone_id": "P1S3M5",
+      "part": 1,
+      "record_count": 25,
+      "bytes": 67836,
+      "sha256": "9a1a768e85a1f923b61dd4fcf69c06802cc00a41c8e12f4ebb5d820c7030bafd",
+      "file_id": "ni:///sha-256;mhp2joWh-SO2HdT89pwGgCzACkHI4S9Ou12CDHAwuv0"
+    },
+    {
+      "path": ".agent-onboard/state/closures/work-items/payloads/by-milestone/P1S3M5/part-002.jsonl",
+      "milestone_id": "P1S3M5",
+      "part": 2,
+      "record_count": 17,
+      "bytes": 45699,
+      "sha256": "cfeb3283328a206d0896dd7d8562781a48bad396b70ff7a135792d3beb364cdb",
+      "file_id": "ni:///sha-256;z-sygzKKIG0Ilt19hWJ4Gki605a3D_ehNXktO-s2TNs"
+    },
+    {
+      "path": ".agent-onboard/state/closures/work-items/payloads/by-milestone/P1S3M6/part-001.jsonl",
+      "milestone_id": "P1S3M6",
+      "part": 1,
+      "record_count": 32,
+      "bytes": 62560,
+      "sha256": "86bb8b081fa1af449725cccc74b63009694b1567ae449783d2cf42a4e7425730",
+      "file_id": "ni:///sha-256;hruLCB-hr0SXJczMdLYwCWlLFWeuRJeD0s9CpOdCVzA"
+    }
+  ],
+  "projection_policy": {
+    "compact_archive_keeps_summary_and_payload_ref": true,
+    "full_payload_rebuildable_from_shards": true,
+    "payload_arrays_inlined_in_compact_archive": false,
+    "raw_growth_files_loaded_by_default": false
+  },
+  "storage_backend_policy": {
+    "current_canonical_backend": "json_and_jsonl_text_first",
+    "sqlite_current_source_of_truth": false,
+    "lightning_memory_mapped_database_current_source_of_truth": false,
+    "mdbx_current_source_of_truth": false,
+    "binary_storage_admitted_now": false
+  },
+  "counts": {
+    "compact_records": 168,
+    "payload_records": 168,
+    "payload_shards": 10
+  },
+  "checker": "node scripts/check-closure-payload-reference-compaction.js"
+}

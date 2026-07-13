@@ -5,19 +5,25 @@
   "source": ".agent-onboard/state/authority/work-items/manifest.json",
   "legacy_root_projection": ".agent-onboard/work-items.json",
   "live_projection": ".agent-onboard/state/live/work-items.json",
+  "closure_payload_authority": ".agent-onboard/state/closures/work-items/manifest.json",
   "rebuildable_from": [
     ".agent-onboard/state/authority/work-items/manifest.json",
     ".agent-onboard/state/authority/work-items/items/index.json",
-    ".agent-onboard/state/closures/work-items-closures.jsonl"
+    ".agent-onboard/state/closures/work-items-closures.jsonl",
+    ".agent-onboard/state/closures/work-items/manifest.json"
   ],
-  "item_count": 168,
+  "item_count": 169,
   "open_count": 0,
   "claimed_count": 0,
-  "closed_count": 168,
-  "latest_closed_work_item_id": "P1S3M6W31",
-  "archived_closure_count": 167,
+  "closed_count": 169,
+  "latest_closed_work_item_id": "P1S3M6W32",
+  "archived_closure_count": 168,
   "inline_closure_count": 0,
+  "closure_ref_count": 168,
+  "closure_payload_shard_count": 10,
   "by_status": {
+    "open": [],
+    "claimed": [],
     "closed": [
       "P1S1M1W1",
       "P1S1M1W2",
@@ -186,7 +192,8 @@
       "P1S3M6W28",
       "P1S3M6W29",
       "P1S3M6W30",
-      "P1S3M6W31"
+      "P1S3M6W31",
+      "P1S3M6W32"
     ]
   },
   "by_milestone": {
@@ -374,8 +381,9 @@
       "P1S3M6W28",
       "P1S3M6W29",
       "P1S3M6W30",
-      "P1S3M6W31"
+      "P1S3M6W31",
+      "P1S3M6W32"
     ]
   },
-  "updated_at": "2026-07-08T10:46:30.000Z"
+  "updated_at": "2026-07-08T11:24:32.000Z"
 }

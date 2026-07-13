@@ -1,6 +1,6 @@
 {
   "name": "agent-onboard",
-  "version": "0.0.180",
+  "version": "0.0.181",
   "description": "CLI for onboarding and managing target repositories.",
   "license": "Apache-2.0",
   "author": "Thanh Le <vnlemanhthanh@gmail.com>",
@@ -104,7 +104,8 @@
     "check:work-items-service-split": "node scripts/check-work-items-service-split.js",
     "check:target-governance-service-split": "node scripts/check-target-governance-service-split.js",
     "check:test-suite-sharding": "node scripts/check-test-suite-sharding.js",
-    "check:state-projection-authority-cutover": "node scripts/check-state-projection-authority-cutover.js"
+    "check:state-projection-authority-cutover": "node scripts/check-state-projection-authority-cutover.js",
+    "check:closure-payload-reference-compaction": "node scripts/check-closure-payload-reference-compaction.js"
   },
   "bin": {
     "agent-onboard": "cli/agent-onboard.js",

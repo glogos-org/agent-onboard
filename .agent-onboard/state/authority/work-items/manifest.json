@@ -19,11 +19,11 @@
   "counts": {
     "open": 0,
     "claimed": 0,
-    "closed": 168,
+    "closed": 169,
     "programs": 1,
     "stages": 3,
     "milestones": 9,
-    "work_items": 168
+    "work_items": 169
   },
   "shard_count": 14,
   "shards": [
@@ -117,17 +117,17 @@
     },
     {
       "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M6.json",
-      "bytes": 8217,
-      "sha256": "be43296e1443781a47089eeccb46651fc7feb1c23d9a69f6717604992c66d682",
-      "file_id": "ni:///sha-256;vkMpbhRDeBpHCJ7sy0ZlH8f-scI9mmn2cXYEmSxm1oI",
+      "bytes": 8619,
+      "sha256": "b600636ddd3a59d005cf3e339e57115c57f8ec8d04dd339117b38ea514e1f2ea",
+      "file_id": "ni:///sha-256;tgBjbd06WdAFzz4znlcRXFf47I0E3TORF7OOpRTh8uo",
       "milestone_id": "P1S3M6",
-      "item_count": 31
+      "item_count": 32
     },
     {
       "path": ".agent-onboard/state/authority/work-items/items/index.json",
-      "bytes": 9445,
-      "sha256": "e85ad7ae6fa480d268535cbcfc18040f960e315353df48cabf12c90abf52523c",
-      "file_id": "ni:///sha-256;6FrXrm-kgNJoU1y8_BgED5YOMVNT30jKvxLJCr9SUjw"
+      "bytes": 10318,
+      "sha256": "faa49fb831eddd6fdd87edfde758e90b53b329a903c6ea232271de36a4bd6323",
+      "file_id": "ni:///sha-256;-qSfuDHt3W_dh-3951jpC1OzKakDxuojInHeNqS9YyM"
     }
   ],
   "rebuild_order": [

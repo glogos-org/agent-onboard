@@ -279,6 +279,18 @@
         "note": "Implement state projection authority cutover."
       },
       "closure_ref": "closures:P1S3M6W31"
+    },
+    {
+      "id": "P1S3M6W32",
+      "milestone_id": "P1S3M6",
+      "title": "Public Closure Payload Reference Compaction Gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-08T11:22:00.000Z",
+        "note": "Compact work-item closure payloads into reference-indexed shards."
+      },
+      "closure_ref": "closures:P1S3M6W32"
     }
   ]
 }

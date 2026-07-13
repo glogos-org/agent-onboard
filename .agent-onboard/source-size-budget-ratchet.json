@@ -1,8 +1,8 @@
 {
   "schema": "agent-onboard-public-source-size-budget-ratchet-001",
   "status": "active",
-  "work_item_id": "P1S3M6W31",
-  "release_line": "public_state_projection_authority_cutover_gate",
+  "work_item_id": "P1S3M6W32",
+  "release_line": "public_closure_payload_reference_compaction_gate",
   "ratchet_mode": "no_tracked_growth_beyond_maximum_and_no_new_oversized_files",
   "god_file_thresholds": {
     "god_lines": 1000,
@@ -87,13 +87,13 @@
   "tracked_files": {
     ".agent-onboard/state/closures/work-items-closures.jsonl": {
       "category": "authority_state",
-      "max_lines": 240,
-      "max_bytes": 343401,
-      "baseline_lines": 160,
-      "baseline_bytes": 323401,
-      "target_lines": 500,
+      "max_lines": 168,
+      "max_bytes": 76889,
+      "baseline_lines": 168,
+      "baseline_bytes": 76889,
+      "target_lines": 200,
       "target_bytes": 65536,
-      "reason": "existing oversized file admitted as clean-and-compaction migration debt"
+      "reason": "W32 compacted full closure payloads into on-demand payload shards; compact JSONL may not re-inline payload arrays"
     },
     ".agent-onboard/state/live/work-items.json": {
       "category": "authority_state",
@@ -103,17 +103,17 @@
       "baseline_bytes": 849,
       "target_lines": 60,
       "target_bytes": 8192,
-      "reason": "W31 cutover converted live work-items state to compact projection rebuilt from sharded authority"
+      "reason": "W31 compact live projection updated with W32 counts only"
     },
     ".agent-onboard/work-items.json": {
       "category": "authority_registry",
-      "max_lines": 1561,
-      "max_bytes": 44396,
-      "baseline_lines": 1561,
-      "baseline_bytes": 44396,
+      "max_lines": 1573,
+      "max_bytes": 44798,
+      "baseline_lines": 1573,
+      "baseline_bytes": 44798,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "root work-items ledger retained as compatibility projection; may not grow before root projection cutover"
+      "reason": "root work-items ledger retained as compatibility projection until root projection cutover; W32 admits only this closed gate row growth"
     },
     "AGENTS.md": {
       "category": "documentation",
@@ -420,6 +420,26 @@
       "target_lines": 500,
       "target_bytes": 65536,
       "reason": "bounded architecture catalog shard admitted by P1S3M6W27"
+    },
+    ".agent-onboard/state/closures/work-items/manifest.json": {
+      "category": "authority_state",
+      "max_lines": 126,
+      "max_bytes": 5085,
+      "baseline_lines": 126,
+      "baseline_bytes": 5085,
+      "target_lines": 300,
+      "target_bytes": 65536,
+      "reason": "W32 closure payload reference authority metadata; must stay compact and not inline full closure payloads"
+    },
+    ".agent-onboard/state/closures/work-items/index.json": {
+      "category": "authority_state",
+      "max_lines": 110,
+      "max_bytes": 4384,
+      "baseline_lines": 110,
+      "baseline_bytes": 4384,
+      "target_lines": 300,
+      "target_bytes": 65536,
+      "reason": "W32 closure payload reference authority metadata; must stay compact and not inline full closure payloads"
     }
   },
   "report": {

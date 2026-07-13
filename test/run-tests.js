@@ -296,6 +296,7 @@ function syntaxTasks() {
     nodeTask('syntax: target governance service split check', ['-c', path.join(ROOT, 'scripts', 'check-target-governance-service-split.js')]),
     nodeTask('syntax: test suite sharding check', ['-c', path.join(ROOT, 'scripts', 'check-test-suite-sharding.js')]),
     nodeTask('syntax: state projection authority cutover check', ['-c', path.join(ROOT, 'scripts', 'check-state-projection-authority-cutover.js')]),
+    nodeTask('syntax: closure payload reference compaction check', ['-c', path.join(ROOT, 'scripts', 'check-closure-payload-reference-compaction.js')]),
     nodeTask('syntax: full source test context', ['-c', FULL_SOURCE_CONTEXT]),
     ...fullSourceShardSyntaxTasks(),
     nodeTask('syntax: full source test aggregator', ['-c', FULL_SOURCE_TEST]),
@@ -390,6 +391,7 @@ function quickTasks() {
     nodeTask('target governance service split check', [path.join(ROOT, 'scripts', 'check-target-governance-service-split.js')], expectStatusOk),
     nodeTask('test suite sharding check', [path.join(ROOT, 'scripts', 'check-test-suite-sharding.js')], expectStatusOk),
     nodeTask('state projection authority cutover check', [path.join(ROOT, 'scripts', 'check-state-projection-authority-cutover.js')], expectStatusOk),
+    nodeTask('closure payload reference compaction check', [path.join(ROOT, 'scripts', 'check-closure-payload-reference-compaction.js')], expectStatusOk),
     nodeTask('public artifact boundary check', [path.join(ROOT, 'scripts', 'check-public-artifact-boundary.js')], expectStatusOk),
     npmTask('npm pack dry run', ['pack', '--dry-run', '--json'], expectPackFiles)
   ];
