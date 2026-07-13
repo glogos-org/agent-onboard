@@ -80,6 +80,8 @@ const EXPECTED_PACK_FILES = [
   'cli/agent_onboard/domains/target/static-catalog.js',
   'cli/agent_onboard/domains/work-items/index.js',
   'cli/agent_onboard/domains/work-items/services/work-items-service.js',
+  'cli/agent_onboard/domains/work-items/services/work-items-claim-ledger-service.js',
+  'cli/agent_onboard/domains/work-items/services/work-items-mutation-service.js',
   'cli/agent_onboard/domains/work-items/static-catalog.js',
   'cli/agent_onboard/ports/compatibility-command-port.js',
   'cli/agent_onboard/runtime-command-registry.js',

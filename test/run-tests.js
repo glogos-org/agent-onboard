@@ -271,11 +271,14 @@ function syntaxTasks() {
     nodeTask('syntax: target handoff preview service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'target', 'services', 'target-handoff-service.js')]),
     nodeTask('syntax: work-items runtime domain index', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'work-items', 'index.js')]),
     nodeTask('syntax: work-items runtime service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'work-items', 'services', 'work-items-service.js')]),
+    nodeTask('syntax: work-items mutation service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'work-items', 'services', 'work-items-mutation-service.js')]),
+    nodeTask('syntax: work-items claim ledger service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'work-items', 'services', 'work-items-claim-ledger-service.js')]),
     nodeTask('syntax: public artifact boundary check', ['-c', path.join(ROOT, 'scripts', 'check-public-artifact-boundary.js')]),
     nodeTask('syntax: source size budget ratchet check', ['-c', path.join(ROOT, 'scripts', 'check-source-size-budget-ratchet.js')]),
     nodeTask('syntax: runtime command registry extraction check', ['-c', path.join(ROOT, 'scripts', 'check-runtime-command-registry-extraction.js')]),
     nodeTask('syntax: release clean closed gates runtime slice extraction check', ['-c', path.join(ROOT, 'scripts', 'check-release-clean-closed-gates-runtime-slice-extraction.js')]),
     nodeTask('syntax: architecture catalog sharding check', ['-c', path.join(ROOT, 'scripts', 'check-architecture-catalog-sharding.js')]),
+    nodeTask('syntax: work-items service split check', ['-c', path.join(ROOT, 'scripts', 'check-work-items-service-split.js')]),
     nodeTask('syntax: full source test', ['-c', FULL_SOURCE_TEST]),
     nodeTask('syntax: parallel runner', ['-c', __filename])
   ];
@@ -364,6 +367,7 @@ function quickTasks() {
     nodeTask('runtime command registry extraction check', [path.join(ROOT, 'scripts', 'check-runtime-command-registry-extraction.js')], expectStatusOk),
     nodeTask('release clean closed gates runtime slice extraction check', [path.join(ROOT, 'scripts', 'check-release-clean-closed-gates-runtime-slice-extraction.js')], expectStatusOk),
     nodeTask('architecture catalog sharding check', [path.join(ROOT, 'scripts', 'check-architecture-catalog-sharding.js')], expectStatusOk),
+    nodeTask('work-items service split check', [path.join(ROOT, 'scripts', 'check-work-items-service-split.js')], expectStatusOk),
     nodeTask('public artifact boundary check', [path.join(ROOT, 'scripts', 'check-public-artifact-boundary.js')], expectStatusOk),
     npmTask('npm pack dry run', ['pack', '--dry-run', '--json'], expectPackFiles)
   ];

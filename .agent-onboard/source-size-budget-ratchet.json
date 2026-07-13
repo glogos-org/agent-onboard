@@ -237,13 +237,23 @@
     },
     "cli/agent_onboard/domains/work-items/services/work-items-service.js": {
       "category": "runtime_service_source",
-      "max_lines": 1491,
-      "max_bytes": 65135,
-      "baseline_lines": 1471,
-      "baseline_bytes": 56943,
+      "max_lines": 753,
+      "max_bytes": 26432,
+      "baseline_lines": 753,
+      "baseline_bytes": 26432,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "existing oversized file admitted as clean-and-compaction migration debt"
+      "reason": "work-items service reduced to query/view and runtime aggregation after P1S3M6W28; mutation and claim-ledger use cases live in bounded service modules",
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M6W28",
+          "reason": "work-items service split moved mutation and claim ledger command use cases into bounded runtime service modules",
+          "previous_max_lines": 1491,
+          "new_max_lines": 753,
+          "previous_max_bytes": 65135,
+          "new_max_bytes": 26432
+        }
+      ]
     },
     "cli/agent_onboard/runtime-composer.js": {
       "category": "runtime_source",
@@ -285,7 +295,7 @@
     },
     "test/agent-onboard.test.js": {
       "category": "test_source",
-      "max_lines": 5710,
+      "max_lines": 5712,
       "max_bytes": 374551,
       "baseline_lines": 5687,
       "baseline_bytes": 366359,
@@ -300,6 +310,14 @@
           "new_max_lines": 5710,
           "previous_max_bytes": 374551,
           "new_max_bytes": 374551
+        },
+        {
+          "work_item_id": "P1S3M6W28",
+          "reason": "expected npm pack file fixture includes the newly extracted work-items split modules",
+          "previous_max_lines": 5710,
+          "new_max_lines": 5712,
+          "previous_max_bytes": 374551,
+          "new_max_bytes": 368926
         }
       ]
     },

@@ -9,8 +9,8 @@
       "file_path": ".agent-onboard/authority-index.json",
       "kind": "compact_authority_index",
       "present": true,
-      "bytes": 7509,
-      "file_id": "ni:///sha-256;INK-zB5lbp7Sfj-DnPt_OSg2fT57dCAyPh9GniNXPlA",
+      "bytes": 7510,
+      "file_id": "ni:///sha-256;oupdGAlG3l3DY-i0H_Zg8D9vzoVg3uIzcDWajtfIuAA",
       "schema": "agent-onboard-public-authority-compact-index-001",
       "status": null,
       "raw_registry_loaded_by_default": null,
@@ -21,15 +21,15 @@
       "file_path": ".agent-onboard/work-items.index.json",
       "kind": "work_items_compact_index",
       "present": true,
-      "bytes": 1428,
-      "file_id": "ni:///sha-256;Qeqd85Nj4IWPy5-cltYsc8qS7EZKj1RJayIW1PXiao0",
+      "bytes": 1417,
+      "file_id": "ni:///sha-256;VijlJpebDK5z-ziTABdyoKQmp4tgkezyVDLUP-OwdPA",
       "schema": "agent-onboard-target-work-items-index-001",
       "status": "active",
       "raw_registry_loaded_by_default": false,
       "content_inlined": false,
-      "item_count": 164,
+      "item_count": 165,
       "open_count": 0,
-      "closed_count": 164
+      "closed_count": 165
     },
     {
       "file_path": ".agent-onboard/claims.index.json",
@@ -50,8 +50,8 @@
       "file_path": ".agent-onboard/work-items.json",
       "present": true,
       "kind": "work_items_raw_ledger",
-      "bytes": 43012,
-      "file_id": "ni:///sha-256;GA4PUz_Y5UwWLmdcQ19NjOFVBjEzly7VWr68ES0sUN8",
+      "bytes": 43414,
+      "file_id": "ni:///sha-256;LkXeo1lVDrMxISS2HurybvUIZPg9xH3qPxV6--FRGME",
       "content_inlined": false,
       "loaded_by_default": false
     },
@@ -65,7 +65,7 @@
       "loaded_by_default": false
     }
   ],
-  "authority_index_digest": "ni:///sha-256;INK-zB5lbp7Sfj-DnPt_OSg2fT57dCAyPh9GniNXPlA",
-  "work_items_index_digest": "ni:///sha-256;Qeqd85Nj4IWPy5-cltYsc8qS7EZKj1RJayIW1PXiao0",
+  "authority_index_digest": "ni:///sha-256;oupdGAlG3l3DY-i0H_Zg8D9vzoVg3uIzcDWajtfIuAA",
+  "work_items_index_digest": "ni:///sha-256;VijlJpebDK5z-ziTABdyoKQmp4tgkezyVDLUP-OwdPA",
   "claims_index_digest": "ni:///sha-256;otIDDGJGcys456Ufaq9WPeWXVrjiCX9kkTWzXjQyHGo"
 }

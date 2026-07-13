@@ -11,7 +11,9 @@
   "runtime_domain_modules": [
     "cli/agent_onboard/domains/service-partitions.js",
     "cli/agent_onboard/domains/work-items/index.js",
-    "cli/agent_onboard/domains/work-items/services/work-items-service.js"
+    "cli/agent_onboard/domains/work-items/services/work-items-service.js",
+    "cli/agent_onboard/domains/work-items/services/work-items-mutation-service.js",
+    "cli/agent_onboard/domains/work-items/services/work-items-claim-ledger-service.js"
   ],
   "extracted_read_only_commands": [
     "work-items --schema",

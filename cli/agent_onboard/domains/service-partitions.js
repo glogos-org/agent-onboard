@@ -12,7 +12,9 @@ const RUNTIME_SERVICE_PARTITION_SEED = Object.freeze({
       id: 'work_items',
       index: 'cli/agent_onboard/domains/work-items/index.js',
       services: Object.freeze([
-        'cli/agent_onboard/domains/work-items/services/work-items-service.js'
+        'cli/agent_onboard/domains/work-items/services/work-items-service.js',
+        'cli/agent_onboard/domains/work-items/services/work-items-claim-ledger-service.js',
+        'cli/agent_onboard/domains/work-items/services/work-items-mutation-service.js'
       ]),
       runtime_adapter: 'cli/agent_onboard/adapters/commands/work-items.js',
       extracted_commands: Object.freeze(['work-items --list', 'work-items --validate']),

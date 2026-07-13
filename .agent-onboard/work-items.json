@@ -1510,6 +1510,18 @@
         "claimed_at": "2026-07-08T08:42:27.295Z"
       },
       "closure_ref": "closures:P1S3M6W27"
+    },
+    {
+      "id": "P1S3M6W28",
+      "milestone_id": "P1S3M6",
+      "title": "Public Work Items Service Split Gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-08T09:10:00.000Z",
+        "note": "Split work-items service by use case while preserving JSON/JSONL storage boundary."
+      },
+      "closure_ref": "closures:P1S3M6W28"
     }
   ]
 }
