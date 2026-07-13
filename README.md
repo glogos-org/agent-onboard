@@ -7,7 +7,7 @@ CLI for onboarding and managing target repositories.
 The generated files are intended to be read by agents, wrappers, CI hooks, or future runtimes that choose to honor the declared boundaries.
 
 
-Current release: this line continues runtime composer decomposition by extracting the public MCP bridge plan surface into `cli/agent_onboard/domains/core/services/public-runtime-mcp-bridge-service.js`. `runtime-composer.js` remains the compatibility composer and public export surface, but it no longer owns the MCP tool-candidate catalog, bridge plan text renderer, or MCP argument validation body. The MCP surface remains plan-only and read-only: no server, stdio transport, socket, dependency addition, file write, SQLite, Lightning Memory-Mapped Database, MDBX, Git mutation, network access, registry mutation, or package publish is admitted.
+Current release: this line continues runtime composer decomposition by extracting the public AGENTS.md generation and bounded AGENTS bridge marker-block surface into `cli/agent_onboard/domains/authority/services/public-runtime-agents-bridge-service.js`. `runtime-composer.js` remains the compatibility composer and public export surface, but it no longer owns the AGENTS bridge marker constants, marker-block validation, bridge plan/check/write body, or `agents --preview|--write` command runner. The bridge remains marker-block-only and no-install/no-network/no-Git; no SQLite, Lightning Memory-Mapped Database, MDBX, dependency addition, registry mutation, or package publish is admitted.
 
 ## Install
 

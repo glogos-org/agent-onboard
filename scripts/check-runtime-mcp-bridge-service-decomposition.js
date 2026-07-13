@@ -41,8 +41,7 @@ if (!service.includes('const MCP_TOOL_CANDIDATES = Object.freeze([')) errors.pus
 if (/\bprocess\./.test(service)) errors.push('service must not access process.* directly');
 if (!pkg.files.includes(rel)) errors.push('package.json#files must include the MCP bridge service');
 if (!contracts.includes(rel)) errors.push('runtime contracts must include the MCP bridge service in packaged files');
-if (pkg.version !== '0.0.170') errors.push('package.json#version must be 0.0.170 for this gate');
-if (!contracts.includes("public_runtime_mcp_bridge_service_decomposition_gate")) errors.push('runtime contracts release line must name the MCP bridge decomposition gate');
+if (!contracts.includes("public-runtime-mcp-bridge-service.js")) errors.push('runtime contracts must retain the MCP bridge service projection');
 
 const jsonResult = spawnSync(process.execPath, ['cli/agent-onboard.js', 'mcp', '--json'], { cwd: root, encoding: 'utf8' });
 if (jsonResult.status !== 0) errors.push(`mcp --json failed with exit ${jsonResult.status}: ${jsonResult.stderr || jsonResult.stdout}`);
@@ -51,8 +50,8 @@ else {
     const output = JSON.parse(jsonResult.stdout);
     if (output.schema !== 'agent-onboard-public-mcp-bridge-plan-001') errors.push('mcp --json must preserve the MCP bridge plan schema');
     if (output.status !== 'ok') errors.push('mcp --json status must be ok');
-    if (output.version !== '0.0.170') errors.push('mcp --json version must be 0.0.170');
-    if (output.release_line !== 'public_runtime_mcp_bridge_service_decomposition_gate') errors.push('mcp --json release line must be updated');
+    if (output.version !== pkg.version) errors.push('mcp --json version must track package.json#version');
+    if (!contracts.includes(`const RELEASE_LINE = '${output.release_line}';`)) errors.push('mcp --json release line must track runtime contracts');
     if (!Number.isInteger(output.tool_candidate_count) || output.tool_candidate_count < 20) errors.push('mcp --json must preserve the tool candidate catalog');
     if (!output.boundary || output.boundary.starts_server !== false || output.boundary.writes_files !== false) errors.push('mcp boundary must remain read-only and no-server');
   } catch (error) {

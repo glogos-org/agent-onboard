@@ -86,6 +86,10 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-router-command-adapter-delegation-expansion-json-ae638e03"
     },
     {
+      "file_path": ".agent-onboard/runtime-agents-bridge-service-decomposition.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-runtime-agents-bridge-service-decomposition-json-140af04d"
+    },
+    {
       "file_path": ".agent-onboard/runtime-check-fast-service-decomposition.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-runtime-check-fast-service-decomposition-json-e0c1d194"
     },
@@ -402,6 +406,10 @@
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-static-catalog-js-040a2a1a"
     },
     {
+      "file_path": "cli/agent_onboard/domains/authority/services/public-runtime-agents-bridge-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-authority-services-public-runtime-agents-bridge-service-js-a9add9a0"
+    },
+    {
       "file_path": "cli/agent_onboard/domains/core/index.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-core-index-js-f5c1c229"
     },
@@ -568,6 +576,10 @@
     {
       "file_path": "scripts/check-public-artifact-boundary.js",
       "file_urn": "urn:agent-onboard:file:scripts-check-public-artifact-boundary-js-90be14c8"
+    },
+    {
+      "file_path": "scripts/check-runtime-agents-bridge-service-decomposition.js",
+      "file_urn": "urn:agent-onboard:file:scripts-check-runtime-agents-bridge-service-decomposition-js-c2083f88"
     },
     {
       "file_path": "scripts/check-runtime-check-fast-service-decomposition.js",

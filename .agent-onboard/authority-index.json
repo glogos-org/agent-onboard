@@ -2,7 +2,7 @@
   "schema": "agent-onboard-public-authority-compact-index-001",
   "package_name": "agent-onboard",
   "package_version_source": "package.json#version",
-  "release_line": "public_runtime_mcp_bridge_service_decomposition_gate",
+  "release_line": "public_runtime_agents_bridge_service_decomposition_gate",
   "index_file": ".agent-onboard/authority-index.json",
   "first_read_command": "agent-onboard authority --first-read",
   "check_command": "agent-onboard authority --check",
@@ -121,8 +121,8 @@
       "file_path": "SOURCE_OF_TRUTH.md",
       "present": true,
       "kind": "file",
-      "bytes": 9846,
-      "file_id": "ni:///sha-256;A2dBoFPGDLPGjjS_rrR1K-9aIAbJUa6R3_hkFxjBdTg",
+      "bytes": 10342,
+      "file_id": "ni:///sha-256;2x0ImRGaafGoG0T9VKhnO1_-uJiRhgFFBu8Z6OO8MSE",
       "content_inlined": false
     },
     {
@@ -145,8 +145,8 @@
       "file_path": "package.json",
       "present": true,
       "kind": "file",
-      "bytes": 7103,
-      "file_id": "ni:///sha-256;8rApk2fYZkHq49uE4RIk0UVZnGbUnVDLnqpVD_0XpQg",
+      "bytes": 7321,
+      "file_id": "ni:///sha-256;-y7o3jcfFwgjNSiB0_L55LsRUfft1yUu9prV4QmSijo",
       "content_inlined": false
     },
     {
@@ -177,8 +177,8 @@
       "file_path": ".agent-onboard/work-items.json",
       "present": true,
       "kind": "file",
-      "bytes": 41157,
-      "file_id": "ni:///sha-256;wvtd7zXT1lvBxbuE00Ciro7YinnIkJXM1dS4NqRcHNc",
+      "bytes": 41472,
+      "file_id": "ni:///sha-256;w8xjTAAS-HbHUx7_sQZ1fGwqpGQr4QHg10YbpoRjACw",
       "content_inlined": false
     }
   ],
@@ -216,7 +216,7 @@
     "indexed_file_count": 9,
     "present_file_count": 9,
     "missing_file_count": 0,
-    "present_bytes": 124519,
+    "present_bytes": 125548,
     "missing_files": [],
     "excluded_file_count": 7,
     "state_shard_count": 4,

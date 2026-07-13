@@ -1,0 +1,44 @@
+{
+  "schema": "agent-onboard-public-runtime-agents-bridge-service-decomposition-001",
+  "status": "closed",
+  "version": "0.0.171",
+  "release_line": "public_runtime_agents_bridge_service_decomposition_gate",
+  "work_item_id": "P1S3M6W22",
+  "title": "Public runtime AGENTS bridge service decomposition gate",
+  "objective": "Extract the public AGENTS.md generation command and bounded AGENTS bridge marker-block command from runtime-composer.js into a packaged authority domain service while preserving the no-install, no-network, no-Git, marker-block-only bridge boundary.",
+  "source": {
+    "before": "cli/agent_onboard/runtime-composer.js",
+    "after": "cli/agent_onboard/domains/authority/services/public-runtime-agents-bridge-service.js"
+  },
+  "extracted_surface": [
+    "agents --preview command runner",
+    "agents --write command runner",
+    "bridge marker block constants and renderer",
+    "bridge marker block validation",
+    "bridge --dry-run plan",
+    "bridge --check validation",
+    "bridge --write marker-block-only writer",
+    "bridge --text human renderer"
+  ],
+  "boundary": {
+    "storage_backend_changed": false,
+    "sqlite_added": false,
+    "lmdb_added": false,
+    "mdbx_added": false,
+    "adds_runtime_dependency": false,
+    "bridge_installs_dependencies": false,
+    "bridge_runs_package_manager": false,
+    "bridge_network": false,
+    "bridge_git_mutation": false,
+    "bridge_replaces_entire_agents_md": false,
+    "bridge_marker_block_only": true,
+    "agents_writes_only_canonical_agents_file": true,
+    "publishes_package": false
+  },
+  "checks": [
+    "node scripts/check-runtime-agents-bridge-service-decomposition.js",
+    "node cli/agent-onboard.js bridge --dry-run --json",
+    "node cli/agent-onboard.js bridge --dry-run --text",
+    "node cli/agent-onboard.js agents --preview --force"
+  ]
+}

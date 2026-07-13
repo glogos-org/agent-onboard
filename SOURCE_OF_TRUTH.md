@@ -38,6 +38,11 @@ The current runtime composer is being decomposed through source-domain service e
 
 The current source storage remains text-first: compact JSON snapshots plus JavaScript Object Notation Lines event and closure ledgers. `.agent-onboard/work-items.json` is now a compact compatibility ledger: closed work items carry `closure_ref` values and closure evidence lives in `.agent-onboard/state/closures/work-items-closures.jsonl`. `.agent-onboard/state/live/work-items.json`, `.agent-onboard/state/events/work-items.jsonl`, `.agent-onboard/state/closures/work-items-closures.jsonl`, and `.agent-onboard/state/indexes/work-items.index.json` are the active work item state shards. SQLite, Lightning Memory-Mapped Database, MDBX, and other binary stores are not current sources of truth; they may only be admitted later behind repository interfaces with a replayable text export.
 
+
+## Runtime composer decomposition
+
+`P1S3M6W22` extracts the public AGENTS bridge surface into `cli/agent_onboard/domains/authority/services/public-runtime-agents-bridge-service.js`. `runtime-composer.js` remains the compatibility composer and public export surface, but it must not own new AGENTS bridge marker-block logic, AGENTS.md generation command logic, storage backend changes, dependency installation, network behavior, Git mutation, registry mutation, or package publication behavior.
+
 ## Claim ledger JSONL boundary
 
 `agent-onboard claim --validate-ledger` validates `.agent-onboard/claims.jsonl` as compact JSONL coordination state without inlining raw entries. `agent-onboard claim --lifecycle-check` checks proposed/merged sequencing, active claim conflicts, and stale active claims as compact lifecycle state. `agent-onboard claim --append --write` may append exactly one claim event to that ledger only when the repository owner explicitly authorizes the write and only after lifecycle conflict planning passes; it does not mutate the work-item ledger, Git, dependencies, build/test/deploy state, publication state, registry state, or network state.
