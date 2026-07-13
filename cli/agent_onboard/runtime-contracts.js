@@ -407,6 +407,7 @@ const PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES = Object.freeze([
   'cli/agent_onboard/domains/target/services/target-handoff-service.js',
   'cli/agent_onboard/domains/target/services/target-inventory-service.js',
   'cli/agent_onboard/domains/target/services/target-manifest-service.js',
+  'cli/agent_onboard/domains/target/services/target-memory-service.js',
   'cli/agent_onboard/domains/target/services/target-metadata-service.js',
   'cli/agent_onboard/domains/target/services/target-onboarding-service.js',
   'cli/agent_onboard/domains/target/services/target-profile-service.js',

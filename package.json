@@ -1,6 +1,6 @@
 {
   "name": "agent-onboard",
-  "version": "0.0.183",
+  "version": "0.0.184",
   "description": "CLI for onboarding and managing target repositories.",
   "license": "Apache-2.0",
   "author": "Thanh Le <vnlemanhthanh@gmail.com>",
@@ -107,7 +107,8 @@
     "check:state-projection-authority-cutover": "node scripts/check.js state-projection-authority-cutover",
     "check:closure-payload-reference-compaction": "node scripts/check.js closure-payload-reference-compaction",
     "check:check-registry-compaction": "node scripts/check.js check-registry-compaction",
-    "check:god-file-budget-enforcement-closure": "node scripts/check.js god-file-budget-enforcement-closure"
+    "check:god-file-budget-enforcement-closure": "node scripts/check.js god-file-budget-enforcement-closure",
+    "check:runtime-composer-residual-slice-reduction": "node scripts/check.js runtime-composer-residual-slice-reduction"
   },
   "bin": {
     "agent-onboard": "cli/agent-onboard.js",
@@ -181,6 +182,7 @@
     "cli/agent_onboard/domains/target/services/target-handoff-service.js",
     "cli/agent_onboard/domains/target/services/target-inventory-service.js",
     "cli/agent_onboard/domains/target/services/target-manifest-service.js",
+    "cli/agent_onboard/domains/target/services/target-memory-service.js",
     "cli/agent_onboard/domains/target/services/target-metadata-service.js",
     "cli/agent_onboard/domains/target/services/target-onboarding-service.js",
     "cli/agent_onboard/domains/target/services/target-profile-service.js",

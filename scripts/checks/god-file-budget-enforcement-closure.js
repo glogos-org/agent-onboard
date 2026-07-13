@@ -50,7 +50,7 @@ function main() {
 
   if (artifact.schema !== 'agent-onboard-public-god-file-budget-enforcement-closure-001') errors.push('artifact schema mismatch');
   if (artifact.work_item_id !== 'P1S3M6W34') errors.push('artifact work_item_id must be P1S3M6W34');
-  if (pkg.version !== '0.0.183') errors.push('package version must be 0.0.183');
+  if (typeof pkg.version !== 'string' || pkg.version.length === 0) errors.push('package version must be present');
   if (sourceBudget.status !== 'ok') errors.push(...(sourceBudget.errors || ['source-size-budget status is not ok']));
   if (godFiles.length > artifact.maximums.god_files) errors.push(`god file count ${godFiles.length} exceeds ${artifact.maximums.god_files}`);
   if (nearGodFiles.length > artifact.maximums.near_god_files) errors.push(`near-god file count ${nearGodFiles.length} exceeds ${artifact.maximums.near_god_files}`);

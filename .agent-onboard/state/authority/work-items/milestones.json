@@ -56,6 +56,12 @@
       "stage_id": "P1S3",
       "title": "Public clean and compaction milestone",
       "status": "open"
+    },
+    {
+      "id": "P1S3M7",
+      "stage_id": "P1S3",
+      "title": "Public runtime composer debt reduction milestone",
+      "status": "open"
     }
   ]
 }

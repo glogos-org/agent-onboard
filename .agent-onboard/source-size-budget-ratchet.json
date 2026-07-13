@@ -1,8 +1,8 @@
 {
   "schema": "agent-onboard-public-source-size-budget-ratchet-001",
   "status": "active",
-  "work_item_id": "P1S3M6W34",
-  "release_line": "public_god_file_budget_enforcement_closure_gate",
+  "work_item_id": "P1S3M7W1",
+  "release_line": "public_runtime_composer_residual_slice_reduction_gate",
   "ratchet_mode": "no_tracked_growth_beyond_maximum_and_no_new_oversized_files",
   "god_file_thresholds": {
     "god_lines": 1000,
@@ -87,8 +87,8 @@
   "tracked_files": {
     ".agent-onboard/state/closures/work-items-closures.jsonl": {
       "category": "authority_state",
-      "max_lines": 170,
-      "max_bytes": 77807,
+      "max_lines": 171,
+      "max_bytes": 78263,
       "baseline_lines": 168,
       "baseline_bytes": 76889,
       "target_lines": 200,
@@ -108,6 +108,15 @@
           "reason": "compact closure archive grew by one W34 reference row; payload remains sharded",
           "max_lines": 170,
           "max_bytes": 77807
+        },
+        {
+          "work_item_id": "P1S3M7W1",
+          "gate": "Public Runtime Composer Residual Slice Reduction Gate",
+          "reason": "W1 reduced runtime composer residual debt and added one compact closure/reference row for the new gate while preserving JSON/JSONL text-first storage.",
+          "previous_max_lines": 170,
+          "new_max_lines": 171,
+          "previous_max_bytes": 77807,
+          "new_max_bytes": 78263
         }
       ]
     },
@@ -123,8 +132,8 @@
     },
     ".agent-onboard/work-items.json": {
       "category": "authority_registry",
-      "max_lines": 1596,
-      "max_bytes": 45514,
+      "max_lines": 1614,
+      "max_bytes": 46080,
       "baseline_lines": 1573,
       "baseline_bytes": 44798,
       "target_lines": 500,
@@ -151,6 +160,15 @@
           "reason": "legacy root compatibility projection grows by one closed gate row for W34; sharded authority remains canonical until root projection cutover",
           "max_lines": 1596,
           "max_bytes": 45514
+        },
+        {
+          "work_item_id": "P1S3M7W1",
+          "gate": "Public Runtime Composer Residual Slice Reduction Gate",
+          "reason": "W1 reduced runtime composer residual debt and added one compact closure/reference row for the new gate while preserving JSON/JSONL text-first storage.",
+          "previous_max_lines": 1596,
+          "new_max_lines": 1614,
+          "previous_max_bytes": 45514,
+          "new_max_bytes": 46080
         }
       ]
     },
@@ -307,8 +325,8 @@
     },
     "cli/agent_onboard/runtime-composer.js": {
       "category": "runtime_source",
-      "max_lines": 7906,
-      "max_bytes": 440574,
+      "max_lines": 7008,
+      "max_bytes": 384741,
       "baseline_lines": 11753,
       "baseline_bytes": 676851,
       "target_lines": 500,
@@ -330,6 +348,15 @@
           "new_max_lines": 7906,
           "previous_max_bytes": 669217,
           "new_max_bytes": 440574
+        },
+        {
+          "work_item_id": "P1S3M7W1",
+          "gate": "Public Runtime Composer Residual Slice Reduction Gate",
+          "reason": "W1 reduced runtime composer residual debt and added one compact closure/reference row for the new gate while preserving JSON/JSONL text-first storage.",
+          "previous_max_lines": 7906,
+          "new_max_lines": 7008,
+          "previous_max_bytes": 440574,
+          "new_max_bytes": 384741
         }
       ]
     },
@@ -462,8 +489,8 @@
     },
     ".agent-onboard/state/closures/work-items/manifest.json": {
       "category": "authority_state",
-      "max_lines": 127,
-      "max_bytes": 5129,
+      "max_lines": 136,
+      "max_bytes": 5500,
       "baseline_lines": 126,
       "baseline_bytes": 5085,
       "target_lines": 300,
@@ -476,18 +503,38 @@
           "reason": "closure payload manifest refreshed after W34 compact reference append",
           "max_lines": 127,
           "max_bytes": 5129
+        },
+        {
+          "work_item_id": "P1S3M7W1",
+          "gate": "Public Runtime Composer Residual Slice Reduction Gate",
+          "reason": "W1 reduced runtime composer residual debt and added one compact closure/reference row for the new gate while preserving JSON/JSONL text-first storage.",
+          "previous_max_lines": 127,
+          "new_max_lines": 136,
+          "previous_max_bytes": 5129,
+          "new_max_bytes": 5500
         }
       ]
     },
     ".agent-onboard/state/closures/work-items/index.json": {
       "category": "authority_state",
-      "max_lines": 110,
-      "max_bytes": 4384,
+      "max_lines": 116,
+      "max_bytes": 4667,
       "baseline_lines": 110,
       "baseline_bytes": 4384,
       "target_lines": 300,
       "target_bytes": 65536,
-      "reason": "W32 closure payload reference authority metadata; must stay compact and not inline full closure payloads"
+      "reason": "W32 closure payload reference authority metadata; must stay compact and not inline full closure payloads",
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W1",
+          "gate": "Public Runtime Composer Residual Slice Reduction Gate",
+          "reason": "W1 reduced runtime composer residual debt and added one compact closure/reference row for the new gate while preserving JSON/JSONL text-first storage.",
+          "previous_max_lines": 110,
+          "new_max_lines": 116,
+          "previous_max_bytes": 4384,
+          "new_max_bytes": 4667
+        }
+      ]
     },
     "scripts/check.js": {
       "category": "check_script",
@@ -501,8 +548,8 @@
     },
     "scripts/checks/registry.js": {
       "category": "check_script",
-      "max_lines": 52,
-      "max_bytes": 2402,
+      "max_lines": 53,
+      "max_bytes": 2497,
       "baseline_lines": 51,
       "baseline_bytes": 2319,
       "target_lines": 120,
@@ -515,6 +562,15 @@
           "reason": "check registry admits W34 god-file budget enforcement closure check",
           "max_lines": 52,
           "max_bytes": 2402
+        },
+        {
+          "work_item_id": "P1S3M7W1",
+          "gate": "Public Runtime Composer Residual Slice Reduction Gate",
+          "reason": "W1 reduced runtime composer residual debt and added one compact closure/reference row for the new gate while preserving JSON/JSONL text-first storage.",
+          "previous_max_lines": 52,
+          "new_max_lines": 53,
+          "previous_max_bytes": 2402,
+          "new_max_bytes": 2497
         }
       ]
     },
@@ -530,18 +586,34 @@
     },
     ".agent-onboard/god-file-budget-enforcement-closure.json": {
       "category": "authority_registry",
-      "max_lines": 105,
-      "max_bytes": 3859,
+      "max_lines": 106,
+      "max_bytes": 3959,
       "baseline_lines": 105,
       "baseline_bytes": 3859,
       "target_lines": 220,
       "target_bytes": 32768,
-      "reason": "W34 god-file budget enforcement closure policy artifact"
+      "reason": "W34 god-file budget enforcement closure policy artifact",
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W1",
+          "gate": "Public Runtime Composer Residual Slice Reduction Gate",
+          "reason": "W1 records reduced composer and bounded compatibility work-items budget in W34 guard artifact.",
+          "previous_max_lines": 105,
+          "new_max_lines": 106,
+          "previous_max_bytes": 3859,
+          "new_max_bytes": 3959
+        }
+      ]
     }
   },
   "report": {
     "top_largest_limit": 15,
-    "max_advisories": 30
+    "max_advisories": 30,
+    "runtime_composer_after_w1": {
+      "path": "cli/agent_onboard/runtime-composer.js",
+      "lines": 7008,
+      "bytes": 384741
+    }
   },
   "boundary": {
     "storage_backend": "json_jsonl_text_first_unchanged",

@@ -1,5 +1,5 @@
 {
-  "schema": "agent-onboard-work-items-authority-items-by-milestone-shard-001",
+  "schema": "agent-onboard-work-items-authority-item-shard-001",
   "package_name": "agent-onboard",
   "source": "sharded_work_items_authority",
   "milestone_id": "P1S3M3",

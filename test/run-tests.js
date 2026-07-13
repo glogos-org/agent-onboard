@@ -281,6 +281,7 @@ function syntaxTasks() {
     nodeTask('syntax: target static catalog', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'target', 'static-catalog.js')]),
     nodeTask('syntax: target runtime service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'target', 'services', 'target-service.js')]),
     nodeTask('syntax: target runtime utilities', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'target', 'services', 'target-runtime-utilities.js')]),
+    nodeTask('syntax: target memory service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'target', 'services', 'target-memory-service.js')]),
     nodeTask('syntax: target work-items preview service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'target', 'services', 'target-work-items-service.js')]),
     nodeTask('syntax: target governance preview service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'target', 'services', 'target-governance-service.js')]),
     nodeTask('syntax: target governance core service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'target', 'services', 'target-governance-core.js')]),
@@ -396,6 +397,7 @@ function quickTasks() {
     checkRegistryTask('public artifact boundary check', 'public-artifact-boundary'),
     checkRegistryTask('check registry compaction check', 'check-registry-compaction'),
     checkRegistryTask('god file budget enforcement closure check', 'god-file-budget-enforcement-closure'),
+    checkRegistryTask('runtime composer residual slice reduction check', 'runtime-composer-residual-slice-reduction'),
     npmTask('npm pack dry run', ['pack', '--dry-run', '--json'], expectPackFiles)
   ];
 }

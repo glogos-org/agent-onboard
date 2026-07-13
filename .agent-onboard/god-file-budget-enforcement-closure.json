@@ -45,23 +45,24 @@
     "state-projection-authority-cutover",
     "closure-payload-reference-compaction",
     "check-registry-compaction",
-    "god-file-budget-enforcement-closure"
+    "god-file-budget-enforcement-closure",
+    "runtime-composer-residual-slice-reduction"
   ],
   "remaining_god_files": [
     {
       "path": "cli/agent_onboard/runtime-composer.js",
       "category": "runtime_source",
-      "current_lines": 7906,
-      "current_bytes": 440574,
-      "admitted_reason": "compatibility composer still carries command implementation slices not yet extracted",
-      "next_reduction_gate": "P1S3M7W1"
+      "current_lines": 7008,
+      "current_bytes": 384741,
+      "admitted_reason": "runtime composer still carries command implementation debt after W1 residual slice reduction",
+      "next_reduction_gate": "P1S3M7W7"
     },
     {
       "path": ".agent-onboard/work-items.json",
       "category": "authority_registry",
-      "current_lines": 1596,
-      "current_bytes_max": 45514,
-      "admitted_reason": "legacy root projection retained for older target repo tooling until root projection cutover",
+      "current_lines": 1614,
+      "current_bytes_max": 46080,
+      "admitted_reason": "legacy root projection retained for older target repo tooling until root projection cutover; W1 added one bounded compatibility record",
       "next_reduction_gate": "P1S3M7W2"
     },
     {

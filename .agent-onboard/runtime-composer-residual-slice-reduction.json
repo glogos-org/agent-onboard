@@ -1,0 +1,91 @@
+{
+  "schema": "agent-onboard-public-runtime-composer-residual-slice-reduction-001",
+  "package_name": "agent-onboard",
+  "version": "0.0.184",
+  "work_item_id": "P1S3M7W1",
+  "milestone_id": "P1S3M7",
+  "status": "closed",
+  "gate": "Public Runtime Composer Residual Slice Reduction Gate",
+  "purpose": "Reduce the admitted runtime composer god-file debt by removing dead duplicate residual slices and moving the target memory preview slice behind the target domain service boundary.",
+  "reduction": {
+    "runtime_composer_before": {
+      "path": "cli/agent_onboard/runtime-composer.js",
+      "lines": 7906,
+      "bytes": 440574
+    },
+    "runtime_composer_after": {
+      "path": "cli/agent_onboard/runtime-composer.js",
+      "lines": 7008,
+      "bytes": 384741
+    },
+    "removed_dead_duplicate_function_definitions": [
+      "publicArchitectureMap",
+      "publicSourceModuleExtractionInstalledFallbackSmoke",
+      "publicSourceModuleExtractionInstalledFallbackSmokeCheck",
+      "publicSourceModuleExtractionSecondSlicePlan",
+      "publicSourceModuleExtractionSecondSlicePlanCheck",
+      "publicSourceModuleExtractionSecondSliceFirstSlice",
+      "publicSourceModuleExtractionSecondSliceFirstSliceCheck",
+      "publicSourceModuleExtractionAuthorityBundleParity",
+      "publicSourceModuleExtractionAuthorityBundleParityCheck"
+    ],
+    "extracted_runtime_slices": [
+      {
+        "path": "cli/agent_onboard/domains/target/services/target-memory-service.js",
+        "lines": 244,
+        "bytes": 11279
+      }
+    ],
+    "runtime_composer_line_delta": -898,
+    "runtime_composer_byte_delta": -55833
+  },
+  "packaging": {
+    "target_memory_service_in_package_files": true,
+    "target_memory_service_in_runtime_contract_pack_files": true,
+    "new_check_id": "runtime-composer-residual-slice-reduction"
+  },
+  "remaining_debt": {
+    "runtime_composer_still_admitted_god_file": true,
+    "next_runtime_composer_reduction_gate": "P1S3M7W7",
+    "target_long_term_lines": 500,
+    "target_long_term_bytes": 65536
+  },
+  "boundary": {
+    "public_cli_behavior_changed_intentionally": false,
+    "storage_backend_changed": false,
+    "sqlite_introduced": false,
+    "lmdb_introduced": false,
+    "mdbx_introduced": false,
+    "network": false,
+    "publishes_package": false,
+    "git_mutation": false
+  },
+  "required_check_ids": [
+    "runtime-composer-residual-slice-reduction",
+    "source-size-budget",
+    "god-file-budget-enforcement-closure",
+    "runtime-command-registry-extraction"
+  ],
+  "checks_run": [
+    "node scripts/check.js runtime-composer-residual-slice-reduction",
+    "node scripts/check.js source-size-budget",
+    "node scripts/check.js god-file-budget-enforcement-closure",
+    "node scripts/check.js runtime-command-registry-extraction",
+    "node scripts/check.js check-registry-compaction",
+    "node scripts/check.js state-projection-authority-cutover",
+    "node scripts/check.js closure-payload-reference-compaction",
+    "node scripts/check.js public-artifact-boundary",
+    "node cli/agent-onboard.js authority --index-check",
+    "node cli/agent-onboard.js authority --state-check",
+    "node cli/agent-onboard.js release --clean-check",
+    "node cli/agent-onboard.js release --clean-catalog-check",
+    "node cli/agent-onboard.js release --source-manifest-check",
+    "node cli/agent-onboard.js release --check",
+    "node cli/agent-onboard.js check --fast --json",
+    "node cli/agent-onboard.js check --fast --text",
+    "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+    "npm pack --dry-run --json"
+  ],
+  "known_non_pass": [],
+  "npm_test_note": "npm test quick was executed but the outer container command timed out before the final summary line; the missing tail checks were run individually and passed."
+}
