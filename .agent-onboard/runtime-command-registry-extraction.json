@@ -1,0 +1,18 @@
+{
+  "schema": "agent-onboard-public-runtime-command-registry-extraction-admission-001",
+  "package_name": "agent-onboard",
+  "work_item_id": "P1S3M6W25",
+  "milestone_id": "P1S3M6",
+  "title": "Public Runtime Command Registry Extraction Gate",
+  "status": "closed_candidate",
+  "module_path": "cli/agent_onboard/runtime-command-registry.js",
+  "extracted_from": "cli/agent_onboard/runtime-composer.js",
+  "composer_lines_before": 11753,
+  "composer_lines_after": 11614,
+  "registry_lines": 216,
+  "package_surface_exposes_work_item_token": false,
+  "storage_backend_changed": false,
+  "sqlite_introduced": false,
+  "lmdb_introduced": false,
+  "mdbx_introduced": false
+}

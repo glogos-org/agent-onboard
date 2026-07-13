@@ -5,10 +5,10 @@
   "release_line": "public_runtime_guard_service_decomposition_gate",
   "authority_state_source_layout": "sharded_seed",
   "state_root": ".agent-onboard/state",
-  "current_work_item": "P1S3M6W24",
-  "current_work_item_title": "Public source size budget and ratchet gate",
-  "last_closed_work_item": "P1S3M6W24",
-  "last_closed_title": "Public source size budget and ratchet gate",
+  "current_work_item": "P1S3M6W25",
+  "current_work_item_title": "Public Runtime Command Registry Extraction Gate",
+  "last_closed_work_item": "P1S3M6W25",
+  "last_closed_title": "Public Runtime Command Registry Extraction Gate",
   "default_first_read": true,
   "compact_authority_index_file": ".agent-onboard/authority-index.json",
   "state_command": "agent-onboard authority --state",
@@ -17,13 +17,6 @@
   "raw_growth_files_loaded_by_default": false,
   "file_contents_inlined": false,
   "latest_closed_work_items": [
-    {
-      "id": "P1S3M6W20",
-      "title": "Public runtime check fast service decomposition gate",
-      "status": "closed",
-      "milestone_id": "P1S3M6",
-      "domain": null
-    },
     {
       "id": "P1S3M6W21",
       "title": "Public runtime MCP bridge service decomposition gate",
@@ -48,6 +41,13 @@
     {
       "id": "P1S3M6W24",
       "title": "Public source size budget and ratchet gate",
+      "status": "closed",
+      "milestone_id": "P1S3M6",
+      "domain": null
+    },
+    {
+      "id": "P1S3M6W25",
+      "title": "Public Runtime Command Registry Extraction Gate",
       "status": "closed",
       "milestone_id": "P1S3M6",
       "domain": null

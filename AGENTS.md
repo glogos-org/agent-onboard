@@ -559,6 +559,11 @@ Use `node cli/agent-onboard.js contracts --json|--text|--check` when a human, CI
 
 Before adding or expanding runtime, service, catalog, state, test, or first-read files, run `npm run check:source-size-budget`. Existing oversized files are admitted migration debt only; do not increase them beyond `.agent-onboard/source-size-budget-ratchet.json`, and do not create new files that exceed the category budgets.
 
+
+## Runtime command registry extraction
+
+Before editing command dispatch, read `cli/agent_onboard/runtime-command-registry.js`. Top-level command normalization, route-handler registry construction, command adapter assembly, and compatibility-port creation live there. `runtime-composer.js` should inject facades and ports into the registry, not grow new command tables. Run `npm run check:runtime-command-registry-extraction` and `npm run check:source-size-budget` after command dispatch changes.
+
 <!-- agent-onboard:bridge:start -->
 ## Agent-Onboard bridge
 

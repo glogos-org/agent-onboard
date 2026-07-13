@@ -1281,6 +1281,11 @@ The public line admits the `release_package` domain service partition under `cli
 
 Use `npm run check:source-size-budget` before adding new runtime, service, catalog, state, or test files. The check is read-only and enforces `.agent-onboard/source-size-budget-ratchet.json`: known oversized files are tracked as migration debt and may not grow past their ratchet maximum, while new files must fit their category budget.
 
+
+## Public runtime command registry extraction
+
+The runtime command registry extraction gate moves top-level command registry and compatibility-port assembly into `cli/agent_onboard/runtime-command-registry.js`. The runtime composer now delegates command normalization, route-handler table construction, command adapter assembly, and compatibility-port creation through that module. Run `npm run check:runtime-command-registry-extraction` to verify the registry module is packaged, side-effect bounded, smoke-tested through the CLI entrypoint, and that `runtime-composer.js` has ratcheted below the W24 line baseline.
+
 ## Public core config guard service extraction
 
 The public line keeps guard policy evaluation in the packaged core config guard service at `cli/agent_onboard/domains/core/services/config-guard-service.js` and now composes the public guard command surface through `cli/agent_onboard/domains/authority/services/public-runtime-guard-service.js`. The guard remains read-only, keeps the same target config boundary contract, and preserves existing guard JSON outputs while `runtime-composer.js` stays focused on compatibility wiring and dispatch.

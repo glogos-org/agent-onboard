@@ -247,13 +247,23 @@
     },
     "cli/agent_onboard/runtime-composer.js": {
       "category": "runtime_source",
-      "max_lines": 11753,
-      "max_bytes": 676851,
+      "max_lines": 11614,
+      "max_bytes": 669217,
       "baseline_lines": 11753,
       "baseline_bytes": 676851,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "existing oversized file admitted as clean-and-compaction migration debt"
+      "reason": "existing oversized file admitted as clean-and-compaction migration debt",
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M6W25",
+          "reason": "runtime command registry extraction moved top-level route handler table and compatibility port assembly into cli/agent_onboard/runtime-command-registry.js",
+          "previous_max_lines": 11753,
+          "new_max_lines": 11614,
+          "previous_max_bytes": 676851,
+          "new_max_bytes": 669217
+        }
+      ]
     },
     "manifest.json": {
       "category": "root_json",
