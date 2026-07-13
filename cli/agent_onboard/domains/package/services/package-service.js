@@ -41,6 +41,8 @@ const PACKAGE_SERVICE_SEED = Object.freeze({
     'release --closed-gates-read-check',
     'release --closed-gates-prune-plan',
     'release --closed-gates-prune-plan-check',
+    'release --closed-gates-prune-dry-run',
+    'release --closed-gates-prune-dry-run-check',
     'release --full-test-runner',
     'release --full-test-runner-check',
     'release --version-sprawl-check',

@@ -158,6 +158,14 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-closed-gate-artifact-compaction-planning-gate-json-bd4c6539"
     },
     {
+      "file_path": ".agent-onboard/public-closed-gate-raw-artifact-prune-dry-run-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-public-closed-gate-raw-artifact-prune-dry-run-gate-json-49913fa3"
+    },
+    {
+      "file_path": ".agent-onboard/public-closed-gate-raw-artifact-prune-planning-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-public-closed-gate-raw-artifact-prune-planning-gate-json-4fa89c76"
+    },
+    {
       "file_path": ".agent-onboard/public-contract-output-validator-gate.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-contract-output-validator-gate-json-aa8ca966"
     },
@@ -172,6 +180,10 @@
     {
       "file_path": ".agent-onboard/public-first-read-ladder-manifest-gate.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-public-first-read-ladder-manifest-gate-json-379e683b"
+    },
+    {
+      "file_path": ".agent-onboard/public-full-test-runner-completion-compaction-gate.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-public-full-test-runner-completion-compaction-gate-json-1e24d6bb"
     },
     {
       "file_path": ".agent-onboard/public-installed-authority-state-shard-parity-gate.json",
@@ -420,6 +432,10 @@
     {
       "file_path": ".agent-onboard/work-items.index.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-work-items-index-json-e4fde6be"
+    },
+    {
+      "file_path": ".agent-onboard/work-items.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-work-items-json-354fb549"
     },
     {
       "file_path": ".editorconfig",
@@ -696,6 +712,14 @@
     {
       "file_path": "src/domains/work-items.js",
       "file_urn": "urn:agent-onboard:file:src-domains-work-items-js-88eba391"
+    },
+    {
+      "file_path": "target-pilot/README.md",
+      "file_urn": "urn:agent-onboard:file:target-pilot-readme-md-5b2f626b"
+    },
+    {
+      "file_path": "target-pilot/package.json",
+      "file_urn": "urn:agent-onboard:file:target-pilot-package-json-75ecb3a2"
     },
     {
       "file_path": "test/agent-onboard.test.js",

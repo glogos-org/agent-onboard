@@ -2,7 +2,7 @@
   "schema": "agent-onboard-public-authority-compact-index-001",
   "package_name": "agent-onboard",
   "package_version_source": "package.json#version",
-  "release_line": "public_closed_gate_raw_artifact_prune_planning_gate",
+  "release_line": "public_closed_gate_raw_artifact_prune_dry_run_gate",
   "index_file": ".agent-onboard/authority-index.json",
   "first_read_command": "agent-onboard authority --first-read",
   "check_command": "agent-onboard authority --check",
@@ -113,16 +113,16 @@
       "file_path": "AGENTS.md",
       "present": true,
       "kind": "file",
-      "bytes": 43322,
-      "file_id": "ni:///sha-256;QB4ycQwaMkxyP05EBB4QGVg4qHMTSJLhXNxiOA4brMc",
+      "bytes": 43394,
+      "file_id": "ni:///sha-256;BHIfc0H7tvxOUExyoEICWWCVWrl6r6qIByKaWR4Awyg",
       "content_inlined": false
     },
     {
       "file_path": "SOURCE_OF_TRUTH.md",
       "present": true,
       "kind": "file",
-      "bytes": 7449,
-      "file_id": "ni:///sha-256;begemqHU7BkSo58g_6U8ihAfywSqDahsR1BO0uKni68",
+      "bytes": 7681,
+      "file_id": "ni:///sha-256;ACbabFdpqzsxAiyhEOO5vNMkDK4dXag6YxZQ_t-9Xko",
       "content_inlined": false
     },
     {
@@ -137,8 +137,8 @@
       "file_path": "llms.txt",
       "present": true,
       "kind": "file",
-      "bytes": 12084,
-      "file_id": "ni:///sha-256;jbtA7kGGd0C1QL1yCCUHW0drKCWlqZLA35zYpGjPtag",
+      "bytes": 12288,
+      "file_id": "ni:///sha-256;6YgLIo-a-0y_XXwD781ECIjAUpwkCzVkW8e_vVeQ4Tw",
       "content_inlined": false
     },
     {
@@ -146,7 +146,7 @@
       "present": true,
       "kind": "file",
       "bytes": 6159,
-      "file_id": "ni:///sha-256;xtrusQ6T2zREPv04_aBA8nVdE6_5fBee_0COoq6y_oA",
+      "file_id": "ni:///sha-256;Dwo9qtjokqZJizI_e7jBy53NnqBolD5AGeq1qOES4Bk",
       "content_inlined": false
     },
     {
@@ -177,8 +177,8 @@
       "file_path": ".agent-onboard/work-items.json",
       "present": true,
       "kind": "file",
-      "bytes": 364262,
-      "file_id": "ni:///sha-256;O3YIV-JGcWohBoVTH6jcnFi7v7n4qb-j-xZYWNZnb4s",
+      "bytes": 367222,
+      "file_id": "ni:///sha-256;-Nm9tnKe_Vd78mD11zsZs-BqGjuWdu4tsUEJkKEOmbA",
       "content_inlined": false
     }
   ],
@@ -216,7 +216,7 @@
     "indexed_file_count": 9,
     "present_file_count": 9,
     "missing_file_count": 0,
-    "present_bytes": 441212,
+    "present_bytes": 444680,
     "missing_files": [],
     "excluded_file_count": 7,
     "state_shard_count": 4,

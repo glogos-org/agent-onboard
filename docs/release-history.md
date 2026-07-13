@@ -2,9 +2,9 @@
 
 Historical release prose archived from README.md by P1S3M6W6.
 README.md remains the live first-read surface for install, quickstart, current commands, and no-mutation boundary material.
-## Current release: closed gate archive reader and full-test timeout hardening gate
+## Current release: closed gate raw artifact prune dry-run gate
 
-The current release adds `release --closed-gates-prune-plan` and `release --closed-gates-prune-plan-check` as the planning surface for future raw closed-gate artifact pruning. The checker verifies the compact archive/index recovery path, archive coverage of every raw `*-gate.json` artifact, raw file-id parity, the preserved no-delete/no-move/no-rewrite boundary, and the requirement for a separate future dry-run/apply gate before any prune. Raw `*-gate.json` artifacts remain preserved; no prune, move, registry mutation, publish, or network operation is admitted.
+The current release adds `release --closed-gates-prune-dry-run` and `release --closed-gates-prune-dry-run-check` as the exact dry-run surface for future raw closed-gate artifact pruning. The checker validates the compact archive/index recovery path, archive coverage of every raw `*-gate.json` artifact, raw file-id parity, the archive-backed candidate delete set, and the preserved no-delete/no-move/no-rewrite boundary. Raw `*-gate.json` artifacts remain preserved; no prune, move, registry mutation, publish, or network operation is admitted.
 
 ## Previous release: public contract spine readiness output contract gate
 

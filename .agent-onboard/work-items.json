@@ -7344,6 +7344,65 @@
         "checks_not_run": [],
         "known_non_pass": []
       }
+    },
+    {
+      "id": "P1S3M6W13",
+      "milestone_id": "P1S3M6",
+      "title": "Public closed gate raw artifact prune dry-run gate",
+      "status": "closed",
+      "closure": {
+        "actor": "gpt-5.5-thinking",
+        "closed_at": "2026-07-07T12:38:00.000Z",
+        "summary": "Closed by adding read-only closed-gates-prune-dry-run/prune-dry-run-check commands that compute an exact archive-backed raw gate artifact prune candidate set while preserving every raw gate artifact and reserving actual deletion for a future apply gate.",
+        "changed_files": [
+          "package.json",
+          "cli/agent_onboard/runtime-contracts.js",
+          "cli/agent_onboard/runtime-composer.js",
+          "cli/agent_onboard/domains/architecture/static-catalog.js",
+          "cli/agent_onboard/domains/package/services/package-service.js",
+          "test/agent-onboard.test.js",
+          "README.md",
+          "SOURCE_OF_TRUTH.md",
+          "AGENTS.md",
+          "llms.txt",
+          "docs/release-history.md",
+          ".agent-onboard/public-closed-gate-raw-artifact-prune-dry-run-gate.json",
+          ".agent-onboard/closed-gates.archive.jsonl",
+          ".agent-onboard/closed-gates.index.json",
+          ".agent-onboard/work-items.json",
+          ".agent-onboard/work-items.index.json",
+          ".agent-onboard/claims.jsonl",
+          ".agent-onboard/claims.index.json",
+          ".agent-onboard/authority-index.json",
+          ".agent-onboard/state/live-authority.json",
+          ".agent-onboard/state/indexes.json",
+          ".agent-onboard/state/closed-gates.jsonl",
+          "authority-map.json",
+          "manifest.json"
+        ],
+        "checks_run": [
+          "node cli/agent-onboard.js release --closed-gates-prune-dry-run-check",
+          "node cli/agent-onboard.js release --closed-gates-prune-plan-check",
+          "node cli/agent-onboard.js release --closed-gates-read-check",
+          "node cli/agent-onboard.js release --closed-gates-apply-check",
+          "node cli/agent-onboard.js release --full-test-runner-check",
+          "node cli/agent-onboard.js release --check",
+          "node cli/agent-onboard.js check --fast --json",
+          "node cli/agent-onboard.js authority --index-check",
+          "node cli/agent-onboard.js authority --state-check",
+          "node cli/agent-onboard.js target metadata --check --target .",
+          "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+          "node cli/agent-onboard.js claim --validate-ledger --json",
+          "npm test",
+          "npm pack --dry-run --json"
+        ],
+        "checks_not_run": [
+          "npm run test:full"
+        ],
+        "known_non_pass": [
+          "Full-source logic is covered by quick/full-source selected tests and release --full-test-runner-check; the full sequential command remains expensive for the sandbox window and was not used as the W13 closure gate."
+        ]
+      }
     }
   ]
 }
