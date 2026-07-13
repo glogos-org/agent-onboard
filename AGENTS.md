@@ -554,6 +554,11 @@ Use `node cli/agent-onboard.js target handoff --readiness-check --json|--text` w
 
 Use `node cli/agent-onboard.js contracts --json|--text|--check` when a human, CI job, or agent needs the compact public contract/interface spine for stable JSON outputs. The command is read-only: it may describe and validate descriptor-based output contracts for handoff readiness, governance budget, and no-mutation runtime boundaries, but it must not export source-only implementation archives, require TypeScript or abstract classes, write files, install dependencies, run managed-project commands, mutate Git, publish, or use network access. Treat contract output as public product interface evidence, not as authority to mutate target state.
 
+
+## Source size budget ratchet
+
+Before adding or expanding runtime, service, catalog, state, test, or first-read files, run `npm run check:source-size-budget`. Existing oversized files are admitted migration debt only; do not increase them beyond `.agent-onboard/source-size-budget-ratchet.json`, and do not create new files that exceed the category budgets.
+
 <!-- agent-onboard:bridge:start -->
 ## Agent-Onboard bridge
 

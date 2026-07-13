@@ -1363,6 +1363,17 @@
         "claimed_at": "2026-07-08T04:46:43.917Z"
       },
       "closure_ref": "closures:P1S3M6W23"
+    },
+    {
+      "id": "P1S3M6W24",
+      "milestone_id": "P1S3M6",
+      "title": "Public source size budget and ratchet gate",
+      "status": "closed",
+      "claim": {
+        "actor": "chatgpt",
+        "claimed_at": "2026-07-08T05:23:27.409Z"
+      },
+      "closure_ref": "closures:P1S3M6W24"
     }
   ]
 }

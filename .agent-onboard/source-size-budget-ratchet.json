@@ -1,0 +1,292 @@
+{
+  "schema": "agent-onboard-public-source-size-budget-ratchet-001",
+  "status": "active",
+  "work_item_id": "P1S3M6W24",
+  "release_line": "public_source_size_budget_ratchet_gate",
+  "ratchet_mode": "no_tracked_growth_beyond_maximum_and_no_new_oversized_files",
+  "god_file_thresholds": {
+    "god_lines": 1000,
+    "god_bytes": 102400,
+    "near_god_lines": 500,
+    "near_god_bytes": 51200
+  },
+  "categories": {
+    "cli_entrypoint": {
+      "target_lines": 100,
+      "target_bytes": 16384,
+      "max_lines_new_file": 150,
+      "max_bytes_new_file": 24576
+    },
+    "runtime_source": {
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "max_lines_new_file": 600,
+      "max_bytes_new_file": 81920
+    },
+    "runtime_service_source": {
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "max_lines_new_file": 600,
+      "max_bytes_new_file": 81920
+    },
+    "runtime_catalog_source": {
+      "target_lines": 400,
+      "target_bytes": 49152,
+      "max_lines_new_file": 500,
+      "max_bytes_new_file": 65536
+    },
+    "source_module": {
+      "target_lines": 300,
+      "target_bytes": 32768,
+      "max_lines_new_file": 400,
+      "max_bytes_new_file": 49152
+    },
+    "test_source": {
+      "target_lines": 700,
+      "target_bytes": 98304,
+      "max_lines_new_file": 800,
+      "max_bytes_new_file": 131072
+    },
+    "check_script": {
+      "target_lines": 250,
+      "target_bytes": 32768,
+      "max_lines_new_file": 350,
+      "max_bytes_new_file": 49152
+    },
+    "documentation": {
+      "target_lines": 400,
+      "target_bytes": 65536,
+      "max_lines_new_file": 500,
+      "max_bytes_new_file": 98304
+    },
+    "authority_registry": {
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "max_lines_new_file": 700,
+      "max_bytes_new_file": 98304
+    },
+    "authority_state": {
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "max_lines_new_file": 700,
+      "max_bytes_new_file": 131072
+    },
+    "root_json": {
+      "target_lines": 600,
+      "target_bytes": 65536,
+      "max_lines_new_file": 700,
+      "max_bytes_new_file": 98304
+    },
+    "other_text": {
+      "target_lines": 300,
+      "target_bytes": 32768,
+      "max_lines_new_file": 500,
+      "max_bytes_new_file": 65536
+    }
+  },
+  "tracked_files": {
+    ".agent-onboard/state/closures/work-items-closures.jsonl": {
+      "category": "authority_state",
+      "max_lines": 240,
+      "max_bytes": 343401,
+      "baseline_lines": 160,
+      "baseline_bytes": 323401,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "existing oversized file admitted as clean-and-compaction migration debt"
+    },
+    ".agent-onboard/state/live/work-items.json": {
+      "category": "authority_state",
+      "max_lines": 1459,
+      "max_bytes": 59732,
+      "baseline_lines": 1379,
+      "baseline_bytes": 39732,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "existing oversized file admitted as clean-and-compaction migration debt"
+    },
+    ".agent-onboard/work-items.json": {
+      "category": "authority_registry",
+      "max_lines": 1562,
+      "max_bytes": 62081,
+      "baseline_lines": 1482,
+      "baseline_bytes": 42081,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "existing oversized file admitted as clean-and-compaction migration debt"
+    },
+    "AGENTS.md": {
+      "category": "documentation",
+      "max_lines": 669,
+      "max_bytes": 65563,
+      "baseline_lines": 589,
+      "baseline_bytes": 45563,
+      "target_lines": 400,
+      "target_bytes": 65536,
+      "reason": "existing oversized file admitted as clean-and-compaction migration debt"
+    },
+    "README.md": {
+      "category": "documentation",
+      "max_lines": 1388,
+      "max_bytes": 106046,
+      "baseline_lines": 1308,
+      "baseline_bytes": 86046,
+      "target_lines": 400,
+      "target_bytes": 65536,
+      "reason": "existing oversized file admitted as clean-and-compaction migration debt"
+    },
+    "cli/agent_onboard/domains/architecture/m3-runtime-catalog.js": {
+      "category": "runtime_catalog_source",
+      "max_lines": 688,
+      "max_bytes": 43973,
+      "baseline_lines": 668,
+      "baseline_bytes": 35781,
+      "target_lines": 400,
+      "target_bytes": 49152,
+      "reason": "existing oversized file admitted as clean-and-compaction migration debt"
+    },
+    "cli/agent_onboard/domains/architecture/services/runtime/architecture-runtime-service.js": {
+      "category": "runtime_service_source",
+      "max_lines": 1564,
+      "max_bytes": 94154,
+      "baseline_lines": 1544,
+      "baseline_bytes": 85962,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "existing oversized file admitted as clean-and-compaction migration debt"
+    },
+    "cli/agent_onboard/domains/architecture/services/source-domains/claims-source-domain-service.js": {
+      "category": "runtime_service_source",
+      "max_lines": 985,
+      "max_bytes": 71904,
+      "baseline_lines": 965,
+      "baseline_bytes": 63712,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "existing oversized file admitted as clean-and-compaction migration debt"
+    },
+    "cli/agent_onboard/domains/architecture/services/source-domains/work-items-source-domain-service.js": {
+      "category": "runtime_service_source",
+      "max_lines": 955,
+      "max_bytes": 69061,
+      "baseline_lines": 935,
+      "baseline_bytes": 60869,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "existing oversized file admitted as clean-and-compaction migration debt"
+    },
+    "cli/agent_onboard/domains/architecture/services/source-extraction/architecture-source-extraction-service.js": {
+      "category": "runtime_service_source",
+      "max_lines": 1107,
+      "max_bytes": 76471,
+      "baseline_lines": 1087,
+      "baseline_bytes": 68279,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "existing oversized file admitted as clean-and-compaction migration debt"
+    },
+    "cli/agent_onboard/domains/architecture/static-catalog.js": {
+      "category": "runtime_catalog_source",
+      "max_lines": 2716,
+      "max_bytes": 170943,
+      "baseline_lines": 2696,
+      "baseline_bytes": 162751,
+      "target_lines": 400,
+      "target_bytes": 49152,
+      "reason": "existing oversized file admitted as clean-and-compaction migration debt"
+    },
+    "cli/agent_onboard/domains/core/services/public-runtime-surface-service.js": {
+      "category": "runtime_service_source",
+      "max_lines": 1209,
+      "max_bytes": 54162,
+      "baseline_lines": 1189,
+      "baseline_bytes": 45970,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "existing oversized file admitted as clean-and-compaction migration debt"
+    },
+    "cli/agent_onboard/domains/target/services/target-governance-service.js": {
+      "category": "runtime_service_source",
+      "max_lines": 1412,
+      "max_bytes": 74602,
+      "baseline_lines": 1392,
+      "baseline_bytes": 66410,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "existing oversized file admitted as clean-and-compaction migration debt"
+    },
+    "cli/agent_onboard/domains/target/services/target-handoff-service.js": {
+      "category": "runtime_service_source",
+      "max_lines": 639,
+      "max_bytes": 39075,
+      "baseline_lines": 619,
+      "baseline_bytes": 30883,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "existing oversized file admitted as clean-and-compaction migration debt"
+    },
+    "cli/agent_onboard/domains/target/services/target-metadata-service.js": {
+      "category": "runtime_service_source",
+      "max_lines": 871,
+      "max_bytes": 43940,
+      "baseline_lines": 851,
+      "baseline_bytes": 35748,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "existing oversized file admitted as clean-and-compaction migration debt"
+    },
+    "cli/agent_onboard/domains/work-items/services/work-items-service.js": {
+      "category": "runtime_service_source",
+      "max_lines": 1491,
+      "max_bytes": 65135,
+      "baseline_lines": 1471,
+      "baseline_bytes": 56943,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "existing oversized file admitted as clean-and-compaction migration debt"
+    },
+    "cli/agent_onboard/runtime-composer.js": {
+      "category": "runtime_source",
+      "max_lines": 11753,
+      "max_bytes": 676851,
+      "baseline_lines": 11753,
+      "baseline_bytes": 676851,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "existing oversized file admitted as clean-and-compaction migration debt"
+    },
+    "manifest.json": {
+      "category": "root_json",
+      "max_lines": 885,
+      "max_bytes": 76497,
+      "baseline_lines": 805,
+      "baseline_bytes": 56497,
+      "target_lines": 600,
+      "target_bytes": 65536,
+      "reason": "existing oversized file admitted as clean-and-compaction migration debt"
+    },
+    "test/agent-onboard.test.js": {
+      "category": "test_source",
+      "max_lines": 5707,
+      "max_bytes": 374551,
+      "baseline_lines": 5687,
+      "baseline_bytes": 366359,
+      "target_lines": 700,
+      "target_bytes": 98304,
+      "reason": "existing oversized file admitted as clean-and-compaction migration debt"
+    }
+  },
+  "report": {
+    "top_largest_limit": 15,
+    "max_advisories": 30
+  },
+  "boundary": {
+    "storage_backend": "json_jsonl_text_first_unchanged",
+    "sqlite_introduced": false,
+    "lmdb_introduced": false,
+    "mdbx_introduced": false,
+    "network": false,
+    "git_mutation": false,
+    "package_publish": false
+  }
+}

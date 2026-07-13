@@ -113,16 +113,16 @@
       "file_path": "AGENTS.md",
       "present": true,
       "kind": "file",
-      "bytes": 45203,
-      "file_id": "ni:///sha-256;Is4vPJAPZKwkCHVXJCNMrgYvJDxz-JwJIwB4Z54ZwA8",
+      "bytes": 45563,
+      "file_id": "ni:///sha-256;8xgwqfglUSZCwIg1afcBW5lhjXNQIRCCr2PTmssbWhY",
       "content_inlined": false
     },
     {
       "file_path": "SOURCE_OF_TRUTH.md",
       "present": true,
       "kind": "file",
-      "bytes": 10570,
-      "file_id": "ni:///sha-256;9-vi2158VNILwwBAJW217rZMJCpBLPUrKdXq-oq1MAQ",
+      "bytes": 10989,
+      "file_id": "ni:///sha-256;yLpsisakyWK2OFoTMkkIaMcZtnCIWrF9lRjnCJ4e0aU",
       "content_inlined": false
     },
     {
@@ -145,8 +145,8 @@
       "file_path": "package.json",
       "present": true,
       "kind": "file",
-      "bytes": 7405,
-      "file_id": "ni:///sha-256;YWNDO9ClgUWq2o20hy8Of9M98qaKMQhhQgg_6ZedPvI",
+      "bytes": 7489,
+      "file_id": "ni:///sha-256;kbuK5rkT9sBpJHxuIZHT78AeGcr9Bs7Ez_Khg38bF7I",
       "content_inlined": false
     },
     {
@@ -177,8 +177,8 @@
       "file_path": ".agent-onboard/work-items.json",
       "present": true,
       "kind": "file",
-      "bytes": 41779,
-      "file_id": "ni:///sha-256;9l2QAMQqB-CvvsPRGGdFG07bacXTzZak4h-yDUpXhD8",
+      "bytes": 42081,
+      "file_id": "ni:///sha-256;EQCBz0jUjssEhia_QEbZo4Biq5BBektjghbWYeNuKCA",
       "content_inlined": false
     }
   ],
@@ -216,7 +216,7 @@
     "indexed_file_count": 9,
     "present_file_count": 9,
     "missing_file_count": 0,
-    "present_bytes": 126540,
+    "present_bytes": 127705,
     "missing_files": [],
     "excluded_file_count": 7,
     "state_shard_count": 4,

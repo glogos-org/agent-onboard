@@ -1276,6 +1276,11 @@ Source-domain stabilization closure review: `architecture --source-domain-closur
 
 The public line admits the `release_package` domain service partition under `cli/agent_onboard/domains/package/`. The packaged module set separates release command coordination, package surface checks, source manifest context, package coordinates, and installed first-read contracts while preserving existing `agent-onboard release ...` outputs.
 
+
+## Public source size budget ratchet
+
+Use `npm run check:source-size-budget` before adding new runtime, service, catalog, state, or test files. The check is read-only and enforces `.agent-onboard/source-size-budget-ratchet.json`: known oversized files are tracked as migration debt and may not grow past their ratchet maximum, while new files must fit their category budget.
+
 ## Public core config guard service extraction
 
 The public line keeps guard policy evaluation in the packaged core config guard service at `cli/agent_onboard/domains/core/services/config-guard-service.js` and now composes the public guard command surface through `cli/agent_onboard/domains/authority/services/public-runtime-guard-service.js`. The guard remains read-only, keeps the same target config boundary contract, and preserves existing guard JSON outputs while `runtime-composer.js` stays focused on compatibility wiring and dispatch.
