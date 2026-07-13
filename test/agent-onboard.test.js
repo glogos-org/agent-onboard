@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_full_test_runner_completion_compaction_gate';
+const EXPECTED_RELEASE_LINE = 'public_closed_gate_raw_artifact_prune_planning_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -4422,7 +4422,7 @@ fullSourceTest('full source block line 2323', () => {
   assert.ok(help.stdout.includes('architecture --map|--router|--facades|--check'));
   assert.ok(!help.stdout.includes('claims-installed-fallback-smoke'));
   assert.ok(help.stdout.includes('release --plan|--surface|--surface-check|--source-manifest|--source-manifest-check|--artifact-oracle|--artifact-oracle-check|--authority-state-parity|--authority-state-parity-check|--clean-inventory|--clean-check|--clean-catalog|--clean-catalog-check|--keyword-taxonomy|--keyword-taxonomy-check'));
-  assert.ok(help.stdout.includes('--closed-gates-apply|--closed-gates-apply-check|--closed-gates-read|--closed-gates-read-check'));
+  assert.ok(help.stdout.includes('--closed-gates-apply|--closed-gates-apply-check|--closed-gates-read|--closed-gates-read-check|--closed-gates-prune-plan|--closed-gates-prune-plan-check'));
   assert.ok(help.stdout.includes('--target-onboarding-smoke|--real-target-trial|--check'));
   assert.ok(help.stdout.includes('target repair --plan|--write [--force] [--target <path>]'));
   assert.ok(help.stdout.includes('target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]'));
@@ -5481,5 +5481,57 @@ fullSourceTest('public closed gate archive reader verifies compact archive recov
   assert.strictEqual(check.validated.current_work_item_closed, true);
 });
 
+
+fullSourceTest('public closed gate raw artifact prune planning stays no-delete and requires future apply', () => {
+  const plan = readJsonOutput(run(['release', '--closed-gates-prune-plan']));
+  assert.strictEqual(plan.schema, 'agent-onboard-public-closed-gate-raw-artifact-prune-planning-result-001');
+  assert.strictEqual(plan.status, 'ok');
+  assert.strictEqual(plan.version, EXPECTED_VERSION);
+  assert.strictEqual(plan.release_line, EXPECTED_RELEASE_LINE);
+  assert.strictEqual(plan.command, 'agent-onboard release --closed-gates-prune-plan');
+  assert.strictEqual(plan.surface_id, 'closed-gate-raw-artifact-prune-planning');
+  assert.strictEqual(plan.prerequisite_checks.closed_gate_archive_reader_check, 'ok');
+  assert.strictEqual(plan.prerequisite_checks.full_test_runner_completion_check, 'ok');
+  assert.ok(plan.current_surface.raw_gate_artifact_count >= 30);
+  assert.strictEqual(plan.current_surface.raw_gate_artifact_parse_error_count, 0);
+  assert.strictEqual(plan.current_surface.index_present, true);
+  assert.strictEqual(plan.current_surface.index_status, 'present_valid_json');
+  assert.strictEqual(plan.current_surface.archive_present, true);
+  assert.strictEqual(plan.current_surface.archive_parse_error_count, 0);
+  assert.strictEqual(plan.current_surface.index_record_count, plan.current_surface.archive_record_count);
+  assert.strictEqual(plan.current_surface.archive_covers_raw_artifacts, true);
+  assert.strictEqual(plan.current_surface.archive_file_ids_match_raw, true);
+  assert.strictEqual(plan.prune_plan.planning_only, true);
+  assert.strictEqual(plan.prune_plan.delete_now, false);
+  assert.strictEqual(plan.prune_plan.move_now, false);
+  assert.strictEqual(plan.prune_plan.rewrite_now, false);
+  assert.strictEqual(plan.prune_plan.future_prune_requires_explicit_apply_gate, true);
+  assert.strictEqual(plan.prune_plan.raw_prune_authorized_by_this_gate, false);
+  assert.strictEqual(plan.recovery.reader_check_passes, true);
+  assert.strictEqual(plan.recovery.full_test_runner_check_passes, true);
+  assert.strictEqual(plan.recovery.index_archive_digest_matches_archive, true);
+  assert.strictEqual(plan.recovery.raw_file_ids_match_archive, true);
+  assert.strictEqual(plan.artifact.present, true);
+  assert.strictEqual(plan.boundary.writes_files, false);
+  assert.strictEqual(plan.boundary.deletes_raw_gate_artifacts, false);
+  assert.strictEqual(plan.boundary.prunes_now, false);
+
+  const check = readJsonOutput(run(['release', '--closed-gates-prune-plan-check']));
+  assert.strictEqual(check.schema, 'agent-onboard-public-closed-gate-raw-artifact-prune-planning-check-result-001');
+  assert.strictEqual(check.status, 'ok');
+  assert.strictEqual(check.command, 'agent-onboard release --closed-gates-prune-plan-check');
+  assert.strictEqual(check.validated.archive_reader_check_passes, true);
+  assert.strictEqual(check.validated.full_test_runner_check_passes, true);
+  assert.strictEqual(check.validated.planning_artifact_present, true);
+  assert.strictEqual(check.validated.index_present_valid_json, true);
+  assert.strictEqual(check.validated.archive_present_and_parses, true);
+  assert.strictEqual(check.validated.index_archive_digest_matches_archive, true);
+  assert.strictEqual(check.validated.archive_covers_raw_artifacts, true);
+  assert.strictEqual(check.validated.archive_file_ids_match_raw, true);
+  assert.strictEqual(check.validated.planning_only_no_prune, true);
+  assert.strictEqual(check.validated.future_apply_gate_required, true);
+  assert.strictEqual(check.validated.no_delete_move_rewrite_boundary, true);
+  assert.strictEqual(check.validated.current_work_item_closed, true);
+});
 
 runSelectedFullSourceTests();

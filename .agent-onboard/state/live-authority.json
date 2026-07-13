@@ -2,13 +2,13 @@
   "schema": "agent-onboard-public-authority-live-state-shard-001",
   "package_name": "agent-onboard",
   "package_version_source": "package.json#version",
-  "release_line": "public_full_test_runner_completion_compaction_gate",
+  "release_line": "public_closed_gate_raw_artifact_prune_planning_gate",
   "authority_state_source_layout": "sharded_seed",
   "state_root": ".agent-onboard/state",
-  "current_work_item": "P1S3M6W11",
-  "current_work_item_title": "Public full-test runner completion compaction gate",
-  "last_closed_work_item": "P1S3M6W11",
-  "last_closed_title": "Public full-test runner completion compaction gate",
+  "current_work_item": "P1S3M6W12",
+  "current_work_item_title": "Public closed gate raw artifact prune planning gate",
+  "last_closed_work_item": "P1S3M6W12",
+  "last_closed_title": "Public closed gate raw artifact prune planning gate",
   "default_first_read": true,
   "compact_authority_index_file": ".agent-onboard/authority-index.json",
   "state_command": "agent-onboard authority --state",
@@ -17,13 +17,6 @@
   "raw_growth_files_loaded_by_default": false,
   "file_contents_inlined": false,
   "latest_closed_work_items": [
-    {
-      "id": "P1S3M6W7",
-      "title": "Public closed gate artifact compaction planning gate",
-      "status": "closed",
-      "milestone_id": "P1S3M6",
-      "domain": null
-    },
     {
       "id": "P1S3M6W8",
       "title": "Public closed gate artifact compaction dry-run gate",
@@ -48,6 +41,13 @@
     {
       "id": "P1S3M6W11",
       "title": "Public full-test runner completion compaction gate",
+      "status": "closed",
+      "milestone_id": "P1S3M6",
+      "domain": null
+    },
+    {
+      "id": "P1S3M6W12",
+      "title": "Public closed gate raw artifact prune planning gate",
       "status": "closed",
       "milestone_id": "P1S3M6",
       "domain": null

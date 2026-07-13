@@ -12,7 +12,7 @@ const EXPECTED_PACK_FILES = Array.from(new Set(PACKAGE_JSON.files.concat(['packa
 const MAX_OUTPUT_BYTES = 20 * 1024 * 1024;
 const DEFAULT_CONCURRENCY = 8;
 const DEFAULT_FULL_CONCURRENCY = 1;
-const DEFAULT_FULL_SOURCE_TEST_SHARDS = 162;
+const DEFAULT_FULL_SOURCE_TEST_SHARDS = 163;
 const DEFAULT_TASK_TIMEOUT_MS = 120000;
 const DEFAULT_FULL_SOURCE_TEST_TASK_TIMEOUT_MS = 180000;
 const FULL_SOURCE_TEST = path.join(ROOT, 'test', 'agent-onboard.test.js');
@@ -104,7 +104,7 @@ function cleanupFullSourceTempDirs() {
   let entries = [];
   try { entries = fs.readdirSync(tmp); } catch { return; }
   for (const entry of entries) {
-    if (/^(agent-onboard-test-|aob-contract-output-|aob-full-task-|aob-target-fixture-)/.test(entry)) {
+    if (/^(agent-onboard-test-|agent-onboard-pack-|agent-onboard-hash-cache-|agent-onboard-target-manifest-|agent-onboard-installed-like-|agent-onboard-artifact-oracle-|agent-onboard-target-installed-smoke-|agent-onboard-real-target-trial-|aob-contract-output-|aob-full-task-|aob-target-fixture-)/.test(entry)) {
       try { fs.rmSync(path.join(tmp, entry), { recursive: true, force: true }); } catch {}
     }
   }
@@ -368,11 +368,11 @@ function fullTasks(shards) {
   const timeoutMs = Number.parseInt(process.env.AGENT_ONBOARD_FULL_TEST_TASK_TIMEOUT_MS || '', 10) || DEFAULT_FULL_SOURCE_TEST_TASK_TIMEOUT_MS;
   if (process.env.AGENT_ONBOARD_FULL_TEST_CASE_MODE === '1') {
     return discoverFullSourceTests().map((test) => (
-      nodeTask(`full source test index ${test.index}`, [FULL_SOURCE_TEST, `--only-index=${test.index}`], null, { timeoutMs, captureOutput: false })
+      nodeTask(`full source test index ${test.index}`, [FULL_SOURCE_TEST, `--only-index=${test.index}`], null, { timeoutMs, captureOutput: false, cleanupTemp: true })
     ));
   }
   return Array.from({ length: shards }, (_, index) => (
-    nodeTask(`full source test shard ${index}/${shards}`, [FULL_SOURCE_TEST, `--shard=${index}/${shards}`], null, { timeoutMs, captureOutput: false })
+    nodeTask(`full source test shard ${index}/${shards}`, [FULL_SOURCE_TEST, `--shard=${index}/${shards}`], null, { timeoutMs, captureOutput: false, cleanupTemp: true })
   ));
 }
 
@@ -429,6 +429,7 @@ async function runSuite(label, tasks, concurrency) {
 
 function runFullTaskSync(task) {
   const startedAt = Date.now();
+  if (task.cleanupTemp) cleanupFullSourceTempDirs();
   const timeoutMs = Number.isInteger(task.timeoutMs) && task.timeoutMs > 0 ? task.timeoutMs : DEFAULT_FULL_SOURCE_TEST_TASK_TIMEOUT_MS;
   const result = spawnSync(task.command, task.args, {
     cwd: ROOT,
@@ -439,6 +440,7 @@ function runFullTaskSync(task) {
     timeout: timeoutMs
   });
   const durationMs = Date.now() - startedAt;
+  if (task.cleanupTemp) cleanupFullSourceTempDirs();
   if (result.error) {
     const timedOut = result.error.code === 'ETIMEDOUT';
     return Object.assign({}, result, { task, ok: false, durationMs, errorMessage: timedOut ? `task timeout after ${timeoutMs}ms` : result.error.message });
@@ -489,7 +491,7 @@ async function runFull() {
   const shardCount = Number.parseInt(process.env.AGENT_ONBOARD_FULL_TEST_SHARDS || '', 10) || DEFAULT_FULL_SOURCE_TEST_SHARDS;
   const tasks = fullTasks(Math.max(1, shardCount));
   try {
-    runFullSuiteSync(tasks, concurrency);
+    await runSuite('full', tasks, concurrency);
   } finally {
     cleanupFullSourceTempDirs();
   }

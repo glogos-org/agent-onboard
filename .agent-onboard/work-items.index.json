@@ -3,17 +3,11 @@
   "status": "active",
   "ledger_path": ".agent-onboard/work-items.json",
   "raw_ledger_loaded_by_default": false,
-  "item_count": 148,
+  "item_count": 149,
   "open_count": 0,
-  "closed_count": 148,
+  "closed_count": 149,
   "latest_items_limit": 5,
   "latest_items": [
-    {
-      "id": "P1S3M6W7",
-      "milestone_id": "P1S3M6",
-      "title": "Public closed gate artifact compaction planning gate",
-      "status": "closed"
-    },
     {
       "id": "P1S3M6W8",
       "milestone_id": "P1S3M6",
@@ -37,7 +31,13 @@
       "milestone_id": "P1S3M6",
       "title": "Public full-test runner completion compaction gate",
       "status": "closed"
+    },
+    {
+      "id": "P1S3M6W12",
+      "milestone_id": "P1S3M6",
+      "title": "Public closed gate raw artifact prune planning gate",
+      "status": "closed"
     }
   ],
-  "updated_at": "2026-07-07T10:11:00.000Z"
+  "updated_at": "2026-07-07T11:24:00.000Z"
 }
