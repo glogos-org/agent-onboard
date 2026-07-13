@@ -3,17 +3,11 @@
   "status": "active",
   "ledger_path": ".agent-onboard/work-items.json",
   "raw_ledger_loaded_by_default": false,
-  "item_count": 150,
+  "item_count": 151,
   "open_count": 0,
-  "closed_count": 150,
+  "closed_count": 151,
   "latest_items_limit": 5,
   "latest_items": [
-    {
-      "id": "P1S3M6W9",
-      "milestone_id": "P1S3M6",
-      "title": "Public closed gate artifact compaction apply gate",
-      "status": "closed"
-    },
     {
       "id": "P1S3M6W10",
       "milestone_id": "P1S3M6",
@@ -37,7 +31,13 @@
       "milestone_id": "P1S3M6",
       "title": "Public closed gate raw artifact prune dry-run gate",
       "status": "closed"
+    },
+    {
+      "id": "P1S3M6W14",
+      "milestone_id": "P1S3M6",
+      "title": "Public closed gate raw artifact prune apply admission gate",
+      "status": "closed"
     }
   ],
-  "updated_at": "2026-07-07T12:38:00.000Z"
+  "updated_at": "2026-07-07T13:20:00.000Z"
 }

@@ -8011,11 +8011,12 @@ function publicReadmeHistoryArchiveSplitApplyCheck(root = packageRoot()) {
   const result = publicReadmeHistoryArchiveSplitApply(root);
   const milestone = publicReadmeHistoryArchiveSplitApplyMilestoneState(root);
   const installedPackageContext = result.package_context === 'installed_package';
+  const rawPruneApplied = publicClosedGateRawArtifactPruneApplyAdmitted(root);
   const errors = [];
   const apply = PUBLIC_README_HISTORY_ARCHIVE_SPLIT_APPLY;
   if (result.dry_run_check !== 'ok') errors.push('README history archive split dry-run check must pass before apply check');
   if (!result.current.applied && !installedPackageContext) errors.push('README history archive split must be applied with archive and index status applied');
-  if (!result.current.apply_artifact_present && !installedPackageContext) errors.push(`${apply.artifact_file} must be present after apply`);
+  if (!result.current.apply_artifact_present && !installedPackageContext && !rawPruneApplied) errors.push(`${apply.artifact_file} must be present after apply`);
   if (!result.live_readme.present) errors.push('README.md must remain present after archive split apply');
   if (!result.live_readme.release_history_pointer_present) errors.push('README.md must contain a release history pointer to docs/release-history.md');
   if (result.live_readme.archived_history_sections_remaining !== 0) errors.push('README.md must not retain archived Current release/Previous release sections after apply');
@@ -8049,7 +8050,7 @@ function publicReadmeHistoryArchiveSplitApplyCheck(root = packageRoot()) {
     validated: Object.freeze({
       dry_run_check_passes: result.dry_run_check === 'ok',
       apply_state_present: result.current.applied || installedPackageContext,
-      apply_artifact_present: result.current.apply_artifact_present || installedPackageContext,
+      apply_artifact_present: result.current.apply_artifact_present || installedPackageContext || rawPruneApplied,
       installed_package_context_allows_source_archive_omission: installedPackageContext,
       readme_present: result.live_readme.present,
       readme_release_history_pointer_present: result.live_readme.release_history_pointer_present,
@@ -8414,16 +8415,17 @@ function publicClosedGateArtifactCompactionPlanCheck(root = packageRoot()) {
   const milestone = publicClosedGateArtifactCompactionMilestoneState(root);
   const errors = [];
   const installedContext = result.package_context === 'installed_package';
+  const rawPruneApplied = publicClosedGateRawArtifactPruneApplyAdmitted(root);
   if (result.prerequisite_checks.clean_catalog_check !== 'ok') errors.push('closed-gate planning requires clean catalog check to pass');
   if (result.prerequisite_checks.readme_apply_check !== 'ok') errors.push('closed-gate planning requires README apply check to pass');
-  if (!installedContext && result.current_surface.artifact_count < PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_PLAN.minimum_closed_gate_artifacts) errors.push(`closed-gate planning requires at least ${PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_PLAN.minimum_closed_gate_artifacts} gate artifacts`);
-  if (!installedContext && result.current_surface.total_bytes <= 0) errors.push('closed-gate planning must measure non-zero artifact bytes');
+  if (!installedContext && !rawPruneApplied && result.current_surface.artifact_count < PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_PLAN.minimum_closed_gate_artifacts) errors.push(`closed-gate planning requires at least ${PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_PLAN.minimum_closed_gate_artifacts} gate artifacts`);
+  if (!installedContext && !rawPruneApplied && result.current_surface.total_bytes <= 0) errors.push('closed-gate planning must measure non-zero artifact bytes');
   if (result.current_surface.parse_error_count !== 0) errors.push('closed-gate planning requires all gate artifacts to parse as JSON');
-  if (!installedContext && result.current_surface.planning_artifact_present !== true) errors.push(`${PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_PLAN.planning_artifact_file} must exist after this planning gate closes`);
+  if (!installedContext && !rawPruneApplied && result.current_surface.planning_artifact_present !== true) errors.push(`${PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_PLAN.planning_artifact_file} must exist after this planning gate closes`);
   if (!installedContext && result.current_surface.authority_closed_gates_jsonl_present !== true) errors.push('authority closed-gates JSONL shard must remain present');
-  if (result.future_compaction_design.index_candidate_present_now !== false && result.future_compaction_design.apply_gate_applied !== true) errors.push(`${PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_PLAN.future_index_candidate} must not be created by the planning gate before apply`);
-  if (result.future_compaction_design.archive_candidate_present_now !== false && result.future_compaction_design.apply_gate_applied !== true) errors.push(`${PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_PLAN.future_archive_candidate} must not be created by the planning gate before apply`);
-  if (result.future_compaction_design.raw_artifacts_preserved_until_apply_gate !== true) errors.push('raw artifacts must be preserved until a future apply gate');
+  if (!rawPruneApplied && result.future_compaction_design.index_candidate_present_now !== false && result.future_compaction_design.apply_gate_applied !== true) errors.push(`${PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_PLAN.future_index_candidate} must not be created by the planning gate before apply`);
+  if (!rawPruneApplied && result.future_compaction_design.archive_candidate_present_now !== false && result.future_compaction_design.apply_gate_applied !== true) errors.push(`${PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_PLAN.future_archive_candidate} must not be created by the planning gate before apply`);
+  if (!rawPruneApplied && result.future_compaction_design.raw_artifacts_preserved_until_apply_gate !== true) errors.push('raw artifacts must be preserved until a future apply gate');
   if (result.future_compaction_design.raw_artifact_recovery_required_after_apply !== true) errors.push('future apply must preserve raw artifact recovery');
   if (result.boundary.writes_files !== false) errors.push('closed-gate planning command must be no-write');
   if (result.boundary.deletes_files !== false) errors.push('closed-gate planning command must not delete files');
@@ -8446,14 +8448,14 @@ function publicClosedGateArtifactCompactionPlanCheck(root = packageRoot()) {
     validated: Object.freeze({
       clean_catalog_check_passes: result.prerequisite_checks.clean_catalog_check === 'ok',
       readme_apply_check_passes: result.prerequisite_checks.readme_apply_check === 'ok',
-      enough_gate_artifacts: installedContext || result.current_surface.artifact_count >= PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_PLAN.minimum_closed_gate_artifacts,
-      source_artifacts_present_or_installed_context_allowed: installedContext || result.current_surface.artifact_count >= PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_PLAN.minimum_closed_gate_artifacts,
+      enough_gate_artifacts: installedContext || rawPruneApplied || result.current_surface.artifact_count >= PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_PLAN.minimum_closed_gate_artifacts,
+      source_artifacts_present_or_installed_context_allowed: installedContext || rawPruneApplied || result.current_surface.artifact_count >= PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_PLAN.minimum_closed_gate_artifacts,
       artifacts_parse_as_json: result.current_surface.parse_error_count === 0,
-      planning_artifact_present: installedContext || result.current_surface.planning_artifact_present === true,
+      planning_artifact_present: installedContext || rawPruneApplied || result.current_surface.planning_artifact_present === true,
       installed_context_allows_source_planning_artifact_omission: installedContext,
-      future_index_not_created_or_apply_admitted: result.future_compaction_design.index_candidate_present_now === false || result.future_compaction_design.apply_gate_applied === true,
-      future_archive_not_created_or_apply_admitted: result.future_compaction_design.archive_candidate_present_now === false || result.future_compaction_design.apply_gate_applied === true,
-      raw_artifacts_preserved: result.future_compaction_design.raw_artifacts_preserved_until_apply_gate === true,
+      future_index_not_created_or_apply_admitted: rawPruneApplied || result.future_compaction_design.index_candidate_present_now === false || result.future_compaction_design.apply_gate_applied === true,
+      future_archive_not_created_or_apply_admitted: rawPruneApplied || result.future_compaction_design.archive_candidate_present_now === false || result.future_compaction_design.apply_gate_applied === true,
+      raw_artifacts_preserved: rawPruneApplied || result.future_compaction_design.raw_artifacts_preserved_until_apply_gate === true,
       recovery_path_required: result.future_compaction_design.raw_artifact_recovery_required_after_apply === true,
       no_write_boundary: result.boundary.writes_files === false,
       no_delete_boundary: result.boundary.deletes_files === false,
@@ -8711,17 +8713,18 @@ function publicClosedGateArtifactCompactionDryRunCheck(root = packageRoot()) {
   const milestone = publicClosedGateArtifactCompactionDryRunMilestoneState(root);
   const errors = [];
   const installedContext = result.package_context === 'installed_package';
+  const rawPruneApplied = publicClosedGateRawArtifactPruneApplyAdmitted(root);
   if (result.plan_gate_check !== 'ok') errors.push('closed gate dry-run requires closed-gates plan check to pass');
-  if (!installedContext && result.current.raw_gate_artifact_count < PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.minimum_record_count) errors.push(`closed gate dry-run requires at least ${PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.minimum_record_count} raw gate artifacts`);
+  if (!installedContext && !rawPruneApplied && result.current.raw_gate_artifact_count < PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.minimum_record_count) errors.push(`closed gate dry-run requires at least ${PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.minimum_record_count} raw gate artifacts`);
   if (result.current.parse_error_count !== 0) errors.push('closed gate dry-run requires all raw gate artifacts to parse as JSON');
-  if (result.archive_preview.record_count !== result.current.raw_gate_artifact_count) errors.push('archive preview record count must match raw gate artifact count');
-  if (result.index_preview.record_count !== result.archive_preview.record_count) errors.push('index preview record count must match archive preview record count');
-  if (result.index_preview.archive_candidate_file_id !== result.archive_preview.file_id) errors.push('index preview archive digest must match archive preview digest');
-  if (!installedContext && result.current.dry_run_artifact_present !== true) errors.push(`${PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.dry_run_artifact_file} must exist after this dry-run gate closes`);
-  if (result.current.index_candidate_present !== false && result.current.apply_gate_applied !== true) errors.push(`${PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.index_candidate} must not be written by dry-run gate before apply`);
-  if (result.current.archive_candidate_present !== false && result.current.apply_gate_applied !== true) errors.push(`${PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.archive_candidate} must not be written by dry-run gate before apply`);
-  if (result.recovery_map_preview.raw_artifact_paths_present !== true) errors.push('recovery map raw artifact paths must still be present');
-  if (result.recovery_map_preview.raw_artifact_file_ids_match !== true) errors.push('recovery map raw artifact file ids must match compact records');
+  if (!rawPruneApplied && result.archive_preview.record_count !== result.current.raw_gate_artifact_count) errors.push('archive preview record count must match raw gate artifact count');
+  if (!rawPruneApplied && result.index_preview.record_count !== result.archive_preview.record_count) errors.push('index preview record count must match archive preview record count');
+  if (!rawPruneApplied && result.index_preview.archive_candidate_file_id !== result.archive_preview.file_id) errors.push('index preview archive digest must match archive preview digest');
+  if (!installedContext && !rawPruneApplied && result.current.dry_run_artifact_present !== true) errors.push(`${PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.dry_run_artifact_file} must exist after this dry-run gate closes`);
+  if (!rawPruneApplied && result.current.index_candidate_present !== false && result.current.apply_gate_applied !== true) errors.push(`${PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.index_candidate} must not be written by dry-run gate before apply`);
+  if (!rawPruneApplied && result.current.archive_candidate_present !== false && result.current.apply_gate_applied !== true) errors.push(`${PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.archive_candidate} must not be written by dry-run gate before apply`);
+  if (!rawPruneApplied && result.recovery_map_preview.raw_artifact_paths_present !== true) errors.push('recovery map raw artifact paths must still be present');
+  if (!rawPruneApplied && result.recovery_map_preview.raw_artifact_file_ids_match !== true) errors.push('recovery map raw artifact file ids must match compact records');
   if (result.diff_preview.writes_files_now !== false) errors.push('closed gate dry-run must not write files now');
   if (result.diff_preview.would_delete_or_move_raw_artifacts_after_future_admission !== false) errors.push('dry-run must not plan raw artifact deletion or movement');
   if (result.boundary.writes_files !== false) errors.push('closed gate dry-run command must be no-write');
@@ -8743,16 +8746,16 @@ function publicClosedGateArtifactCompactionDryRunCheck(root = packageRoot()) {
     package_root: root,
     validated: Object.freeze({
       plan_gate_check_passes: result.plan_gate_check === 'ok',
-      enough_raw_gate_artifacts: installedContext || result.current.raw_gate_artifact_count >= PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.minimum_record_count,
+      enough_raw_gate_artifacts: installedContext || rawPruneApplied || result.current.raw_gate_artifact_count >= PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_DRY_RUN.minimum_record_count,
       raw_gate_artifacts_parse_as_json: result.current.parse_error_count === 0,
-      archive_record_count_matches_raw_artifacts: result.archive_preview.record_count === result.current.raw_gate_artifact_count,
-      index_record_count_matches_archive: result.index_preview.record_count === result.archive_preview.record_count,
-      index_archive_digest_matches_archive_preview: result.index_preview.archive_candidate_file_id === result.archive_preview.file_id,
-      dry_run_artifact_present: installedContext || result.current.dry_run_artifact_present === true,
-      future_index_not_created_or_apply_admitted: result.current.index_candidate_present === false || result.current.apply_gate_applied === true,
-      future_archive_not_created_or_apply_admitted: result.current.archive_candidate_present === false || result.current.apply_gate_applied === true,
-      raw_artifacts_preserved: result.recovery_map_preview.raw_artifact_paths_present === true,
-      recovery_file_ids_match: result.recovery_map_preview.raw_artifact_file_ids_match === true,
+      archive_record_count_matches_raw_artifacts: rawPruneApplied || result.archive_preview.record_count === result.current.raw_gate_artifact_count,
+      index_record_count_matches_archive: rawPruneApplied || result.index_preview.record_count === result.archive_preview.record_count,
+      index_archive_digest_matches_archive_preview: rawPruneApplied || result.index_preview.archive_candidate_file_id === result.archive_preview.file_id,
+      dry_run_artifact_present: installedContext || rawPruneApplied || result.current.dry_run_artifact_present === true,
+      future_index_not_created_or_apply_admitted: rawPruneApplied || result.current.index_candidate_present === false || result.current.apply_gate_applied === true,
+      future_archive_not_created_or_apply_admitted: rawPruneApplied || result.current.archive_candidate_present === false || result.current.apply_gate_applied === true,
+      raw_artifacts_preserved: rawPruneApplied || result.recovery_map_preview.raw_artifact_paths_present === true,
+      recovery_file_ids_match: rawPruneApplied || result.recovery_map_preview.raw_artifact_file_ids_match === true,
       no_write_boundary: result.boundary.writes_files === false,
       no_delete_boundary: result.boundary.deletes_raw_gate_artifacts === false,
       no_move_boundary: result.boundary.moves_raw_gate_artifacts === false,
@@ -8988,24 +8991,26 @@ function publicClosedGateArtifactCompactionApplyCheck(root = packageRoot()) {
   const milestone = publicClosedGateArtifactCompactionApplyMilestoneState(root);
   const installedContext = result.package_context === 'installed_package';
   const apply = PUBLIC_CLOSED_GATE_ARTIFACT_COMPACTION_APPLY;
+  const rawPruneApplied = publicClosedGateRawArtifactPruneApplyAdmitted(root);
+  const pruneState = publicClosedGateRawArtifactPruneApplyIndexState(root);
   const errors = [];
   if (result.dry_run_check !== 'ok') errors.push('closed gate artifact compaction dry-run check must pass before apply check');
-  if (!installedContext && result.current.raw_gate_artifact_count < apply.minimum_record_count) errors.push(`closed gate apply requires at least ${apply.minimum_record_count} raw gate artifacts`);
-  if (!installedContext && !result.current.applied) errors.push('closed gate compaction apply must materialize index, archive, and apply gate artifact');
+  if (!installedContext && !rawPruneApplied && result.current.raw_gate_artifact_count < apply.minimum_record_count) errors.push(`closed gate apply requires at least ${apply.minimum_record_count} raw gate artifacts`);
+  if (!installedContext && !rawPruneApplied && !result.current.applied) errors.push('closed gate compaction apply must materialize index, archive, and apply gate artifact');
   if (!installedContext && !result.archive.present) errors.push(`${apply.archive_path} must be present after apply`);
   if (!installedContext && !result.index.present) errors.push(`${apply.index_path} must be present after apply`);
-  if (!installedContext && !result.current.apply_artifact_present) errors.push(`${apply.artifact_file} must be present after apply`);
+  if (!installedContext && !rawPruneApplied && !result.current.apply_artifact_present) errors.push(`${apply.artifact_file} must be present after apply`);
   if (!installedContext && result.archive.parse_error_count !== 0) errors.push('closed gate archive JSONL records must all parse');
-  if (!installedContext && result.archive.record_count !== result.current.raw_gate_artifact_count) errors.push('closed gate archive record count must match raw gate artifact count');
+  if (!installedContext && !rawPruneApplied && result.archive.record_count !== result.current.raw_gate_artifact_count) errors.push('closed gate archive record count must match raw gate artifact count');
   if (!installedContext && result.index.record_count !== result.archive.record_count) errors.push('closed gate index record count must match archive record count');
   if (!installedContext && result.index.archive_file_id !== result.archive.file_id) errors.push('closed gate index archive digest must match archive file digest');
-  if (!installedContext && !result.archive.matches_expected) errors.push('closed gate archive file must match generated archive candidate');
-  if (!installedContext && !result.index.matches_expected) errors.push('closed gate index file must match generated index candidate');
+  if (!installedContext && !rawPruneApplied && !result.archive.matches_expected) errors.push('closed gate archive file must match generated archive candidate');
+  if (!installedContext && !rawPruneApplied && !result.index.matches_expected) errors.push('closed gate index file must match generated index candidate');
   if (!installedContext && result.index.byte_count > apply.max_index_bytes) errors.push(`closed gate index byte count ${result.index.byte_count} outside apply budget`);
   if (!installedContext && result.archive.byte_count > apply.max_archive_bytes) errors.push(`closed gate archive byte count ${result.archive.byte_count} outside apply budget`);
-  if (!result.recovery.raw_gate_artifacts_preserved && !installedContext) errors.push('raw closed gate artifacts must remain present after apply');
-  if (!result.recovery.archive_replays_raw_artifact_file_ids && !installedContext) errors.push('archive records must preserve raw artifact file ids in order');
-  if (result.boundary.deletes_raw_gate_artifacts !== false) errors.push('closed gate apply must not delete raw gate artifacts');
+  if (!rawPruneApplied && !result.recovery.raw_gate_artifacts_preserved && !installedContext) errors.push('raw closed gate artifacts must remain present after apply');
+  if (!rawPruneApplied && !result.recovery.archive_replays_raw_artifact_file_ids && !installedContext) errors.push('archive records must preserve raw artifact file ids in order');
+  if (!rawPruneApplied && result.boundary.deletes_raw_gate_artifacts !== false) errors.push('closed gate apply must not delete raw gate artifacts');
   if (result.boundary.moves_raw_gate_artifacts !== false) errors.push('closed gate apply must not move raw gate artifacts');
   if (result.boundary.command_writes_files !== false || result.boundary.check_command_writes_files !== false) errors.push('closed gate apply commands must remain read-only verifiers');
   if (result.boundary.publishes_package !== false || result.boundary.mutates_registry !== false) errors.push('closed gate apply must not publish or mutate registry state');
@@ -9025,18 +9030,18 @@ function publicClosedGateArtifactCompactionApplyCheck(root = packageRoot()) {
     package_root: root,
     validated: Object.freeze({
       dry_run_check_passes: result.dry_run_check === 'ok',
-      apply_state_present: result.current.applied || installedContext,
-      apply_artifact_present: result.current.apply_artifact_present || installedContext,
+      apply_state_present: rawPruneApplied || result.current.applied || installedContext,
+      apply_artifact_present: rawPruneApplied || result.current.apply_artifact_present || installedContext,
       archive_present: result.archive.present || installedContext,
       index_present_valid_json: (result.index.present && result.index.status === 'present_valid_json') || installedContext,
-      raw_gate_artifacts_preserved: result.recovery.raw_gate_artifacts_preserved || installedContext,
-      archive_record_count_matches_raw_artifacts: result.archive.record_count === result.current.raw_gate_artifact_count || installedContext,
+      raw_gate_artifacts_preserved: rawPruneApplied || result.recovery.raw_gate_artifacts_preserved || installedContext,
+      archive_record_count_matches_raw_artifacts: rawPruneApplied || result.archive.record_count === result.current.raw_gate_artifact_count || installedContext,
       index_record_count_matches_archive: result.index.record_count === result.archive.record_count || installedContext,
       index_archive_digest_matches_archive: result.index.archive_file_id === result.archive.file_id || installedContext,
-      archive_matches_generated_candidate: result.archive.matches_expected || installedContext,
-      index_matches_generated_candidate: result.index.matches_expected || installedContext,
-      archive_replays_raw_artifact_file_ids: result.recovery.archive_replays_raw_artifact_file_ids || installedContext,
-      no_delete_raw_artifacts: result.boundary.deletes_raw_gate_artifacts === false,
+      archive_matches_generated_candidate: rawPruneApplied || result.archive.matches_expected || installedContext,
+      index_matches_generated_candidate: rawPruneApplied || result.index.matches_expected || installedContext,
+      archive_replays_raw_artifact_file_ids: rawPruneApplied || result.recovery.archive_replays_raw_artifact_file_ids || installedContext,
+      no_delete_raw_artifacts: rawPruneApplied || result.boundary.deletes_raw_gate_artifacts === false,
       no_move_raw_artifacts: result.boundary.moves_raw_gate_artifacts === false,
       commands_are_read_only_verifiers: result.boundary.command_writes_files === false && result.boundary.check_command_writes_files === false,
       no_publish_or_registry_mutation: result.boundary.publishes_package === false && result.boundary.mutates_registry === false,
@@ -9292,9 +9297,10 @@ function publicClosedGateArchiveReaderCheck(root = packageRoot()) {
   const reader = PUBLIC_CLOSED_GATE_ARCHIVE_READER;
   const milestone = publicClosedGateArchiveReaderMilestoneState(root);
   const installedContext = result.package_context === 'installed_package';
+  const rawPruneApplied = publicClosedGateRawArtifactPruneApplyAdmitted(root);
   const errors = [];
   if (result.apply_check_status !== 'ok') errors.push('closed gate archive reader requires closed-gates apply check to pass');
-  if (!installedContext && result.artifact.present !== true) errors.push(`${reader.artifact_file} must exist after this reader gate closes`);
+  if (!installedContext && !rawPruneApplied && result.artifact.present !== true) errors.push(`${reader.artifact_file} must exist after this reader gate closes`);
   if (!installedContext && result.index.present !== true) errors.push(`${reader.index_path} must be present for archive reader`);
   if (!installedContext && result.index.status !== 'present_valid_json') errors.push(`${reader.index_path} must parse as JSON`);
   if (!installedContext && result.archive.present !== true) errors.push(`${reader.archive_path} must be present for archive reader`);
@@ -9306,8 +9312,8 @@ function publicClosedGateArchiveReaderCheck(root = packageRoot()) {
   if (!installedContext && result.reader.unique_paths !== result.archive.record_count) errors.push('closed gate archive reader requires unique archive record paths');
   if (!installedContext && result.reader.unique_ordinals !== result.archive.record_count) errors.push('closed gate archive reader requires unique archive record ordinals');
   if (!installedContext && result.reader.ordinal_sequence_contiguous !== true) errors.push('closed gate archive reader requires contiguous ordinal sequence');
-  if (!installedContext && result.recovery.raw_gate_artifacts_present !== true) errors.push('closed gate archive reader requires raw gate artifact paths to remain present');
-  if (!installedContext && result.recovery.raw_gate_artifact_file_ids_match_archive !== true) errors.push('closed gate archive reader requires raw artifact file ids to match archive records');
+  if (!installedContext && !rawPruneApplied && result.recovery.raw_gate_artifacts_present !== true) errors.push('closed gate archive reader requires raw gate artifact paths to remain present');
+  if (!installedContext && !rawPruneApplied && result.recovery.raw_gate_artifact_file_ids_match_archive !== true) errors.push('closed gate archive reader requires raw artifact file ids to match archive records');
   if (!installedContext && result.test_runner_hardening.per_task_timeout_configured !== true) errors.push('full test runner must configure bounded per-task timeout before W10 closes');
   if (result.boundary.writes_files !== false) errors.push('closed gate archive reader must be no-write');
   if (result.boundary.deletes_raw_gate_artifacts !== false) errors.push('closed gate archive reader must not delete raw gate artifacts');
@@ -9331,7 +9337,7 @@ function publicClosedGateArchiveReaderCheck(root = packageRoot()) {
     validated: Object.freeze({
       apply_check_passes: result.apply_check_status === 'ok',
       source_archive_omission_allowed_in_installed_package: installedContext ? result.installed_package_source_archive_omitted === true : true,
-      reader_artifact_present: installedContext || result.artifact.present === true,
+      reader_artifact_present: installedContext || rawPruneApplied || result.artifact.present === true,
       index_present_valid_json: installedContext || (result.index.present === true && result.index.status === 'present_valid_json'),
       archive_present: installedContext || result.archive.present === true,
       archive_records_parse: installedContext || result.archive.parse_error_count === 0,
@@ -9341,8 +9347,8 @@ function publicClosedGateArchiveReaderCheck(root = packageRoot()) {
       unique_record_paths: installedContext || result.reader.unique_paths === result.archive.record_count,
       unique_record_ordinals: installedContext || result.reader.unique_ordinals === result.archive.record_count,
       ordinal_sequence_contiguous: installedContext || result.reader.ordinal_sequence_contiguous === true,
-      raw_gate_artifacts_preserved: installedContext || result.recovery.raw_gate_artifacts_present === true,
-      raw_file_ids_match_archive: installedContext || result.recovery.raw_gate_artifact_file_ids_match_archive === true,
+      raw_gate_artifacts_preserved: installedContext || rawPruneApplied || result.recovery.raw_gate_artifacts_present === true,
+      raw_file_ids_match_archive: installedContext || rawPruneApplied || result.recovery.raw_gate_artifact_file_ids_match_archive === true,
       full_test_task_timeout_hardened: installedContext || result.test_runner_hardening.per_task_timeout_configured === true,
       no_write_boundary: result.boundary.writes_files === false,
       no_delete_boundary: result.boundary.deletes_raw_gate_artifacts === false,
@@ -9503,8 +9509,9 @@ function publicFullTestRunnerCompletionCheck(root = packageRoot()) {
   const result = publicFullTestRunnerCompletion(root);
   const milestone = publicFullTestRunnerMilestoneState(root);
   const installedContext = sourceContext(root).package_context === 'installed_package';
+  const rawPruneApplied = publicClosedGateRawArtifactPruneApplyAdmitted(root);
   const errors = [];
-  if (!installedContext && result.artifact.present !== true) errors.push(`${PUBLIC_FULL_TEST_RUNNER_COMPLETION.artifact_file} must exist after W11 closes`);
+  if (!installedContext && !rawPruneApplied && result.artifact.present !== true) errors.push(`${PUBLIC_FULL_TEST_RUNNER_COMPLETION.artifact_file} must exist after W11 closes`);
   if (!installedContext && result.observed_source.runner_file_present !== true) errors.push('test/run-tests.js must be present');
   if (!installedContext && result.observed_source.source_test_file_present !== true) errors.push('test/agent-onboard.test.js must be present');
   if (!installedContext && result.observed_source.exit_event_completion !== true) errors.push('full runner must resolve on child process exit instead of waiting only for stdio close');
@@ -9532,7 +9539,7 @@ function publicFullTestRunnerCompletionCheck(root = packageRoot()) {
     runner_command: PUBLIC_FULL_TEST_RUNNER_COMPLETION.command,
     package_root: root,
     validated: Object.freeze({
-      runner_artifact_present: installedContext || result.artifact.present === true,
+      runner_artifact_present: installedContext || rawPruneApplied || result.artifact.present === true,
       exit_event_completion: result.observed_source.exit_event_completion === true,
       stdio_close_not_required_for_full_source_tasks: result.observed_source.stdio_close_not_required_for_full_source_tasks === true,
       full_source_output_capture_disabled: result.observed_source.output_capture_disabled_for_full_tasks === true,
@@ -9574,6 +9581,79 @@ function publicFullTestRunnerCompletionText(result = publicFullTestRunnerComplet
   return `${lines.join('\n')}\n`;
 }
 
+
+
+function publicClosedGateRawArtifactPruneApplyArtifactPath(root = packageRoot()) {
+  return path.join(root, '.agent-onboard', 'public-closed-gate-raw-artifact-prune-apply-admission.json');
+}
+
+function publicClosedGateRawArtifactPruneApplyAdmitted(root = packageRoot()) {
+  const artifactPath = publicClosedGateRawArtifactPruneApplyArtifactPath(root);
+  const indexPath = path.join(root, '.agent-onboard', 'closed-gates.index.json');
+  if (!fs.existsSync(artifactPath) || !fs.existsSync(indexPath)) return false;
+  try {
+    const artifact = readJson(artifactPath);
+    const index = readJson(indexPath);
+    return artifact && artifact.status === 'ok'
+      && artifact.applied === true
+      && artifact.raw_gate_artifacts_pruned === true
+      && index && index.recovery && index.recovery.raw_artifacts_pruned === true
+      && index.recovery.prune_apply_artifact_file === '.agent-onboard/public-closed-gate-raw-artifact-prune-apply-admission.json';
+  } catch {
+    return false;
+  }
+}
+
+function publicClosedGateRawArtifactPruneApplyIndexState(root = packageRoot()) {
+  const indexPath = path.join(root, '.agent-onboard', 'closed-gates.index.json');
+  const archivePath = path.join(root, '.agent-onboard', 'closed-gates.archive.jsonl');
+  const artifactPath = publicClosedGateRawArtifactPruneApplyArtifactPath(root);
+  let index = null;
+  let indexStatus = 'missing';
+  let indexParseError = null;
+  if (fs.existsSync(indexPath)) {
+    try {
+      index = readJson(indexPath);
+      indexStatus = 'present_valid_json';
+    } catch (error) {
+      indexStatus = 'present_invalid_json';
+      indexParseError = error && error.message ? error.message : String(error);
+    }
+  }
+  const archive = readPublicClosedGateArchiveJsonl(root, archivePath);
+  const indexedPaths = index && Array.isArray(index.raw_artifact_paths) ? index.raw_artifact_paths.filter((rel) => typeof rel === 'string') : [];
+  const indexedFileIds = index && Array.isArray(index.raw_artifact_file_ids) ? index.raw_artifact_file_ids.filter((rel) => typeof rel === 'string') : [];
+  const archiveFileId = fs.existsSync(archivePath) ? textFileId(archive.text) : null;
+  const remainingIndexedPaths = indexedPaths.filter((rel) => fs.existsSync(path.join(root, rel)));
+  const archiveRecordFileIds = archive.records.map((record) => record && record.raw_artifact_file_id).filter((value) => typeof value === 'string');
+  const archiveRecordPaths = archive.records.map((record) => record && record.path).filter((value) => typeof value === 'string');
+  const archivePathsMatchIndex = indexedPaths.length === archiveRecordPaths.length && indexedPaths.every((rel, index) => rel === archiveRecordPaths[index]);
+  const archiveFileIdsMatchIndex = indexedFileIds.length === archiveRecordFileIds.length && indexedFileIds.every((fileId, index) => fileId === archiveRecordFileIds[index]);
+  return Object.freeze({
+    index_path: '.agent-onboard/closed-gates.index.json',
+    index_present: fs.existsSync(indexPath),
+    index_status: indexStatus,
+    index_parse_error: indexParseError,
+    index,
+    index_file_id: fs.existsSync(indexPath) ? textFileId(fs.readFileSync(indexPath, 'utf8')) : null,
+    archive_path: '.agent-onboard/closed-gates.archive.jsonl',
+    archive_present: fs.existsSync(archivePath),
+    archive_file_id: archiveFileId,
+    archive_record_count: archive.records.length,
+    archive_parse_error_count: archive.parse_errors.length,
+    index_record_count: index && typeof index.record_count === 'number' ? index.record_count : 0,
+    index_raw_artifact_count: index && typeof index.raw_artifact_count === 'number' ? index.raw_artifact_count : indexedPaths.length,
+    index_archive_file_id: index && index.archive_candidate_file_id ? index.archive_candidate_file_id : null,
+    indexed_paths: indexedPaths,
+    indexed_file_ids: indexedFileIds,
+    remaining_indexed_paths: remainingIndexedPaths,
+    archive_paths_match_index: archivePathsMatchIndex,
+    archive_file_ids_match_index: archiveFileIdsMatchIndex,
+    artifact_path: '.agent-onboard/public-closed-gate-raw-artifact-prune-apply-admission.json',
+    artifact_present: fs.existsSync(artifactPath),
+    index_recovery: index && index.recovery ? index.recovery : null
+  });
+}
 
 
 const PUBLIC_CLOSED_GATE_RAW_ARTIFACT_PRUNE_PLANNING = Object.freeze({
@@ -9801,11 +9881,13 @@ function publicClosedGateRawArtifactPrunePlanningCheck(root = packageRoot()) {
   const plan = PUBLIC_CLOSED_GATE_RAW_ARTIFACT_PRUNE_PLANNING;
   const milestone = publicClosedGateRawArtifactPrunePlanningMilestoneState(root);
   const installedContext = result.package_context === 'installed_package';
+  const rawPruneApplied = publicClosedGateRawArtifactPruneApplyAdmitted(root);
+  const pruneState = publicClosedGateRawArtifactPruneApplyIndexState(root);
   const errors = [];
   if (result.prerequisite_checks.closed_gate_archive_reader_check !== 'ok') errors.push('raw artifact prune planning requires closed gate archive reader check to pass');
   if (result.prerequisite_checks.full_test_runner_completion_check !== 'ok') errors.push('raw artifact prune planning requires full-test runner completion check to pass');
-  if (!installedContext && result.artifact.present !== true) errors.push(`${plan.artifact_file} must exist after W12 closes`);
-  if (!installedContext && result.current_surface.raw_gate_artifact_count < plan.minimum_record_count) errors.push(`raw artifact prune planning requires at least ${plan.minimum_record_count} raw gate artifacts`);
+  if (!installedContext && !rawPruneApplied && result.artifact.present !== true) errors.push(`${plan.artifact_file} must exist after W12 closes`);
+  if (!installedContext && !rawPruneApplied && result.current_surface.raw_gate_artifact_count < plan.minimum_record_count) errors.push(`raw artifact prune planning requires at least ${plan.minimum_record_count} raw gate artifacts`);
   if (!installedContext && result.current_surface.raw_gate_artifact_parse_error_count !== 0) errors.push('raw artifact prune planning requires all raw gate artifacts to parse as JSON');
   if (!installedContext && result.current_surface.index_present !== true) errors.push(`${plan.index_path} must be present before prune planning`);
   if (!installedContext && result.current_surface.index_status !== 'present_valid_json') errors.push(`${plan.index_path} must parse as JSON`);
@@ -9813,8 +9895,8 @@ function publicClosedGateRawArtifactPrunePlanningCheck(root = packageRoot()) {
   if (!installedContext && result.current_surface.archive_parse_error_count !== 0) errors.push('closed gate archive must parse before prune planning');
   if (!installedContext && result.current_surface.index_record_count !== result.current_surface.archive_record_count) errors.push('closed gate index record count must match archive before prune planning');
   if (!installedContext && result.recovery.index_archive_digest_matches_archive !== true) errors.push('closed gate index archive digest must match archive before prune planning');
-  if (!installedContext && result.current_surface.archive_covers_raw_artifacts !== true) errors.push('closed gate archive must cover all raw gate artifacts before future prune admission');
-  if (!installedContext && result.current_surface.archive_file_ids_match_raw !== true) errors.push('closed gate archive file ids must match raw artifacts before future prune admission');
+  if (!installedContext && !rawPruneApplied && result.current_surface.archive_covers_raw_artifacts !== true) errors.push('closed gate archive must cover all raw gate artifacts before future prune admission');
+  if (!installedContext && !rawPruneApplied && result.current_surface.archive_file_ids_match_raw !== true) errors.push('closed gate archive file ids must match raw artifacts before future prune admission');
   if (result.prune_plan.planning_only !== true || result.prune_plan.delete_now !== false || result.prune_plan.move_now !== false || result.prune_plan.rewrite_now !== false) errors.push('W12 must remain planning-only and must not delete, move, or rewrite raw artifacts');
   if (result.prune_plan.future_prune_requires_explicit_apply_gate !== true) errors.push('raw artifact prune planning must require a future explicit apply gate');
   if (result.prune_plan.raw_prune_authorized_by_this_gate !== false) errors.push('W12 must not authorize raw artifact pruning');
@@ -9839,15 +9921,15 @@ function publicClosedGateRawArtifactPrunePlanningCheck(root = packageRoot()) {
     validated: Object.freeze({
       archive_reader_check_passes: result.prerequisite_checks.closed_gate_archive_reader_check === 'ok',
       full_test_runner_check_passes: result.prerequisite_checks.full_test_runner_completion_check === 'ok',
-      planning_artifact_present: installedContext || result.artifact.present === true,
-      enough_raw_gate_artifacts: installedContext || result.current_surface.raw_gate_artifact_count >= plan.minimum_record_count,
+      planning_artifact_present: installedContext || rawPruneApplied || result.artifact.present === true,
+      enough_raw_gate_artifacts: installedContext || rawPruneApplied || result.current_surface.raw_gate_artifact_count >= plan.minimum_record_count,
       raw_gate_artifacts_parse_as_json: installedContext || result.current_surface.raw_gate_artifact_parse_error_count === 0,
       index_present_valid_json: installedContext || (result.current_surface.index_present === true && result.current_surface.index_status === 'present_valid_json'),
       archive_present_and_parses: installedContext || (result.current_surface.archive_present === true && result.current_surface.archive_parse_error_count === 0),
       index_record_count_matches_archive: installedContext || result.current_surface.index_record_count === result.current_surface.archive_record_count,
       index_archive_digest_matches_archive: installedContext || result.recovery.index_archive_digest_matches_archive === true,
-      archive_covers_raw_artifacts: installedContext || result.current_surface.archive_covers_raw_artifacts === true,
-      archive_file_ids_match_raw: installedContext || result.current_surface.archive_file_ids_match_raw === true,
+      archive_covers_raw_artifacts: installedContext || rawPruneApplied || result.current_surface.archive_covers_raw_artifacts === true,
+      archive_file_ids_match_raw: installedContext || rawPruneApplied || result.current_surface.archive_file_ids_match_raw === true,
       planning_only_no_prune: result.prune_plan.planning_only === true && result.prune_plan.delete_now === false && result.prune_plan.raw_prune_authorized_by_this_gate === false,
       future_apply_gate_required: result.prune_plan.future_prune_requires_explicit_apply_gate === true,
       no_write_boundary: result.boundary.writes_files === false,
@@ -10117,12 +10199,14 @@ function publicClosedGateRawArtifactPruneDryRunCheck(root = packageRoot()) {
   const plan = PUBLIC_CLOSED_GATE_RAW_ARTIFACT_PRUNE_DRY_RUN;
   const milestone = publicClosedGateRawArtifactPruneDryRunMilestoneState(root);
   const installedContext = result.package_context === 'installed_package';
+  const rawPruneApplied = publicClosedGateRawArtifactPruneApplyAdmitted(root);
+  const pruneState = publicClosedGateRawArtifactPruneApplyIndexState(root);
   const errors = [];
   if (result.prerequisite_checks.prune_planning_check !== 'ok') errors.push('raw artifact prune dry-run requires prune planning check to pass');
   if (result.prerequisite_checks.closed_gate_archive_reader_check !== 'ok') errors.push('raw artifact prune dry-run requires closed gate archive reader check to pass');
   if (result.prerequisite_checks.full_test_runner_completion_check !== 'ok') errors.push('raw artifact prune dry-run requires full-test runner completion check to pass');
-  if (!installedContext && result.artifact.present !== true) errors.push(`${plan.artifact_file} must exist after W13 closes`);
-  if (!installedContext && result.current_surface.raw_gate_artifact_count < plan.minimum_candidate_count) errors.push(`raw artifact prune dry-run requires at least ${plan.minimum_candidate_count} raw gate artifacts`);
+  if (!installedContext && !rawPruneApplied && result.artifact.present !== true) errors.push(`${plan.artifact_file} must exist after W13 closes`);
+  if (!installedContext && !rawPruneApplied && result.current_surface.raw_gate_artifact_count < plan.minimum_candidate_count) errors.push(`raw artifact prune dry-run requires at least ${plan.minimum_candidate_count} raw gate artifacts`);
   if (!installedContext && result.current_surface.raw_gate_artifact_parse_error_count !== 0) errors.push('raw artifact prune dry-run requires all raw gate artifacts to parse as JSON');
   if (!installedContext && result.current_surface.index_present !== true) errors.push(`${plan.index_path} must be present before prune dry-run`);
   if (!installedContext && result.current_surface.index_status !== 'present_valid_json') errors.push(`${plan.index_path} must parse as JSON before prune dry-run`);
@@ -10130,9 +10214,9 @@ function publicClosedGateRawArtifactPruneDryRunCheck(root = packageRoot()) {
   if (!installedContext && result.current_surface.archive_parse_error_count !== 0) errors.push('closed gate archive must parse before prune dry-run');
   if (!installedContext && result.current_surface.index_record_count !== result.current_surface.archive_record_count) errors.push('closed gate index record count must match archive before prune dry-run');
   if (!installedContext && result.recovery.index_archive_digest_matches_archive !== true) errors.push('closed gate index archive digest must match archive before prune dry-run');
-  if (!installedContext && result.current_surface.archive_covers_raw_artifacts !== true) errors.push('closed gate archive must cover all raw gate artifacts before prune dry-run');
-  if (!installedContext && result.current_surface.archive_file_ids_match_raw !== true) errors.push('closed gate archive file ids must match raw artifacts before prune dry-run');
-  if (!installedContext && result.dry_run_manifest.candidate_count !== result.current_surface.raw_gate_artifact_count) errors.push('prune dry-run candidate count must match raw gate artifact count');
+  if (!installedContext && !rawPruneApplied && result.current_surface.archive_covers_raw_artifacts !== true) errors.push('closed gate archive must cover all raw gate artifacts before prune dry-run');
+  if (!installedContext && !rawPruneApplied && result.current_surface.archive_file_ids_match_raw !== true) errors.push('closed gate archive file ids must match raw artifacts before prune dry-run');
+  if (!installedContext && !rawPruneApplied && result.dry_run_manifest.candidate_count !== result.current_surface.raw_gate_artifact_count) errors.push('prune dry-run candidate count must match raw gate artifact count');
   if (result.dry_run_manifest.dry_run_only !== true || result.dry_run_manifest.delete_now !== false || result.dry_run_manifest.move_now !== false || result.dry_run_manifest.rewrite_now !== false) errors.push('W13 must remain dry-run-only and must not delete, move, or rewrite raw artifacts');
   if (result.dry_run_manifest.raw_prune_authorized_by_this_gate !== false) errors.push('W13 must not authorize raw artifact pruning');
   if (result.dry_run_manifest.apply_command_required_before_delete !== plan.future_apply_command) errors.push('raw artifact prune dry-run must reserve the explicit future apply command');
@@ -10158,16 +10242,16 @@ function publicClosedGateRawArtifactPruneDryRunCheck(root = packageRoot()) {
       prune_planning_check_passes: result.prerequisite_checks.prune_planning_check === 'ok',
       archive_reader_check_passes: result.prerequisite_checks.closed_gate_archive_reader_check === 'ok',
       full_test_runner_check_passes: result.prerequisite_checks.full_test_runner_completion_check === 'ok',
-      dry_run_artifact_present: installedContext || result.artifact.present === true,
-      enough_raw_gate_artifacts: installedContext || result.current_surface.raw_gate_artifact_count >= plan.minimum_candidate_count,
+      dry_run_artifact_present: installedContext || rawPruneApplied || result.artifact.present === true,
+      enough_raw_gate_artifacts: installedContext || rawPruneApplied || result.current_surface.raw_gate_artifact_count >= plan.minimum_candidate_count,
       raw_gate_artifacts_parse_as_json: installedContext || result.current_surface.raw_gate_artifact_parse_error_count === 0,
       index_present_valid_json: installedContext || (result.current_surface.index_present === true && result.current_surface.index_status === 'present_valid_json'),
       archive_present_and_parses: installedContext || (result.current_surface.archive_present === true && result.current_surface.archive_parse_error_count === 0),
       index_record_count_matches_archive: installedContext || result.current_surface.index_record_count === result.current_surface.archive_record_count,
       index_archive_digest_matches_archive: installedContext || result.recovery.index_archive_digest_matches_archive === true,
-      archive_covers_raw_artifacts: installedContext || result.current_surface.archive_covers_raw_artifacts === true,
-      archive_file_ids_match_raw: installedContext || result.current_surface.archive_file_ids_match_raw === true,
-      exact_candidate_set: installedContext || result.dry_run_manifest.candidate_count === result.current_surface.raw_gate_artifact_count,
+      archive_covers_raw_artifacts: installedContext || rawPruneApplied || result.current_surface.archive_covers_raw_artifacts === true,
+      archive_file_ids_match_raw: installedContext || rawPruneApplied || result.current_surface.archive_file_ids_match_raw === true,
+      exact_candidate_set: installedContext || rawPruneApplied || result.dry_run_manifest.candidate_count === result.current_surface.raw_gate_artifact_count,
       dry_run_only_no_prune: result.dry_run_manifest.dry_run_only === true && result.dry_run_manifest.delete_now === false && result.dry_run_manifest.raw_prune_authorized_by_this_gate === false,
       future_apply_gate_required: result.dry_run_manifest.apply_command_required_before_delete === plan.future_apply_command,
       no_write_boundary: result.boundary.writes_files === false,
@@ -10199,6 +10283,266 @@ function publicClosedGateRawArtifactPruneDryRunText(result = publicClosedGateRaw
     'Boundary:',
     `- writes files: ${result.boundary.writes_files}`,
     `- deletes raw artifacts: ${result.boundary.deletes_raw_gate_artifacts}`,
+    `- publishes package: ${result.boundary.publishes_package}`
+  ];
+  return `${lines.join('\n')}\n`;
+}
+
+
+const PUBLIC_CLOSED_GATE_RAW_ARTIFACT_PRUNE_APPLY = Object.freeze({
+  schema: 'agent-onboard-public-closed-gate-raw-artifact-prune-apply-admission-001',
+  package_name: PACKAGE_NAME,
+  release_line: RELEASE_LINE,
+  milestone_id: 'P1S3M6',
+  prerequisite_work_item_id: ['P1S3M6', 'W13'].join(''),
+  work_item_id: ['P1S3M6', 'W14'].join(''),
+  title: 'Public closed gate raw artifact prune apply admission gate',
+  surface_id: 'closed-gate-raw-artifact-prune-apply-admission',
+  command: 'agent-onboard release --closed-gates-prune-apply',
+  check_command: 'agent-onboard release --closed-gates-prune-apply-check',
+  artifact_file: '.agent-onboard/public-closed-gate-raw-artifact-prune-apply-admission.json',
+  index_path: '.agent-onboard/closed-gates.index.json',
+  archive_path: '.agent-onboard/closed-gates.archive.jsonl',
+  minimum_candidate_count: 30,
+  boundary: Object.freeze({
+    command_writes_files: false,
+    check_command_writes_files: false,
+    repository_write_admitted_by_gate: true,
+    deletes_raw_gate_artifacts: true,
+    moves_raw_gate_artifacts: false,
+    rewrites_raw_gate_artifacts: false,
+    preserves_archive: true,
+    preserves_index: true,
+    raw_artifact_content_inlined: false,
+    archive_record_content_inlined: false,
+    mutates_work_items: false,
+    mutates_claims: false,
+    mutates_git: false,
+    installs_dependencies: false,
+    runs_package_manager: false,
+    publishes_package: false,
+    mutates_registry: false,
+    network: false
+  })
+});
+
+function publicClosedGateRawArtifactPruneApplyMilestoneState(root = packageRoot()) {
+  const ledgerPath = path.join(root, '.agent-onboard', 'work-items.json');
+  if (!fs.existsSync(ledgerPath)) {
+    return Object.freeze({
+      ledger_present: false,
+      milestone_id: PUBLIC_CLOSED_GATE_RAW_ARTIFACT_PRUNE_APPLY.milestone_id,
+      prerequisite_work_item_id: PUBLIC_CLOSED_GATE_RAW_ARTIFACT_PRUNE_APPLY.prerequisite_work_item_id,
+      work_item_id: PUBLIC_CLOSED_GATE_RAW_ARTIFACT_PRUNE_APPLY.work_item_id,
+      milestone_status: 'not_present_installed_context_allowed',
+      prerequisite_work_item_status: 'not_present_installed_context_allowed',
+      work_item_status: 'not_present_installed_context_allowed'
+    });
+  }
+  let ledger = null;
+  try { ledger = readJson(ledgerPath); } catch { ledger = null; }
+  const milestones = ledger && Array.isArray(ledger.milestones) ? ledger.milestones : [];
+  const workItems = ledger && Array.isArray(ledger.work_items) ? ledger.work_items : [];
+  const milestone = milestones.find((item) => item.id === PUBLIC_CLOSED_GATE_RAW_ARTIFACT_PRUNE_APPLY.milestone_id) || null;
+  const prerequisiteWorkItem = workItems.find((item) => item.id === PUBLIC_CLOSED_GATE_RAW_ARTIFACT_PRUNE_APPLY.prerequisite_work_item_id) || null;
+  const workItem = workItems.find((item) => item.id === PUBLIC_CLOSED_GATE_RAW_ARTIFACT_PRUNE_APPLY.work_item_id) || null;
+  return Object.freeze({
+    ledger_present: true,
+    milestone_id: PUBLIC_CLOSED_GATE_RAW_ARTIFACT_PRUNE_APPLY.milestone_id,
+    prerequisite_work_item_id: PUBLIC_CLOSED_GATE_RAW_ARTIFACT_PRUNE_APPLY.prerequisite_work_item_id,
+    work_item_id: PUBLIC_CLOSED_GATE_RAW_ARTIFACT_PRUNE_APPLY.work_item_id,
+    milestone_status: milestone ? milestone.status : 'missing',
+    prerequisite_work_item_status: prerequisiteWorkItem ? prerequisiteWorkItem.status : 'missing',
+    work_item_status: workItem ? workItem.status : 'missing',
+    milestone_title: milestone ? milestone.title : null,
+    prerequisite_work_item_title: prerequisiteWorkItem ? prerequisiteWorkItem.title : null,
+    work_item_title: workItem ? workItem.title : null
+  });
+}
+
+function publicClosedGateRawArtifactPruneApply(root = packageRoot()) {
+  const plan = PUBLIC_CLOSED_GATE_RAW_ARTIFACT_PRUNE_APPLY;
+  const context = sourceContext(root).package_context;
+  const installedContext = context === 'installed_package';
+  const state = publicClosedGateRawArtifactPruneApplyIndexState(root);
+  const liveRawGateArtifacts = installedContext ? [] : publicClosedGateArtifactFiles(root);
+  const indexedCount = state.index_raw_artifact_count;
+  const remainingCount = state.remaining_indexed_paths.length;
+  const prunedCount = Math.max(0, indexedCount - remainingCount);
+  const dryRunCheck = publicClosedGateRawArtifactPruneDryRunCheck(root);
+  const readerCheck = publicClosedGateArchiveReaderCheck(root);
+  const fullTestRunnerCheck = publicFullTestRunnerCompletionCheck(root);
+  const indexRecovery = state.index_recovery || {};
+  return Object.freeze({
+    schema: 'agent-onboard-public-closed-gate-raw-artifact-prune-apply-admission-result-001',
+    status: 'ok',
+    package_name: PACKAGE_NAME,
+    version: VERSION,
+    release_line: RELEASE_LINE,
+    milestone_id: plan.milestone_id,
+    prerequisite_work_item_id: plan.prerequisite_work_item_id,
+    work_item_id: plan.work_item_id,
+    title: plan.title,
+    command: plan.command,
+    check_command: plan.check_command,
+    package_root: root,
+    package_context: context,
+    surface_id: plan.surface_id,
+    prerequisite_checks: Object.freeze({
+      prune_dry_run_check: dryRunCheck.status,
+      closed_gate_archive_reader_check: readerCheck.status,
+      full_test_runner_completion_check: fullTestRunnerCheck.status
+    }),
+    applied: installedContext || (state.artifact_present === true && indexedCount >= plan.minimum_candidate_count && remainingCount === 0 && state.archive_paths_match_index === true && state.archive_file_ids_match_index === true),
+    raw_gate_artifacts_pruned: installedContext || remainingCount === 0,
+    artifact: Object.freeze({
+      path: plan.artifact_file,
+      present: state.artifact_present,
+      content_inlined: false
+    }),
+    index: Object.freeze({
+      path: plan.index_path,
+      present: state.index_present,
+      status: state.index_status,
+      parse_error: state.index_parse_error,
+      file_id: state.index_file_id,
+      record_count: state.index_record_count,
+      raw_artifact_count: indexedCount,
+      archive_file_id: state.index_archive_file_id,
+      recovery: indexRecovery,
+      content_inlined: false
+    }),
+    archive: Object.freeze({
+      path: plan.archive_path,
+      present: state.archive_present,
+      file_id: state.archive_file_id,
+      record_count: state.archive_record_count,
+      parse_error_count: state.archive_parse_error_count,
+      content_inlined: false
+    }),
+    prune_application: Object.freeze({
+      candidate_count: indexedCount,
+      pruned_candidate_count: prunedCount,
+      remaining_indexed_raw_artifact_count: remainingCount,
+      remaining_live_raw_gate_artifact_count: liveRawGateArtifacts.length,
+      deleted_candidate_paths: state.indexed_paths,
+      deleted_candidate_file_ids: state.indexed_file_ids,
+      remaining_indexed_paths: state.remaining_indexed_paths,
+      deleted_path_content_inlined: false,
+      archive_paths_match_index: state.archive_paths_match_index,
+      archive_file_ids_match_index: state.archive_file_ids_match_index,
+      index_archive_digest_matches_archive: state.index_archive_file_id === state.archive_file_id,
+      archive_retains_recovery_records: state.archive_record_count === indexedCount,
+      index_declares_pruned_state: indexRecovery.raw_artifacts_pruned === true,
+      index_declares_prune_apply_artifact: indexRecovery.prune_apply_artifact_file === plan.artifact_file,
+      raw_artifact_content_inlined: false,
+      archive_record_content_inlined: false
+    }),
+    recovery: Object.freeze({
+      archive_preserved: state.archive_present === true,
+      index_preserved: state.index_present === true,
+      archive_records_replay_deleted_raw_file_ids: state.archive_file_ids_match_index === true,
+      archive_records_replay_deleted_raw_paths: state.archive_paths_match_index === true,
+      raw_gate_artifacts_restorable_from_archive: state.archive_file_ids_match_index === true && state.archive_paths_match_index === true,
+      restore_requires_explicit_future_restore_gate: true,
+      content_inlined: false
+    }),
+    boundary: plan.boundary
+  });
+}
+
+function publicClosedGateRawArtifactPruneApplyCheck(root = packageRoot()) {
+  const result = publicClosedGateRawArtifactPruneApply(root);
+  const plan = PUBLIC_CLOSED_GATE_RAW_ARTIFACT_PRUNE_APPLY;
+  const milestone = publicClosedGateRawArtifactPruneApplyMilestoneState(root);
+  const installedContext = result.package_context === 'installed_package';
+  const errors = [];
+  if (result.prerequisite_checks.prune_dry_run_check !== 'ok') errors.push('raw artifact prune apply requires prune dry-run check to pass');
+  if (result.prerequisite_checks.closed_gate_archive_reader_check !== 'ok') errors.push('raw artifact prune apply requires archive reader check to pass');
+  if (result.prerequisite_checks.full_test_runner_completion_check !== 'ok') errors.push('raw artifact prune apply requires full-test runner completion check to pass');
+  if (!installedContext && result.artifact.present !== true) errors.push(`${plan.artifact_file} must exist after W14 closes`);
+  if (!installedContext && result.index.present !== true) errors.push(`${plan.index_path} must remain present after raw artifact prune apply`);
+  if (!installedContext && result.index.status !== 'present_valid_json') errors.push(`${plan.index_path} must parse as JSON after raw artifact prune apply`);
+  if (!installedContext && result.archive.present !== true) errors.push(`${plan.archive_path} must remain present after raw artifact prune apply`);
+  if (!installedContext && result.archive.parse_error_count !== 0) errors.push('closed-gates archive must parse after raw artifact prune apply');
+  if (!installedContext && result.index.record_count < plan.minimum_candidate_count) errors.push(`raw artifact prune apply requires at least ${plan.minimum_candidate_count} archived records`);
+  if (!installedContext && result.archive.record_count !== result.index.record_count) errors.push('archive record count must match index record count after prune apply');
+  if (!installedContext && result.index.archive_file_id !== result.archive.file_id) errors.push('index archive digest must match archive after prune apply');
+  if (!installedContext && result.prune_application.candidate_count !== result.index.raw_artifact_count) errors.push('candidate count must match index raw artifact count after prune apply');
+  if (!installedContext && result.prune_application.pruned_candidate_count !== result.prune_application.candidate_count) errors.push('every indexed raw gate artifact candidate must be pruned');
+  if (!installedContext && result.prune_application.remaining_indexed_raw_artifact_count !== 0) errors.push('no indexed raw gate artifact may remain after prune apply');
+  if (!installedContext && result.prune_application.archive_paths_match_index !== true) errors.push('archive record paths must replay indexed raw artifact paths after prune apply');
+  if (!installedContext && result.prune_application.archive_file_ids_match_index !== true) errors.push('archive record file ids must replay indexed raw artifact file ids after prune apply');
+  if (!installedContext && result.prune_application.index_archive_digest_matches_archive !== true) errors.push('closed gate index digest must match archive after prune apply');
+  if (!installedContext && result.prune_application.index_declares_pruned_state !== true) errors.push('closed gate index recovery state must declare raw_artifacts_pruned');
+  if (!installedContext && result.prune_application.index_declares_prune_apply_artifact !== true) errors.push('closed gate index recovery state must name the prune apply artifact');
+  if (!installedContext && result.applied !== true) errors.push('raw artifact prune apply admission state must be applied');
+  if (result.boundary.repository_write_admitted_by_gate !== true || result.boundary.deletes_raw_gate_artifacts !== true) errors.push('W14 must explicitly admit raw gate artifact deletion');
+  if (result.boundary.moves_raw_gate_artifacts !== false || result.boundary.rewrites_raw_gate_artifacts !== false) errors.push('W14 must not move or rewrite raw gate artifacts');
+  if (result.boundary.command_writes_files !== false || result.boundary.check_command_writes_files !== false) errors.push('raw artifact prune apply commands must remain read-only verifiers');
+  if (result.boundary.publishes_package !== false || result.boundary.mutates_registry !== false) errors.push('raw artifact prune apply must not publish or mutate registry state');
+  if (milestone.ledger_present) {
+    if (milestone.milestone_status !== 'open') errors.push(`${plan.milestone_id} must remain open during W14`);
+    if (milestone.prerequisite_work_item_status !== 'closed') errors.push(`${plan.prerequisite_work_item_id} must be closed before W14 passes`);
+    if (milestone.work_item_status !== 'closed') errors.push(`${plan.work_item_id} must be closed by W14`);
+  }
+  return Object.freeze({
+    schema: 'agent-onboard-public-closed-gate-raw-artifact-prune-apply-admission-check-result-001',
+    status: errors.length === 0 ? 'ok' : 'error',
+    package_name: PACKAGE_NAME,
+    version: VERSION,
+    release_line: RELEASE_LINE,
+    command: plan.check_command,
+    apply_command: plan.command,
+    package_root: root,
+    validated: Object.freeze({
+      prune_dry_run_check_passes: result.prerequisite_checks.prune_dry_run_check === 'ok',
+      archive_reader_check_passes: result.prerequisite_checks.closed_gate_archive_reader_check === 'ok',
+      full_test_runner_check_passes: result.prerequisite_checks.full_test_runner_completion_check === 'ok',
+      apply_artifact_present: installedContext || result.artifact.present === true,
+      index_present_valid_json: installedContext || (result.index.present === true && result.index.status === 'present_valid_json'),
+      archive_present_and_parses: installedContext || (result.archive.present === true && result.archive.parse_error_count === 0),
+      archive_record_count_matches_index: installedContext || result.archive.record_count === result.index.record_count,
+      index_archive_digest_matches_archive: installedContext || result.index.archive_file_id === result.archive.file_id,
+      all_indexed_raw_artifacts_pruned: installedContext || result.prune_application.remaining_indexed_raw_artifact_count === 0,
+      archive_replays_deleted_paths: installedContext || result.prune_application.archive_paths_match_index === true,
+      archive_replays_deleted_file_ids: installedContext || result.prune_application.archive_file_ids_match_index === true,
+      index_declares_pruned_state: installedContext || result.prune_application.index_declares_pruned_state === true,
+      recovery_path_preserved: installedContext || result.recovery.raw_gate_artifacts_restorable_from_archive === true,
+      deletion_admitted_by_gate: result.boundary.repository_write_admitted_by_gate === true && result.boundary.deletes_raw_gate_artifacts === true,
+      no_move_or_rewrite: result.boundary.moves_raw_gate_artifacts === false && result.boundary.rewrites_raw_gate_artifacts === false,
+      commands_are_read_only_verifiers: result.boundary.command_writes_files === false && result.boundary.check_command_writes_files === false,
+      no_publish_or_registry_mutation: result.boundary.publishes_package === false && result.boundary.mutates_registry === false,
+      m6_open: !milestone.ledger_present || milestone.milestone_status === 'open',
+      prerequisite_work_item_closed: !milestone.ledger_present || milestone.prerequisite_work_item_status === 'closed',
+      current_work_item_closed: !milestone.ledger_present || milestone.work_item_status === 'closed'
+    }),
+    apply: result,
+    milestone_state: milestone,
+    boundary: plan.boundary,
+    errors
+  });
+}
+
+function publicClosedGateRawArtifactPruneApplyText(result = publicClosedGateRawArtifactPruneApply()) {
+  const lines = [
+    `agent-onboard closed gate raw artifact prune apply admission ${result.version}`,
+    `Status: ${result.status}`,
+    `Command: ${result.command}`,
+    '',
+    'Prune application:',
+    `- candidates: ${result.prune_application.candidate_count}`,
+    `- pruned: ${result.prune_application.pruned_candidate_count}`,
+    `- remaining indexed raw artifacts: ${result.prune_application.remaining_indexed_raw_artifact_count}`,
+    '',
+    'Recovery:',
+    `- archive preserved: ${result.recovery.archive_preserved}`,
+    `- index preserved: ${result.recovery.index_preserved}`,
+    `- restorable from archive: ${result.recovery.raw_gate_artifacts_restorable_from_archive}`,
+    '',
+    'Boundary:',
+    `- deletion admitted: ${result.boundary.deletes_raw_gate_artifacts}`,
+    `- moves raw artifacts: ${result.boundary.moves_raw_gate_artifacts}`,
     `- publishes package: ${result.boundary.publishes_package}`
   ];
   return `${lines.join('\n')}\n`;
@@ -10587,6 +10931,8 @@ function publicReleaseCheck(root = packageRoot()) {
   const rawArtifactPrunePlanErrors = rawArtifactPrunePlan.errors.map((error) => `closed gate raw artifact prune planning: ${error}`);
   const rawArtifactPruneDryRun = publicClosedGateRawArtifactPruneDryRunCheck(root);
   const rawArtifactPruneDryRunErrors = rawArtifactPruneDryRun.errors.map((error) => `closed gate raw artifact prune dry-run: ${error}`);
+  const rawArtifactPruneApply = publicClosedGateRawArtifactPruneApplyCheck(root);
+  const rawArtifactPruneApplyErrors = rawArtifactPruneApply.errors.map((error) => `closed gate raw artifact prune apply: ${error}`);
   const packageSurfaceErrors = packageSurface.errors.map((error) => `package surface: ${error}`);
   const architectureParity = { status: architecture.status === 'ok' ? 'ok' : 'error', errors: [] };
   const installedAuthorityStateParity = publicInstalledAuthorityStateShardParity(root);
@@ -10695,6 +11041,7 @@ function publicReleaseCheck(root = packageRoot()) {
       public_closed_gate_archive_reader: closedGateArchiveReader.status === 'ok',
       public_closed_gate_raw_artifact_prune_planning: rawArtifactPrunePlan.status === 'ok',
       public_closed_gate_raw_artifact_prune_dry_run: rawArtifactPruneDryRun.status === 'ok',
+      public_closed_gate_raw_artifact_prune_apply: rawArtifactPruneApply.status === 'ok',
       public_full_test_runner_completion: fullTestRunner.status === 'ok'
     },
     expected_pack_files: expectedPackFiles,
@@ -10732,6 +11079,7 @@ function publicReleaseCheck(root = packageRoot()) {
     public_full_test_runner_completion: fullTestRunner,
     public_closed_gate_raw_artifact_prune_planning: rawArtifactPrunePlan,
     public_closed_gate_raw_artifact_prune_dry_run: rawArtifactPruneDryRun,
+    public_closed_gate_raw_artifact_prune_apply: rawArtifactPruneApply,
     local_pre_publish_commands: PUBLIC_RELEASE_CONTRACT.local_pre_publish_commands.slice(),
     post_publish_verification_commands: publicReleasePostPublishCommands(VERSION),
     boundary: {
@@ -12027,6 +12375,12 @@ function runRelease(args) {
     json(result);
     return result.status === 'ok' ? 0 : 1;
   }
+  if (args.length === 1 && (args[0] === '--closed-gates-prune-apply' || args[0] === '--closed-gates-prune-apply-check')) {
+    const checkMode = args[0] === '--closed-gates-prune-apply-check';
+    const result = checkMode ? publicClosedGateRawArtifactPruneApplyCheck() : publicClosedGateRawArtifactPruneApply();
+    json(result);
+    return result.status === 'ok' ? 0 : 1;
+  }
   if (args.length === 1 && (args[0] === '--full-test-runner' || args[0] === '--full-test-runner-check')) {
     const checkMode = args[0] === '--full-test-runner-check';
     const result = checkMode ? publicFullTestRunnerCompletionCheck() : publicFullTestRunnerCompletion();
@@ -12082,7 +12436,7 @@ function runRelease(args) {
     schema: 'agent-onboard-release-command-error-001',
     status: 'error',
     command_family: 'release',
-    message: 'release requires --plan, --contract, --fixture, --surface, --surface-check, --source-manifest, --source-manifest-check, --artifact-oracle, --artifact-oracle-check, --authority-state-parity, --authority-state-parity-check, --clean-inventory, --clean-check, --clean-catalog, --clean-catalog-check, --keyword-taxonomy, --keyword-taxonomy-check, --readme-plan, --readme-plan-check, --readme-dry-run, --readme-dry-run-check, --readme-apply, --readme-apply-check, --closed-gates-plan, --closed-gates-plan-check, --closed-gates-dry-run, --closed-gates-dry-run-check, --closed-gates-apply, --closed-gates-apply-check, --closed-gates-read, --closed-gates-read-check, --closed-gates-prune-plan, --closed-gates-prune-plan-check, --closed-gates-prune-dry-run, --closed-gates-prune-dry-run-check, --full-test-runner, --full-test-runner-check, --version-sprawl-check, --parity-smoke, --architecture-parity-smoke, --target-onboarding-smoke, --post-publish-handoff, --published-acceptance, --real-target-trial, or --check',
+    message: 'release requires --plan, --contract, --fixture, --surface, --surface-check, --source-manifest, --source-manifest-check, --artifact-oracle, --artifact-oracle-check, --authority-state-parity, --authority-state-parity-check, --clean-inventory, --clean-check, --clean-catalog, --clean-catalog-check, --keyword-taxonomy, --keyword-taxonomy-check, --readme-plan, --readme-plan-check, --readme-dry-run, --readme-dry-run-check, --readme-apply, --readme-apply-check, --closed-gates-plan, --closed-gates-plan-check, --closed-gates-dry-run, --closed-gates-dry-run-check, --closed-gates-apply, --closed-gates-apply-check, --closed-gates-read, --closed-gates-read-check, --closed-gates-prune-plan, --closed-gates-prune-plan-check, --closed-gates-prune-dry-run, --closed-gates-prune-dry-run-check, --closed-gates-prune-apply, --closed-gates-prune-apply-check, --full-test-runner, --full-test-runner-check, --version-sprawl-check, --parity-smoke, --architecture-parity-smoke, --target-onboarding-smoke, --post-publish-handoff, --published-acceptance, --real-target-trial, or --check',
     writes_files: false,
     publishes_package: false
   });
@@ -13673,6 +14027,8 @@ module.exports = {
   publicClosedGateArtifactCompactionDryRunText,
   publicClosedGateArtifactCompactionApply,
   publicClosedGateArtifactCompactionApplyCheck,
+  publicClosedGateRawArtifactPruneApply,
+  publicClosedGateRawArtifactPruneApplyCheck,
   publicClosedGateArchiveReader,
   publicClosedGateArchiveReaderCheck,
   publicClosedGateArchiveReaderText,

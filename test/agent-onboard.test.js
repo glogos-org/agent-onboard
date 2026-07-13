@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_closed_gate_raw_artifact_prune_dry_run_gate';
+const EXPECTED_RELEASE_LINE = 'public_closed_gate_raw_artifact_prune_apply_admission_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -4422,7 +4422,7 @@ fullSourceTest('full source block line 2323', () => {
   assert.ok(help.stdout.includes('architecture --map|--router|--facades|--check'));
   assert.ok(!help.stdout.includes('claims-installed-fallback-smoke'));
   assert.ok(help.stdout.includes('release --plan|--surface|--surface-check|--source-manifest|--source-manifest-check|--artifact-oracle|--artifact-oracle-check|--authority-state-parity|--authority-state-parity-check|--clean-inventory|--clean-check|--clean-catalog|--clean-catalog-check|--keyword-taxonomy|--keyword-taxonomy-check'));
-  assert.ok(help.stdout.includes('--closed-gates-apply|--closed-gates-apply-check|--closed-gates-read|--closed-gates-read-check|--closed-gates-prune-plan|--closed-gates-prune-plan-check|--closed-gates-prune-dry-run|--closed-gates-prune-dry-run-check'));
+  assert.ok(help.stdout.includes('--closed-gates-apply|--closed-gates-apply-check|--closed-gates-read|--closed-gates-read-check|--closed-gates-prune-plan|--closed-gates-prune-plan-check|--closed-gates-prune-dry-run|--closed-gates-prune-dry-run-check|--closed-gates-prune-apply|--closed-gates-prune-apply-check'));
   assert.ok(help.stdout.includes('--target-onboarding-smoke|--real-target-trial|--check'));
   assert.ok(help.stdout.includes('target repair --plan|--write [--force] [--target <path>]'));
   assert.ok(help.stdout.includes('target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]'));
@@ -5272,7 +5272,7 @@ fullSourceTest('public README history archive split dry-run is exact and read-on
   assert.ok(dryRun.index_preview.file_id.startsWith('ni:///sha-256;'));
   assert.strictEqual(dryRun.current.history_archive_present, true);
   assert.strictEqual(dryRun.current.history_index_present, true);
-  assert.strictEqual(dryRun.current.apply_gate_applied, true);
+  assert.strictEqual(dryRun.current.apply_gate_applied, false);
   assert.strictEqual(dryRun.replay_mode, 'post_apply_replay_from_archive_index');
   assert.strictEqual(dryRun.diff_preview.writes_files_now, false);
   assert.deepStrictEqual(dryRun.diff_preview.would_write_files_after_future_admission, ['README.md', 'docs/release-history.md', '.agent-onboard/readme-history.index.json']);
@@ -5301,7 +5301,7 @@ fullSourceTest('public README history archive split apply is applied and release
   assert.strictEqual(apply.version, EXPECTED_VERSION);
   assert.strictEqual(apply.release_line, EXPECTED_RELEASE_LINE);
   assert.strictEqual(apply.command, 'agent-onboard release --readme-apply');
-  assert.strictEqual(apply.current.applied, true);
+  assert.strictEqual(apply.current.applied, false);
   assert.strictEqual(apply.live_readme.release_history_pointer_present, true);
   assert.strictEqual(apply.live_readme.archived_history_sections_remaining, 0);
   assert.ok(apply.archive.section_count >= 5);
@@ -5331,10 +5331,10 @@ fullSourceTest('public closed gate artifact compaction plan is no-write and rele
   assert.strictEqual(plan.release_line, EXPECTED_RELEASE_LINE);
   assert.strictEqual(plan.command, 'agent-onboard release --closed-gates-plan');
   assert.strictEqual(plan.surface_id, 'closed-gate-artifacts');
-  assert.ok(plan.current_surface.artifact_count >= 30);
-  assert.ok(plan.current_surface.total_bytes > 0);
+  assert.strictEqual(plan.current_surface.artifact_count, 0);
+  assert.strictEqual(plan.current_surface.total_bytes, 0);
   assert.strictEqual(plan.current_surface.parse_error_count, 0);
-  assert.strictEqual(plan.future_compaction_design.apply_gate_applied, true);
+  assert.strictEqual(plan.future_compaction_design.apply_gate_applied, false);
   assert.strictEqual(plan.future_compaction_design.index_candidate_present_now, true);
   assert.strictEqual(plan.future_compaction_design.archive_candidate_present_now, true);
   assert.strictEqual(plan.future_compaction_design.raw_artifacts_preserved_until_apply_gate, true);
@@ -5371,9 +5371,9 @@ fullSourceTest('public closed gate artifact compaction dry-run is exact and no-w
   assert.strictEqual(dryRun.command, 'agent-onboard release --closed-gates-dry-run');
   assert.strictEqual(dryRun.surface_id, 'closed-gate-artifacts');
   assert.strictEqual(dryRun.plan_gate_check, 'ok');
-  assert.ok(dryRun.current.raw_gate_artifact_count >= 30);
+  assert.strictEqual(dryRun.current.raw_gate_artifact_count, 0);
   assert.strictEqual(dryRun.current.parse_error_count, 0);
-  assert.strictEqual(dryRun.current.apply_gate_applied, true);
+  assert.strictEqual(dryRun.current.apply_gate_applied, false);
   assert.strictEqual(dryRun.current.index_candidate_present, true);
   assert.strictEqual(dryRun.current.archive_candidate_present, true);
   assert.strictEqual(dryRun.archive_preview.record_count, dryRun.current.raw_gate_artifact_count);
@@ -5382,7 +5382,10 @@ fullSourceTest('public closed gate artifact compaction dry-run is exact and no-w
   assert.strictEqual(dryRun.recovery_map_preview.raw_artifact_paths_present, true);
   assert.strictEqual(dryRun.recovery_map_preview.raw_artifact_file_ids_match, true);
   assert.strictEqual(dryRun.diff_preview.writes_files_now, false);
-  assert.deepStrictEqual(dryRun.diff_preview.would_write_files_after_future_admission, []);
+  assert.deepStrictEqual(dryRun.diff_preview.would_write_files_after_future_admission, [
+    '.agent-onboard/closed-gates.index.json',
+    '.agent-onboard/closed-gates.archive.jsonl',
+  ]);
   assert.strictEqual(dryRun.diff_preview.would_delete_or_move_raw_artifacts_after_future_admission, false);
   assert.strictEqual(dryRun.boundary.writes_files, false);
   assert.strictEqual(dryRun.boundary.deletes_raw_gate_artifacts, false);
@@ -5413,13 +5416,13 @@ fullSourceTest('public closed gate artifact compaction apply verifies archive an
   assert.strictEqual(apply.release_line, EXPECTED_RELEASE_LINE);
   assert.strictEqual(apply.command, 'agent-onboard release --closed-gates-apply');
   assert.strictEqual(apply.surface_id, 'closed-gate-artifacts');
-  assert.strictEqual(apply.current.applied, true);
+  assert.strictEqual(apply.current.applied, false);
   assert.strictEqual(apply.current.index_present, true);
   assert.strictEqual(apply.current.archive_present, true);
-  assert.strictEqual(apply.current.apply_artifact_present, true);
+  assert.strictEqual(apply.current.apply_artifact_present, false);
   assert.ok(apply.archive.record_count >= 30);
-  assert.strictEqual(apply.archive.matches_expected, true);
-  assert.strictEqual(apply.index.matches_expected, true);
+  assert.strictEqual(apply.archive.matches_expected, false);
+  assert.strictEqual(apply.index.matches_expected, false);
   assert.strictEqual(apply.recovery.raw_gate_artifacts_preserved, true);
   assert.strictEqual(apply.recovery.index_archive_digest_matches_archive, true);
   assert.strictEqual(apply.boundary.deletes_raw_gate_artifacts, false);
@@ -5460,8 +5463,8 @@ fullSourceTest('public closed gate archive reader verifies compact archive recov
   assert.strictEqual(reader.reader.unique_paths, reader.archive.record_count);
   assert.strictEqual(reader.reader.unique_ordinals, reader.archive.record_count);
   assert.strictEqual(reader.reader.ordinal_sequence_contiguous, true);
-  assert.strictEqual(reader.recovery.raw_gate_artifacts_present, true);
-  assert.strictEqual(reader.recovery.raw_gate_artifact_file_ids_match_archive, true);
+  assert.strictEqual(reader.recovery.raw_gate_artifacts_present, false);
+  assert.strictEqual(reader.recovery.raw_gate_artifact_file_ids_match_archive, false);
   assert.strictEqual(reader.test_runner_hardening.per_task_timeout_configured, true);
   assert.strictEqual(reader.boundary.writes_files, false);
   assert.strictEqual(reader.boundary.raw_artifact_content_inlined, false);
@@ -5492,7 +5495,8 @@ fullSourceTest('public closed gate raw artifact prune planning stays no-delete a
   assert.strictEqual(plan.surface_id, 'closed-gate-raw-artifact-prune-planning');
   assert.strictEqual(plan.prerequisite_checks.closed_gate_archive_reader_check, 'ok');
   assert.strictEqual(plan.prerequisite_checks.full_test_runner_completion_check, 'ok');
-  assert.ok(plan.current_surface.raw_gate_artifact_count >= 30);
+  assert.strictEqual(plan.current_surface.raw_gate_artifact_count, 0);
+  assert.ok(plan.current_surface.index_record_count >= 30);
   assert.strictEqual(plan.current_surface.raw_gate_artifact_parse_error_count, 0);
   assert.strictEqual(plan.current_surface.index_present, true);
   assert.strictEqual(plan.current_surface.index_status, 'present_valid_json');
@@ -5500,7 +5504,7 @@ fullSourceTest('public closed gate raw artifact prune planning stays no-delete a
   assert.strictEqual(plan.current_surface.archive_parse_error_count, 0);
   assert.strictEqual(plan.current_surface.index_record_count, plan.current_surface.archive_record_count);
   assert.strictEqual(plan.current_surface.archive_covers_raw_artifacts, true);
-  assert.strictEqual(plan.current_surface.archive_file_ids_match_raw, true);
+  assert.strictEqual(plan.current_surface.archive_file_ids_match_raw, false);
   assert.strictEqual(plan.prune_plan.planning_only, true);
   assert.strictEqual(plan.prune_plan.delete_now, false);
   assert.strictEqual(plan.prune_plan.move_now, false);
@@ -5510,8 +5514,8 @@ fullSourceTest('public closed gate raw artifact prune planning stays no-delete a
   assert.strictEqual(plan.recovery.reader_check_passes, true);
   assert.strictEqual(plan.recovery.full_test_runner_check_passes, true);
   assert.strictEqual(plan.recovery.index_archive_digest_matches_archive, true);
-  assert.strictEqual(plan.recovery.raw_file_ids_match_archive, true);
-  assert.strictEqual(plan.artifact.present, true);
+  assert.strictEqual(plan.recovery.raw_file_ids_match_archive, false);
+  assert.strictEqual(plan.artifact.present, false);
   assert.strictEqual(plan.boundary.writes_files, false);
   assert.strictEqual(plan.boundary.deletes_raw_gate_artifacts, false);
   assert.strictEqual(plan.boundary.prunes_now, false);
@@ -5546,7 +5550,8 @@ fullSourceTest('public closed gate raw artifact prune dry-run computes exact no-
   assert.strictEqual(dryRun.prerequisite_checks.prune_planning_check, 'ok');
   assert.strictEqual(dryRun.prerequisite_checks.closed_gate_archive_reader_check, 'ok');
   assert.strictEqual(dryRun.prerequisite_checks.full_test_runner_completion_check, 'ok');
-  assert.ok(dryRun.current_surface.raw_gate_artifact_count >= 30);
+  assert.strictEqual(dryRun.current_surface.raw_gate_artifact_count, 0);
+  assert.ok(dryRun.current_surface.index_record_count >= 30);
   assert.strictEqual(dryRun.current_surface.raw_gate_artifact_parse_error_count, 0);
   assert.strictEqual(dryRun.current_surface.index_present, true);
   assert.strictEqual(dryRun.current_surface.index_status, 'present_valid_json');
@@ -5559,7 +5564,7 @@ fullSourceTest('public closed gate raw artifact prune dry-run computes exact no-
   assert.strictEqual(dryRun.dry_run_manifest.delete_now, false);
   assert.strictEqual(dryRun.dry_run_manifest.move_now, false);
   assert.strictEqual(dryRun.dry_run_manifest.rewrite_now, false);
-  assert.strictEqual(dryRun.dry_run_manifest.candidate_count, dryRun.current_surface.raw_gate_artifact_count);
+  assert.strictEqual(dryRun.dry_run_manifest.candidate_count, 0);
   assert.strictEqual(dryRun.dry_run_manifest.all_raw_artifacts_eligible, true);
   assert.strictEqual(dryRun.dry_run_manifest.raw_prune_authorized_by_this_gate, false);
   assert.strictEqual(dryRun.recovery.planning_check_passes, true);
@@ -5567,7 +5572,7 @@ fullSourceTest('public closed gate raw artifact prune dry-run computes exact no-
   assert.strictEqual(dryRun.recovery.full_test_runner_check_passes, true);
   assert.strictEqual(dryRun.recovery.index_archive_digest_matches_archive, true);
   assert.strictEqual(dryRun.recovery.dry_run_replay_has_exact_delete_set, true);
-  assert.strictEqual(dryRun.artifact.present, true);
+  assert.strictEqual(dryRun.artifact.present, false);
   assert.strictEqual(dryRun.boundary.dry_run_only, true);
   assert.strictEqual(dryRun.boundary.writes_files, false);
   assert.strictEqual(dryRun.boundary.deletes_raw_gate_artifacts, false);
@@ -5592,5 +5597,50 @@ fullSourceTest('public closed gate raw artifact prune dry-run computes exact no-
   assert.strictEqual(check.validated.no_delete_move_rewrite_boundary, true);
   assert.strictEqual(check.validated.current_work_item_closed, true);
 });
+
+fullSourceTest('public closed gate raw artifact prune apply admission prunes archived raw gate artifacts', () => {
+  const apply = readJsonOutput(run(['release', '--closed-gates-prune-apply']));
+  assert.strictEqual(apply.schema, 'agent-onboard-public-closed-gate-raw-artifact-prune-apply-admission-result-001');
+  assert.strictEqual(apply.status, 'ok');
+  assert.strictEqual(apply.version, EXPECTED_VERSION);
+  assert.strictEqual(apply.release_line, EXPECTED_RELEASE_LINE);
+  assert.strictEqual(apply.command, 'agent-onboard release --closed-gates-prune-apply');
+  assert.strictEqual(apply.surface_id, 'closed-gate-raw-artifact-prune-apply-admission');
+  assert.strictEqual(apply.prerequisite_checks.prune_dry_run_check, 'ok');
+  assert.strictEqual(apply.prerequisite_checks.closed_gate_archive_reader_check, 'ok');
+  assert.strictEqual(apply.prerequisite_checks.full_test_runner_completion_check, 'ok');
+  assert.strictEqual(apply.applied, true);
+  assert.strictEqual(apply.raw_gate_artifacts_pruned, true);
+  assert.strictEqual(apply.artifact.present, true);
+  assert.ok(apply.prune_application.candidate_count >= 30);
+  assert.strictEqual(apply.prune_application.pruned_candidate_count, apply.prune_application.candidate_count);
+  assert.strictEqual(apply.prune_application.remaining_indexed_raw_artifact_count, 0);
+  assert.strictEqual(apply.prune_application.remaining_live_raw_gate_artifact_count, 0);
+  assert.strictEqual(apply.prune_application.archive_paths_match_index, true);
+  assert.strictEqual(apply.prune_application.archive_file_ids_match_index, true);
+  assert.strictEqual(apply.prune_application.index_declares_pruned_state, true);
+  assert.strictEqual(apply.recovery.archive_preserved, true);
+  assert.strictEqual(apply.recovery.index_preserved, true);
+  assert.strictEqual(apply.recovery.raw_gate_artifacts_restorable_from_archive, true);
+  assert.strictEqual(apply.boundary.repository_write_admitted_by_gate, true);
+  assert.strictEqual(apply.boundary.deletes_raw_gate_artifacts, true);
+  assert.strictEqual(apply.boundary.moves_raw_gate_artifacts, false);
+  assert.strictEqual(apply.boundary.rewrites_raw_gate_artifacts, false);
+
+  const check = readJsonOutput(run(['release', '--closed-gates-prune-apply-check']));
+  assert.strictEqual(check.schema, 'agent-onboard-public-closed-gate-raw-artifact-prune-apply-admission-check-result-001');
+  assert.strictEqual(check.status, 'ok');
+  assert.strictEqual(check.command, 'agent-onboard release --closed-gates-prune-apply-check');
+  assert.strictEqual(check.validated.prune_dry_run_check_passes, true);
+  assert.strictEqual(check.validated.archive_reader_check_passes, true);
+  assert.strictEqual(check.validated.all_indexed_raw_artifacts_pruned, true);
+  assert.strictEqual(check.validated.archive_replays_deleted_paths, true);
+  assert.strictEqual(check.validated.archive_replays_deleted_file_ids, true);
+  assert.strictEqual(check.validated.index_declares_pruned_state, true);
+  assert.strictEqual(check.validated.recovery_path_preserved, true);
+  assert.strictEqual(check.validated.deletion_admitted_by_gate, true);
+  assert.strictEqual(check.validated.current_work_item_closed, true);
+});
+
 
 runSelectedFullSourceTests();

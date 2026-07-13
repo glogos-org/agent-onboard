@@ -1163,6 +1163,8 @@ agent-onboard release --closed-gates-prune-plan
 agent-onboard release --closed-gates-prune-plan-check
 agent-onboard release --closed-gates-prune-dry-run
 agent-onboard release --closed-gates-prune-dry-run-check
+agent-onboard release --closed-gates-prune-apply
+agent-onboard release --closed-gates-prune-apply-check
 agent-onboard release --full-test-runner
 agent-onboard release --full-test-runner-check
 ```

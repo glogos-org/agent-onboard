@@ -289,6 +289,7 @@ function quickTasks() {
     cliTask('release closed gate archive reader check', ['release', '--closed-gates-read-check'], expectStatusOk),
     cliTask('release closed gate raw artifact prune planning check', ['release', '--closed-gates-prune-plan-check'], expectStatusOk),
     cliTask('release closed gate raw artifact prune dry-run check', ['release', '--closed-gates-prune-dry-run-check'], expectStatusOk),
+    cliTask('release closed gate raw artifact prune apply admission check', ['release', '--closed-gates-prune-apply-check'], expectStatusOk),
     cliTask('release version sprawl check', ['release', '--version-sprawl-check'], expectStatusOk),
     cliTask('release architecture parity smoke', ['release', '--architecture-parity-smoke'], expectStatusOk),
     cliTask('release check', ['release', '--check'], expectStatusOk),

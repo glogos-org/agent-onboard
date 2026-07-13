@@ -3,27 +3,11 @@
   "status": "active",
   "ledger_path": ".agent-onboard/claims.jsonl",
   "raw_ledger_loaded_by_default": false,
-  "claim_count": 38,
-  "proposed_count": 19,
-  "merged_count": 19,
+  "claim_count": 40,
+  "proposed_count": 20,
+  "merged_count": 20,
   "latest_claims_limit": 5,
   "latest_claims": [
-    {
-      "event_type": "claim_merged",
-      "work_item_id": "P1S3M6W11",
-      "claim_id": "claim-p1s3m6w11-full-test-runner-completion-compaction",
-      "claim_status": "merged",
-      "actor": "gpt-5.5-thinking",
-      "created_at": "2026-07-07T10:11:00.000Z"
-    },
-    {
-      "event_type": "claim_proposed",
-      "work_item_id": "P1S3M6W12",
-      "claim_id": "claim-p1s3m6w12-closed-gate-raw-artifact-prune-planning",
-      "claim_status": "proposed",
-      "actor": "gpt-5.5-thinking",
-      "created_at": "2026-07-07T11:05:00.000Z"
-    },
     {
       "event_type": "claim_merged",
       "work_item_id": "P1S3M6W12",
@@ -47,15 +31,31 @@
       "claim_status": "merged",
       "actor": "gpt-5.5-thinking",
       "created_at": "2026-07-07T12:38:00.000Z"
+    },
+    {
+      "event_type": "claim_proposed",
+      "work_item_id": "P1S3M6W14",
+      "claim_id": "claim-p1s3m6w14-closed-gate-raw-artifact-prune-apply-admission",
+      "claim_status": "proposed",
+      "actor": "gpt-5.5-thinking",
+      "created_at": "2026-07-07T13:05:00.000Z"
+    },
+    {
+      "event_type": "claim_merged",
+      "work_item_id": "P1S3M6W14",
+      "claim_id": "claim-p1s3m6w14-closed-gate-raw-artifact-prune-apply-admission",
+      "claim_status": "merged",
+      "actor": "gpt-5.5-thinking",
+      "created_at": "2026-07-07T13:20:00.000Z"
     }
   ],
   "active_work_item_ids": [],
   "latest_merged_work_item_ids": [
-    "P1S3M6W9",
     "P1S3M6W10",
     "P1S3M6W11",
     "P1S3M6W12",
-    "P1S3M6W13"
+    "P1S3M6W13",
+    "P1S3M6W14"
   ],
   "lifecycle": {
     "active_claim_count": 0,
@@ -64,5 +64,5 @@
     "conflict_work_item_ids": [],
     "lifecycle_check_command": "agent-onboard claim --lifecycle-check --json"
   },
-  "updated_at": "2026-07-07T12:38:00.000Z"
+  "updated_at": "2026-07-07T13:20:00.000Z"
 }

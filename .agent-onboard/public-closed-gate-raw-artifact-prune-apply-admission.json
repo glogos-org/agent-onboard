@@ -1,19 +1,24 @@
 {
-  "schema": "agent-onboard-public-closed-gates-index-001",
-  "status": "applied",
+  "schema": "agent-onboard-public-closed-gate-raw-artifact-prune-apply-admission-result-001",
+  "status": "ok",
   "package_name": "agent-onboard",
   "version": "0.0.163",
   "release_line": "public_closed_gate_raw_artifact_prune_apply_admission_gate",
-  "surface_id": "closed-gate-artifacts",
-  "source_context": "source_repository",
-  "source_root_inlined": false,
+  "milestone_id": "P1S3M6",
+  "prerequisite_work_item_id": "P1S3M6W13",
+  "work_item_id": "P1S3M6W14",
+  "title": "Public closed gate raw artifact prune apply admission gate",
+  "command": "agent-onboard release --closed-gates-prune-apply",
+  "check_command": "agent-onboard release --closed-gates-prune-apply-check",
+  "surface_id": "closed-gate-raw-artifact-prune-apply-admission",
+  "applied": true,
+  "raw_gate_artifacts_pruned": true,
+  "candidate_count": 53,
+  "candidate_total_bytes": 213008,
+  "archive_path": ".agent-onboard/closed-gates.archive.jsonl",
+  "archive_file_id": "ni:///sha-256;-PvjcqBPRmXSFzi10P8Igs3xGqsu4__7HPWGsE5K4QQ",
   "index_path": ".agent-onboard/closed-gates.index.json",
-  "archive_candidate_path": ".agent-onboard/closed-gates.archive.jsonl",
-  "archive_candidate_file_id": "ni:///sha-256;-PvjcqBPRmXSFzi10P8Igs3xGqsu4__7HPWGsE5K4QQ",
-  "record_count": 53,
-  "raw_artifact_count": 53,
-  "raw_artifacts_preserved": false,
-  "raw_artifact_paths": [
+  "deleted_candidate_paths": [
     ".agent-onboard/ai-discovery-product-gate.json",
     ".agent-onboard/check-plan-fast-runner-product-gate.json",
     ".agent-onboard/command-surface-catalog-product-gate.json",
@@ -68,7 +73,7 @@
     ".agent-onboard/target-memory-descriptor-product-gate.json",
     ".agent-onboard/target-work-items-preview-product-gate.json"
   ],
-  "raw_artifact_file_ids": [
+  "deleted_candidate_file_ids": [
     "ni:///sha-256;ZF1-z5M_CIBVcLqoUV_UAu-qa2GGUvAmsuk7KhTKwD0",
     "ni:///sha-256;qCB7mvIxa-EDRVgTPaEANcBGdLfULMgF62Q5M8c-PfA",
     "ni:///sha-256;wYFteb2vT-9B9fggZKoPqDfMfzecZgSSWHIY5ikZiFc",
@@ -123,24 +128,25 @@
     "ni:///sha-256;KilW1cc8mTvSWNhlQhyJmxbRIBi5L3Ky--xG7r6sDQM",
     "ni:///sha-256;7rJ_hL1NPRpO8VXEwg-ZvMPOefRhoifPmhCCIO0sUMU"
   ],
-  "by_milestone": {
-    "unknown": 43,
-    "P1S3M5": 1,
-    "P1S3M6": 9
+  "deleted_path_content_inlined": false,
+  "boundary": {
+    "repository_write_admitted_by_gate": true,
+    "command_writes_files": false,
+    "check_command_writes_files": false,
+    "deletes_raw_gate_artifacts": true,
+    "moves_raw_gate_artifacts": false,
+    "rewrites_raw_gate_artifacts": false,
+    "publishes_package": false,
+    "mutates_registry": false,
+    "network": false
   },
   "recovery": {
-    "replay_from_archive_jsonl": true,
-    "replay_from_raw_artifact_paths": true,
-    "raw_artifacts_required_until_apply_gate": false,
-    "raw_artifacts_preserved_after_apply": true,
-    "raw_artifacts_required_until_future_prune_gate": false,
-    "index_is_not_sole_authority": true,
-    "archive_is_recovery_source": true,
-    "content_inlined": false,
-    "raw_artifacts_preserved_after_prune_apply": false,
-    "raw_artifacts_pruned": true,
-    "prune_apply_work_item_id": "P1S3M6W14",
-    "prune_apply_artifact_file": ".agent-onboard/public-closed-gate-raw-artifact-prune-apply-admission.json",
-    "restore_requires_explicit_future_restore_gate": true
-  }
+    "archive_preserved": true,
+    "index_preserved": true,
+    "archive_records_replay_deleted_raw_paths": true,
+    "archive_records_replay_deleted_raw_file_ids": true,
+    "restore_requires_explicit_future_restore_gate": true,
+    "content_inlined": false
+  },
+  "closed_at": "2026-07-07T13:20:00.000Z"
 }
