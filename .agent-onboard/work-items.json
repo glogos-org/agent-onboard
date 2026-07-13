@@ -1620,6 +1620,18 @@
         "claimed_at": "2026-07-08T18:57:10.972Z"
       },
       "closure_ref": "closures:P1S3M7W2"
+    },
+    {
+      "id": "P1S3M7W3",
+      "milestone_id": "P1S3M7",
+      "title": "Public Exact Artifact Oracle Service Extraction Gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-08T20:25:00.000Z",
+        "note": "Extract exact artifact oracle behavior from runtime composer without changing storage backend."
+      },
+      "closure_ref": "closures:P1S3M7W3"
     }
   ]
 }

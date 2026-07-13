@@ -47,24 +47,27 @@
     "check-registry-compaction",
     "god-file-budget-enforcement-closure",
     "runtime-composer-residual-slice-reduction",
-    "target-command-runner-extraction"
+    "target-command-runner-extraction",
+    "exact-artifact-oracle-service-extraction"
   ],
   "remaining_god_files": [
     {
       "path": "cli/agent_onboard/runtime-composer.js",
       "category": "runtime_source",
-      "current_lines": 6459,
-      "current_bytes": 353664,
-      "admitted_reason": "runtime composer still carries command implementation debt after W1 residual slice reduction",
-      "next_reduction_gate": "P1S3M7W7"
+      "current_lines": 6186,
+      "current_bytes": 340538,
+      "admitted_reason": "runtime composer still carries command implementation debt after W3 exact artifact oracle service extraction",
+      "next_reduction_gate": "P1S3M7W4"
     },
     {
       "path": ".agent-onboard/work-items.json",
       "category": "authority_registry",
-      "current_lines": 1625,
-      "current_bytes_max": 46389,
-      "admitted_reason": "legacy root projection retained for older target repo tooling until root projection cutover; W1 added one bounded compatibility record",
-      "next_reduction_gate": "P1S3M7W8"
+      "current_lines": 1637,
+      "current_bytes_max": 46822,
+      "admitted_reason": "public work item ledger projection remains admitted migration debt after W3 closure append; authoritative shards remain the default compact read path",
+      "next_reduction_gate": "P1S3M7W8",
+      "current_bytes": 46822,
+      "current_lines_max": 1637
     },
     {
       "path": "cli/agent_onboard/domains/architecture/services/runtime/architecture-runtime-service.js",

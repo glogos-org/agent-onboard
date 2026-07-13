@@ -1,8 +1,8 @@
 {
   "schema": "agent-onboard-public-source-size-budget-ratchet-001",
   "status": "active",
-  "work_item_id": "P1S3M7W2",
-  "release_line": "public_target_command_runner_extraction_gate",
+  "work_item_id": "P1S3M7W3",
+  "release_line": "public_exact_artifact_oracle_service_extraction_gate",
   "ratchet_mode": "no_tracked_growth_beyond_maximum_and_no_new_oversized_files",
   "god_file_thresholds": {
     "god_lines": 1000,
@@ -87,8 +87,8 @@
   "tracked_files": {
     ".agent-onboard/state/closures/work-items-closures.jsonl": {
       "category": "authority_state",
-      "max_lines": 172,
-      "max_bytes": 78719,
+      "max_lines": 173,
+      "max_bytes": 79175,
       "baseline_lines": 168,
       "baseline_bytes": 76889,
       "target_lines": 200,
@@ -126,6 +126,12 @@
           "new_max_lines": 172,
           "previous_max_bytes": 78263,
           "new_max_bytes": 78719
+        },
+        {
+          "work_item_id": "P1S3M7W3",
+          "reason": "closed W3 ledger/projection growth admitted with exact artifact oracle service extraction closure",
+          "max_lines": 173,
+          "max_bytes": 79175
         }
       ]
     },
@@ -141,8 +147,8 @@
     },
     ".agent-onboard/work-items.json": {
       "category": "authority_registry",
-      "max_lines": 1625,
-      "max_bytes": 46389,
+      "max_lines": 1637,
+      "max_bytes": 46822,
       "baseline_lines": 1573,
       "baseline_bytes": 44798,
       "target_lines": 500,
@@ -187,6 +193,12 @@
           "new_max_lines": 1625,
           "previous_max_bytes": 46080,
           "new_max_bytes": 46389
+        },
+        {
+          "work_item_id": "P1S3M7W3",
+          "reason": "closed W3 ledger/projection growth admitted with exact artifact oracle service extraction closure",
+          "max_lines": 1637,
+          "max_bytes": 46822
         }
       ]
     },
@@ -343,8 +355,8 @@
     },
     "cli/agent_onboard/runtime-composer.js": {
       "category": "runtime_source",
-      "max_lines": 6459,
-      "max_bytes": 353664,
+      "max_lines": 6186,
+      "max_bytes": 340538,
       "baseline_lines": 11753,
       "baseline_bytes": 676851,
       "target_lines": 500,
@@ -384,6 +396,15 @@
           "new_max_lines": 6459,
           "previous_max_bytes": 384741,
           "new_max_bytes": 353664
+        },
+        {
+          "work_item_id": "P1S3M7W3",
+          "gate": "Public Exact Artifact Oracle Service Extraction Gate",
+          "reason": "W3 moved exact artifact oracle pack/install smoke orchestration into a bounded package domain service while preserving local tarball-only oracle behavior.",
+          "previous_max_lines": 6459,
+          "new_max_lines": 6186,
+          "previous_max_bytes": 353664,
+          "new_max_bytes": 340538
         }
       ]
     },
@@ -575,13 +596,13 @@
     },
     "scripts/checks/registry.js": {
       "category": "check_script",
-      "max_lines": 54,
-      "max_bytes": 2574,
+      "max_lines": 55,
+      "max_bytes": 2667,
       "baseline_lines": 51,
       "baseline_bytes": 2319,
       "target_lines": 120,
       "target_bytes": 16384,
-      "reason": "check registry admitted by P1S3M6W33; maps stable check identifiers to bounded modules",
+      "reason": "Check registry admits the W3 exact artifact oracle service extraction check identifier.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W34",
@@ -622,8 +643,8 @@
     },
     ".agent-onboard/god-file-budget-enforcement-closure.json": {
       "category": "authority_registry",
-      "max_lines": 107,
-      "max_bytes": 3999,
+      "max_lines": 110,
+      "max_bytes": 4141,
       "baseline_lines": 105,
       "baseline_bytes": 3859,
       "target_lines": 220,
@@ -647,18 +668,24 @@
           "new_max_lines": 107,
           "previous_max_bytes": 3959,
           "new_max_bytes": 3999
+        },
+        {
+          "work_item_id": "P1S3M7W3",
+          "reason": "W3 authority budget artifact updated for exact artifact oracle extraction closure",
+          "max_lines": 110,
+          "max_bytes": 4141
         }
       ]
     },
     "scripts/checks/target-command-runner-extraction.js": {
       "category": "check_script",
-      "max_lines": 115,
-      "max_bytes": 6234,
+      "max_lines": 117,
+      "max_bytes": 6627,
       "baseline_lines": 115,
       "baseline_bytes": 6234,
       "target_lines": 250,
       "target_bytes": 32768,
-      "reason": "Bounded W2 check script validates target command runner extraction and CLI smokes.",
+      "reason": "W2 checker now remains valid as a historical closure ratchet after later package versions reduce runtime composer further.",
       "ratchet_history": []
     },
     "cli/agent_onboard/domains/target/services/target-command-runner-service.js": {
@@ -685,8 +712,8 @@
     },
     ".agent-onboard/source-size-budget-ratchet.json": {
       "category": "authority_registry",
-      "max_lines": 724,
-      "max_bytes": 27369,
+      "max_lines": 795,
+      "max_bytes": 30233,
       "baseline_lines": 705,
       "baseline_bytes": 26644,
       "target_lines": 500,
@@ -699,8 +726,47 @@
           "reason": "W2 made the source-size budget self-describing and tracked its own ratchet artifact growth.",
           "max_lines": 705,
           "max_bytes": 26644
+        },
+        {
+          "work_item_id": "P1S3M7W3",
+          "reason": "W3 authority budget artifact updated for exact artifact oracle extraction closure",
+          "max_lines": 795,
+          "max_bytes": 30233
         }
       ]
+    },
+    "cli/agent_onboard/domains/package/services/exact-artifact-oracle-service.js": {
+      "category": "runtime_service_source",
+      "max_lines": 310,
+      "max_bytes": 14498,
+      "baseline_lines": 310,
+      "baseline_bytes": 14498,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "New bounded package domain service owns exact artifact oracle local pack/install smoke behavior extracted from runtime composer.",
+      "ratchet_history": []
+    },
+    "scripts/checks/exact-artifact-oracle-service-extraction.js": {
+      "category": "check_script",
+      "max_lines": 107,
+      "max_bytes": 6190,
+      "baseline_lines": 107,
+      "baseline_bytes": 6190,
+      "target_lines": 250,
+      "target_bytes": 32768,
+      "reason": "Bounded W3 check script validates exact artifact oracle service extraction and non-heavy release smokes.",
+      "ratchet_history": []
+    },
+    ".agent-onboard/exact-artifact-oracle-service-extraction.json": {
+      "category": "authority_registry",
+      "max_lines": 97,
+      "max_bytes": 3867,
+      "baseline_lines": 96,
+      "baseline_bytes": 3802,
+      "target_lines": 400,
+      "target_bytes": 65536,
+      "reason": "Compact W3 closure artifact for exact artifact oracle service extraction.",
+      "ratchet_history": []
     }
   },
   "report": {
@@ -710,6 +776,11 @@
       "path": "cli/agent_onboard/runtime-composer.js",
       "lines": 7008,
       "bytes": 384741
+    },
+    "runtime_composer_after_w3": {
+      "path": "cli/agent_onboard/runtime-composer.js",
+      "lines": 6186,
+      "bytes": 340538
     }
   },
   "boundary": {

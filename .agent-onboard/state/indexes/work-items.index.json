@@ -12,14 +12,14 @@
     ".agent-onboard/state/closures/work-items-closures.jsonl",
     ".agent-onboard/state/closures/work-items/manifest.json"
   ],
-  "item_count": 173,
+  "item_count": 174,
   "open_count": 0,
   "claimed_count": 0,
-  "closed_count": 173,
-  "latest_closed_work_item_id": "P1S3M7W2",
-  "archived_closure_count": 172,
+  "closed_count": 174,
+  "latest_closed_work_item_id": "P1S3M7W3",
+  "archived_closure_count": 173,
   "inline_closure_count": 0,
-  "closure_ref_count": 172,
+  "closure_ref_count": 173,
   "closure_payload_shard_count": 11,
   "by_status": {
     "open": [],
@@ -197,7 +197,8 @@
       "P1S3M6W33",
       "P1S3M6W34",
       "P1S3M7W1",
-      "P1S3M7W2"
+      "P1S3M7W2",
+      "P1S3M7W3"
     ]
   },
   "by_milestone": {

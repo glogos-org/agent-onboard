@@ -40,14 +40,16 @@ function main() {
 
   if (artifact.schema !== 'agent-onboard-public-target-command-runner-extraction-001') failures.push('artifact schema mismatch');
   if (artifact.work_item_id !== 'P1S3M7W2') failures.push('artifact work_item_id must be P1S3M7W2');
-  if (artifact.version !== pkg.version) failures.push('artifact version must match package.json');
-  if (pkg.version !== '0.0.185') failures.push('package version must be 0.0.185');
+  if (artifact.version !== '0.0.185') failures.push('artifact version must record the W2 closure version 0.0.185');
+  if (typeof pkg.version !== 'string' || pkg.version.length === 0) failures.push('package version must be present');
   if (composerMetric.lines > MAX_COMPOSER_LINES) failures.push(`${COMPOSER_REL} line count ${composerMetric.lines} exceeds ${MAX_COMPOSER_LINES}`);
   if (composerMetric.bytes > MAX_COMPOSER_BYTES) failures.push(`${COMPOSER_REL} byte size ${composerMetric.bytes} exceeds ${MAX_COMPOSER_BYTES}`);
   if (runnerMetric.lines > MAX_RUNNER_LINES) failures.push(`${RUNNER_REL} line count ${runnerMetric.lines} exceeds ${MAX_RUNNER_LINES}`);
   if (runnerMetric.bytes > MAX_RUNNER_BYTES) failures.push(`${RUNNER_REL} byte size ${runnerMetric.bytes} exceeds ${MAX_RUNNER_BYTES}`);
-  if (artifact.reduction.runtime_composer_after.lines !== composerMetric.lines) failures.push('artifact runtime_composer_after.lines is stale');
-  if (artifact.reduction.runtime_composer_after.bytes !== composerMetric.bytes) failures.push('artifact runtime_composer_after.bytes is stale');
+  if (artifact.reduction.runtime_composer_after.lines !== MAX_COMPOSER_LINES) failures.push('artifact runtime_composer_after.lines must record the W2 ratchet baseline');
+  if (artifact.reduction.runtime_composer_after.bytes !== MAX_COMPOSER_BYTES) failures.push('artifact runtime_composer_after.bytes must record the W2 ratchet baseline');
+  if (composerMetric.lines > artifact.reduction.runtime_composer_after.lines) failures.push('runtime composer regressed above W2 line baseline');
+  if (composerMetric.bytes > artifact.reduction.runtime_composer_after.bytes) failures.push('runtime composer regressed above W2 byte baseline');
 
   if (!composer.includes('createTargetCommandRunnerService')) failures.push(`${COMPOSER_REL} must compose target command runner service`);
   if (!composer.includes('targetCommandRunnerService.runTargetCommand')) failures.push(`${COMPOSER_REL} must delegate target command routing through the extracted service`);

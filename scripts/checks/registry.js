@@ -28,7 +28,8 @@ const CHECK_MODULES = Object.freeze({
   'check-registry-compaction': 'check-registry-compaction.js',
   'god-file-budget-enforcement-closure': 'god-file-budget-enforcement-closure.js',
   'runtime-composer-residual-slice-reduction': 'runtime-composer-residual-slice-reduction.js',
-  'target-command-runner-extraction': 'target-command-runner-extraction.js'
+  'target-command-runner-extraction': 'target-command-runner-extraction.js',
+  'exact-artifact-oracle-service-extraction': 'exact-artifact-oracle-service-extraction.js'
 });
 
 function normalizeCheckId(value) {
