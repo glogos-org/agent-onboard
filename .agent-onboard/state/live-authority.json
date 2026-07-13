@@ -5,10 +5,10 @@
   "release_line": "public_runtime_guard_service_decomposition_gate",
   "authority_state_source_layout": "sharded_seed",
   "state_root": ".agent-onboard/state",
-  "current_work_item": "P1S3M6W29",
-  "current_work_item_title": "Public Target Governance Service Split Gate",
-  "last_closed_work_item": "P1S3M6W29",
-  "last_closed_title": "Public Target Governance Service Split Gate",
+  "current_work_item": "P1S3M6W30",
+  "current_work_item_title": "Public Test Suite Sharding Gate",
+  "last_closed_work_item": "P1S3M6W30",
+  "last_closed_title": "Public Test Suite Sharding Gate",
   "default_first_read": true,
   "compact_authority_index_file": ".agent-onboard/authority-index.json",
   "state_command": "agent-onboard authority --state",
@@ -17,13 +17,6 @@
   "raw_growth_files_loaded_by_default": false,
   "file_contents_inlined": false,
   "latest_closed_work_items": [
-    {
-      "id": "P1S3M6W25",
-      "title": "Public Runtime Command Registry Extraction Gate",
-      "status": "closed",
-      "milestone_id": "P1S3M6",
-      "domain": null
-    },
     {
       "id": "P1S3M6W26",
       "title": "Public Release Clean Closed Gates Runtime Slice Extraction Gate",
@@ -48,6 +41,13 @@
     {
       "id": "P1S3M6W29",
       "title": "Public Target Governance Service Split Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M6",
+      "domain": null
+    },
+    {
+      "id": "P1S3M6W30",
+      "title": "Public Test Suite Sharding Gate",
       "status": "closed",
       "milestone_id": "P1S3M6",
       "domain": null

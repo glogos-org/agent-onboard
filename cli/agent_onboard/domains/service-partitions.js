@@ -44,6 +44,18 @@ const RUNTIME_SERVICE_PARTITION_SEED = Object.freeze({
       services: Object.freeze([
         'cli/agent_onboard/domains/package/services/package-service.js',
         'cli/agent_onboard/domains/package/services/package-surface-service.js',
+        'cli/agent_onboard/domains/package/services/public-runtime-release-service.js',
+        'cli/agent_onboard/domains/package/services/release-clean-closed-gates-runtime-slice-service.js',
+        'cli/agent_onboard/domains/package/services/release-clean-closed-gates/clean-compaction-runtime.js',
+        'cli/agent_onboard/domains/package/services/release-clean-closed-gates/keyword-readme-plan-runtime.js',
+        'cli/agent_onboard/domains/package/services/release-clean-closed-gates/readme-history-archive-runtime.js',
+        'cli/agent_onboard/domains/package/services/release-clean-closed-gates/readme-history-apply-runtime.js',
+        'cli/agent_onboard/domains/package/services/release-clean-closed-gates/closed-gate-compaction-runtime.js',
+        'cli/agent_onboard/domains/package/services/release-clean-closed-gates/closed-gate-apply-runtime.js',
+        'cli/agent_onboard/domains/package/services/release-clean-closed-gates/closed-gate-reader-runtime.js',
+        'cli/agent_onboard/domains/package/services/release-clean-closed-gates/closed-gate-prune-plan-runtime.js',
+        'cli/agent_onboard/domains/package/services/release-clean-closed-gates/closed-gate-prune-dry-run-runtime.js',
+        'cli/agent_onboard/domains/package/services/release-clean-closed-gates/closed-gate-prune-apply-runtime.js',
         'cli/agent_onboard/domains/package/services/source-manifest-service.js',
         'cli/agent_onboard/domains/package/services/package-coordinate-service.js',
         'cli/agent_onboard/domains/package/services/installed-first-read-contract.js'

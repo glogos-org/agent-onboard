@@ -1533,6 +1533,17 @@
         "claimed_at": "2026-07-08T09:27:53.957Z"
       },
       "closure_ref": "closures:P1S3M6W29"
+    },
+    {
+      "id": "P1S3M6W30",
+      "milestone_id": "P1S3M6",
+      "title": "Public Test Suite Sharding Gate",
+      "status": "closed",
+      "claim": {
+        "actor": "codex-gpt-5",
+        "claimed_at": "2026-07-08T09:41:46.862Z"
+      },
+      "closure_ref": "closures:P1S3M6W30"
     }
   ]
 }

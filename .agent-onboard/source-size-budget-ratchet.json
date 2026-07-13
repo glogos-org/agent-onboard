@@ -306,13 +306,13 @@
     },
     "test/agent-onboard.test.js": {
       "category": "test_source",
-      "max_lines": 5712,
-      "max_bytes": 374551,
+      "max_lines": 83,
+      "max_bytes": 3477,
       "baseline_lines": 5687,
       "baseline_bytes": 366359,
-      "target_lines": 700,
-      "target_bytes": 98304,
-      "reason": "existing oversized file admitted as clean-and-compaction migration debt",
+      "target_lines": 120,
+      "target_bytes": 16384,
+      "reason": "full source test suite reduced to a bounded aggregator by P1S3M6W30; test bodies live in bounded shard modules",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W26",
@@ -329,6 +329,15 @@
           "new_max_lines": 5712,
           "previous_max_bytes": 374551,
           "new_max_bytes": 368926
+        },
+        {
+          "work_item_id": "P1S3M6W30",
+          "gate": "Public Test Suite Sharding Gate",
+          "previous_max_lines": 5712,
+          "previous_max_bytes": 374551,
+          "new_max_lines": 83,
+          "new_max_bytes": 3477,
+          "reason": "split full source monolith into support context, shard registry, and ten bounded full-source test shard modules"
         }
       ]
     },

@@ -16,6 +16,8 @@ const DEFAULT_FULL_SOURCE_TEST_SHARDS = 163;
 const DEFAULT_TASK_TIMEOUT_MS = 120000;
 const DEFAULT_FULL_SOURCE_TEST_TASK_TIMEOUT_MS = 180000;
 const FULL_SOURCE_TEST = path.join(ROOT, 'test', 'agent-onboard.test.js');
+const FULL_SOURCE_CONTEXT = path.join(ROOT, 'test', 'support', 'full-source-context.js');
+const FULL_SOURCE_SHARDS_DIR = path.join(ROOT, 'test', 'full-source');
 const APPEND_SMOKE_WORK_ITEM_ID = ['P8', 'S8', 'M8', 'W8'].join('');
 
 function nodeTask(name, args, validate, options = {}) {
@@ -223,6 +225,14 @@ async function runPool(tasks, concurrency) {
   return results;
 }
 
+function fullSourceShardSyntaxTasks() {
+  if (!fs.existsSync(FULL_SOURCE_SHARDS_DIR)) return [];
+  return fs.readdirSync(FULL_SOURCE_SHARDS_DIR)
+    .filter((entry) => /^shard-\d{2}\.js$/u.test(entry))
+    .sort()
+    .map((entry) => nodeTask(`syntax: full source shard ${entry}`, ['-c', path.join(FULL_SOURCE_SHARDS_DIR, entry)]));
+}
+
 function syntaxTasks() {
   return [
     nodeTask('syntax: cli/agent-onboard.js', ['-c', CLI]),
@@ -284,7 +294,10 @@ function syntaxTasks() {
     nodeTask('syntax: architecture catalog sharding check', ['-c', path.join(ROOT, 'scripts', 'check-architecture-catalog-sharding.js')]),
     nodeTask('syntax: work-items service split check', ['-c', path.join(ROOT, 'scripts', 'check-work-items-service-split.js')]),
     nodeTask('syntax: target governance service split check', ['-c', path.join(ROOT, 'scripts', 'check-target-governance-service-split.js')]),
-    nodeTask('syntax: full source test', ['-c', FULL_SOURCE_TEST]),
+    nodeTask('syntax: test suite sharding check', ['-c', path.join(ROOT, 'scripts', 'check-test-suite-sharding.js')]),
+    nodeTask('syntax: full source test context', ['-c', FULL_SOURCE_CONTEXT]),
+    ...fullSourceShardSyntaxTasks(),
+    nodeTask('syntax: full source test aggregator', ['-c', FULL_SOURCE_TEST]),
     nodeTask('syntax: parallel runner', ['-c', __filename])
   ];
 }
@@ -374,6 +387,7 @@ function quickTasks() {
     nodeTask('architecture catalog sharding check', [path.join(ROOT, 'scripts', 'check-architecture-catalog-sharding.js')], expectStatusOk),
     nodeTask('work-items service split check', [path.join(ROOT, 'scripts', 'check-work-items-service-split.js')], expectStatusOk),
     nodeTask('target governance service split check', [path.join(ROOT, 'scripts', 'check-target-governance-service-split.js')], expectStatusOk),
+    nodeTask('test suite sharding check', [path.join(ROOT, 'scripts', 'check-test-suite-sharding.js')], expectStatusOk),
     nodeTask('public artifact boundary check', [path.join(ROOT, 'scripts', 'check-public-artifact-boundary.js')], expectStatusOk),
     npmTask('npm pack dry run', ['pack', '--dry-run', '--json'], expectPackFiles)
   ];
