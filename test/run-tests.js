@@ -268,6 +268,10 @@ function syntaxTasks() {
     nodeTask('syntax: target runtime utilities', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'target', 'services', 'target-runtime-utilities.js')]),
     nodeTask('syntax: target work-items preview service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'target', 'services', 'target-work-items-service.js')]),
     nodeTask('syntax: target governance preview service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'target', 'services', 'target-governance-service.js')]),
+    nodeTask('syntax: target governance core service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'target', 'services', 'target-governance-core.js')]),
+    nodeTask('syntax: target governance split preview service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'target', 'services', 'target-governance-preview-service.js')]),
+    nodeTask('syntax: target governance index materialization service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'target', 'services', 'target-governance-index-materialization-service.js')]),
+    nodeTask('syntax: target governance budget service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'target', 'services', 'target-governance-budget-service.js')]),
     nodeTask('syntax: target handoff preview service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'target', 'services', 'target-handoff-service.js')]),
     nodeTask('syntax: work-items runtime domain index', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'work-items', 'index.js')]),
     nodeTask('syntax: work-items runtime service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'work-items', 'services', 'work-items-service.js')]),
@@ -279,6 +283,7 @@ function syntaxTasks() {
     nodeTask('syntax: release clean closed gates runtime slice extraction check', ['-c', path.join(ROOT, 'scripts', 'check-release-clean-closed-gates-runtime-slice-extraction.js')]),
     nodeTask('syntax: architecture catalog sharding check', ['-c', path.join(ROOT, 'scripts', 'check-architecture-catalog-sharding.js')]),
     nodeTask('syntax: work-items service split check', ['-c', path.join(ROOT, 'scripts', 'check-work-items-service-split.js')]),
+    nodeTask('syntax: target governance service split check', ['-c', path.join(ROOT, 'scripts', 'check-target-governance-service-split.js')]),
     nodeTask('syntax: full source test', ['-c', FULL_SOURCE_TEST]),
     nodeTask('syntax: parallel runner', ['-c', __filename])
   ];
@@ -368,6 +373,7 @@ function quickTasks() {
     nodeTask('release clean closed gates runtime slice extraction check', [path.join(ROOT, 'scripts', 'check-release-clean-closed-gates-runtime-slice-extraction.js')], expectStatusOk),
     nodeTask('architecture catalog sharding check', [path.join(ROOT, 'scripts', 'check-architecture-catalog-sharding.js')], expectStatusOk),
     nodeTask('work-items service split check', [path.join(ROOT, 'scripts', 'check-work-items-service-split.js')], expectStatusOk),
+    nodeTask('target governance service split check', [path.join(ROOT, 'scripts', 'check-target-governance-service-split.js')], expectStatusOk),
     nodeTask('public artifact boundary check', [path.join(ROOT, 'scripts', 'check-public-artifact-boundary.js')], expectStatusOk),
     npmTask('npm pack dry run', ['pack', '--dry-run', '--json'], expectPackFiles)
   ];

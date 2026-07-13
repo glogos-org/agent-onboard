@@ -207,13 +207,24 @@
     },
     "cli/agent_onboard/domains/target/services/target-governance-service.js": {
       "category": "runtime_service_source",
-      "max_lines": 1412,
-      "max_bytes": 74602,
+      "max_lines": 69,
+      "max_bytes": 3697,
       "baseline_lines": 1392,
       "baseline_bytes": 66410,
-      "target_lines": 500,
-      "target_bytes": 65536,
-      "reason": "existing oversized file admitted as clean-and-compaction migration debt"
+      "target_lines": 120,
+      "target_bytes": 12000,
+      "reason": "existing oversized file admitted as clean-and-compaction migration debt",
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M6W29",
+          "gate": "Public Target Governance Service Split Gate",
+          "previous_max_lines": 1412,
+          "previous_max_bytes": 74602,
+          "new_max_lines": 69,
+          "new_max_bytes": 3697,
+          "reason": "target governance use-case split reduced service to aggregation boundary"
+        }
+      ]
     },
     "cli/agent_onboard/domains/target/services/target-handoff-service.js": {
       "category": "runtime_service_source",
