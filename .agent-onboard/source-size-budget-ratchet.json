@@ -187,13 +187,13 @@
     },
     "cli/agent_onboard/domains/architecture/static-catalog.js": {
       "category": "runtime_catalog_source",
-      "max_lines": 2716,
-      "max_bytes": 170943,
-      "baseline_lines": 2696,
-      "baseline_bytes": 162751,
-      "target_lines": 400,
-      "target_bytes": 49152,
-      "reason": "existing oversized file admitted as clean-and-compaction migration debt"
+      "max_lines": 76,
+      "max_bytes": 3303,
+      "baseline_lines": 76,
+      "baseline_bytes": 3303,
+      "target_lines": 120,
+      "target_bytes": 16384,
+      "reason": "static architecture catalog reduced to shard loader by P1S3M6W27; payload moved to bounded catalog shards"
     },
     "cli/agent_onboard/domains/core/services/public-runtime-surface-service.js": {
       "category": "runtime_service_source",
@@ -302,6 +302,86 @@
           "new_max_bytes": 374551
         }
       ]
+    },
+    "cli/agent_onboard/domains/architecture/catalog-shards/public-architecture-map-catalog.js": {
+      "category": "runtime_source",
+      "max_lines": 267,
+      "max_bytes": 19647,
+      "baseline_lines": 267,
+      "baseline_bytes": 19647,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "bounded architecture catalog shard admitted by P1S3M6W27"
+    },
+    "cli/agent_onboard/domains/architecture/catalog-shards/public-architecture-boundary-catalog.js": {
+      "category": "runtime_source",
+      "max_lines": 347,
+      "max_bytes": 21323,
+      "baseline_lines": 347,
+      "baseline_bytes": 21323,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "bounded architecture catalog shard admitted by P1S3M6W27"
+    },
+    "cli/agent_onboard/domains/architecture/catalog-shards/public-source-kernel-catalog.js": {
+      "category": "runtime_source",
+      "max_lines": 462,
+      "max_bytes": 24299,
+      "baseline_lines": 462,
+      "baseline_bytes": 24299,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "bounded architecture catalog shard admitted by P1S3M6W27"
+    },
+    "cli/agent_onboard/domains/architecture/catalog-shards/public-source-authority-catalog.js": {
+      "category": "runtime_source",
+      "max_lines": 287,
+      "max_bytes": 14456,
+      "baseline_lines": 287,
+      "baseline_bytes": 14456,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "bounded architecture catalog shard admitted by P1S3M6W27"
+    },
+    "cli/agent_onboard/domains/architecture/catalog-shards/public-work-items-source-catalog.js": {
+      "category": "runtime_source",
+      "max_lines": 287,
+      "max_bytes": 13761,
+      "baseline_lines": 287,
+      "baseline_bytes": 13761,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "bounded architecture catalog shard admitted by P1S3M6W27"
+    },
+    "cli/agent_onboard/domains/architecture/catalog-shards/public-claims-source-catalog.js": {
+      "category": "runtime_source",
+      "max_lines": 348,
+      "max_bytes": 16228,
+      "baseline_lines": 348,
+      "baseline_bytes": 16228,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "bounded architecture catalog shard admitted by P1S3M6W27"
+    },
+    "cli/agent_onboard/domains/architecture/catalog-shards/public-release-contract-catalog.js": {
+      "category": "runtime_source",
+      "max_lines": 493,
+      "max_bytes": 32848,
+      "baseline_lines": 493,
+      "baseline_bytes": 32848,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "bounded architecture catalog shard admitted by P1S3M6W27"
+    },
+    "cli/agent_onboard/domains/architecture/catalog-shards/public-release-fixture-catalog.js": {
+      "category": "runtime_source",
+      "max_lines": 250,
+      "max_bytes": 20667,
+      "baseline_lines": 250,
+      "baseline_bytes": 20667,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "bounded architecture catalog shard admitted by P1S3M6W27"
     }
   },
   "report": {

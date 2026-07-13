@@ -5,10 +5,10 @@
   "release_line": "public_runtime_guard_service_decomposition_gate",
   "authority_state_source_layout": "sharded_seed",
   "state_root": ".agent-onboard/state",
-  "current_work_item": "P1S3M6W26",
-  "current_work_item_title": "Public Release Clean Closed Gates Runtime Slice Extraction Gate",
-  "last_closed_work_item": "P1S3M6W26",
-  "last_closed_title": "Public Release Clean Closed Gates Runtime Slice Extraction Gate",
+  "current_work_item": "P1S3M6W27",
+  "current_work_item_title": "Public Architecture Catalog Sharding Gate",
+  "last_closed_work_item": "P1S3M6W27",
+  "last_closed_title": "Public Architecture Catalog Sharding Gate",
   "default_first_read": true,
   "compact_authority_index_file": ".agent-onboard/authority-index.json",
   "state_command": "agent-onboard authority --state",
@@ -17,13 +17,6 @@
   "raw_growth_files_loaded_by_default": false,
   "file_contents_inlined": false,
   "latest_closed_work_items": [
-    {
-      "id": "P1S3M6W22",
-      "title": "Public runtime AGENTS bridge service decomposition gate",
-      "status": "closed",
-      "milestone_id": "P1S3M6",
-      "domain": null
-    },
     {
       "id": "P1S3M6W23",
       "title": "Public runtime guard service decomposition gate",
@@ -48,6 +41,13 @@
     {
       "id": "P1S3M6W26",
       "title": "Public Release Clean Closed Gates Runtime Slice Extraction Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M6",
+      "domain": null
+    },
+    {
+      "id": "P1S3M6W27",
+      "title": "Public Architecture Catalog Sharding Gate",
       "status": "closed",
       "milestone_id": "P1S3M6",
       "domain": null

@@ -247,6 +247,14 @@ function syntaxTasks() {
     nodeTask('syntax: architecture claims source domain service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'architecture', 'services', 'source-domains', 'claims-source-domain-service.js')]),
     nodeTask('syntax: architecture source domain closure service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'architecture', 'services', 'source-domains', 'source-domain-closure-service.js')]),
     nodeTask('syntax: architecture static catalog', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'architecture', 'static-catalog.js')]),
+    nodeTask('syntax: architecture catalog shard map', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'architecture', 'catalog-shards', 'public-architecture-map-catalog.js')]),
+    nodeTask('syntax: architecture catalog shard boundary', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'architecture', 'catalog-shards', 'public-architecture-boundary-catalog.js')]),
+    nodeTask('syntax: architecture catalog shard source kernel', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'architecture', 'catalog-shards', 'public-source-kernel-catalog.js')]),
+    nodeTask('syntax: architecture catalog shard source authority', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'architecture', 'catalog-shards', 'public-source-authority-catalog.js')]),
+    nodeTask('syntax: architecture catalog shard work-items source', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'architecture', 'catalog-shards', 'public-work-items-source-catalog.js')]),
+    nodeTask('syntax: architecture catalog shard claims source', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'architecture', 'catalog-shards', 'public-claims-source-catalog.js')]),
+    nodeTask('syntax: architecture catalog shard release contract', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'architecture', 'catalog-shards', 'public-release-contract-catalog.js')]),
+    nodeTask('syntax: architecture catalog shard release fixture', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'architecture', 'catalog-shards', 'public-release-fixture-catalog.js')]),
     nodeTask('syntax: core runtime domain index', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'core', 'index.js')]),
     nodeTask('syntax: core config guard service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'core', 'services', 'config-guard-service.js')]),
     nodeTask('syntax: package runtime domain index', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'package', 'index.js')]),
@@ -267,6 +275,7 @@ function syntaxTasks() {
     nodeTask('syntax: source size budget ratchet check', ['-c', path.join(ROOT, 'scripts', 'check-source-size-budget-ratchet.js')]),
     nodeTask('syntax: runtime command registry extraction check', ['-c', path.join(ROOT, 'scripts', 'check-runtime-command-registry-extraction.js')]),
     nodeTask('syntax: release clean closed gates runtime slice extraction check', ['-c', path.join(ROOT, 'scripts', 'check-release-clean-closed-gates-runtime-slice-extraction.js')]),
+    nodeTask('syntax: architecture catalog sharding check', ['-c', path.join(ROOT, 'scripts', 'check-architecture-catalog-sharding.js')]),
     nodeTask('syntax: full source test', ['-c', FULL_SOURCE_TEST]),
     nodeTask('syntax: parallel runner', ['-c', __filename])
   ];
@@ -354,6 +363,7 @@ function quickTasks() {
     nodeTask('source size budget ratchet check', [path.join(ROOT, 'scripts', 'check-source-size-budget-ratchet.js')], expectStatusOk),
     nodeTask('runtime command registry extraction check', [path.join(ROOT, 'scripts', 'check-runtime-command-registry-extraction.js')], expectStatusOk),
     nodeTask('release clean closed gates runtime slice extraction check', [path.join(ROOT, 'scripts', 'check-release-clean-closed-gates-runtime-slice-extraction.js')], expectStatusOk),
+    nodeTask('architecture catalog sharding check', [path.join(ROOT, 'scripts', 'check-architecture-catalog-sharding.js')], expectStatusOk),
     nodeTask('public artifact boundary check', [path.join(ROOT, 'scripts', 'check-public-artifact-boundary.js')], expectStatusOk),
     npmTask('npm pack dry run', ['pack', '--dry-run', '--json'], expectPackFiles)
   ];

@@ -1,0 +1,47 @@
+{
+  "schema": "agent-onboard-public-architecture-catalog-sharding-001",
+  "status": "closed",
+  "package_name": "agent-onboard",
+  "release_line": "public_architecture_catalog_sharding_gate",
+  "work_item_id": "P1S3M6W27",
+  "title": "Public Architecture Catalog Sharding Gate",
+  "purpose": "Reduce the public architecture static catalog from a source-code monolith into bounded shard modules while preserving runtime catalog output and npm package semantics.",
+  "static_catalog": {
+    "path": "cli/agent_onboard/domains/architecture/static-catalog.js",
+    "before_lines": 2696,
+    "after_lines": 76,
+    "role": "loader_and_aggregator_only"
+  },
+  "shard_directory": "cli/agent_onboard/domains/architecture/catalog-shards",
+  "shards": [
+    { "path": "cli/agent_onboard/domains/architecture/catalog-shards/public-architecture-map-catalog.js", "lines": 267 },
+    { "path": "cli/agent_onboard/domains/architecture/catalog-shards/public-architecture-boundary-catalog.js", "lines": 347 },
+    { "path": "cli/agent_onboard/domains/architecture/catalog-shards/public-source-kernel-catalog.js", "lines": 462 },
+    { "path": "cli/agent_onboard/domains/architecture/catalog-shards/public-source-authority-catalog.js", "lines": 287 },
+    { "path": "cli/agent_onboard/domains/architecture/catalog-shards/public-work-items-source-catalog.js", "lines": 287 },
+    { "path": "cli/agent_onboard/domains/architecture/catalog-shards/public-claims-source-catalog.js", "lines": 348 },
+    { "path": "cli/agent_onboard/domains/architecture/catalog-shards/public-release-contract-catalog.js", "lines": 493 },
+    { "path": "cli/agent_onboard/domains/architecture/catalog-shards/public-release-fixture-catalog.js", "lines": 250 }
+  ],
+  "checks": [
+    "node scripts/check-architecture-catalog-sharding.js",
+    "node scripts/check-source-size-budget-ratchet.js",
+    "node cli/agent-onboard.js architecture --check",
+    "node cli/agent-onboard.js release --source-manifest-check",
+    "node cli/agent-onboard.js release --check",
+    "node cli/agent-onboard.js check --fast --json",
+    "npm test",
+    "npm pack --dry-run --json"
+  ],
+  "boundary": {
+    "writes_files": true,
+    "changes_package_allowlist": true,
+    "package_allowlist_reason": "The installed package must include catalog shard modules required by static-catalog.js.",
+    "storage_backend_changed": false,
+    "sqlite_introduced": false,
+    "lmdb_introduced": false,
+    "mdbx_introduced": false,
+    "network": false,
+    "package_publish": false
+  }
+}

@@ -1,6 +1,6 @@
 {
   "name": "agent-onboard",
-  "version": "0.0.175",
+  "version": "0.0.176",
   "description": "CLI for onboarding and managing target repositories.",
   "license": "Apache-2.0",
   "author": "Thanh Le <vnlemanhthanh@gmail.com>",
@@ -99,7 +99,8 @@
     "check:runtime-agents-bridge-service-decomposition": "node scripts/check-runtime-agents-bridge-service-decomposition.js",
     "check:source-size-budget": "node scripts/check-source-size-budget-ratchet.js",
     "check:runtime-command-registry-extraction": "node scripts/check-runtime-command-registry-extraction.js",
-    "check:release-clean-closed-gates-runtime-slice": "node scripts/check-release-clean-closed-gates-runtime-slice-extraction.js"
+    "check:release-clean-closed-gates-runtime-slice": "node scripts/check-release-clean-closed-gates-runtime-slice-extraction.js",
+    "check:architecture-catalog-sharding": "node scripts/check-architecture-catalog-sharding.js"
   },
   "bin": {
     "agent-onboard": "cli/agent-onboard.js",
@@ -128,6 +129,14 @@
     "cli/agent_onboard/domains/architecture/services/source-domains/work-items-source-domain-service.js",
     "cli/agent_onboard/domains/architecture/services/source-extraction/architecture-source-extraction-service.js",
     "cli/agent_onboard/domains/architecture/static-catalog.js",
+    "cli/agent_onboard/domains/architecture/catalog-shards/public-architecture-map-catalog.js",
+    "cli/agent_onboard/domains/architecture/catalog-shards/public-architecture-boundary-catalog.js",
+    "cli/agent_onboard/domains/architecture/catalog-shards/public-source-kernel-catalog.js",
+    "cli/agent_onboard/domains/architecture/catalog-shards/public-source-authority-catalog.js",
+    "cli/agent_onboard/domains/architecture/catalog-shards/public-work-items-source-catalog.js",
+    "cli/agent_onboard/domains/architecture/catalog-shards/public-claims-source-catalog.js",
+    "cli/agent_onboard/domains/architecture/catalog-shards/public-release-contract-catalog.js",
+    "cli/agent_onboard/domains/architecture/catalog-shards/public-release-fixture-catalog.js",
     "cli/agent_onboard/domains/authority/services/public-runtime-agents-bridge-service.js",
     "cli/agent_onboard/domains/authority/services/public-runtime-guard-service.js",
     "cli/agent_onboard/domains/core/index.js",
