@@ -27,7 +27,8 @@ const CHECK_MODULES = Object.freeze({
   'closure-payload-reference-compaction': 'closure-payload-reference-compaction.js',
   'check-registry-compaction': 'check-registry-compaction.js',
   'god-file-budget-enforcement-closure': 'god-file-budget-enforcement-closure.js',
-  'runtime-composer-residual-slice-reduction': 'runtime-composer-residual-slice-reduction.js'
+  'runtime-composer-residual-slice-reduction': 'runtime-composer-residual-slice-reduction.js',
+  'target-command-runner-extraction': 'target-command-runner-extraction.js'
 });
 
 function normalizeCheckId(value) {

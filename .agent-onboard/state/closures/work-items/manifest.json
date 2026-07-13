@@ -6,10 +6,10 @@
   "authority_role": "compact_closure_archive_with_external_payload_shards",
   "compact_archive": {
     "path": ".agent-onboard/state/closures/work-items-closures.jsonl",
-    "record_count": 171,
-    "bytes": 78263,
-    "sha256": "cb3015fb981143012f48a3e9205a24b8dd2391bf12db33c766530aade1815095",
-    "file_id": "ni:///sha-256;yzAV-5gRQwEvSKPpIFokuN0jkb8S2zPHZlMKreGBUJU"
+    "record_count": 172,
+    "bytes": 78719,
+    "sha256": "661b46daea6f2b1052b6ddd2ed5c6dd592a9039742de57d332c3bf3eb9f47d32",
+    "file_id": "ni:///sha-256;ZhtG2upvKxBStt3S7Vxt1ZKpA5dC3lfTMsO_Prn0fTI"
   },
   "payload_root": ".agent-onboard/state/closures/work-items/payloads",
   "projection_policy": {
@@ -26,8 +26,8 @@
     "binary_storage_admitted_now": false
   },
   "counts": {
-    "compact_records": 171,
-    "payload_records": 171,
+    "compact_records": 172,
+    "payload_records": 172,
     "payload_shards": 11
   },
   "checker": "node scripts/check.js closure-payload-reference-compaction",
@@ -126,11 +126,11 @@
       "path": ".agent-onboard/state/closures/work-items/payloads/by-milestone/P1S3M7/part-001.jsonl",
       "milestone_id": "P1S3M7",
       "part": 1,
-      "record_count": 1,
-      "bytes": 2090,
-      "sha256": "d4e25fc5917967ea1401d4ee5b3104babbda645ac96080e59d2b0c23bab6facf",
-      "file_id": "ni:///sha-256;1OJfxZF5Z-oUAdTuWzEEurvaZFrJYIDlnSsMI7q2-s8"
+      "record_count": 2,
+      "bytes": 4833,
+      "sha256": "c8671b7e1aa24331e4f7033a660a3e9aec8edbb1225ce84777636f1a5d3e9f63",
+      "file_id": "ni:///sha-256;yGcbfhqiQzHk9wM6Zgo-muyO27EiXOhHd2NvGl0-n2M"
     }
   ],
-  "updated_at": "2026-07-08T16:45:00.000Z"
+  "updated_at": "2026-07-08T18:57:11.139Z"
 }

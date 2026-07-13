@@ -46,24 +46,25 @@
     "closure-payload-reference-compaction",
     "check-registry-compaction",
     "god-file-budget-enforcement-closure",
-    "runtime-composer-residual-slice-reduction"
+    "runtime-composer-residual-slice-reduction",
+    "target-command-runner-extraction"
   ],
   "remaining_god_files": [
     {
       "path": "cli/agent_onboard/runtime-composer.js",
       "category": "runtime_source",
-      "current_lines": 7008,
-      "current_bytes": 384741,
+      "current_lines": 6459,
+      "current_bytes": 353664,
       "admitted_reason": "runtime composer still carries command implementation debt after W1 residual slice reduction",
       "next_reduction_gate": "P1S3M7W7"
     },
     {
       "path": ".agent-onboard/work-items.json",
       "category": "authority_registry",
-      "current_lines": 1614,
-      "current_bytes_max": 46080,
+      "current_lines": 1625,
+      "current_bytes_max": 46389,
       "admitted_reason": "legacy root projection retained for older target repo tooling until root projection cutover; W1 added one bounded compatibility record",
-      "next_reduction_gate": "P1S3M7W2"
+      "next_reduction_gate": "P1S3M7W8"
     },
     {
       "path": "cli/agent_onboard/domains/architecture/services/runtime/architecture-runtime-service.js",

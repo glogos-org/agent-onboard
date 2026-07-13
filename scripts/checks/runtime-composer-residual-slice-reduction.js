@@ -43,12 +43,14 @@ function main() {
 
   if (artifact.schema !== 'agent-onboard-public-runtime-composer-residual-slice-reduction-001') failures.push('artifact schema mismatch');
   if (artifact.work_item_id !== 'P1S3M7W1') failures.push('artifact work_item_id must be P1S3M7W1');
-  if (artifact.version !== pkg.version) failures.push('artifact version must match package.json');
-  if (pkg.version !== '0.0.184') failures.push('package version must be 0.0.184');
+  if (artifact.version !== '0.0.184') failures.push('artifact version must record the W1 closure version 0.0.184');
   if (composerMetric.lines > MAX_COMPOSER_LINES) failures.push(`${COMPOSER_REL} line count ${composerMetric.lines} exceeds ${MAX_COMPOSER_LINES}`);
   if (composerMetric.bytes > MAX_COMPOSER_BYTES) failures.push(`${COMPOSER_REL} byte size ${composerMetric.bytes} exceeds ${MAX_COMPOSER_BYTES}`);
-  if (artifact.reduction.runtime_composer_after.lines !== composerMetric.lines) failures.push('artifact runtime_composer_after.lines is stale');
-  if (artifact.reduction.runtime_composer_after.bytes !== composerMetric.bytes) failures.push('artifact runtime_composer_after.bytes is stale');
+  if (artifact.reduction.runtime_composer_after.lines > composerMetric.lines) {
+    // Later clean-compaction gates may reduce the composer below the W1 closure point; W1 remains a historical closure artifact.
+  }
+  if (composerMetric.lines > artifact.reduction.runtime_composer_after.lines) failures.push('runtime composer grew beyond W1 artifact line budget');
+  if (composerMetric.bytes > artifact.reduction.runtime_composer_after.bytes) failures.push('runtime composer grew beyond W1 artifact byte budget');
 
   for (const name of REMOVED_DEAD_DUPLICATE_NAMES) {
     const count = regexCount(composer, new RegExp(`function\\s+${name}\\s*\\(`, 'g'));

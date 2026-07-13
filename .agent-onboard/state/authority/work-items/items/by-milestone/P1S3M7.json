@@ -3,7 +3,7 @@
   "package_name": "agent-onboard",
   "source": "sharded_work_items_authority",
   "milestone_id": "P1S3M7",
-  "item_count": 1,
+  "item_count": 2,
   "items": [
     {
       "id": "P1S3M7W1",
@@ -16,6 +16,17 @@
         "note": "Reduce residual runtime composer slices without changing storage backend."
       },
       "closure_ref": "closures:P1S3M7W1"
+    },
+    {
+      "id": "P1S3M7W2",
+      "milestone_id": "P1S3M7",
+      "title": "Public Target Command Runner Extraction Gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-08T18:57:10.972Z"
+      },
+      "closure_ref": "closures:P1S3M7W2"
     }
   ]
 }

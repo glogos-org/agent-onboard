@@ -398,6 +398,8 @@ const PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES = Object.freeze([
   'cli/agent_onboard/domains/package/services/source-manifest-service.js',
   'cli/agent_onboard/domains/service-partitions.js',
   'cli/agent_onboard/domains/target/services/target-constants.js',
+  'cli/agent_onboard/domains/target/services/target-command-text-service.js',
+  'cli/agent_onboard/domains/target/services/target-command-runner-service.js',
   'cli/agent_onboard/domains/target/services/target-doctor-service.js',
   'cli/agent_onboard/domains/target/services/target-governance-service.js',
   'cli/agent_onboard/domains/target/services/target-governance-core.js',

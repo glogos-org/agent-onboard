@@ -12,14 +12,14 @@
     ".agent-onboard/state/closures/work-items-closures.jsonl",
     ".agent-onboard/state/closures/work-items/manifest.json"
   ],
-  "item_count": 172,
+  "item_count": 173,
   "open_count": 0,
   "claimed_count": 0,
-  "closed_count": 172,
-  "latest_closed_work_item_id": "P1S3M7W1",
-  "archived_closure_count": 171,
+  "closed_count": 173,
+  "latest_closed_work_item_id": "P1S3M7W2",
+  "archived_closure_count": 172,
   "inline_closure_count": 0,
-  "closure_ref_count": 171,
+  "closure_ref_count": 172,
   "closure_payload_shard_count": 11,
   "by_status": {
     "open": [],
@@ -196,7 +196,8 @@
       "P1S3M6W32",
       "P1S3M6W33",
       "P1S3M6W34",
-      "P1S3M7W1"
+      "P1S3M7W1",
+      "P1S3M7W2"
     ]
   },
   "by_milestone": {
@@ -390,45 +391,41 @@
       "P1S3M6W34"
     ],
     "P1S3M7": [
-      "P1S3M7W1"
+      "P1S3M7W1",
+      "P1S3M7W2"
     ]
   },
-  "updated_at": "2026-07-08T16:45:00.000Z",
+  "updated_at": "2026-07-08T18:57:11.139Z",
   "latest_closed_work_items": [
-    {
-      "id": "P1S3M6W31",
-      "title": "Public State Projection Authority Cutover Gate",
-      "status": "closed",
-      "milestone_id": "P1S3M6",
-      "domain": null
-    },
     {
       "id": "P1S3M6W32",
       "title": "Public Closure Payload Reference Compaction Gate",
       "status": "closed",
-      "milestone_id": "P1S3M6",
-      "domain": null
+      "milestone_id": "P1S3M6"
     },
     {
       "id": "P1S3M6W33",
       "title": "Public Check Registry Compaction Gate",
       "status": "closed",
-      "milestone_id": "P1S3M6",
-      "domain": null
+      "milestone_id": "P1S3M6"
     },
     {
       "id": "P1S3M6W34",
       "title": "Public God File Budget Enforcement Closure Gate",
       "status": "closed",
-      "milestone_id": "P1S3M6",
-      "domain": null
+      "milestone_id": "P1S3M6"
     },
     {
       "id": "P1S3M7W1",
       "title": "Public Runtime Composer Residual Slice Reduction Gate",
       "status": "closed",
-      "milestone_id": "P1S3M7",
-      "domain": null
+      "milestone_id": "P1S3M7"
+    },
+    {
+      "id": "P1S3M7W2",
+      "title": "Public Target Command Runner Extraction Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M7"
     }
   ]
 }

@@ -9,14 +9,14 @@
   "counts": {
     "open": 0,
     "claimed": 0,
-    "closed": 172,
+    "closed": 173,
     "programs": 1,
     "stages": 3,
     "milestones": 10,
-    "work_items": 172
+    "work_items": 173
   },
-  "latest_work_item_id": "P1S3M7W1",
-  "latest_closed_work_item_id": "P1S3M7W1",
+  "latest_work_item_id": "P1S3M7W2",
+  "latest_closed_work_item_id": "P1S3M7W2",
   "by_status": {
     "open": [],
     "claimed": [],
@@ -192,7 +192,8 @@
       "P1S3M6W32",
       "P1S3M6W33",
       "P1S3M6W34",
-      "P1S3M7W1"
+      "P1S3M7W1",
+      "P1S3M7W2"
     ]
   },
   "by_milestone": {
@@ -386,7 +387,8 @@
       "P1S3M6W34"
     ],
     "P1S3M7": [
-      "P1S3M7W1"
+      "P1S3M7W1",
+      "P1S3M7W2"
     ]
   },
   "item_shards": [
@@ -464,11 +466,11 @@
     },
     {
       "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M7.json",
-      "bytes": 624,
-      "sha256": "ca8c47f3caf026589216f27c02293f0d0dd930b6ee15c79496d2c70a396e925f",
-      "file_id": "ni:///sha-256;yoxH88rwJliSFvJ8Aik_DQ3ZMLbuFceUltLHCjlukl8",
+      "bytes": 935,
+      "sha256": "2479cd9f07987b3104403c94d89292b61e1094d113bb1f6436a18d340075ce39",
+      "file_id": "ni:///sha-256;JHnNnweYezEEQDyU2JKSth4QlNETux9kNqGNNAB1zjk",
       "milestone_id": "P1S3M7",
-      "item_count": 1
+      "item_count": 2
     }
   ],
   "updated_at": "2026-07-08T16:45:00.000Z"

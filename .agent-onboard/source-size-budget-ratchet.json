@@ -1,8 +1,8 @@
 {
   "schema": "agent-onboard-public-source-size-budget-ratchet-001",
   "status": "active",
-  "work_item_id": "P1S3M7W1",
-  "release_line": "public_runtime_composer_residual_slice_reduction_gate",
+  "work_item_id": "P1S3M7W2",
+  "release_line": "public_target_command_runner_extraction_gate",
   "ratchet_mode": "no_tracked_growth_beyond_maximum_and_no_new_oversized_files",
   "god_file_thresholds": {
     "god_lines": 1000,
@@ -87,8 +87,8 @@
   "tracked_files": {
     ".agent-onboard/state/closures/work-items-closures.jsonl": {
       "category": "authority_state",
-      "max_lines": 171,
-      "max_bytes": 78263,
+      "max_lines": 172,
+      "max_bytes": 78719,
       "baseline_lines": 168,
       "baseline_bytes": 76889,
       "target_lines": 200,
@@ -117,6 +117,15 @@
           "new_max_lines": 171,
           "previous_max_bytes": 77807,
           "new_max_bytes": 78263
+        },
+        {
+          "work_item_id": "P1S3M7W2",
+          "gate": "Public Target Command Runner Extraction Gate",
+          "reason": "W2 adds one compact closure/reference row for the target command runner extraction gate; payload remains sharded.",
+          "previous_max_lines": 171,
+          "new_max_lines": 172,
+          "previous_max_bytes": 78263,
+          "new_max_bytes": 78719
         }
       ]
     },
@@ -132,8 +141,8 @@
     },
     ".agent-onboard/work-items.json": {
       "category": "authority_registry",
-      "max_lines": 1614,
-      "max_bytes": 46080,
+      "max_lines": 1625,
+      "max_bytes": 46389,
       "baseline_lines": 1573,
       "baseline_bytes": 44798,
       "target_lines": 500,
@@ -169,6 +178,15 @@
           "new_max_lines": 1614,
           "previous_max_bytes": 45514,
           "new_max_bytes": 46080
+        },
+        {
+          "work_item_id": "P1S3M7W2",
+          "gate": "Public Target Command Runner Extraction Gate",
+          "reason": "Legacy root compatibility projection grows by one closed gate row for W2; sharded authority remains canonical until root projection cutover.",
+          "previous_max_lines": 1614,
+          "new_max_lines": 1625,
+          "previous_max_bytes": 46080,
+          "new_max_bytes": 46389
         }
       ]
     },
@@ -325,8 +343,8 @@
     },
     "cli/agent_onboard/runtime-composer.js": {
       "category": "runtime_source",
-      "max_lines": 7008,
-      "max_bytes": 384741,
+      "max_lines": 6459,
+      "max_bytes": 353664,
       "baseline_lines": 11753,
       "baseline_bytes": 676851,
       "target_lines": 500,
@@ -357,6 +375,15 @@
           "new_max_lines": 7008,
           "previous_max_bytes": 440574,
           "new_max_bytes": 384741
+        },
+        {
+          "work_item_id": "P1S3M7W2",
+          "gate": "Public Target Command Runner Extraction Gate",
+          "reason": "W2 moved target command runners and target command text formatting into bounded target domain services while preserving CLI behavior.",
+          "previous_max_lines": 7008,
+          "new_max_lines": 6459,
+          "previous_max_bytes": 384741,
+          "new_max_bytes": 353664
         }
       ]
     },
@@ -548,8 +575,8 @@
     },
     "scripts/checks/registry.js": {
       "category": "check_script",
-      "max_lines": 53,
-      "max_bytes": 2497,
+      "max_lines": 54,
+      "max_bytes": 2574,
       "baseline_lines": 51,
       "baseline_bytes": 2319,
       "target_lines": 120,
@@ -571,6 +598,15 @@
           "new_max_lines": 53,
           "previous_max_bytes": 2402,
           "new_max_bytes": 2497
+        },
+        {
+          "work_item_id": "P1S3M7W2",
+          "gate": "Public Target Command Runner Extraction Gate",
+          "reason": "Check registry admits W2 target command runner extraction check.",
+          "previous_max_lines": 53,
+          "new_max_lines": 54,
+          "previous_max_bytes": 2497,
+          "new_max_bytes": 2574
         }
       ]
     },
@@ -586,8 +622,8 @@
     },
     ".agent-onboard/god-file-budget-enforcement-closure.json": {
       "category": "authority_registry",
-      "max_lines": 106,
-      "max_bytes": 3959,
+      "max_lines": 107,
+      "max_bytes": 3999,
       "baseline_lines": 105,
       "baseline_bytes": 3859,
       "target_lines": 220,
@@ -602,6 +638,67 @@
           "new_max_lines": 106,
           "previous_max_bytes": 3859,
           "new_max_bytes": 3959
+        },
+        {
+          "work_item_id": "P1S3M7W2",
+          "gate": "Public Target Command Runner Extraction Gate",
+          "reason": "W2 updates the god-file budget closure artifact to admit the reduced composer maximum, the current root compatibility projection, and the W2 check id.",
+          "previous_max_lines": 106,
+          "new_max_lines": 107,
+          "previous_max_bytes": 3959,
+          "new_max_bytes": 3999
+        }
+      ]
+    },
+    "scripts/checks/target-command-runner-extraction.js": {
+      "category": "check_script",
+      "max_lines": 115,
+      "max_bytes": 6234,
+      "baseline_lines": 115,
+      "baseline_bytes": 6234,
+      "target_lines": 250,
+      "target_bytes": 32768,
+      "reason": "Bounded W2 check script validates target command runner extraction and CLI smokes.",
+      "ratchet_history": []
+    },
+    "cli/agent_onboard/domains/target/services/target-command-runner-service.js": {
+      "category": "runtime_service_source",
+      "max_lines": 590,
+      "max_bytes": 32606,
+      "baseline_lines": 590,
+      "baseline_bytes": 32606,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "New bounded target domain service owns target command runners extracted from runtime composer.",
+      "ratchet_history": []
+    },
+    "cli/agent_onboard/domains/target/services/target-command-text-service.js": {
+      "category": "runtime_service_source",
+      "max_lines": 74,
+      "max_bytes": 2698,
+      "baseline_lines": 74,
+      "baseline_bytes": 2698,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "New bounded target domain service owns target command text formatters extracted from runtime composer.",
+      "ratchet_history": []
+    },
+    ".agent-onboard/source-size-budget-ratchet.json": {
+      "category": "authority_registry",
+      "max_lines": 724,
+      "max_bytes": 27369,
+      "baseline_lines": 705,
+      "baseline_bytes": 26644,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "Source size budget ratchet is tracked to avoid self-growth becoming an untracked registry sprawl failure.",
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W2",
+          "gate": "Public Target Command Runner Extraction Gate",
+          "reason": "W2 made the source-size budget self-describing and tracked its own ratchet artifact growth.",
+          "max_lines": 705,
+          "max_bytes": 26644
         }
       ]
     }

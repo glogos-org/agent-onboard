@@ -1,0 +1,112 @@
+{
+  "schema": "agent-onboard-public-target-command-runner-extraction-001",
+  "package_name": "agent-onboard",
+  "version": "0.0.185",
+  "work_item_id": "P1S3M7W2",
+  "milestone_id": "P1S3M7",
+  "status": "closed",
+  "gate": "Public Target Command Runner Extraction Gate",
+  "purpose": "Reduce the runtime composer residual command-slice debt by moving target command routing and text formatting behind bounded target domain service boundaries.",
+  "reduction": {
+    "runtime_composer_before": {
+      "path": "cli/agent_onboard/runtime-composer.js",
+      "lines": 7008,
+      "bytes": 384741
+    },
+    "runtime_composer_after": {
+      "path": "cli/agent_onboard/runtime-composer.js",
+      "lines": 6459,
+      "bytes": 353664
+    },
+    "runtime_composer_line_delta": -549,
+    "runtime_composer_byte_delta": -31077,
+    "extracted_runtime_slices": [
+      {
+        "path": "cli/agent_onboard/domains/target/services/target-command-runner-service.js",
+        "lines": 590,
+        "bytes": 32606
+      },
+      {
+        "path": "cli/agent_onboard/domains/target/services/target-command-text-service.js",
+        "lines": 74,
+        "bytes": 2698
+      }
+    ],
+    "moved_command_runners": [
+      "runTargetConfig",
+      "runInit",
+      "runTargetOnboarding",
+      "runTargetDoctor",
+      "runTargetProfile",
+      "runTargetRepair",
+      "runTargetMetadata",
+      "runTargetManifest",
+      "runTargetBootstrap",
+      "runTargetInstance",
+      "runTargetInventory",
+      "runTargetWorkItems",
+      "runTargetGovernance",
+      "runTargetHandoff",
+      "runTargetMemory",
+      "runTargetRuntime",
+      "runTargetCommand"
+    ],
+    "moved_text_formatters": [
+      "formatTargetDoctorText",
+      "formatTargetProfileText",
+      "emitText"
+    ]
+  },
+  "packaging": {
+    "target_command_runner_service_in_package_files": true,
+    "target_command_text_service_in_package_files": true,
+    "target_command_runner_service_in_runtime_contract_pack_files": true,
+    "target_command_text_service_in_runtime_contract_pack_files": true,
+    "new_check_id": "target-command-runner-extraction"
+  },
+  "remaining_debt": {
+    "runtime_composer_still_admitted_god_file": true,
+    "next_runtime_composer_reduction_gate": "P1S3M7W7",
+    "target_long_term_lines": 500,
+    "target_long_term_bytes": 65536
+  },
+  "boundary": {
+    "public_cli_behavior_changed_intentionally": false,
+    "storage_backend_changed": false,
+    "sqlite_introduced": false,
+    "lmdb_introduced": false,
+    "mdbx_introduced": false,
+    "network": false,
+    "publishes_package": false,
+    "git_mutation": false
+  },
+  "required_check_ids": [
+    "target-command-runner-extraction",
+    "runtime-composer-residual-slice-reduction",
+    "source-size-budget",
+    "god-file-budget-enforcement-closure",
+    "runtime-command-registry-extraction"
+  ],
+  "checks_run": [
+    "node scripts/check.js target-command-runner-extraction",
+    "node scripts/check.js runtime-composer-residual-slice-reduction",
+    "node scripts/check.js source-size-budget",
+    "node scripts/check.js god-file-budget-enforcement-closure",
+    "node scripts/check.js runtime-command-registry-extraction",
+    "node scripts/check.js check-registry-compaction",
+    "node scripts/check.js state-projection-authority-cutover",
+    "node scripts/check.js closure-payload-reference-compaction",
+    "node scripts/check.js public-artifact-boundary",
+    "node cli/agent-onboard.js authority --index-check",
+    "node cli/agent-onboard.js authority --state-check",
+    "node cli/agent-onboard.js release --clean-check",
+    "node cli/agent-onboard.js release --clean-catalog-check",
+    "node cli/agent-onboard.js release --source-manifest-check",
+    "node cli/agent-onboard.js release --check",
+    "node cli/agent-onboard.js check --fast --json",
+    "node cli/agent-onboard.js check --fast --text",
+    "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+    "npm pack --dry-run --json"
+  ],
+  "known_non_pass": []
+}

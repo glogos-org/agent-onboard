@@ -145,8 +145,8 @@
       "file_path": "package.json",
       "present": true,
       "kind": "file",
-      "bytes": 11220,
-      "file_id": "ni:///sha-256;LuHwrpcD9qskA_FeC12l1s_9pTCSEiUO748jB6wEhdA",
+      "bytes": 11486,
+      "file_id": "ni:///sha-256;3GGmjeJgiW-V7BjjqARnYa3ruiiQ5DJA-NrrwRH_Msk",
       "content_inlined": false
     },
     {
@@ -177,8 +177,8 @@
       "file_path": ".agent-onboard/work-items.json",
       "present": true,
       "kind": "file",
-      "bytes": 46078,
-      "file_id": "ni:///sha-256;nCykg6LbDLbnHhIJ8MhwdrE9_OXH4mCYWUBtR_VwBWI",
+      "bytes": 46389,
+      "file_id": "ni:///sha-256;Y2OBC2CFqMaa_rPwfzahjzKALhHRwIEabT80G-td614",
       "content_inlined": false
     }
   ],
@@ -216,7 +216,7 @@
     "indexed_file_count": 9,
     "present_file_count": 9,
     "missing_file_count": 0,
-    "present_bytes": 135931,
+    "present_bytes": 136508,
     "missing_files": [],
     "excluded_file_count": 7,
     "state_shard_count": 4,

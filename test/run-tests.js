@@ -398,6 +398,7 @@ function quickTasks() {
     checkRegistryTask('check registry compaction check', 'check-registry-compaction'),
     checkRegistryTask('god file budget enforcement closure check', 'god-file-budget-enforcement-closure'),
     checkRegistryTask('runtime composer residual slice reduction check', 'runtime-composer-residual-slice-reduction'),
+    checkRegistryTask('target command runner extraction check', 'target-command-runner-extraction'),
     npmTask('npm pack dry run', ['pack', '--dry-run', '--json'], expectPackFiles)
   ];
 }
