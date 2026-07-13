@@ -395,6 +395,7 @@ function quickTasks() {
     checkRegistryTask('closure payload reference compaction check', 'closure-payload-reference-compaction'),
     checkRegistryTask('public artifact boundary check', 'public-artifact-boundary'),
     checkRegistryTask('check registry compaction check', 'check-registry-compaction'),
+    checkRegistryTask('god file budget enforcement closure check', 'god-file-budget-enforcement-closure'),
     npmTask('npm pack dry run', ['pack', '--dry-run', '--json'], expectPackFiles)
   ];
 }

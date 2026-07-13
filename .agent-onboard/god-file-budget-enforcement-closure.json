@@ -1,0 +1,105 @@
+{
+  "schema": "agent-onboard-public-god-file-budget-enforcement-closure-001",
+  "package_name": "agent-onboard",
+  "work_item_id": "P1S3M6W34",
+  "status": "active",
+  "gate": "Public God File Budget Enforcement Closure Gate",
+  "purpose": "Close the clean/compaction run with hard god-file budget enforcement rather than another advisory-only inventory.",
+  "policy": {
+    "new_god_files_fail": true,
+    "remaining_god_files_are_admitted_migration_debt": true,
+    "remaining_god_files_may_not_grow": true,
+    "source_size_ratchet_required": true,
+    "check_registry_required": true,
+    "storage_backend": "json_and_jsonl_text_first",
+    "sqlite_current_source_of_truth": false,
+    "lightning_memory_mapped_database_current_source_of_truth": false,
+    "mdbx_current_source_of_truth": false
+  },
+  "maximums": {
+    "god_files": 6,
+    "near_god_files": 32,
+    "top_level_check_scripts": 0
+  },
+  "required_closed_work_items": [
+    "P1S3M6W24",
+    "P1S3M6W25",
+    "P1S3M6W26",
+    "P1S3M6W27",
+    "P1S3M6W28",
+    "P1S3M6W29",
+    "P1S3M6W30",
+    "P1S3M6W31",
+    "P1S3M6W32",
+    "P1S3M6W33",
+    "P1S3M6W34"
+  ],
+  "required_check_ids": [
+    "source-size-budget",
+    "runtime-command-registry-extraction",
+    "release-clean-closed-gates-runtime-slice",
+    "architecture-catalog-sharding",
+    "work-items-service-split",
+    "target-governance-service-split",
+    "test-suite-sharding",
+    "state-projection-authority-cutover",
+    "closure-payload-reference-compaction",
+    "check-registry-compaction",
+    "god-file-budget-enforcement-closure"
+  ],
+  "remaining_god_files": [
+    {
+      "path": "cli/agent_onboard/runtime-composer.js",
+      "category": "runtime_source",
+      "current_lines": 7906,
+      "current_bytes": 440574,
+      "admitted_reason": "compatibility composer still carries command implementation slices not yet extracted",
+      "next_reduction_gate": "P1S3M7W1"
+    },
+    {
+      "path": ".agent-onboard/work-items.json",
+      "category": "authority_registry",
+      "current_lines": 1596,
+      "current_bytes_max": 45514,
+      "admitted_reason": "legacy root projection retained for older target repo tooling until root projection cutover",
+      "next_reduction_gate": "P1S3M7W2"
+    },
+    {
+      "path": "cli/agent_onboard/domains/architecture/services/runtime/architecture-runtime-service.js",
+      "category": "runtime_service_source",
+      "current_lines": 1544,
+      "current_bytes": 85962,
+      "admitted_reason": "architecture runtime still aggregates authority-state, namespace, and extraction checks",
+      "next_reduction_gate": "P1S3M7W3"
+    },
+    {
+      "path": "README.md",
+      "category": "documentation",
+      "current_lines": 1313,
+      "current_bytes": 86665,
+      "admitted_reason": "first-read surface still contains command catalog prose that should move into focused docs",
+      "next_reduction_gate": "P1S3M7W4"
+    },
+    {
+      "path": "cli/agent_onboard/domains/core/services/public-runtime-surface-service.js",
+      "category": "runtime_service_source",
+      "current_lines": 1189,
+      "current_bytes": 45970,
+      "admitted_reason": "public runtime surface still aggregates multiple command-surface proofs",
+      "next_reduction_gate": "P1S3M7W5"
+    },
+    {
+      "path": "cli/agent_onboard/domains/architecture/services/source-extraction/architecture-source-extraction-service.js",
+      "category": "runtime_service_source",
+      "current_lines": 1087,
+      "current_bytes": 68279,
+      "admitted_reason": "source extraction orchestration still combines scan, validation, and installed fallback logic",
+      "next_reduction_gate": "P1S3M7W6"
+    }
+  ],
+  "closure_result": {
+    "p1s3m6_clean_compaction_closed_for_growth_control": true,
+    "all_known_god_files_have_named_owner_gate": true,
+    "database_backend_migration_deferred": true
+  }
+}

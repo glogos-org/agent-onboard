@@ -25,7 +25,8 @@ const CHECK_MODULES = Object.freeze({
   'test-suite-sharding': 'test-suite-sharding.js',
   'state-projection-authority-cutover': 'state-projection-authority-cutover.js',
   'closure-payload-reference-compaction': 'closure-payload-reference-compaction.js',
-  'check-registry-compaction': 'check-registry-compaction.js'
+  'check-registry-compaction': 'check-registry-compaction.js',
+  'god-file-budget-enforcement-closure': 'god-file-budget-enforcement-closure.js'
 });
 
 function normalizeCheckId(value) {

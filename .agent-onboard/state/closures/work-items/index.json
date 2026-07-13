@@ -5,7 +5,7 @@
   "status": "active",
   "manifest": ".agent-onboard/state/closures/work-items/manifest.json",
   "compact_archive": ".agent-onboard/state/closures/work-items-closures.jsonl",
-  "compact_archive_file_id": "ni:///sha-256;xIhfA3QsSVg6lxSnYextF9EEzuOun_3mK3VFMMITFxE",
+  "compact_archive_file_id": "ni:///sha-256;4rjJGA34VzUgjKV1PIbVqZxwlo3aLdk9uFRyA9Cds3k",
   "payload_shards": [
     {
       "path": ".agent-onboard/state/closures/work-items/payloads/by-milestone/P1S1M1/part-001.jsonl",
@@ -92,16 +92,16 @@
       "path": ".agent-onboard/state/closures/work-items/payloads/by-milestone/P1S3M6/part-001.jsonl",
       "milestone_id": "P1S3M6",
       "part": 1,
-      "record_count": 33,
-      "bytes": 63908,
-      "sha256": "c4efadffc1876d344b1cf8532da15ceaa2d26bacc8acd0ef5a8981ca20780d5b",
-      "file_id": "ni:///sha-256;xO-t_8GHbTRLHPhTLaFc6qLSa6zIrNDvWomByiB4DVs"
+      "record_count": 34,
+      "bytes": 65926,
+      "sha256": "3ef68d9a271f7a14be190ba89bcd44dd236c8ec1dc2da59954bb0a9a0016a4f5",
+      "file_id": "ni:///sha-256;PvaNmicfehS-GQuom81E3SNsjsHcLaWZVLsKmgAWpPU"
     }
   ],
   "counts": {
-    "closures": 169,
-    "payload_records": 169,
+    "closures": 170,
+    "payload_records": 170,
     "payload_shards": 10
   },
-  "updated_at": "2026-07-08T12:45:00.000Z"
+  "updated_at": "2026-07-08T13:35:00.000Z"
 }

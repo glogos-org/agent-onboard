@@ -12,14 +12,14 @@
     ".agent-onboard/state/closures/work-items-closures.jsonl",
     ".agent-onboard/state/closures/work-items/manifest.json"
   ],
-  "item_count": 170,
+  "item_count": 171,
   "open_count": 0,
   "claimed_count": 0,
-  "closed_count": 170,
-  "latest_closed_work_item_id": "P1S3M6W33",
-  "archived_closure_count": 169,
+  "closed_count": 171,
+  "latest_closed_work_item_id": "P1S3M6W34",
+  "archived_closure_count": 170,
   "inline_closure_count": 0,
-  "closure_ref_count": 169,
+  "closure_ref_count": 170,
   "closure_payload_shard_count": 10,
   "by_status": {
     "open": [],
@@ -194,7 +194,8 @@
       "P1S3M6W30",
       "P1S3M6W31",
       "P1S3M6W32",
-      "P1S3M6W33"
+      "P1S3M6W33",
+      "P1S3M6W34"
     ]
   },
   "by_milestone": {
@@ -387,5 +388,42 @@
       "P1S3M6W33"
     ]
   },
-  "updated_at": "2026-07-08T12:35:00.000Z"
+  "updated_at": "2026-07-08T12:35:00.000Z",
+  "latest_closed_work_items": [
+    {
+      "id": "P1S3M6W30",
+      "title": "Public Test Suite Sharding Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M6",
+      "domain": null
+    },
+    {
+      "id": "P1S3M6W31",
+      "title": "Public State Projection Authority Cutover Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M6",
+      "domain": null
+    },
+    {
+      "id": "P1S3M6W32",
+      "title": "Public Closure Payload Reference Compaction Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M6",
+      "domain": null
+    },
+    {
+      "id": "P1S3M6W33",
+      "title": "Public Check Registry Compaction Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M6",
+      "domain": null
+    },
+    {
+      "id": "P1S3M6W34",
+      "title": "Public God File Budget Enforcement Closure Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M6",
+      "domain": null
+    }
+  ]
 }
