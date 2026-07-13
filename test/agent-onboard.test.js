@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_closed_gate_raw_artifact_prune_apply_admission_gate';
+const EXPECTED_RELEASE_LINE = 'public_work_item_ledger_compaction_migration_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -105,6 +105,16 @@ function readJsonOutput(result) {
 function readJsonFailure(result) {
   assert.notStrictEqual(result.status, 0, result.stderr || result.stdout || (result.error && result.error.message));
   return JSON.parse(result.stdout);
+}
+
+function readJsonlFile(file) {
+  if (!fs.existsSync(file)) return [];
+  return fs.readFileSync(file, 'utf8').split(/\r?\n/).filter(Boolean).map((line) => JSON.parse(line));
+}
+
+function readClosureArchiveByRef(root) {
+  const archivePath = path.join(root, '.agent-onboard', 'state', 'closures', 'work-items-closures.jsonl');
+  return new Map(readJsonlFile(archivePath).map((record) => [record.closure_id, record]));
 }
 
 function runNpmPackDryRun() {
@@ -3556,12 +3566,18 @@ fullSourceTest('full source block line 1467', () => {
   assert.strictEqual(closeWorkIndex.closed_count, 1);
   const persisted = JSON.parse(fs.readFileSync(path.join(dir, '.agent-onboard', 'work-items.json'), 'utf8'));
   assert.strictEqual(persisted.work_items[0].status, 'closed');
-  assert.strictEqual(persisted.work_items[0].closure.summary, 'Completed the close target');
+  assert.strictEqual(persisted.work_items[0].closure_ref, `closures:${id}`);
+  assert.ok(!Object.prototype.hasOwnProperty.call(persisted.work_items[0], 'closure'));
+  const closureArchive = readClosureArchiveByRef(dir);
+  assert.strictEqual(closureArchive.get(`closures:${id}`).summary, 'Completed the close target');
 });
 
 fullSourceTest('full source block line 1508', () => {
 
   const rootLedger = JSON.parse(fs.readFileSync(path.join(ROOT, '.agent-onboard', 'work-items.json'), 'utf8'));
+
+  const closureArchiveByRef = readClosureArchiveByRef(ROOT);
+  const closureOf = (item) => item.closure || closureArchiveByRef.get(item.closure_ref) || null;
 
   const errors = require('../cli/agent-onboard.js').validateWorkItems(rootLedger);
 
@@ -3636,15 +3652,15 @@ fullSourceTest('full source block line 1508', () => {
 
   assert.strictEqual(w2.status, 'closed');
 
-  assert.strictEqual(w2.closure.actor, 'release-maintainer');
+  assert.strictEqual(closureOf(w2).actor, 'release-maintainer');
 
   assert.ok(w3);
 
   assert.strictEqual(w3.status, 'closed');
 
-  assert.strictEqual(w3.closure.actor, 'release-maintainer');
+  assert.strictEqual(closureOf(w3).actor, 'release-maintainer');
 
-  assert.match(w3.closure.summary, /agent-onboard@0\.0\.15/);
+  assert.match(closureOf(w3).summary, /agent-onboard@0\.0\.15/);
 
   assert.ok(w4);
 
@@ -3652,9 +3668,9 @@ fullSourceTest('full source block line 1508', () => {
 
   assert.strictEqual(w4.status, 'closed');
 
-  assert.strictEqual(w4.closure.actor, 'release-maintainer');
+  assert.strictEqual(closureOf(w4).actor, 'release-maintainer');
 
-  assert.match(w4.closure.summary, /agent-onboard@0\.0\.16/);
+  assert.match(closureOf(w4).summary, /agent-onboard@0\.0\.16/);
 
   assert.ok(w5);
 
@@ -3662,9 +3678,9 @@ fullSourceTest('full source block line 1508', () => {
 
   assert.strictEqual(w5.status, 'closed');
 
-  assert.strictEqual(w5.closure.actor, 'release-maintainer');
+  assert.strictEqual(closureOf(w5).actor, 'release-maintainer');
 
-  assert.match(w5.closure.summary, /agent-onboard@0\.0\.17/);
+  assert.match(closureOf(w5).summary, /agent-onboard@0\.0\.17/);
 
   assert.ok(m2w1);
 
@@ -3672,9 +3688,9 @@ fullSourceTest('full source block line 1508', () => {
 
   assert.strictEqual(m2w1.status, 'closed');
 
-  assert.strictEqual(m2w1.closure.actor, 'release-maintainer');
+  assert.strictEqual(closureOf(m2w1).actor, 'release-maintainer');
 
-  assert.match(m2w1.closure.summary, /agent-onboard@0\.0\.18/);
+  assert.match(closureOf(m2w1).summary, /agent-onboard@0\.0\.18/);
 
   assert.ok(m2w2);
 
@@ -3682,9 +3698,9 @@ fullSourceTest('full source block line 1508', () => {
 
   assert.strictEqual(m2w2.status, 'closed');
 
-  assert.strictEqual(m2w2.closure.actor, 'release-maintainer');
+  assert.strictEqual(closureOf(m2w2).actor, 'release-maintainer');
 
-  assert.match(m2w2.closure.summary, /agent-onboard@0\.0\.19/);
+  assert.match(closureOf(m2w2).summary, /agent-onboard@0\.0\.19/);
 
   assert.ok(m2w3);
 
@@ -3692,9 +3708,9 @@ fullSourceTest('full source block line 1508', () => {
 
   assert.strictEqual(m2w3.status, 'closed');
 
-  assert.strictEqual(m2w3.closure.actor, 'release-maintainer');
+  assert.strictEqual(closureOf(m2w3).actor, 'release-maintainer');
 
-  assert.match(m2w3.closure.summary, /agent-onboard@0\.0\.20/);
+  assert.match(closureOf(m2w3).summary, /agent-onboard@0\.0\.20/);
 
   assert.ok(s2m1w1);
 
@@ -3702,9 +3718,9 @@ fullSourceTest('full source block line 1508', () => {
 
   assert.strictEqual(s2m1w1.status, 'closed');
 
-  assert.strictEqual(s2m1w1.closure.actor, 'release-maintainer');
+  assert.strictEqual(closureOf(s2m1w1).actor, 'release-maintainer');
 
-  assert.match(s2m1w1.closure.summary, /agent-onboard@0\.0\.21/);
+  assert.match(closureOf(s2m1w1).summary, /agent-onboard@0\.0\.21/);
 
   assert.ok(s2m1w2);
 
@@ -3712,9 +3728,9 @@ fullSourceTest('full source block line 1508', () => {
 
   assert.strictEqual(s2m1w2.status, 'closed');
 
-  assert.strictEqual(s2m1w2.closure.actor, 'release-maintainer');
+  assert.strictEqual(closureOf(s2m1w2).actor, 'release-maintainer');
 
-  assert.match(s2m1w2.closure.summary, /agent-onboard@0\.0\.22/);
+  assert.match(closureOf(s2m1w2).summary, /agent-onboard@0\.0\.22/);
 
 
   assert.ok(s2m1w3);
@@ -3723,9 +3739,9 @@ fullSourceTest('full source block line 1508', () => {
 
   assert.strictEqual(s2m1w3.status, 'closed');
 
-  assert.strictEqual(s2m1w3.closure.actor, 'release-maintainer');
+  assert.strictEqual(closureOf(s2m1w3).actor, 'release-maintainer');
 
-  assert.match(s2m1w3.closure.summary, /agent-onboard@0\.0\.23/);
+  assert.match(closureOf(s2m1w3).summary, /agent-onboard@0\.0\.23/);
 
   assert.ok(s2m1w4);
 
@@ -3733,9 +3749,9 @@ fullSourceTest('full source block line 1508', () => {
 
   assert.strictEqual(s2m1w4.status, 'closed');
 
-  assert.strictEqual(s2m1w4.closure.actor, 'release-maintainer');
+  assert.strictEqual(closureOf(s2m1w4).actor, 'release-maintainer');
 
-  assert.match(s2m1w4.closure.summary, /agent-onboard@0\.0\.24/);
+  assert.match(closureOf(s2m1w4).summary, /agent-onboard@0\.0\.24/);
 
   assert.ok(s2m1w5);
 
@@ -3743,9 +3759,9 @@ fullSourceTest('full source block line 1508', () => {
 
   assert.strictEqual(s2m1w5.status, 'closed');
 
-  assert.strictEqual(s2m1w5.closure.actor, 'release-maintainer');
+  assert.strictEqual(closureOf(s2m1w5).actor, 'release-maintainer');
 
-  assert.match(s2m1w5.closure.summary, /agent-onboard@0\.0\.25/);
+  assert.match(closureOf(s2m1w5).summary, /agent-onboard@0\.0\.25/);
 
   assert.ok(s2m1w6);
 
@@ -3753,9 +3769,9 @@ fullSourceTest('full source block line 1508', () => {
 
   assert.strictEqual(s2m1w6.status, 'closed');
 
-  assert.strictEqual(s2m1w6.closure.actor, 'release-maintainer');
+  assert.strictEqual(closureOf(s2m1w6).actor, 'release-maintainer');
 
-  assert.match(s2m1w6.closure.summary, /agent-onboard@0\.0\.26/);
+  assert.match(closureOf(s2m1w6).summary, /agent-onboard@0\.0\.26/);
 
   const s2m1w7 = findById(rootLedger.work_items, ['P', 1, 'S', 2, 'M', 1, 'W', 7].join(''));
   const s2m1w8 = findById(rootLedger.work_items, ['P', 1, 'S', 2, 'M', 1, 'W', 8].join(''));
@@ -3766,9 +3782,9 @@ fullSourceTest('full source block line 1508', () => {
 
   assert.strictEqual(s2m1w7.status, 'closed');
 
-  assert.strictEqual(s2m1w7.closure.actor, 'release-maintainer');
+  assert.strictEqual(closureOf(s2m1w7).actor, 'release-maintainer');
 
-  assert.match(s2m1w7.closure.summary, /agent-onboard@0\.0\.27/);
+  assert.match(closureOf(s2m1w7).summary, /agent-onboard@0\.0\.27/);
 
   assert.ok(s2m1w8);
 
@@ -3785,7 +3801,7 @@ fullSourceTest('full source block line 1508', () => {
 
   assert.strictEqual(s3m1w1.status, 'closed');
 
-  assert.match(s3m1w1.closure.summary, /agent-onboard@0\.0\.28/);
+  assert.match(closureOf(s3m1w1).summary, /agent-onboard@0\.0\.28/);
 
   assert.ok(s3m1w2);
 
@@ -3793,7 +3809,7 @@ fullSourceTest('full source block line 1508', () => {
 
   assert.strictEqual(s3m1w2.status, 'closed');
 
-  assert.match(s3m1w2.closure.summary, /agent-onboard@0\.0\.29/);
+  assert.match(closureOf(s3m1w2).summary, /agent-onboard@0\.0\.29/);
 
   const s3m1w3 = findById(rootLedger.work_items, ['P', 1, 'S', 3, 'M', 1, 'W', 3].join(''));
 
@@ -3803,7 +3819,7 @@ fullSourceTest('full source block line 1508', () => {
 
   assert.strictEqual(s3m1w3.status, 'closed');
 
-  assert.match(s3m1w3.closure.summary, /agent-onboard@0\.0\.30/);
+  assert.match(closureOf(s3m1w3).summary, /agent-onboard@0\.0\.30/);
 
   const s3m1w4 = findById(rootLedger.work_items, ['P', 1, 'S', 3, 'M', 1, 'W', 4].join(''));
 
@@ -3813,7 +3829,7 @@ fullSourceTest('full source block line 1508', () => {
 
   assert.strictEqual(s3m1w4.status, 'closed');
 
-  assert.match(s3m1w4.closure.summary, /agent-onboard@0\.0\.31/);
+  assert.match(closureOf(s3m1w4).summary, /agent-onboard@0\.0\.31/);
 
   const s3m1w5 = findById(rootLedger.work_items, ['P', 1, 'S', 3, 'M', 1, 'W', 5].join(''));
 
@@ -3823,7 +3839,7 @@ fullSourceTest('full source block line 1508', () => {
 
   assert.strictEqual(s3m1w5.status, 'closed');
 
-  assert.match(s3m1w5.closure.summary, /agent-onboard@0\.0\.32/);
+  assert.match(closureOf(s3m1w5).summary, /agent-onboard@0\.0\.32/);
 
   const s3m1w6 = findById(rootLedger.work_items, ['P', 1, 'S', 3, 'M', 1, 'W', 6].join(''));
 
@@ -3833,7 +3849,7 @@ fullSourceTest('full source block line 1508', () => {
 
   assert.strictEqual(s3m1w6.status, 'closed');
 
-  assert.match(s3m1w6.closure.summary, /agent-onboard@0\.0\.33/);
+  assert.match(closureOf(s3m1w6).summary, /agent-onboard@0\.0\.33/);
 
   const s3m1w7 = findById(rootLedger.work_items, ['P', 1, 'S', 3, 'M', 1, 'W', 7].join(''));
 
@@ -3843,7 +3859,7 @@ fullSourceTest('full source block line 1508', () => {
 
   assert.strictEqual(s3m1w7.status, 'closed');
 
-  assert.match(s3m1w7.closure.summary, /agent-onboard@0\.0\.34/);
+  assert.match(closureOf(s3m1w7).summary, /agent-onboard@0\.0\.34/);
 
   const s3m1w8 = findById(rootLedger.work_items, ['P', 1, 'S', 3, 'M', 1, 'W', 8].join(''));
 
@@ -3853,7 +3869,7 @@ fullSourceTest('full source block line 1508', () => {
 
   assert.strictEqual(s3m1w8.status, 'closed');
 
-  assert.match(s3m1w8.closure.summary, /agent-onboard@0\.0\.35/);
+  assert.match(closureOf(s3m1w8).summary, /agent-onboard@0\.0\.35/);
 
   const s3m1w9 = findById(rootLedger.work_items, ['P', 1, 'S', 3, 'M', 1, 'W', 9].join(''));
 
@@ -3863,7 +3879,7 @@ fullSourceTest('full source block line 1508', () => {
 
   assert.strictEqual(s3m1w9.status, 'closed');
 
-  assert.match(s3m1w9.closure.summary, /agent-onboard@0\.0\.36/);
+  assert.match(closureOf(s3m1w9).summary, /agent-onboard@0\.0\.36/);
 
   const s3m1w10 = findById(rootLedger.work_items, ['P', 1, 'S', 3, 'M', 1, 'W', 10].join(''));
 
@@ -3944,8 +3960,8 @@ fullSourceTest('full source block line 1508', () => {
   assert.strictEqual(s3m1w19.title, 'Public source module extraction authority runtime bridge gate');
 
   assert.strictEqual(s3m1w19.status, 'closed');
-  assert.ok(s3m1w19.closure);
-  assert.ok(s3m1w19.closure.summary.includes('authority runtime bridge'));
+  assert.ok(closureOf(s3m1w19));
+  assert.ok(closureOf(s3m1w19).summary.includes('authority runtime bridge'));
 
   assert.ok(fs.existsSync(path.join(ROOT, 'AGENTS.md')));
 
@@ -5642,5 +5658,23 @@ fullSourceTest('public closed gate raw artifact prune apply admission prunes arc
   assert.strictEqual(check.validated.current_work_item_closed, true);
 });
 
+fullSourceTest('work item ledger compaction checker validates closure archive references', () => {
+  const result = spawnSync(process.execPath, [path.join(ROOT, 'scripts', 'check-work-item-ledger-compaction.js')], {
+    cwd: ROOT,
+    encoding: 'utf8',
+    timeout: 60000,
+    maxBuffer: 50 * 1024 * 1024
+  });
+  assert.strictEqual(result.status, 0, result.stderr || result.stdout);
+  const output = JSON.parse(result.stdout);
+  assert.strictEqual(output.schema, 'agent-onboard-work-item-ledger-compaction-check-result-001');
+  assert.strictEqual(output.status, 'ok');
+  assert.strictEqual(output.inline_closure_count, 0);
+  assert.ok(output.archived_closure_count >= 1);
+  assert.strictEqual(output.boundary.admits_sqlite_now, false);
+  assert.strictEqual(output.boundary.admits_lightning_memory_mapped_database_now, false);
+});
+
 
 runSelectedFullSourceTests();
+

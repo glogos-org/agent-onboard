@@ -330,12 +330,28 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-state-closed-gates-jsonl-b6b6876e"
     },
     {
+      "file_path": ".agent-onboard/state/closures/work-items-closures.jsonl",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-state-closures-work-items-closures-jsonl-4be43fe5"
+    },
+    {
+      "file_path": ".agent-onboard/state/events/work-items.jsonl",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-state-events-work-items-jsonl-e35344bc"
+    },
+    {
       "file_path": ".agent-onboard/state/indexes.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-state-indexes-json-1f8ab4d4"
     },
     {
+      "file_path": ".agent-onboard/state/indexes/work-items.index.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-state-indexes-work-items-index-json-33068bba"
+    },
+    {
       "file_path": ".agent-onboard/state/live-authority.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-state-live-authority-json-aadb77a0"
+    },
+    {
+      "file_path": ".agent-onboard/state/live/work-items.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-state-live-work-items-json-d1c58464"
     },
     {
       "file_path": ".agent-onboard/state/policies.json",
@@ -426,16 +442,16 @@
       "file_urn": "urn:agent-onboard:file:agent-onboard-thin-entrypoint-router-cutover-rehearsal-json-3c1ef9ca"
     },
     {
+      "file_path": ".agent-onboard/work-item-ledger-compaction-migration.json",
+      "file_urn": "urn:agent-onboard:file:agent-onboard-work-item-ledger-compaction-migration-json-6d30e80a"
+    },
+    {
       "file_path": ".agent-onboard/work-items-runtime-service-partition-seed.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-work-items-runtime-service-partition-seed-json-a5319c9c"
     },
     {
       "file_path": ".agent-onboard/work-items.index.json",
       "file_urn": "urn:agent-onboard:file:agent-onboard-work-items-index-json-e4fde6be"
-    },
-    {
-      "file_path": ".agent-onboard/work-items.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-work-items-json-354fb549"
     },
     {
       "file_path": ".editorconfig",
@@ -686,16 +702,16 @@
       "file_urn": "urn:agent-onboard:file:llms-txt-f43a9e2f"
     },
     {
-      "file_path": "manifest.json",
-      "file_urn": "urn:agent-onboard:file:manifest-json-ffa5b716"
-    },
-    {
       "file_path": "package.json",
       "file_urn": "urn:agent-onboard:file:package-json-7ae45ad1"
     },
     {
       "file_path": "scripts/check-public-artifact-boundary.js",
       "file_urn": "urn:agent-onboard:file:scripts-check-public-artifact-boundary-js-90be14c8"
+    },
+    {
+      "file_path": "scripts/check-work-item-ledger-compaction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-check-work-item-ledger-compaction-js-6f5e34f3"
     },
     {
       "file_path": "src/domains/authority.js",

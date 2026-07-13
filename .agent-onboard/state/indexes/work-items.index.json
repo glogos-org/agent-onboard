@@ -3,17 +3,23 @@
   "package_name": "agent-onboard",
   "status": "active",
   "source": "derived_from_.agent-onboard/state/live/work-items.json",
-  "canonical_until_migration_gate": false,
+  "canonical_until_migration_gate": true,
   "rebuildable_from": [
     ".agent-onboard/state/live/work-items.json",
     ".agent-onboard/state/events/work-items.jsonl",
+    ".agent-onboard/state/closures/work-items-closures.jsonl",
     ".agent-onboard/work-items.json"
   ],
-  "item_count": 152,
+  "item_count": 153,
   "open_count": 0,
-  "closed_count": 152,
-  "latest_closed_work_item_id": "P1S3M6W15",
+  "claimed_count": 0,
+  "closed_count": 153,
+  "latest_closed_work_item_id": "P1S3M6W16",
+  "archived_closure_count": 152,
+  "inline_closure_count": 0,
   "by_status": {
+    "open": [],
+    "claimed": [],
     "closed": [
       "P1S1M1W1",
       "P1S1M1W2",
@@ -166,7 +172,8 @@
       "P1S3M6W12",
       "P1S3M6W13",
       "P1S3M6W14",
-      "P1S3M6W15"
+      "P1S3M6W15",
+      "P1S3M6W16"
     ]
   },
   "by_milestone": {
@@ -338,8 +345,9 @@
       "P1S3M6W12",
       "P1S3M6W13",
       "P1S3M6W14",
-      "P1S3M6W15"
+      "P1S3M6W15",
+      "P1S3M6W16"
     ]
   },
-  "updated_at": "2026-07-07T14:25:00.000Z"
+  "updated_at": "2026-07-07T15:20:00.000Z"
 }

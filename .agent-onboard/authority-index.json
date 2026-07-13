@@ -1,1 +1,247 @@
-{"schema":"agent-onboard-public-authority-compact-index-001","package_name":"agent-onboard","package_version_source":"package.json#version","release_line":"public_runtime_state_architecture_growth_arrest_gate","index_file":".agent-onboard/authority-index.json","first_read_command":"agent-onboard authority --first-read","check_command":"agent-onboard authority --check","compact_index_command":"agent-onboard authority --index","compact_index_check_command":"agent-onboard authority --index-check","state_command":"agent-onboard authority --state","state_check_command":"agent-onboard authority --state-check","state_shard_root":".agent-onboard/state","state_shard_paths":[".agent-onboard/state/live-authority.json",".agent-onboard/state/policies.json",".agent-onboard/state/indexes.json",".agent-onboard/state/closed-gates.jsonl"],"default_first_read":true,"raw_authority_loaded_by_default":false,"file_contents_inlined":false,"max_bytes":8192,"first_read_order":[{"order":1,"path":"AGENTS.md","role":"operating_rules_and_default_boundary","required_when_present":true},{"order":2,"path":"SOURCE_OF_TRUTH.md","role":"human_readable_authority_precedence","required_when_present":true},{"order":3,"path":".agent-onboard/authority-path.json","role":"machine_readable_authority_path_index","required_when_present":true},{"order":4,"path":".agent-onboard/authority-index.json","role":"compact_authority_digest_and_drift_index","required_when_present":true},{"order":5,"path":"llms.txt","role":"ai_readable_command_and_orientation_entrypoint","required_when_present":true},{"order":6,"path":"package.json","role":"package_identity_scripts_and_pack_surface","required_when_present":true},{"order":7,"path":"authority-map.json","role":"stable_file_urn_and_authority_registry","required_when_present":true},{"order":8,"path":"manifest.json","role":"content_identity_and_file_coverage_index","required_when_present":true},{"order":9,"path":".agent-onboard/target.json","role":"target_boundary_declaration","required_when_present":true},{"order":10,"path":".agent-onboard/runtime-namespace.json","role":"target_runtime_namespace_declaration","required_when_present":true},{"order":11,"path":".agent-onboard/project.json","role":"target_runtime_project_identity","required_when_present":true},{"order":12,"path":".agent-onboard/work-items.json","role":"public_work_item_ledger","required_when_present":true},{"order":13,"path":"README.md","role":"public_package_documentation","required_when_present":false},{"order":14,"path":"raw evidence/source files","role":"on_demand_only_after_authority_and_scope_files","required_when_present":false}],"first_read_order_file_id":"ni:///sha-256;4ujYIzFMdBgJSeHrt6NLJvqr2iqyWiZfCEKT-E2m448","indexed_authority_files":[{"file_path":"AGENTS.md","present":true,"kind":"file","bytes":43964,"file_id":"ni:///sha-256;Er4MzNz3PZo8gUTLg2t3VHQCTJ10xVz1Qwq1ieQ7bJw","content_inlined":false},{"file_path":"SOURCE_OF_TRUTH.md","present":true,"kind":"file","bytes":8453,"file_id":"ni:///sha-256;JKwR10DnSA72l_qWlsHQW1ZXpuTEcaaSogUjfcjT39k","content_inlined":false},{"file_path":".agent-onboard/authority-path.json","present":true,"kind":"file","bytes":4199,"file_id":"ni:///sha-256;Gvd8pkOgiB2R0Uz5HQdgvnn-fYIPRYO4rMcQXYXMB7c","content_inlined":false},{"file_path":"llms.txt","present":true,"kind":"file","bytes":12650,"file_id":"ni:///sha-256;4FMUTfsfLKlcGPXowGMJoCveeLaZhe4EcMhRIdy7lGc","content_inlined":false},{"file_path":"package.json","present":true,"kind":"file","bytes":6248,"file_id":"ni:///sha-256;-pncOudRcjySc5vEt6HgODKJgvDhbg6BOQJCMCqDJEw","content_inlined":false},{"file_path":".agent-onboard/target.json","present":true,"kind":"file","bytes":1114,"file_id":"ni:///sha-256;gyZF7oyqc9-If8GE5gJCL0w-AQrfG9bSkBdZmnKjx_c","content_inlined":false},{"file_path":".agent-onboard/runtime-namespace.json","present":true,"kind":"file","bytes":2317,"file_id":"ni:///sha-256;lolvTgw4-E2Abare_5U9Ei3GC5Sjn9PICtbuM3lXz8I","content_inlined":false},{"file_path":".agent-onboard/project.json","present":true,"kind":"file","bytes":306,"file_id":"ni:///sha-256;1SFdwN697nHJ4bgUBc84ZozzIZbckpn3ZbQubG05wqM","content_inlined":false},{"file_path":".agent-onboard/work-items.json","present":true,"kind":"file","bytes":373241,"file_id":"ni:///sha-256;QQo4fvVTiLE74KZ1Hg9lGWQZQHmUv3t7IKHQTiXHsiM","content_inlined":false}],"excluded_authority_index_files":[{"file_path":".agent-onboard/authority-index.json","reason":"self_referential_compact_index"},{"file_path":"authority-map.json","reason":"authority_map_can_reference_compact_index_file_urn"},{"file_path":"manifest.json","reason":"content_manifest_can_reference_compact_index_file_id"},{"file_path":".agent-onboard/state/live-authority.json","reason":"state_shard_checked_by_authority_state_check"},{"file_path":".agent-onboard/state/policies.json","reason":"state_shard_checked_by_authority_state_check"},{"file_path":".agent-onboard/state/indexes.json","reason":"state_shard_can_reference_compact_index_digest"},{"file_path":".agent-onboard/state/closed-gates.jsonl","reason":"state_shard_checked_by_authority_state_check"}],"summary":{"indexed_file_count":9,"present_file_count":9,"missing_file_count":0,"present_bytes":452492,"missing_files":[],"excluded_file_count":7,"state_shard_count":4,"raw_evidence_is_on_demand_only":true},"drift_guard":{"compares_stored_index_to_live_file_digests":true,"digest_algorithm":"sha-256","raw_file_contents_inlined":false,"raw_authority_loaded_by_default":false,"self_and_cross_index_files_excluded":true,"index_file_is_source_only":true,"state_shards_checked_by_authority_state_check":true},"boundary":{"writes_files":false,"writes_source_state":false,"writes_target_repository_state":false,"git_mutation":false,"installs_dependencies":false,"runs_package_manager":false,"runs_build_test_deploy":false,"publishes_package":false,"mutates_registry":false,"raw_authority_loaded_by_default":false,"file_contents_inlined":false}}
+{
+  "schema": "agent-onboard-public-authority-compact-index-001",
+  "package_name": "agent-onboard",
+  "package_version_source": "package.json#version",
+  "release_line": "public_work_item_ledger_compaction_migration_gate",
+  "index_file": ".agent-onboard/authority-index.json",
+  "first_read_command": "agent-onboard authority --first-read",
+  "check_command": "agent-onboard authority --check",
+  "compact_index_command": "agent-onboard authority --index",
+  "compact_index_check_command": "agent-onboard authority --index-check",
+  "state_command": "agent-onboard authority --state",
+  "state_check_command": "agent-onboard authority --state-check",
+  "state_shard_root": ".agent-onboard/state",
+  "state_shard_paths": [
+    ".agent-onboard/state/live-authority.json",
+    ".agent-onboard/state/policies.json",
+    ".agent-onboard/state/indexes.json",
+    ".agent-onboard/state/closed-gates.jsonl"
+  ],
+  "default_first_read": true,
+  "raw_authority_loaded_by_default": false,
+  "file_contents_inlined": false,
+  "max_bytes": 8192,
+  "first_read_order": [
+    {
+      "order": 1,
+      "path": "AGENTS.md",
+      "role": "operating_rules_and_default_boundary",
+      "required_when_present": true
+    },
+    {
+      "order": 2,
+      "path": "SOURCE_OF_TRUTH.md",
+      "role": "human_readable_authority_precedence",
+      "required_when_present": true
+    },
+    {
+      "order": 3,
+      "path": ".agent-onboard/authority-path.json",
+      "role": "machine_readable_authority_path_index",
+      "required_when_present": true
+    },
+    {
+      "order": 4,
+      "path": ".agent-onboard/authority-index.json",
+      "role": "compact_authority_digest_and_drift_index",
+      "required_when_present": true
+    },
+    {
+      "order": 5,
+      "path": "llms.txt",
+      "role": "ai_readable_command_and_orientation_entrypoint",
+      "required_when_present": true
+    },
+    {
+      "order": 6,
+      "path": "package.json",
+      "role": "package_identity_scripts_and_pack_surface",
+      "required_when_present": true
+    },
+    {
+      "order": 7,
+      "path": "authority-map.json",
+      "role": "stable_file_urn_and_authority_registry",
+      "required_when_present": true
+    },
+    {
+      "order": 8,
+      "path": "manifest.json",
+      "role": "content_identity_and_file_coverage_index",
+      "required_when_present": true
+    },
+    {
+      "order": 9,
+      "path": ".agent-onboard/target.json",
+      "role": "target_boundary_declaration",
+      "required_when_present": true
+    },
+    {
+      "order": 10,
+      "path": ".agent-onboard/runtime-namespace.json",
+      "role": "target_runtime_namespace_declaration",
+      "required_when_present": true
+    },
+    {
+      "order": 11,
+      "path": ".agent-onboard/project.json",
+      "role": "target_runtime_project_identity",
+      "required_when_present": true
+    },
+    {
+      "order": 12,
+      "path": ".agent-onboard/work-items.json",
+      "role": "public_work_item_ledger",
+      "required_when_present": true
+    },
+    {
+      "order": 13,
+      "path": "README.md",
+      "role": "public_package_documentation",
+      "required_when_present": false
+    },
+    {
+      "order": 14,
+      "path": "raw evidence/source files",
+      "role": "on_demand_only_after_authority_and_scope_files",
+      "required_when_present": false
+    }
+  ],
+  "first_read_order_file_id": "ni:///sha-256;4ujYIzFMdBgJSeHrt6NLJvqr2iqyWiZfCEKT-E2m448",
+  "indexed_authority_files": [
+    {
+      "file_path": "AGENTS.md",
+      "present": true,
+      "kind": "file",
+      "bytes": 44067,
+      "file_id": "ni:///sha-256;CkRDYMuAIFeI5BlWd3ekhGMs5eKl37Bk2sXockn1qNY",
+      "content_inlined": false
+    },
+    {
+      "file_path": "SOURCE_OF_TRUTH.md",
+      "present": true,
+      "kind": "file",
+      "bytes": 8566,
+      "file_id": "ni:///sha-256;__3FmJYc2GvVRl3pYrfbgPKOwx7FsgExxHiXCix3654",
+      "content_inlined": false
+    },
+    {
+      "file_path": ".agent-onboard/authority-path.json",
+      "present": true,
+      "kind": "file",
+      "bytes": 4199,
+      "file_id": "ni:///sha-256;Gvd8pkOgiB2R0Uz5HQdgvnn-fYIPRYO4rMcQXYXMB7c",
+      "content_inlined": false
+    },
+    {
+      "file_path": "llms.txt",
+      "present": true,
+      "kind": "file",
+      "bytes": 12689,
+      "file_id": "ni:///sha-256;Jb_s1Sijt9R1tDEy29lfuGDuAJuPRPsgOJO6Qu8BQZA",
+      "content_inlined": false
+    },
+    {
+      "file_path": "package.json",
+      "present": true,
+      "kind": "file",
+      "bytes": 6342,
+      "file_id": "ni:///sha-256;NAnw0umCcZ-ykM0ANlOpgrENmuZKg8NwUiHBQquIpDs",
+      "content_inlined": false
+    },
+    {
+      "file_path": ".agent-onboard/target.json",
+      "present": true,
+      "kind": "file",
+      "bytes": 1114,
+      "file_id": "ni:///sha-256;gyZF7oyqc9-If8GE5gJCL0w-AQrfG9bSkBdZmnKjx_c",
+      "content_inlined": false
+    },
+    {
+      "file_path": ".agent-onboard/runtime-namespace.json",
+      "present": true,
+      "kind": "file",
+      "bytes": 2317,
+      "file_id": "ni:///sha-256;lolvTgw4-E2Abare_5U9Ei3GC5Sjn9PICtbuM3lXz8I",
+      "content_inlined": false
+    },
+    {
+      "file_path": ".agent-onboard/project.json",
+      "present": true,
+      "kind": "file",
+      "bytes": 306,
+      "file_id": "ni:///sha-256;1SFdwN697nHJ4bgUBc84ZozzIZbckpn3ZbQubG05wqM",
+      "content_inlined": false
+    },
+    {
+      "file_path": ".agent-onboard/work-items.json",
+      "present": true,
+      "kind": "file",
+      "bytes": 39719,
+      "file_id": "ni:///sha-256;rYXfdz2GPrHKjkFpwTkt_pjJb0NBapxT41502943T0c",
+      "content_inlined": false
+    }
+  ],
+  "excluded_authority_index_files": [
+    {
+      "file_path": ".agent-onboard/authority-index.json",
+      "reason": "self_referential_compact_index"
+    },
+    {
+      "file_path": "authority-map.json",
+      "reason": "authority_map_can_reference_compact_index_file_urn"
+    },
+    {
+      "file_path": "manifest.json",
+      "reason": "content_manifest_can_reference_compact_index_file_id"
+    },
+    {
+      "file_path": ".agent-onboard/state/live-authority.json",
+      "reason": "state_shard_checked_by_authority_state_check"
+    },
+    {
+      "file_path": ".agent-onboard/state/policies.json",
+      "reason": "state_shard_checked_by_authority_state_check"
+    },
+    {
+      "file_path": ".agent-onboard/state/indexes.json",
+      "reason": "state_shard_can_reference_compact_index_digest"
+    },
+    {
+      "file_path": ".agent-onboard/state/closed-gates.jsonl",
+      "reason": "state_shard_checked_by_authority_state_check"
+    }
+  ],
+  "summary": {
+    "indexed_file_count": 9,
+    "present_file_count": 9,
+    "missing_file_count": 0,
+    "present_bytes": 119319,
+    "missing_files": [],
+    "excluded_file_count": 7,
+    "state_shard_count": 4,
+    "raw_evidence_is_on_demand_only": true
+  },
+  "drift_guard": {
+    "compares_stored_index_to_live_file_digests": true,
+    "digest_algorithm": "sha-256",
+    "raw_file_contents_inlined": false,
+    "raw_authority_loaded_by_default": false,
+    "self_and_cross_index_files_excluded": true,
+    "index_file_is_source_only": true,
+    "state_shards_checked_by_authority_state_check": true
+  },
+  "boundary": {
+    "writes_files": false,
+    "writes_source_state": false,
+    "writes_target_repository_state": false,
+    "git_mutation": false,
+    "installs_dependencies": false,
+    "runs_package_manager": false,
+    "runs_build_test_deploy": false,
+    "publishes_package": false,
+    "mutates_registry": false,
+    "raw_authority_loaded_by_default": false,
+    "file_contents_inlined": false
+  }
+}

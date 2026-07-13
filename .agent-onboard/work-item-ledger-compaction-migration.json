@@ -1,0 +1,36 @@
+{
+  "schema": "agent-onboard-public-work-item-ledger-compaction-migration-001",
+  "work_item_id": "P1S3M6W16",
+  "package_name": "agent-onboard",
+  "package_version": "0.0.165",
+  "status": "closed",
+  "created_at": "2026-07-07T15:05:00.000Z",
+  "closed_at": "2026-07-07T15:20:00.000Z",
+  "objective": "Migrate work item closure payloads out of the live compatibility ledger into the JSONL closure archive while preserving references, validation, and text-first auditability.",
+  "migration": {
+    "source_ledger": ".agent-onboard/work-items.json",
+    "closure_archive": ".agent-onboard/state/closures/work-items-closures.jsonl",
+    "live_snapshot": ".agent-onboard/state/live/work-items.json",
+    "derived_index": ".agent-onboard/state/indexes/work-items.index.json",
+    "items_after": 153,
+    "archived_closure_count": 152,
+    "inline_closure_count_after": 0,
+    "compatibility_ledger_file_id": "ni:///sha-256;rYXfdz2GPrHKjkFpwTkt_pjJb0NBapxT41502943T0c"
+  },
+  "storage_backend_policy": {
+    "current_canonical_backend": "json_and_jsonl_text_first",
+    "sqlite_current_source_of_truth": false,
+    "lightning_memory_mapped_database_current_source_of_truth": false,
+    "mdbx_current_source_of_truth": false,
+    "binary_storage_admitted_now": false
+  },
+  "boundary": {
+    "writes_files": true,
+    "mutates_git": false,
+    "network": false,
+    "publishes_package": false,
+    "drops_closure_evidence": false,
+    "content_inlined_in_live_registry": false
+  },
+  "next_candidate": "P1S3M6W17 — Public Closed Gate State Layout Migration Gate"
+}

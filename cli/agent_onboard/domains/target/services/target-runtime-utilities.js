@@ -213,6 +213,9 @@ function validateWorkItemsGraph(value) {
       if (item.status !== 'closed' && Object.prototype.hasOwnProperty.call(item, 'closure')) {
         errors.push(`$.work_items.${item.id}: only closed work items may include closure`);
       }
+      if (item.status !== 'closed' && Object.prototype.hasOwnProperty.call(item, 'closure_ref')) {
+        errors.push(`$.work_items.${item.id}: only closed work items may include closure_ref`);
+      }
     }
   }
 
@@ -361,21 +364,40 @@ function closeWorkItemDryRun(currentLedger, options) {
     checks_not_run: options.checks_not_run || [],
     known_non_pass: options.known_non_pass || []
   };
+  const closureRef = `closures:${ids.work_item_id}`;
+  const closureRecord = {
+    schema: 'agent-onboard-work-item-closure-record-001',
+    closure_id: closureRef,
+    work_item_id: ids.work_item_id,
+    actor: closure.actor,
+    closed_at: closure.closed_at,
+    summary: closure.summary,
+    changed_files: closure.changed_files,
+    checks_run: closure.checks_run,
+    checks_not_run: closure.checks_not_run,
+    known_non_pass: closure.known_non_pass,
+    source: 'work-items-close-command',
+    content_inlined_in_live_registry: false
+  };
 
   workItem.status = 'closed';
-  workItem.closure = closure;
+  delete workItem.closure;
+  workItem.closure_ref = closureRef;
 
   return {
     proposed_ledger: ledger,
+    closure_record: closureRecord,
     closed: {
       work_item_id: ids.work_item_id,
       actor: closure.actor,
       closed_at: closure.closed_at,
-      summary: closure.summary
+      summary: closure.summary,
+      closure_ref: closureRef
     },
     handoff_evidence: {
       checklist: handoffEvidenceChecklist(),
-      closure
+      closure,
+      closure_ref: closureRef
     }
   };
 }

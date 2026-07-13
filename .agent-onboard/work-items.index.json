@@ -2,56 +2,59 @@
   "schema": "agent-onboard-target-work-items-index-001",
   "status": "active",
   "ledger_path": ".agent-onboard/work-items.json",
+  "closure_archive_path": ".agent-onboard/state/closures/work-items-closures.jsonl",
   "raw_ledger_loaded_by_default": false,
-  "item_count": 152,
+  "closure_payloads_inlined": false,
+  "item_count": 153,
   "open_count": 0,
-  "closed_count": 152,
+  "claimed_count": 0,
+  "closed_count": 153,
+  "archived_closure_count": 152,
   "latest_items_limit": 5,
   "latest_items": [
-    {
-      "id": "P1S3M6W11",
-      "milestone_id": "P1S3M6",
-      "title": "Public full-test runner completion compaction gate",
-      "status": "closed"
-    },
     {
       "id": "P1S3M6W12",
       "milestone_id": "P1S3M6",
       "title": "Public closed gate raw artifact prune planning gate",
-      "status": "closed"
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W12"
     },
     {
       "id": "P1S3M6W13",
       "milestone_id": "P1S3M6",
       "title": "Public closed gate raw artifact prune dry-run gate",
-      "status": "closed"
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W13"
     },
     {
       "id": "P1S3M6W14",
       "milestone_id": "P1S3M6",
       "title": "Public closed gate raw artifact prune apply admission gate",
-      "status": "closed"
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W14"
     },
     {
       "id": "P1S3M6W15",
       "milestone_id": "P1S3M6",
       "title": "Public runtime and state architecture growth arrest gate",
-      "status": "closed"
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W15"
+    },
+    {
+      "id": "P1S3M6W16",
+      "milestone_id": "P1S3M6",
+      "title": "Public work item ledger compaction migration gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W16"
     }
   ],
   "latest_closed_work_items": [
     {
-      "id": "P1S3M6W11",
-      "milestone_id": "P1S3M6",
-      "title": "Public full-test runner completion compaction gate",
-      "status": "closed",
-      "domain": null
-    },
-    {
       "id": "P1S3M6W12",
       "milestone_id": "P1S3M6",
       "title": "Public closed gate raw artifact prune planning gate",
       "status": "closed",
+      "closure_ref": "closures:P1S3M6W12",
       "domain": null
     },
     {
@@ -59,6 +62,7 @@
       "milestone_id": "P1S3M6",
       "title": "Public closed gate raw artifact prune dry-run gate",
       "status": "closed",
+      "closure_ref": "closures:P1S3M6W13",
       "domain": null
     },
     {
@@ -66,6 +70,7 @@
       "milestone_id": "P1S3M6",
       "title": "Public closed gate raw artifact prune apply admission gate",
       "status": "closed",
+      "closure_ref": "closures:P1S3M6W14",
       "domain": null
     },
     {
@@ -73,8 +78,17 @@
       "milestone_id": "P1S3M6",
       "title": "Public runtime and state architecture growth arrest gate",
       "status": "closed",
+      "closure_ref": "closures:P1S3M6W15",
+      "domain": null
+    },
+    {
+      "id": "P1S3M6W16",
+      "milestone_id": "P1S3M6",
+      "title": "Public work item ledger compaction migration gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M6W16",
       "domain": null
     }
   ],
-  "updated_at": "2026-07-07T14:25:00.000Z"
+  "updated_at": "2026-07-07T15:20:00.000Z"
 }

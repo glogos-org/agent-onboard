@@ -32,7 +32,7 @@ Work-item semantics remain delegated to `agent-onboard`.
 
 ## Runtime and state storage boundary
 
-The current source storage remains text-first: compact JSON snapshots plus JavaScript Object Notation Lines event and closure ledgers. `.agent-onboard/work-items.json` remains the compatibility ledger until a later migration gate, while `.agent-onboard/state/live/work-items.json`, `.agent-onboard/state/events/work-items.jsonl`, `.agent-onboard/state/closures/work-items-closures.jsonl`, and `.agent-onboard/state/indexes/work-items.index.json` seed the new parallel layout. SQLite, Lightning Memory-Mapped Database, MDBX, and other binary stores are not current sources of truth; they may only be admitted later behind repository interfaces with a replayable text export.
+The current source storage remains text-first: compact JSON snapshots plus JavaScript Object Notation Lines event and closure ledgers. `.agent-onboard/work-items.json` is now a compact compatibility ledger: closed work items carry `closure_ref` values and closure evidence lives in `.agent-onboard/state/closures/work-items-closures.jsonl`. `.agent-onboard/state/live/work-items.json`, `.agent-onboard/state/events/work-items.jsonl`, `.agent-onboard/state/closures/work-items-closures.jsonl`, and `.agent-onboard/state/indexes/work-items.index.json` are the active work item state shards. SQLite, Lightning Memory-Mapped Database, MDBX, and other binary stores are not current sources of truth; they may only be admitted later behind repository interfaces with a replayable text export.
 
 ## Claim ledger JSONL boundary
 

@@ -118,6 +118,7 @@ const WORK_ITEMS_SCHEMA = {
               note: { type: 'string', minLength: 1 }
             }
           },
+          closure_ref: { type: 'string', pattern: '^closures:P[0-9]+S[0-9]+M[0-9]+W[0-9]+$' },
           closure: {
             type: 'object',
             required: ['actor', 'closed_at', 'summary', 'changed_files', 'checks_run', 'checks_not_run', 'known_non_pass'],

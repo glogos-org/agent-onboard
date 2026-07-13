@@ -1,8 +1,12 @@
+## Current release: work item ledger compaction migration gate
+
+The current release migrates work item closure payloads out of `.agent-onboard/work-items.json` into `.agent-onboard/state/closures/work-items-closures.jsonl`. The compatibility ledger now stays compact by storing `closure_ref` pointers, while `.agent-onboard/state/live/work-items.json`, `.agent-onboard/state/events/work-items.jsonl`, and `.agent-onboard/state/indexes/work-items.index.json` provide the live snapshot, event log, and derived navigation index. SQLite, Lightning Memory-Mapped Database, MDBX, and other binary stores remain future optional adapters only.
+
 # agent-onboard release history
 
 Historical release prose archived from README.md by P1S3M6W6.
 README.md remains the live first-read surface for install, quickstart, current commands, and no-mutation boundary material.
-## Current release: runtime and state architecture growth arrest gate
+## Previous release: runtime and state architecture growth arrest gate
 
 The current release seeds a text-first runtime and state growth-arrest layout. It keeps `.agent-onboard/work-items.json` as the compatibility ledger while adding `.agent-onboard/state/live/work-items.json`, `.agent-onboard/state/events/work-items.jsonl`, `.agent-onboard/state/closures/work-items-closures.jsonl`, and `.agent-onboard/state/indexes/work-items.index.json` as the new parallel storage shape. It also adds a storage backend policy that keeps SQLite, Lightning Memory-Mapped Database, MDBX, and other binary stores as future optional repository adapters only, not current sources of truth.
 

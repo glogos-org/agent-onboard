@@ -7,6 +7,7 @@ const path = require('path');
 const COMMAND_FAMILY = 'work-items';
 const CANONICAL_WORK_ITEMS_FILE = '.agent-onboard/work-items.json';
 const CANONICAL_CLAIMS_FILE = '.agent-onboard/claims.jsonl';
+const CANONICAL_WORK_ITEM_CLOSURES_FILE = '.agent-onboard/state/closures/work-items-closures.jsonl';
 
 const STATUS = Object.freeze({
   OK: 'ok',
@@ -247,7 +248,13 @@ function indexById(items) {
   return map;
 }
 
-function decorateWorkItem(item, indexes) {
+function closureForWorkItem(item, closureArchiveByRef) {
+  if (item && item.closure) return item.closure;
+  if (item && item.closure_ref && closureArchiveByRef instanceof Map) return closureArchiveByRef.get(item.closure_ref) || null;
+  return null;
+}
+
+function decorateWorkItem(item, indexes, closureArchiveByRef = new Map()) {
   const milestone = indexes.milestones.get(item.milestone_id) || null;
   const stage = milestone ? indexes.stages.get(milestone.stage_id) || null : null;
   const program = stage ? indexes.programs.get(stage.program_id) || null : null;
@@ -259,7 +266,8 @@ function decorateWorkItem(item, indexes) {
     stage: stage ? { id: stage.id, title: stage.title, status: stage.status } : null,
     program: program ? { id: program.id, title: program.title, status: program.status } : null,
     claim: item.claim || null,
-    closure: item.closure || null
+    closure_ref: item.closure_ref || null,
+    closure: closureForWorkItem(item, closureArchiveByRef)
   };
 }
 
@@ -269,6 +277,28 @@ function ledgerIndexes(value) {
     stages: indexById(value.stages),
     milestones: indexById(value.milestones)
   });
+}
+
+function readClosureArchiveByRef(root, existsFn = fs.existsSync) {
+  const archivePath = path.resolve(root, CANONICAL_WORK_ITEM_CLOSURES_FILE);
+  const byRef = new Map();
+  if (!existsFn(archivePath)) return byRef;
+  const text = fs.readFileSync(archivePath, 'utf8');
+  for (const line of text.split(/\r?\n/)) {
+    if (!line.trim()) continue;
+    try {
+      const record = JSON.parse(line);
+      if (record && typeof record.closure_id === 'string') byRef.set(record.closure_id, record);
+    } catch (_error) {
+      // Archive parsing is best-effort for compatibility views; validation commands own hard failures.
+    }
+  }
+  return byRef;
+}
+
+function appendJsonlRecord(file, record) {
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  fs.appendFileSync(file, `${JSON.stringify(record)}\n`);
 }
 
 function formatWorkItemTitle(item) {
@@ -435,7 +465,7 @@ function createWorkItemsService(options = Object.freeze({})) {
       });
       return null;
     }
-    return { file, value, indexes: ledgerIndexes(value) };
+    return { file, value, indexes: ledgerIndexes(value), closureArchiveByRef: readClosureArchiveByRef(cwd(), exists) };
   }
 
   function append(args) {
@@ -747,7 +777,21 @@ function createWorkItemsService(options = Object.freeze({})) {
 
     const proposalErrors = validateWorkItems(proposal.proposed_ledger);
     const ok = proposalErrors.length === 0;
-    if (write && ok) writeJson(absolutePath, proposal.proposed_ledger);
+    let closureArchiveWrite = null;
+    if (write && ok) {
+      writeJson(absolutePath, proposal.proposed_ledger);
+      if (proposal.closure_record && file === CANONICAL_WORK_ITEMS_FILE) {
+        const archivePath = path.resolve(cwd(), CANONICAL_WORK_ITEM_CLOSURES_FILE);
+        appendJsonlRecord(archivePath, proposal.closure_record);
+        closureArchiveWrite = {
+          schema: 'agent-onboard-work-items-closure-archive-write-001',
+          status: STATUS.OK,
+          path: CANONICAL_WORK_ITEM_CLOSURES_FILE,
+          closure_ref: proposal.closure_record.closure_id,
+          writes_performed: true
+        };
+      }
+    }
     const governanceIndexRefresh = refreshGovernanceIndexesAfterWrite({ write, ok, file, command });
     emit({
       schema: WORK_ITEMS_RESULT_SCHEMA.CLOSE,
@@ -761,6 +805,7 @@ function createWorkItemsService(options = Object.freeze({})) {
       counts_after: workItemCounts(proposal.proposed_ledger),
       closed: proposal.closed,
       handoff_evidence: proposal.handoff_evidence,
+      closure_archive_write: closureArchiveWrite,
       proposed_ledger: proposal.proposed_ledger,
       governance_index_refresh: governanceIndexRefresh,
       errors: proposalErrors,
@@ -770,7 +815,8 @@ function createWorkItemsService(options = Object.freeze({})) {
         publishes_or_pushes: false,
         modifies_source_files: false,
         modifies_work_items_file: write,
-        modifies_only_canonical_work_items_file: write && !governanceIndexRefresh,
+        appends_work_item_closure_archive: Boolean(closureArchiveWrite),
+        modifies_only_canonical_work_items_file: write && !governanceIndexRefresh && !closureArchiveWrite,
         refreshes_governance_indexes: Boolean(governanceIndexRefresh),
         governance_index_refresh_after_admitted_write: Boolean(governanceIndexRefresh),
         governance_index_refresh_writes_performed: Boolean(governanceIndexRefresh && governanceIndexRefresh.writes_performed)
@@ -875,9 +921,9 @@ function createWorkItemsService(options = Object.freeze({})) {
       validated: true,
       counts: workItemCounts(ledger.value),
       work_item_status_counts: countByStatus(workItems),
-      open_work_items: openItems.map((item) => decorateWorkItem(item, ledger.indexes)),
-      claimed_work_items: claimedItems.map((item) => decorateWorkItem(item, ledger.indexes)),
-      next_open_work_item: openItems.length > 0 ? decorateWorkItem(openItems[0], ledger.indexes) : null,
+      open_work_items: openItems.map((item) => decorateWorkItem(item, ledger.indexes, ledger.closureArchiveByRef)),
+      claimed_work_items: claimedItems.map((item) => decorateWorkItem(item, ledger.indexes, ledger.closureArchiveByRef)),
+      next_open_work_item: openItems.length > 0 ? decorateWorkItem(openItems[0], ledger.indexes, ledger.closureArchiveByRef) : null,
       writes_performed: false,
       boundary: {
         reads_work_items_file: true,
@@ -958,9 +1004,11 @@ function createWorkItemsService(options = Object.freeze({})) {
     if (!ledger) return 1;
     const workItems = Array.isArray(ledger.value.work_items) ? ledger.value.work_items : [];
     const claimedItems = workItems.filter((item) => item.status === WORK_ITEM_STATUS.CLAIMED && item.claim && item.claim.actor === actor);
-    const closedItems = workItems.filter((item) => item.status === WORK_ITEM_STATUS.CLOSED && (
-      (item.claim && item.claim.actor === actor) || (item.closure && item.closure.actor === actor)
-    ));
+    const closedItems = workItems.filter((item) => {
+      if (item.status !== WORK_ITEM_STATUS.CLOSED) return false;
+      const archivedClosure = closureForWorkItem(item, ledger.closureArchiveByRef);
+      return (item.claim && item.claim.actor === actor) || (archivedClosure && archivedClosure.actor === actor);
+    });
     emitView(args, {
       schema: WORK_ITEMS_RESULT_SCHEMA.MINE,
       status: STATUS.OK,
@@ -969,8 +1017,8 @@ function createWorkItemsService(options = Object.freeze({})) {
       file: ledger.file,
       actor,
       validated: true,
-      claimed_work_items: claimedItems.map((item) => decorateWorkItem(item, ledger.indexes)),
-      closed_work_items: closedItems.map((item) => decorateWorkItem(item, ledger.indexes)),
+      claimed_work_items: claimedItems.map((item) => decorateWorkItem(item, ledger.indexes, ledger.closureArchiveByRef)),
+      closed_work_items: closedItems.map((item) => decorateWorkItem(item, ledger.indexes, ledger.closureArchiveByRef)),
       counts: {
         claimed: claimedItems.length,
         closed: closedItems.length,
