@@ -12,8 +12,9 @@ const packagePath = path.join(root, 'package.json');
 const contractsPath = path.join(root, 'cli/agent_onboard/runtime-contracts.js');
 const artifactPath = path.join(root, '.agent-onboard/runtime-agents-bridge-service-decomposition.json');
 const rel = 'cli/agent_onboard/domains/authority/services/public-runtime-agents-bridge-service.js';
-const expectedVersion = '0.0.171';
-const expectedReleaseLine = 'public_runtime_agents_bridge_service_decomposition_gate';
+const expectedVersion = JSON.parse(read(packagePath)).version;
+const releaseLineMatch = read(contractsPath).match(/const RELEASE_LINE = '([^']+)';/);
+const expectedReleaseLine = releaseLineMatch ? releaseLineMatch[1] : null;
 
 function read(file) {
   return fs.readFileSync(file, 'utf8');
@@ -61,15 +62,15 @@ if (!service.includes('function runBridge(args = [])')) errors.push('service mus
 if (/\bprocess\./.test(service)) errors.push('service must not access process.* directly');
 if (!pkg.files.includes(rel)) errors.push('package.json#files must include the AGENTS bridge service');
 if (!contracts.includes(rel)) errors.push('runtime contracts must include the AGENTS bridge service in packaged files');
-if (pkg.version !== expectedVersion) errors.push(`package.json#version must be ${expectedVersion} for this gate`);
-if (!contracts.includes(expectedReleaseLine)) errors.push('runtime contracts release line must name the AGENTS bridge decomposition gate');
+if (pkg.version !== expectedVersion) errors.push(`package.json#version must be ${expectedVersion}`);
+if (!expectedReleaseLine || !contracts.includes(expectedReleaseLine)) errors.push('runtime contracts release line must be readable');
 
 const bridgePlanResult = parseJsonOutput(spawnSync(process.execPath, ['cli/agent-onboard.js', 'bridge', '--dry-run', '--json'], { cwd: root, encoding: 'utf8' }), 'bridge --dry-run --json', errors);
 if (bridgePlanResult) {
   if (bridgePlanResult.schema !== 'agent-onboard-public-agents-bridge-plan-001') errors.push('bridge --dry-run must preserve the AGENTS bridge plan schema');
   if (bridgePlanResult.status !== 'ok') errors.push('bridge --dry-run status must be ok');
   if (bridgePlanResult.version !== expectedVersion) errors.push(`bridge --dry-run version must be ${expectedVersion}`);
-  if (bridgePlanResult.release_line !== expectedReleaseLine) errors.push('bridge --dry-run release line must be updated');
+  if (bridgePlanResult.release_line !== expectedReleaseLine) errors.push('bridge --dry-run release line must track runtime contracts');
   if (!bridgePlanResult.boundary || bridgePlanResult.boundary.installs_dependencies !== false || bridgePlanResult.boundary.network !== false || bridgePlanResult.boundary.git_mutation !== false) errors.push('bridge boundary must remain no-install/no-network/no-Git');
   if (!String(bridgePlanResult.bridge_block || '').includes('Forbidden by default')) errors.push('bridge marker block must preserve forbidden-by-default text');
 }

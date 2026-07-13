@@ -2,7 +2,7 @@
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
-const RELEASE_LINE = 'public_runtime_agents_bridge_service_decomposition_gate';
+const RELEASE_LINE = 'public_runtime_guard_service_decomposition_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
   agents: 'agents',
@@ -363,6 +363,7 @@ const PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES = Object.freeze([
   'cli/agent_onboard/domains/architecture/services/source-extraction/architecture-source-extraction-service.js',
   'cli/agent_onboard/domains/architecture/static-catalog.js',
   'cli/agent_onboard/domains/authority/services/public-runtime-agents-bridge-service.js',
+  'cli/agent_onboard/domains/authority/services/public-runtime-guard-service.js',
   'cli/agent_onboard/domains/core/index.js',
   'cli/agent_onboard/domains/core/services/config-guard-service.js',
   'cli/agent_onboard/domains/core/services/ni-uri-service.js',

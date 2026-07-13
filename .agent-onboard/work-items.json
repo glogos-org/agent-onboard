@@ -1455,6 +1455,17 @@
         "claimed_at": "2026-07-08T02:46:13.794Z"
       },
       "closure_ref": "closures:P1S3M6W22"
+    },
+    {
+      "id": "P1S3M6W23",
+      "milestone_id": "P1S3M6",
+      "title": "Public runtime guard service decomposition gate",
+      "status": "closed",
+      "claim": {
+        "actor": "chatgpt",
+        "claimed_at": "2026-07-08T04:46:43.917Z"
+      },
+      "closure_ref": "closures:P1S3M6W23"
     }
   ]
 }

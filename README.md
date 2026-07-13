@@ -7,7 +7,7 @@ CLI for onboarding and managing target repositories.
 The generated files are intended to be read by agents, wrappers, CI hooks, or future runtimes that choose to honor the declared boundaries.
 
 
-Current release: this line continues runtime composer decomposition by extracting the public AGENTS.md generation and bounded AGENTS bridge marker-block surface into `cli/agent_onboard/domains/authority/services/public-runtime-agents-bridge-service.js`. `runtime-composer.js` remains the compatibility composer and public export surface, but it no longer owns the AGENTS bridge marker constants, marker-block validation, bridge plan/check/write body, or `agents --preview|--write` command runner. The bridge remains marker-block-only and no-install/no-network/no-Git; no SQLite, Lightning Memory-Mapped Database, MDBX, dependency addition, registry mutation, or package publish is admitted.
+Current release: this line continues runtime composer decomposition by extracting public guard command composition into `cli/agent_onboard/domains/authority/services/public-runtime-guard-service.js`. `runtime-composer.js` remains the compatibility composer and public export surface, but it no longer instantiates the core config guard directly. The guard surface remains read-only and no-install/no-network/no-Git; no SQLite, Lightning Memory-Mapped Database, MDBX, dependency addition, registry mutation, or package publish is admitted.
 
 ## Install
 
@@ -1278,7 +1278,7 @@ The public line admits the `release_package` domain service partition under `cli
 
 ## Public core config guard service extraction
 
-The public line extracts `guard --plan` and `guard --check-boundary` into the packaged core config guard service at `cli/agent_onboard/domains/core/services/config-guard-service.js`. The guard remains read-only, keeps the same target config boundary contract, and preserves existing guard JSON outputs while `cli/agent-onboard.js` stays focused on wiring and dispatch.
+The public line keeps guard policy evaluation in the packaged core config guard service at `cli/agent_onboard/domains/core/services/config-guard-service.js` and now composes the public guard command surface through `cli/agent_onboard/domains/authority/services/public-runtime-guard-service.js`. The guard remains read-only, keeps the same target config boundary contract, and preserves existing guard JSON outputs while `runtime-composer.js` stays focused on compatibility wiring and dispatch.
 
 The current release adds the public target manifest drift guard: `target manifest --init|--check-drift|--refresh` creates and validates `.agent-onboard/target-manifest.json` with content-addressed `file_id` entries.
 

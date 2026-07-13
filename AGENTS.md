@@ -453,7 +453,7 @@ The package source manifest service is now an active read-only package surface g
 
 ## Public core config guard service extraction
 
-The public line extracts `guard --plan` and `guard --check-boundary` into `cli/agent_onboard/domains/core/services/config-guard-service.js`. Keep this service packaged, dependency-injected, read-only, and output-compatible with the existing guard boundary contract.
+The public line keeps guard policy evaluation in `cli/agent_onboard/domains/core/services/config-guard-service.js` and composes the public guard command surface through `cli/agent_onboard/domains/authority/services/public-runtime-guard-service.js`. Keep both services packaged, dependency-injected, read-only, and output-compatible with the existing guard boundary contract.
 
 ## Public operator guide product surface
 

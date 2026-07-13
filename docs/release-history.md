@@ -3,7 +3,11 @@
 Historical release prose archived from README.md by P1S3M6W6.
 README.md remains the live first-read surface for install, quickstart, current commands, and no-mutation boundary material.
 
-## Current release: runtime AGENTS bridge service decomposition gate
+## Current release: runtime guard service decomposition gate
+
+The current release extracts public guard command composition from `cli/agent_onboard/runtime-composer.js` into `cli/agent_onboard/domains/authority/services/public-runtime-guard-service.js`. The composer now composes that service instead of instantiating the core config guard directly. Package projection and runtime contracts include the new service, and `scripts/check-runtime-guard-service-decomposition.js` guards the boundary. The guard remains read-only and no-install/no-network/no-Git; no SQLite, Lightning Memory-Mapped Database, MDBX, dependency addition, registry mutation, or package publish is admitted.
+
+## Previous release: runtime AGENTS bridge service decomposition gate
 
 The current release extracts the public `agents --preview|--write` command runner and bounded `bridge --dry-run|--check|--write` AGENTS marker-block surface from `cli/agent_onboard/runtime-composer.js` into `cli/agent_onboard/domains/authority/services/public-runtime-agents-bridge-service.js`. The composer now composes that service instead of inlining the AGENTS bridge marker constants, marker-block validation, bridge plan/check/write bodies, text renderer, and agents command runner. Package projection and runtime contracts include the new service, and `scripts/check-runtime-agents-bridge-service-decomposition.js` guards the boundary. The bridge remains marker-block-only and no-install/no-network/no-Git; no SQLite, Lightning Memory-Mapped Database, MDBX, dependency addition, registry mutation, or package publish is admitted.
 

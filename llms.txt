@@ -29,7 +29,7 @@ Canonical AI-readable files:
 - .agent-onboard/work-items.json
 - README.md
 
-Runtime composer decomposition: first-read public runtime surface services are owned by `cli/agent_onboard/domains/core/services/public-runtime-surface-service.js`, and public check plan / fast-check runner services are owned by `cli/agent_onboard/domains/core/services/public-runtime-check-fast-service.js`; do not add new command-surface, guide, quickstart, discovery, issue, contributor, CI recipe, check-plan, or fast-check implementation logic directly to `runtime-composer.js`.
+Runtime composer decomposition: first-read public runtime surface services are owned by `cli/agent_onboard/domains/core/services/public-runtime-surface-service.js`, public check plan / fast-check runner services are owned by `cli/agent_onboard/domains/core/services/public-runtime-check-fast-service.js`, AGENTS bridge services are owned by `cli/agent_onboard/domains/authority/services/public-runtime-agents-bridge-service.js`, and guard command composition is owned by `cli/agent_onboard/domains/authority/services/public-runtime-guard-service.js`; do not add new command-surface, guide, quickstart, discovery, issue, contributor, CI recipe, check-plan, fast-check, AGENTS bridge, or guard implementation logic directly to `runtime-composer.js`.
 
 Stable commands:
 

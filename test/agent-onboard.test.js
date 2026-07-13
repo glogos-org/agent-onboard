@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const CLI = path.join(ROOT, 'cli', 'agent-onboard.js');
 const PACKAGE_JSON = require(path.join(ROOT, 'package.json'));
 const EXPECTED_VERSION = PACKAGE_JSON.version;
-const EXPECTED_RELEASE_LINE = 'public_runtime_agents_bridge_service_decomposition_gate';
+const EXPECTED_RELEASE_LINE = 'public_runtime_guard_service_decomposition_gate';
 const EXPECTED_VERSIONED_NPX = `npx agent-onboard@${EXPECTED_VERSION}`;
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
 const EXPECTED_PACK_FILES = [
@@ -36,6 +36,7 @@ const EXPECTED_PACK_FILES = [
   'cli/agent_onboard/domains/architecture/services/source-extraction/architecture-source-extraction-service.js',
   'cli/agent_onboard/domains/architecture/static-catalog.js',
   'cli/agent_onboard/domains/authority/services/public-runtime-agents-bridge-service.js',
+  'cli/agent_onboard/domains/authority/services/public-runtime-guard-service.js',
   'cli/agent_onboard/domains/core/index.js',
   'cli/agent_onboard/domains/core/services/config-guard-service.js',
   'cli/agent_onboard/domains/core/services/ni-uri-service.js',

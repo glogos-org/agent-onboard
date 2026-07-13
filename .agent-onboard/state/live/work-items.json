@@ -2,7 +2,7 @@
   "schema": "agent-onboard-work-items-live-state-001",
   "package_name": "agent-onboard",
   "source": ".agent-onboard/work-items.json",
-  "canonical_until_migration_gate": true,
+  "canonical_until_migration_gate": ".agent-onboard/work-items.json",
   "items": [
     {
       "id": "P1S1M1W1",
@@ -1352,6 +1352,17 @@
         "claimed_at": "2026-07-08T02:46:13.794Z"
       },
       "closure_ref": "closures:P1S3M6W22"
+    },
+    {
+      "id": "P1S3M6W23",
+      "milestone_id": "P1S3M6",
+      "title": "Public runtime guard service decomposition gate",
+      "status": "closed",
+      "claim": {
+        "actor": "chatgpt",
+        "claimed_at": "2026-07-08T04:46:43.917Z"
+      },
+      "closure_ref": "closures:P1S3M6W23"
     }
   ]
 }

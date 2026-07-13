@@ -2,20 +2,19 @@
   "schema": "agent-onboard-work-items-derived-index-001",
   "package_name": "agent-onboard",
   "status": "active",
-  "source": "derived_from_.agent-onboard/state/live/work-items.json",
-  "canonical_until_migration_gate": true,
+  "source": ".agent-onboard/state/live/work-items.json",
+  "canonical_until_migration_gate": ".agent-onboard/work-items.json",
   "rebuildable_from": [
-    ".agent-onboard/state/live/work-items.json",
+    ".agent-onboard/work-items.json",
     ".agent-onboard/state/events/work-items.jsonl",
-    ".agent-onboard/state/closures/work-items-closures.jsonl",
-    ".agent-onboard/work-items.json"
+    ".agent-onboard/state/closures/work-items-closures.jsonl"
   ],
-  "item_count": 159,
+  "item_count": 160,
   "open_count": 0,
-  "claimed_count": 59,
-  "closed_count": 159,
-  "latest_closed_work_item_id": "P1S3M6W22",
-  "archived_closure_count": 158,
+  "claimed_count": 60,
+  "closed_count": 160,
+  "latest_closed_work_item_id": "P1S3M6W23",
+  "archived_closure_count": 159,
   "inline_closure_count": 0,
   "by_status": {
     "closed": [
@@ -177,7 +176,8 @@
       "P1S3M6W19",
       "P1S3M6W20",
       "P1S3M6W21",
-      "P1S3M6W22"
+      "P1S3M6W22",
+      "P1S3M6W23"
     ]
   },
   "by_milestone": {
@@ -356,8 +356,9 @@
       "P1S3M6W19",
       "P1S3M6W20",
       "P1S3M6W21",
-      "P1S3M6W22"
+      "P1S3M6W22",
+      "P1S3M6W23"
     ]
   },
-  "updated_at": "2026-07-08T02:46:13.949Z"
+  "updated_at": "2026-07-08T04:46:44.078Z"
 }

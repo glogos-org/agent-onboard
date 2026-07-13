@@ -1,7 +1,7 @@
 {
   "schema": "agent-onboard-public-authority-policies-state-shard-001",
   "package_name": "agent-onboard",
-  "release_line": "public_runtime_agents_bridge_service_decomposition_gate",
+  "release_line": "public_runtime_guard_service_decomposition_gate",
   "policies": {
     "first_read": {
       "default_first_read": true,

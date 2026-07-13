@@ -13,7 +13,7 @@ const { createArchitectureCommandAdapter } = require('./adapters/commands/archit
 const { createAuthorityCommandAdapter } = require('./adapters/commands/authority');
 const { createTargetCommandAdapter } = require('./adapters/commands/target');
 const { createWorkItemsCommandAdapter } = require('./adapters/commands/work-items');
-const { configGuard: coreConfigGuardDomain } = require('./domains/core');
+const { createPublicRuntimeGuardService } = require('./domains/authority/services/public-runtime-guard-service');
 const {
   commandSurfaceService,
   operatorGuideService,
@@ -10417,8 +10417,8 @@ function runRelease(args) {
   return PUBLIC_RUNTIME_RELEASE_COMMAND_SERVICE.runRelease(args);
 }
 
-const CORE_CONFIG_GUARD_SERVICE = coreConfigGuardDomain.createCoreConfigGuardService({
-  emit: json,
+const publicRuntimeGuardService = createPublicRuntimeGuardService({
+  json,
   cwd: () => process.cwd(),
   path,
   exists: fs.existsSync,
@@ -10430,10 +10430,7 @@ const CORE_CONFIG_GUARD_SERVICE = coreConfigGuardDomain.createCoreConfigGuardSer
   targetConfigFile: TARGET_CONFIG_FILE,
   boundaryGuardContract: BOUNDARY_GUARD_CONTRACT
 });
-
-function runGuard(args) {
-  return CORE_CONFIG_GUARD_SERVICE.runGuard(args);
-}
+const runGuard = (args = []) => publicRuntimeGuardService.runGuard(args);
 
 function runTargetConfig(args) {
   if (args.includes('--schema')) {

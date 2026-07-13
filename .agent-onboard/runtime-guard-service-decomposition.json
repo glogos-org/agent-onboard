@@ -1,0 +1,36 @@
+{
+  "schema": "agent-onboard-public-runtime-guard-service-decomposition-001",
+  "status": "closed",
+  "version": "0.0.172",
+  "release_line": "public_runtime_guard_service_decomposition_gate",
+  "work_item_id": "P1S3M6W23",
+  "title": "Public runtime guard service decomposition gate",
+  "objective": "Extract the public guard command composition surface from runtime-composer.js into a packaged authority domain service while preserving guard --plan and guard --check-boundary read-only behavior.",
+  "source": {
+    "before": "cli/agent_onboard/runtime-composer.js",
+    "after": "cli/agent_onboard/domains/authority/services/public-runtime-guard-service.js"
+  },
+  "extracted_surface": [
+    "guard service runtime composition",
+    "guard command runner delegation",
+    "guard decomposition contract",
+    "core config guard service wiring"
+  ],
+  "boundary": {
+    "storage_backend_changed": false,
+    "sqlite_added": false,
+    "lmdb_added": false,
+    "mdbx_added": false,
+    "adds_runtime_dependency": false,
+    "writes_files": false,
+    "network": false,
+    "git_mutation": false,
+    "publishes_package": false,
+    "target_config_reads_only_for_check_boundary": true
+  },
+  "checks": [
+    "node scripts/check-runtime-guard-service-decomposition.js",
+    "node cli/agent-onboard.js guard --plan",
+    "node cli/agent-onboard.js guard --check-boundary"
+  ]
+}
