@@ -6,7 +6,7 @@
   "source_file": "README.md",
   "source_file_id_before_apply": "ni:///sha-256;7ycysOhj2Tuparbv2MfbyAhOGt6fN9wEFdgNnJMnqlU",
   "live_readme": "README.md",
-  "live_readme_file_id": "ni:///sha-256;xJCiH_l2ob1OC5B5Jki0X2UKUOO7oFV6xocHN0c0P2g",
+  "live_readme_file_id": "ni:///sha-256;C4vnkwyE54yrbLboZ7-8OFDPwgfCzyWY7AkL_Bd_-nY",
   "history_archive": "docs/release-history.md",
   "history_archive_file_id": "ni:///sha-256;4o4mZlCWh0FNbRDip9kKXam7Gw_jCgNeMEiCPogu8UU",
   "section_count": 25,
@@ -244,5 +244,5 @@
     "content_inlined": false,
     "section_count": 21
   },
-  "updated_at": "2026-07-08T01:57:21.786Z"
+  "updated_at": "2026-07-09T00:00:00.000Z"
 }

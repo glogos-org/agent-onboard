@@ -385,6 +385,7 @@ const PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES = Object.freeze([
   'cli/agent_onboard/domains/package/services/package-coordinate-service.js',
   'cli/agent_onboard/domains/package/services/package-service.js',
   'cli/agent_onboard/domains/package/services/package-surface-service.js',
+  'cli/agent_onboard/domains/package/services/full-test-runner-service.js',
   'cli/agent_onboard/domains/package/services/public-runtime-release-service.js',
   'cli/agent_onboard/domains/package/services/public-release-check-service.js',
   'cli/agent_onboard/domains/package/services/public-contracts-command-service.js',

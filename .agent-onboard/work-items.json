@@ -1687,6 +1687,13 @@
       "title": "Public Package Surface Service Extraction Gate",
       "status": "closed",
       "closure_ref": "closures:P1S3M7W9"
+    },
+    {
+      "id": "P1S3M7W10",
+      "milestone_id": "P1S3M7",
+      "title": "Public Full Test Runner Service Extraction Gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M7W10"
     }
   ]
 }

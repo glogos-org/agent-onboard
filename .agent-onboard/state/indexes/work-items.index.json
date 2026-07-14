@@ -12,14 +12,14 @@
     ".agent-onboard/state/closures/work-items-closures.jsonl",
     ".agent-onboard/state/closures/work-items/manifest.json"
   ],
-  "item_count": 180,
+  "item_count": 181,
   "open_count": 0,
   "claimed_count": 0,
-  "closed_count": 180,
-  "latest_closed_work_item_id": "P1S3M7W9",
-  "archived_closure_count": 179,
+  "closed_count": 181,
+  "latest_closed_work_item_id": "P1S3M7W10",
+  "archived_closure_count": 180,
   "inline_closure_count": 0,
-  "closure_ref_count": 179,
+  "closure_ref_count": 180,
   "closure_payload_shard_count": 11,
   "by_status": {
     "open": [],
@@ -197,6 +197,7 @@
       "P1S3M6W8",
       "P1S3M6W9",
       "P1S3M7W1",
+      "P1S3M7W10",
       "P1S3M7W2",
       "P1S3M7W3",
       "P1S3M7W4",
@@ -406,24 +407,13 @@
       "P1S3M7W6",
       "P1S3M7W7",
       "P1S3M7W8",
-      "P1S3M7W9"
+      "P1S3M7W9",
+      "P1S3M7W10"
     ]
   },
-  "updated_at": "2026-07-09T09:45:40.390Z",
+  "updated_at": "2026-07-09T10:15:50.901Z",
   "latest_closed_work_items": [
     {
-      "id": "P1S3M7W5",
-      "milestone_id": "P1S3M7",
-      "title": "Public Core Surface Command Runner Extraction Gate",
-      "status": "closed",
-      "claim": {
-        "actor": "gpt-5.5-thinking",
-        "claimed_at": "2026-07-09T06:24:08.095Z",
-        "note": "Implement W5 core surface command runner extraction."
-      },
-      "closure_ref": "closures:P1S3M7W5"
-    },
-    {
       "id": "P1S3M7W6",
       "milestone_id": "P1S3M7",
       "title": "Public Architecture Command Runner Extraction Gate",
@@ -454,22 +444,17 @@
       "title": "Public Package Surface Service Extraction Gate",
       "status": "closed",
       "closure_ref": "closures:P1S3M7W9"
+    },
+    {
+      "id": "P1S3M7W10",
+      "milestone_id": "P1S3M7",
+      "title": "Public Full Test Runner Service Extraction Gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M7W10"
     }
   ],
-  "latest_work_item_id": "P1S3M7W9",
+  "latest_work_item_id": "P1S3M7W10",
   "latest_work_items": [
-    {
-      "id": "P1S3M7W5",
-      "milestone_id": "P1S3M7",
-      "title": "Public Core Surface Command Runner Extraction Gate",
-      "status": "closed",
-      "claim": {
-        "actor": "gpt-5.5-thinking",
-        "claimed_at": "2026-07-09T06:24:08.095Z",
-        "note": "Implement W5 core surface command runner extraction."
-      },
-      "closure_ref": "closures:P1S3M7W5"
-    },
     {
       "id": "P1S3M7W6",
       "milestone_id": "P1S3M7",
@@ -501,6 +486,13 @@
       "title": "Public Package Surface Service Extraction Gate",
       "status": "closed",
       "closure_ref": "closures:P1S3M7W9"
+    },
+    {
+      "id": "P1S3M7W10",
+      "milestone_id": "P1S3M7",
+      "title": "Public Full Test Runner Service Extraction Gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M7W10"
     }
   ]
 }

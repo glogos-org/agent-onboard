@@ -1,0 +1,70 @@
+{
+  "schema": "agent-onboard-public-full-test-runner-service-extraction-001",
+  "status": "closed",
+  "work_item_id": "P1S3M7W10",
+  "title": "Public Full Test Runner Service Extraction Gate",
+  "version": "0.0.193",
+  "release_line": "public_full_test_runner_service_extraction_gate",
+  "objective": "Reduce residual runtime-composer ownership by moving full-test runner completion contract, result, check, and text rendering into a bounded package-domain service while preserving read-only release command behavior.",
+  "reduction": {
+    "runtime_composer_before": {
+      "path": "cli/agent_onboard/runtime-composer.js",
+      "lines": 4664,
+      "bytes": 262146
+    },
+    "runtime_composer_after": {
+      "path": "cli/agent_onboard/runtime-composer.js",
+      "lines": 4487,
+      "bytes": 250876
+    },
+    "lines_removed": 177,
+    "bytes_removed": 11270
+  },
+  "extracted_service": {
+    "path": "cli/agent_onboard/domains/package/services/full-test-runner-service.js",
+    "factory": "createPublicFullTestRunnerService",
+    "owns": [
+      "PUBLIC_FULL_TEST_RUNNER_COMPLETION contract",
+      "publicFullTestRunnerMilestoneState",
+      "publicFullTestRunnerCompletion",
+      "publicFullTestRunnerCompletionCheck",
+      "publicFullTestRunnerCompletionText"
+    ],
+    "lines": 219,
+    "bytes": 12751
+  },
+  "composer_residual_role": {
+    "role": "compatibility composer and public export aggregator",
+    "owns_full_test_runner_contract": false,
+    "owns_full_test_runner_check_body": false,
+    "composes_service": true
+  },
+  "updated_files": [
+    "README.md",
+    "package.json",
+    "cli/agent_onboard/runtime-composer.js",
+    "cli/agent_onboard/runtime-contracts.js",
+    "cli/agent_onboard/domains/package/services/full-test-runner-service.js",
+    "scripts/checks/registry.js",
+    "scripts/checks/full-test-runner-service-extraction.js",
+    "test/run-tests.js",
+    ".agent-onboard/full-test-runner-service-extraction.json"
+  ],
+  "validation_commands": [
+    "node scripts/check.js full-test-runner-service-extraction",
+    "node cli/agent-onboard.js release --full-test-runner",
+    "node cli/agent-onboard.js release --full-test-runner-check",
+    "node cli/agent-onboard.js release --check",
+    "node cli/agent-onboard.js check --fast --json",
+    "npm pack --dry-run --json"
+  ],
+  "boundary": {
+    "storage_backend": "json_jsonl_text_first_unchanged",
+    "sqlite_introduced": false,
+    "lmdb_introduced": false,
+    "mdbx_introduced": false,
+    "network": false,
+    "git_mutation": false,
+    "package_publish": false
+  }
+}

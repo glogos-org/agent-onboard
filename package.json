@@ -1,6 +1,6 @@
 {
   "name": "agent-onboard",
-  "version": "0.0.192",
+  "version": "0.0.193",
   "description": "CLI for onboarding and managing target repositories.",
   "license": "Apache-2.0",
   "author": "Thanh Le <vnlemanhthanh@gmail.com>",
@@ -116,7 +116,8 @@
     "check:architecture-command-runner-extraction": "node scripts/check.js architecture-command-runner-extraction",
     "check:release-check-service-extraction": "node scripts/check.js release-check-service-extraction",
     "check:contracts-command-service-extraction": "node scripts/check.js contracts-command-service-extraction",
-    "check:package-surface-service-extraction": "node scripts/check.js package-surface-service-extraction"
+    "check:package-surface-service-extraction": "node scripts/check.js package-surface-service-extraction",
+    "check:full-test-runner-service-extraction": "node scripts/check.js full-test-runner-service-extraction"
   },
   "bin": {
     "agent-onboard": "cli/agent-onboard.js",
@@ -168,6 +169,7 @@
     "cli/agent_onboard/domains/package/services/package-coordinate-service.js",
     "cli/agent_onboard/domains/package/services/package-service.js",
     "cli/agent_onboard/domains/package/services/package-surface-service.js",
+    "cli/agent_onboard/domains/package/services/full-test-runner-service.js",
     "cli/agent_onboard/domains/package/services/public-runtime-release-service.js",
     "cli/agent_onboard/domains/package/services/public-release-check-service.js",
     "cli/agent_onboard/domains/package/services/public-contracts-command-service.js",

@@ -7,7 +7,7 @@ CLI for onboarding and managing target repositories.
 The generated files are intended to be read by agents, wrappers, CI hooks, or future runtimes that choose to honor the declared boundaries.
 
 
-Current release: this line continues runtime composer decomposition by extracting public guard command composition into `cli/agent_onboard/domains/authority/services/public-runtime-guard-service.js`. `runtime-composer.js` remains the compatibility composer and public export surface, but it no longer instantiates the core config guard directly. The guard surface remains read-only and no-install/no-network/no-Git; no SQLite, Lightning Memory-Mapped Database, MDBX, dependency addition, registry mutation, or package publish is admitted.
+Current release: this line continues runtime composer decomposition by extracting full-test runner completion logic into `cli/agent_onboard/domains/package/services/full-test-runner-service.js`. `runtime-composer.js` remains the compatibility composer and public export surface, but it no longer owns the full-test runner completion contract and checker body. The surface remains read-only and no-install/no-network/no-Git; no SQLite, Lightning Memory-Mapped Database, MDBX, dependency addition, registry mutation, or package publish is admitted.
 
 ## Install
 
