@@ -19,11 +19,11 @@
   "counts": {
     "open": 0,
     "claimed": 0,
-    "closed": 178,
+    "closed": 179,
     "programs": 1,
     "stages": 3,
     "milestones": 10,
-    "work_items": 178
+    "work_items": 179
   },
   "shard_count": 14,
   "rebuild_order": [
@@ -63,82 +63,62 @@
       "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S1M1.json",
       "bytes": 1153,
       "sha256": "256f48a9c9161d1e0ed530513fe6fb774384ea207468878f379c87d259acb4de",
-      "file_id": "ni:///sha-256;JW9IqckWHR4O1TBRP-b7d0OE6iB0aIePN5yH0lmstN4",
-      "milestone_id": "P1S1M1",
-      "item_count": 5
+      "file_id": "ni:///sha-256;JW9IqckWHR4O1TBRP-b7d0OE6iB0aIePN5yH0lmstN4"
     },
     {
       "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S1M2.json",
       "bytes": 794,
       "sha256": "71a1b7a06ba4849675b7480d1f84c831878f3be9db69ace956648f45163fc9f3",
-      "file_id": "ni:///sha-256;caG3oGukhJZ1t0gNH4TIMYePO-nbaazpVmSPRRY_yfM",
-      "milestone_id": "P1S1M2",
-      "item_count": 3
+      "file_id": "ni:///sha-256;caG3oGukhJZ1t0gNH4TIMYePO-nbaazpVmSPRRY_yfM"
     },
     {
       "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S2M1.json",
       "bytes": 1873,
       "sha256": "5f8eb3aea15dab87a64e3632291b99e42df90e1d6d3bf5039d71d4b52b99dc15",
-      "file_id": "ni:///sha-256;X46zrqFdq4emTjYyKRuZ5C35Dh1tO_UDnXHUtSuZ3BU",
-      "milestone_id": "P1S2M1",
-      "item_count": 8
+      "file_id": "ni:///sha-256;X46zrqFdq4emTjYyKRuZ5C35Dh1tO_UDnXHUtSuZ3BU"
     },
     {
       "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M1.json",
       "bytes": 4084,
       "sha256": "97d8bd94d6fa026138cd03cc097e8dbe6609e217d37ce95355f4bc7b7e2dcc30",
-      "file_id": "ni:///sha-256;l9i9lNb6AmE4zQPMCX6NvmYJ4hfTfOlTVfS8e34tzDA",
-      "milestone_id": "P1S3M1",
-      "item_count": 19
+      "file_id": "ni:///sha-256;l9i9lNb6AmE4zQPMCX6NvmYJ4hfTfOlTVfS8e34tzDA"
     },
     {
       "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M2.json",
       "bytes": 2790,
       "sha256": "8f5da384688b98b9c90563af0975fdb62893cd15ea148b4303d8b766f832e534",
-      "file_id": "ni:///sha-256;j12jhGiLmLnJBWOvCXX9tiiTzRXqFItDA9i3Zvgy5TQ",
-      "milestone_id": "P1S3M2",
-      "item_count": 12
+      "file_id": "ni:///sha-256;j12jhGiLmLnJBWOvCXX9tiiTzRXqFItDA9i3Zvgy5TQ"
     },
     {
       "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M3.json",
       "bytes": 9242,
       "sha256": "ae9e52e24ad594455e5a3642293f89566a297d16b2682a673301ebb55c1ac3d8",
-      "file_id": "ni:///sha-256;rp5S4krVlEVeWjZCKT-JVmopfRayaCpnMwHrtVwaw9g",
-      "milestone_id": "P1S3M3",
-      "item_count": 33
+      "file_id": "ni:///sha-256;rp5S4krVlEVeWjZCKT-JVmopfRayaCpnMwHrtVwaw9g"
     },
     {
       "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M4.json",
       "bytes": 4911,
       "sha256": "b5e7aa21a66eaea67481d89de5630dc9c5c3b671de8e12a64ed456384ae2c30c",
-      "file_id": "ni:///sha-256;teeqIaZurqZ0gdid5WMNycXDtnHejhKmTtRWOEriwww",
-      "milestone_id": "P1S3M4",
-      "item_count": 15
+      "file_id": "ni:///sha-256;teeqIaZurqZ0gdid5WMNycXDtnHejhKmTtRWOEriwww"
     },
     {
       "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M5.json",
       "bytes": 10676,
       "sha256": "ea40edb4b223165a06614d84a8c24457d62bb92b03cefbe48ae264e3942ed537",
-      "file_id": "ni:///sha-256;6kDttLIjFloGYU2EqMJEV9YruSsDzvvkiuJk45Qu1Tc",
-      "milestone_id": "P1S3M5",
-      "item_count": 42
+      "file_id": "ni:///sha-256;6kDttLIjFloGYU2EqMJEV9YruSsDzvvkiuJk45Qu1Tc"
     },
     {
       "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M6.json",
       "bytes": 9321,
       "sha256": "cc4699fb1e17589aa071abe8299e6c8c9236737ece6d86dc953b6042e170496c",
-      "file_id": "ni:///sha-256;zEaZ-x4XWJqgcavoKZ5sjJI2c37ObYbclTtgQuFwSWw",
-      "milestone_id": "P1S3M6",
-      "item_count": 34
+      "file_id": "ni:///sha-256;zEaZ-x4XWJqgcavoKZ5sjJI2c37ObYbclTtgQuFwSWw"
     },
     {
       "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M7.json",
-      "bytes": 2599,
-      "sha256": "24bcbc18fd330aee4f66678ef14805289453394c3f74def112a422b8c2def088",
-      "file_id": "ni:///sha-256;JLy8GP0zCu5PZmeO8UgFKJRTOUw_dN7xEqQiuMLe8Ig",
-      "milestone_id": "P1S3M7",
-      "item_count": 7
+      "bytes": 2802,
+      "sha256": "58f5949e0e2ad282b6c041aa56851c51b30b714320801429c824fd5692d1a86b",
+      "file_id": "ni:///sha-256;WPWUng4q0oK2wEGqVoUcUbMLcUMggBQpyCT9VpLRqGs"
     }
   ],
-  "updated_at": "2026-07-09T08:05:47.877Z"
+  "updated_at": "2026-07-09T08:36:09.704Z"
 }

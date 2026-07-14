@@ -10,7 +10,7 @@
       "kind": "compact_authority_index",
       "present": true,
       "bytes": 7510,
-      "file_id": "ni:///sha-256;c9HcAWdmR8xlMnVRFsn2C1OzTGoQPMCOeSunz_72FVs",
+      "file_id": "ni:///sha-256;MmOikugaTqCF2J6Xh7cMYTjX9PV4hIhAPypzShxcZmM",
       "schema": "agent-onboard-public-authority-compact-index-001",
       "status": null,
       "raw_registry_loaded_by_default": null,
@@ -21,15 +21,15 @@
       "file_path": ".agent-onboard/work-items.index.json",
       "kind": "work_items_compact_index",
       "present": true,
-      "bytes": 1438,
-      "file_id": "ni:///sha-256;sUFNveefJM8YEQ_kYxeRBB0UHhwKSv-9HHqh6v96bKo",
+      "bytes": 1434,
+      "file_id": "ni:///sha-256;Idz6p4_-4sEZ_oaxSLrNaJC0ptHRBLLLUE3_sSyN93c",
       "schema": "agent-onboard-target-work-items-index-001",
       "status": "active",
       "raw_registry_loaded_by_default": false,
       "content_inlined": false,
-      "item_count": 178,
+      "item_count": 179,
       "open_count": 0,
-      "closed_count": 178
+      "closed_count": 179
     },
     {
       "file_path": ".agent-onboard/claims.index.json",
@@ -50,8 +50,8 @@
       "file_path": ".agent-onboard/work-items.json",
       "present": true,
       "kind": "work_items_raw_ledger",
-      "bytes": 48053,
-      "file_id": "ni:///sha-256;Ri8T8NwEgQ3phhNo7N2oERn4irIOSPMn7ozo8ad9WyU",
+      "bytes": 48256,
+      "file_id": "ni:///sha-256;bFNqFD_slV6ApGhLjrULDhvWgcP59HI7do4SvjbHxL0",
       "content_inlined": false,
       "loaded_by_default": false
     },
@@ -65,7 +65,7 @@
       "loaded_by_default": false
     }
   ],
-  "authority_index_digest": "ni:///sha-256;c9HcAWdmR8xlMnVRFsn2C1OzTGoQPMCOeSunz_72FVs",
-  "work_items_index_digest": "ni:///sha-256;sUFNveefJM8YEQ_kYxeRBB0UHhwKSv-9HHqh6v96bKo",
+  "authority_index_digest": "ni:///sha-256;MmOikugaTqCF2J6Xh7cMYTjX9PV4hIhAPypzShxcZmM",
+  "work_items_index_digest": "ni:///sha-256;Idz6p4_-4sEZ_oaxSLrNaJC0ptHRBLLLUE3_sSyN93c",
   "claims_index_digest": "ni:///sha-256;otIDDGJGcys456Ufaq9WPeWXVrjiCX9kkTWzXjQyHGo"
 }

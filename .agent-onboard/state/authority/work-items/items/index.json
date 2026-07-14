@@ -9,14 +9,14 @@
   "counts": {
     "open": 0,
     "claimed": 0,
-    "closed": 178,
+    "closed": 179,
     "programs": 1,
     "stages": 3,
     "milestones": 10,
-    "work_items": 178
+    "work_items": 179
   },
-  "latest_work_item_id": "P1S3M7W7",
-  "latest_closed_work_item_id": "P1S3M7W7",
+  "latest_work_item_id": "P1S3M7W8",
+  "latest_closed_work_item_id": "P1S3M7W8",
   "by_status": {
     "open": [],
     "claimed": [],
@@ -198,7 +198,8 @@
       "P1S3M7W4",
       "P1S3M7W5",
       "P1S3M7W6",
-      "P1S3M7W7"
+      "P1S3M7W7",
+      "P1S3M7W8"
     ]
   },
   "by_milestone": {
@@ -395,7 +396,11 @@
       "P1S3M7W1",
       "P1S3M7W2",
       "P1S3M7W3",
-      "P1S3M7W4"
+      "P1S3M7W4",
+      "P1S3M7W5",
+      "P1S3M7W6",
+      "P1S3M7W7",
+      "P1S3M7W8"
     ]
   },
   "item_shards": [
@@ -473,12 +478,12 @@
     },
     {
       "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M7.json",
-      "bytes": 2599,
-      "sha256": "24bcbc18fd330aee4f66678ef14805289453394c3f74def112a422b8c2def088",
-      "file_id": "ni:///sha-256;JLy8GP0zCu5PZmeO8UgFKJRTOUw_dN7xEqQiuMLe8Ig",
+      "bytes": 2802,
+      "sha256": "58f5949e0e2ad282b6c041aa56851c51b30b714320801429c824fd5692d1a86b",
+      "file_id": "ni:///sha-256;WPWUng4q0oK2wEGqVoUcUbMLcUMggBQpyCT9VpLRqGs",
       "milestone_id": "P1S3M7",
-      "item_count": 7
+      "item_count": 8
     }
   ],
-  "updated_at": "2026-07-09T08:05:47.877Z"
+  "updated_at": "2026-07-09T08:36:09.704Z"
 }

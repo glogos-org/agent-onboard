@@ -52,24 +52,25 @@
     "target-onboarding-acceptance-service-extraction",
     "architecture-command-runner-extraction",
     "core-surface-command-runner-extraction",
-    "release-check-service-extraction"
+    "release-check-service-extraction",
+    "contracts-command-service-extraction"
   ],
   "remaining_god_files": [
     {
       "path": "cli/agent_onboard/runtime-composer.js",
       "category": "runtime_source",
-      "current_lines": 4876,
-      "current_bytes": 274048,
-      "admitted_reason": "runtime composer remains admitted residual command composition debt after W7 release check service extraction reduced it to a lower ratchet ceiling",
-      "next_reduction_gate": "P1S3M7W8"
+      "current_lines": 4783,
+      "current_bytes": 269150,
+      "admitted_reason": "runtime composer remains admitted migration debt but shrank during W8 contracts command service extraction",
+      "next_reduction_gate": "P1S3M7W9"
     },
     {
       "path": ".agent-onboard/work-items.json",
       "category": "authority_registry",
-      "current_lines": 1678,
-      "admitted_reason": "public work item ledger projection remains admitted migration debt after W7 closure append; authoritative shards remain the default compact read path",
-      "next_reduction_gate": "P1S3M7W8",
-      "current_bytes": 48053
+      "current_lines": 1685,
+      "admitted_reason": "public work item ledger projection remains admitted migration debt after W8 closure append; authoritative shards remain the default compact read path",
+      "next_reduction_gate": "P1S3M7W9",
+      "current_bytes": 48256
     },
     {
       "path": "cli/agent_onboard/domains/architecture/services/runtime/architecture-runtime-service.js",

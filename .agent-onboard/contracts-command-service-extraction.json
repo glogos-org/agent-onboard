@@ -1,0 +1,74 @@
+{
+  "schema": "agent-onboard-public-contracts-command-service-extraction-001",
+  "status": "closed",
+  "package_name": "agent-onboard",
+  "version": "0.0.191",
+  "release_line": "public_runtime_guard_service_decomposition_gate",
+  "milestone_id": "P1S3M7",
+  "work_item_id": "P1S3M7W8",
+  "title": "Public Contracts Command Service Extraction Gate",
+  "purpose": "Reduce residual runtime composer core command debt by moving public contracts command handling and output validation into a bounded package domain service.",
+  "extracted_service": {
+    "path": "cli/agent_onboard/domains/package/services/public-contracts-command-service.js",
+    "export": "createPublicContractsCommandService",
+    "owned_runtime_functions": [
+      "publicContractsCatalog",
+      "publicContractsCheck",
+      "publicContractsOutputFileValidation",
+      "runContracts"
+    ]
+  },
+  "reduction": {
+    "runtime_composer_before": {
+      "path": "cli/agent_onboard/runtime-composer.js",
+      "lines": 4876,
+      "bytes": 274048
+    },
+    "runtime_composer_after": {
+      "path": "cli/agent_onboard/runtime-composer.js",
+      "lines": 4783,
+      "bytes": 269150
+    },
+    "extracted_service": {
+      "path": "cli/agent_onboard/domains/package/services/public-contracts-command-service.js",
+      "lines": 135,
+      "bytes": 5559
+    },
+    "runtime_composer_line_delta": -93,
+    "runtime_composer_byte_delta": -4898
+  },
+  "admission": {
+    "package_files_includes_service": true,
+    "runtime_contracts_pack_files_includes_service": true,
+    "contracts_json_behavior_preserved": true,
+    "contracts_text_behavior_preserved": true,
+    "contract_output_validation_preserved": true,
+    "release_check_behavior_preserved": true
+  },
+  "checks": [
+    "node scripts/check.js contracts-command-service-extraction",
+    "node cli/agent-onboard.js contracts --check --json",
+    "node cli/agent-onboard.js contracts --text",
+    "node scripts/check.js release-check-service-extraction",
+    "node scripts/check.js source-size-budget",
+    "node scripts/check.js god-file-budget-enforcement-closure",
+    "node scripts/check.js state-projection-authority-cutover",
+    "node scripts/check.js closure-payload-reference-compaction",
+    "node cli/agent-onboard.js authority --index-check",
+    "node cli/agent-onboard.js authority --state-check",
+    "node cli/agent-onboard.js release --check",
+    "node cli/agent-onboard.js check --fast --json",
+    "npm test",
+    "npm pack --dry-run --json"
+  ],
+  "boundary": {
+    "storage_backend": "json_jsonl_text_first_unchanged",
+    "sqlite_introduced": false,
+    "lightning_memory_mapped_database_introduced": false,
+    "mdbx_introduced": false,
+    "network_required": false,
+    "publishes_package": false,
+    "mutates_git": false
+  },
+  "next_runtime_composer_reduction_gate": "P1S3M7W9"
+}

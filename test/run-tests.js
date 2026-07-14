@@ -278,6 +278,7 @@ function syntaxTasks() {
     nodeTask('syntax: source manifest service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'package', 'services', 'source-manifest-service.js')]),
     nodeTask('syntax: package coordinate service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'package', 'services', 'package-coordinate-service.js')]),
     nodeTask('syntax: installed first-read contract service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'package', 'services', 'installed-first-read-contract.js')]),
+    nodeTask('syntax: public contracts command service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'package', 'services', 'public-contracts-command-service.js')]),
     nodeTask('syntax: target static catalog', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'target', 'static-catalog.js')]),
     nodeTask('syntax: target runtime service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'target', 'services', 'target-service.js')]),
     nodeTask('syntax: target runtime utilities', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'target', 'services', 'target-runtime-utilities.js')]),
@@ -404,6 +405,7 @@ function quickTasks() {
     checkRegistryTask('core surface command runner extraction check', 'core-surface-command-runner-extraction'),
     checkRegistryTask('architecture command runner extraction check', 'architecture-command-runner-extraction'),
     checkRegistryTask('release check service extraction check', 'release-check-service-extraction'),
+    checkRegistryTask('contracts command service extraction check', 'contracts-command-service-extraction'),
     npmTask('npm pack dry run', ['pack', '--dry-run', '--json'], expectPackFiles)
   ];
 }

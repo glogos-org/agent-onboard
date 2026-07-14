@@ -34,6 +34,7 @@ const CHECK_MODULES = Object.freeze({
 ,  'core-surface-command-runner-extraction': 'core-surface-command-runner-extraction.js'
 ,  'architecture-command-runner-extraction': 'architecture-command-runner-extraction.js'
 ,  'release-check-service-extraction': 'release-check-service-extraction.js'
+,  'contracts-command-service-extraction': 'contracts-command-service-extraction.js'
 });
 
 function normalizeCheckId(value) {

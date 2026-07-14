@@ -18,6 +18,7 @@ const {
 } = require('./domains/core/services/public-runtime-surface-service');
 const { createPublicRuntimeReleaseCommandService } = require('./domains/package/services/public-runtime-release-service');
 const { createPublicReleaseCheckService } = require('./domains/package/services/public-release-check-service');
+const { createPublicContractsCommandService } = require('./domains/package/services/public-contracts-command-service');
 const { createPublicExactArtifactOracleService } = require('./domains/package/services/exact-artifact-oracle-service');
 const { createPublicTargetOnboardingAcceptanceService } = require('./domains/package/services/target-onboarding-acceptance-service');
 const { createPublicReleaseCleanClosedGatesRuntimeSliceService } = require('./domains/package/services/release-clean-closed-gates-runtime-slice-service');
@@ -51,7 +52,6 @@ const {
   TOP_LEVEL_COMMAND,
   TOP_LEVEL_COMMAND_ALIAS
 } = require('./runtime-contracts');
-const publicContracts = require('./contracts/public-contracts');
 const VERSION = require('../../package.json').version;
 
 process.stdout.on('error', (error) => {
@@ -135,111 +135,6 @@ const {
   publicReleaseContract: PUBLIC_RELEASE_CONTRACT
 });
 
-
-function publicContractsCatalog() {
-  return publicContracts.publicContractCatalog({
-    version: VERSION,
-    releaseLine: RELEASE_LINE
-  });
-}
-
-function publicContractsCheck() {
-  const catalog = publicContractsCatalog();
-  const catalogCheck = publicContracts.validatePublicContractCatalog(catalog);
-  const outputs = {
-    [publicContracts.PUBLIC_CONTRACT_IDS.targetHandoffPreview]: targetRuntimeService.targetHandoffPreview(process.cwd()),
-    [publicContracts.PUBLIC_CONTRACT_IDS.targetHandoffReadinessCheck]: targetRuntimeService.targetHandoffReadinessCheck(process.cwd()),
-    [publicContracts.PUBLIC_CONTRACT_IDS.governanceBudgetContract]: targetRuntimeService.targetGovernanceBudgetContract(),
-    [publicContracts.PUBLIC_CONTRACT_IDS.governanceBudgetCheck]: targetRuntimeService.targetGovernanceBudgetCheck(process.cwd())
-  };
-  const outputValidation = publicContracts.validatePublicContractOutputs(catalog, outputs);
-  const errors = [];
-  if (Array.isArray(catalogCheck.errors)) errors.push(...catalogCheck.errors);
-  if (Array.isArray(outputValidation.errors)) errors.push(...outputValidation.errors);
-  return Object.freeze(Object.assign({}, catalogCheck, {
-    status: errors.length === 0 ? 'ok' : 'error',
-    command: 'agent-onboard contracts --check --json',
-    checked_runtime_output_count: outputValidation.checked_output_count,
-    output_validation: outputValidation,
-    errors
-  }));
-}
-
-function readContractOutputFile(filePath) {
-  const resolved = path.resolve(process.cwd(), filePath);
-  const stat = fs.statSync(resolved);
-  if (!stat.isFile()) throw new Error('contracts --validate-output --file must point to a JSON file');
-  const maxBytes = 1024 * 1024;
-  if (stat.size > maxBytes) throw new Error(`contracts --validate-output --file exceeds ${maxBytes} bytes`);
-  return { resolved, output: readJson(resolved) };
-}
-
-function publicContractsOutputFileValidation(options = {}) {
-  const catalog = publicContractsCatalog();
-  const { resolved, output } = readContractOutputFile(options.file);
-  return publicContracts.validatePublicContractOutputFile(catalog, {
-    contractId: options.contractId,
-    sourcePath: resolved,
-    output
-  });
-}
-
-function runContracts(args = []) {
-  const valueFlags = new Set(['--contract', '--file']);
-  const allowed = new Set(['--json', '--text', '--check', '--validate-output', '--contract', '--file']);
-  for (let index = 0; index < args.length; index += 1) {
-    const arg = args[index];
-    if (valueFlags.has(arg)) {
-      if (!args[index + 1] || args[index + 1].startsWith('-')) return json({ schema: 'agent-onboard-public-contracts-error-001', status: 'error', reason: `${arg} requires a value`, writes_files: false }, 1);
-      index += 1;
-      continue;
-    }
-    if (!allowed.has(arg)) return json({ schema: 'agent-onboard-public-contracts-error-001', status: 'error', reason: 'contracts supports only --json, --text, --check, or --validate-output --contract <id> --file <path>', writes_files: false }, 1);
-  }
-  const checkMode = args.includes('--check');
-  const validateOutputMode = args.includes('--validate-output');
-  const text = args.includes('--text');
-  if (args.includes('--json') && text) return json({ schema: 'agent-onboard-public-contracts-error-001', status: 'error', reason: 'contracts accepts only one output mode: --json or --text', writes_files: false }, 1);
-  if (checkMode && validateOutputMode) return json({ schema: 'agent-onboard-public-contracts-error-001', status: 'error', reason: 'contracts accepts only one primary mode: --check or --validate-output', writes_files: false }, 1);
-  if (!validateOutputMode && (args.includes('--contract') || args.includes('--file'))) return json({ schema: 'agent-onboard-public-contracts-error-001', status: 'error', reason: '--contract and --file are only valid with --validate-output', writes_files: false }, 1);
-  if (validateOutputMode) {
-    const contractIndex = args.indexOf('--contract');
-    const fileIndex = args.indexOf('--file');
-    if (contractIndex < 0 || fileIndex < 0) return json({ schema: 'agent-onboard-public-contracts-error-001', status: 'error', reason: 'contracts --validate-output requires --contract <id> and --file <path>', writes_files: false }, 1);
-    const result = publicContractsOutputFileValidation({
-      contractId: args[contractIndex + 1],
-      file: args[fileIndex + 1]
-    });
-    if (text) {
-      process.stdout.write(publicContracts.publicContractOutputValidationText(result));
-      return result.status === 'ok' ? 0 : 1;
-    }
-    return json(result, result.status === 'ok' ? 0 : 1);
-  }
-  if (checkMode) {
-    const result = publicContractsCheck();
-    if (text) {
-      process.stdout.write(publicContracts.publicContractCheckText(result));
-      return result.status === 'ok' ? 0 : 1;
-    }
-    return json(result, result.status === 'ok' ? 0 : 1);
-  }
-  const catalog = publicContractsCatalog();
-  if (text) {
-    process.stdout.write(publicContracts.publicContractText(catalog));
-    return 0;
-  }
-  return json(catalog, 0);
-}
-
-const publicContractsService = Object.freeze({
-  catalog: publicContractsCatalog,
-  check: publicContractsCheck,
-  text: publicContracts.publicContractText,
-  checkText: publicContracts.publicContractCheckText,
-  validateOutputFile: publicContractsOutputFileValidation,
-  outputValidationText: publicContracts.publicContractOutputValidationText
-});
 
 const targetRuntimeService = createTargetRuntimeService({
   version: VERSION,
@@ -352,6 +247,18 @@ const {
   performPlannedTextWrites,
   summarizePlan
 } = targetRuntimeService;
+
+const publicContractsService = createPublicContractsCommandService({
+  VERSION,
+  RELEASE_LINE,
+  readJson,
+  json,
+  targetRuntimeService,
+  cwd: () => process.cwd()
+});
+const publicContractsCatalog = (...args) => publicContractsService.catalog(...args);
+const publicContractsCheck = (...args) => publicContractsService.check(...args);
+const runContracts = (args = []) => publicContractsService.runContracts(args);
 
 function listRelativeFiles(root) {
   const files = [];

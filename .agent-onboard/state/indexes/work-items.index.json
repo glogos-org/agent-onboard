@@ -12,14 +12,14 @@
     ".agent-onboard/state/closures/work-items-closures.jsonl",
     ".agent-onboard/state/closures/work-items/manifest.json"
   ],
-  "item_count": 178,
+  "item_count": 179,
   "open_count": 0,
   "claimed_count": 0,
-  "closed_count": 178,
-  "latest_closed_work_item_id": "P1S3M7W7",
-  "archived_closure_count": 177,
+  "closed_count": 179,
+  "latest_closed_work_item_id": "P1S3M7W8",
+  "archived_closure_count": 178,
   "inline_closure_count": 0,
-  "closure_ref_count": 177,
+  "closure_ref_count": 178,
   "closure_payload_shard_count": 11,
   "by_status": {
     "open": [],
@@ -202,7 +202,8 @@
       "P1S3M7W4",
       "P1S3M7W5",
       "P1S3M7W6",
-      "P1S3M7W7"
+      "P1S3M7W7",
+      "P1S3M7W8"
     ]
   },
   "by_milestone": {
@@ -399,57 +400,15 @@
       "P1S3M7W1",
       "P1S3M7W2",
       "P1S3M7W3",
-      "P1S3M7W4"
+      "P1S3M7W4",
+      "P1S3M7W5",
+      "P1S3M7W6",
+      "P1S3M7W7",
+      "P1S3M7W8"
     ]
   },
-  "updated_at": "2026-07-09T05:18:31.148Z",
+  "updated_at": "2026-07-09T08:36:09.704Z",
   "latest_closed_work_items": [
-    {
-      "id": "P1S3M6W29",
-      "milestone_id": "P1S3M6",
-      "title": "Public Target Governance Service Split Gate",
-      "status": "closed",
-      "claim": {
-        "actor": "codex-gpt-5",
-        "claimed_at": "2026-07-08T09:27:53.957Z"
-      },
-      "closure_ref": "closures:P1S3M6W29"
-    },
-    {
-      "id": "P1S3M6W30",
-      "milestone_id": "P1S3M6",
-      "title": "Public Test Suite Sharding Gate",
-      "status": "closed",
-      "claim": {
-        "actor": "codex-gpt-5",
-        "claimed_at": "2026-07-08T09:41:46.862Z"
-      },
-      "closure_ref": "closures:P1S3M6W30"
-    },
-    {
-      "id": "P1S3M6W31",
-      "milestone_id": "P1S3M6",
-      "title": "Public State Projection Authority Cutover Gate",
-      "status": "closed",
-      "claim": {
-        "actor": "gpt-5.5-thinking",
-        "claimed_at": "2026-07-08T10:46:11.057Z",
-        "note": "Implement state projection authority cutover."
-      },
-      "closure_ref": "closures:P1S3M6W31"
-    },
-    {
-      "id": "P1S3M6W32",
-      "milestone_id": "P1S3M6",
-      "title": "Public Closure Payload Reference Compaction Gate",
-      "status": "closed",
-      "claim": {
-        "actor": "gpt-5.5-thinking",
-        "claimed_at": "2026-07-08T11:22:00.000Z",
-        "note": "Compact work-item closure payloads into reference-indexed shards."
-      },
-      "closure_ref": "closures:P1S3M6W32"
-    },
     {
       "id": "P1S3M6W33",
       "milestone_id": "P1S3M6",
@@ -518,22 +477,47 @@
         "claimed_at": "2026-07-09T05:18:30.979Z"
       },
       "closure_ref": "closures:P1S3M7W4"
-    }
-  ],
-  "latest_work_item_id": "P1S3M7W6",
-  "latest_work_items": [
+    },
     {
-      "id": "P1S3M7W3",
+      "id": "P1S3M7W5",
       "milestone_id": "P1S3M7",
-      "title": "Public Exact Artifact Oracle Service Extraction Gate",
+      "title": "Public Core Surface Command Runner Extraction Gate",
       "status": "closed",
       "claim": {
         "actor": "gpt-5.5-thinking",
-        "claimed_at": "2026-07-08T20:25:00.000Z",
-        "note": "Extract exact artifact oracle behavior from runtime composer without changing storage backend."
+        "claimed_at": "2026-07-09T06:24:08.095Z",
+        "note": "Implement W5 core surface command runner extraction."
       },
-      "closure_ref": "closures:P1S3M7W3"
+      "closure_ref": "closures:P1S3M7W5"
     },
+    {
+      "id": "P1S3M7W6",
+      "milestone_id": "P1S3M7",
+      "title": "Public Architecture Command Runner Extraction Gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-09T07:25:31.208Z"
+      },
+      "closure_ref": "closures:P1S3M7W6"
+    },
+    {
+      "id": "P1S3M7W7",
+      "milestone_id": "P1S3M7",
+      "title": "Public Release Check Service Extraction Gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M7W7"
+    },
+    {
+      "id": "P1S3M7W8",
+      "milestone_id": "P1S3M7",
+      "title": "Public Contracts Command Service Extraction Gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M7W8"
+    }
+  ],
+  "latest_work_item_id": "P1S3M7W8",
+  "latest_work_items": [
     {
       "id": "P1S3M7W4",
       "milestone_id": "P1S3M7",
@@ -574,6 +558,13 @@
       "title": "Public Release Check Service Extraction Gate",
       "status": "closed",
       "closure_ref": "closures:P1S3M7W7"
+    },
+    {
+      "id": "P1S3M7W8",
+      "milestone_id": "P1S3M7",
+      "title": "Public Contracts Command Service Extraction Gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M7W8"
     }
   ]
 }
