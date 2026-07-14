@@ -59,9 +59,6 @@ function main() {
 
   const planSmoke = run(['architecture', '--cli-runtime-plan']);
   const checkSmoke = run(['architecture', '--cli-runtime-check']);
-  const fastSmoke = run(['check', '--fast', '--json']);
-  const releaseSmoke = run(['release', '--check']);
-  const packSmoke = spawnSync('npm', ['pack', '--dry-run', '--json'], { cwd: ROOT, encoding: 'utf8', timeout: 120000, maxBuffer: 1024 * 1024 * 16 });
   if (planSmoke.status !== 0) failures.push(`architecture --cli-runtime-plan failed: ${planSmoke.stderr || planSmoke.stdout}`);
   if (checkSmoke.status !== 0) failures.push(`architecture --cli-runtime-check failed: ${checkSmoke.stderr || checkSmoke.stdout}`);
   else {
@@ -69,9 +66,6 @@ function main() {
     if (output.schema !== 'agent-onboard-public-cli-runtime-de-monolith-planning-check-result-001') failures.push('architecture --cli-runtime-check schema drifted');
     if (output.status !== 'ok') failures.push(`architecture --cli-runtime-check returned ${JSON.stringify(output.status)}`);
   }
-  if (fastSmoke.status !== 0) failures.push(`check --fast --json failed: ${fastSmoke.stderr || fastSmoke.stdout}`);
-  if (releaseSmoke.status !== 0) failures.push(`release --check failed: ${releaseSmoke.stderr || releaseSmoke.stdout}`);
-  if (packSmoke.status !== 0) failures.push(`npm pack --dry-run --json failed: ${packSmoke.stderr || packSmoke.stdout}`);
 
   const result = {
     schema: 'agent-onboard-public-cli-runtime-planning-service-extraction-check-001',
@@ -81,7 +75,7 @@ function main() {
     work_item_id: 'P1S3M7W11',
     composer: composerMetric,
     extracted_cli_runtime_planning_service: serviceMetric,
-    smoke_count: 5,
+    smoke_count: 2,
     boundary: {
       writes_files: false,
       mutates_git: false,

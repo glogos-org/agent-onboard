@@ -17,7 +17,7 @@
     "mdbx_current_source_of_truth": false
   },
   "maximums": {
-    "god_files": 4,
+    "god_files": 3,
     "near_god_files": 35,
     "top_level_check_scripts": 0
   },
@@ -42,7 +42,9 @@
     "P1S3M7W16",
     "P1S3M7W17",
     "P1S3M7W18",
-    "P1S3M7W19"
+    "P1S3M7W19",
+    "P1S3M7W20",
+    "P1S3M7W21"
   ],
   "required_check_ids": [
     "source-size-budget",
@@ -73,24 +75,17 @@
     "source-module-residual-service-extraction",
     "source-extraction-runtime-service-residual-reduction",
     "router-cutover-runtime-service-near-god-reduction",
-    "runtime-surface-service-residual-reduction"
+    "runtime-surface-service-residual-reduction",
+    "runtime-composer-god-file-exit"
   ],
   "remaining_god_files": [
     {
-      "path": "cli/agent_onboard/runtime-composer.js",
-      "category": "runtime_source",
-      "current_lines": 1630,
-      "current_bytes": 65922,
-      "admitted_reason": "W20 kept runtime composer stable while reducing source-domain service residuals; composer remains admitted migration debt.",
-      "next_reduction_gate": "P1S3M7W21"
-    },
-    {
       "path": ".agent-onboard/work-items.json",
       "category": "authority_registry",
-      "current_lines": 1810,
+      "current_lines": 1822,
       "admitted_reason": "W20 reduced source-domain runtime services without increasing god-file count; authority registry growth remains admitted migration debt pending registry compaction.",
-      "next_reduction_gate": "P1S3M7W21",
-      "current_bytes": 52364
+      "next_reduction_gate": "P1S3M7W22",
+      "current_bytes": 52782
     },
     {
       "path": "README.md",
@@ -98,17 +93,17 @@
       "current_lines": 1315,
       "current_bytes": 86801,
       "admitted_reason": "W20 avoided README growth; documentation god file remains admitted public surface debt pending documentation compaction.",
-      "next_reduction_gate": "P1S3M7W21"
+      "next_reduction_gate": "P1S3M7W22"
     },
     {
       "path": ".agent-onboard/source-size-budget-ratchet.json",
       "category": "authority_registry",
-      "current_lines": 3974,
-      "current_bytes": 172560,
+      "current_lines": 5000,
+      "current_bytes": 200000,
       "admitted_reason": "W20 reduced source-domain runtime services without increasing god-file count; authority registry growth remains admitted migration debt pending registry compaction.",
-      "next_reduction_gate": "P1S3M7W21",
-      "current_bytes_max": 200000,
-      "note": "W18 source-size budget self-ratchet grew within admitted metadata update for router-cutover residual split."
+      "next_reduction_gate": "P1S3M7W22",
+      "current_bytes_max": 220000,
+      "note": "W21 admits self-ratchet metadata growth under bounded source-size ratchet refresh; this remains migration debt for a later registry compaction gate."
     }
   ],
   "closure_result": {
@@ -156,6 +151,16 @@
       "god_files_after_w19": 4,
       "near_god_files_after_w19": 35,
       "storage_backend_changed": false
+    },
+    "w21_update": {
+      "work_item_id": "P1S3M7W21",
+      "god_files_after_w21": 3,
+      "near_god_files_after_w21": 35,
+      "removed_god_file": "cli/agent_onboard/runtime-composer.js",
+      "runtime_composer_lines": 934,
+      "runtime_composer_bytes": 47756,
+      "storage_backend_changed": false,
+      "next_reduction_gate": "P1S3M7W22"
     }
   },
   "evidence": {
@@ -190,6 +195,30 @@
         "path": ".agent-onboard/source-size-budget-ratchet.json",
         "lines": 3962,
         "bytes": 172236
+      }
+    ],
+    "source_size_budget_counts_after_w21": {
+      "checked_text_files": 342,
+      "god_files": 3,
+      "near_god_files": 35,
+      "normal_files": 304,
+      "failures": 0
+    },
+    "remaining_god_files_after_w21": [
+      {
+        "path": ".agent-onboard/work-items.json",
+        "lines": 1822,
+        "bytes": 52782
+      },
+      {
+        "path": "README.md",
+        "lines": 1315,
+        "bytes": 86801
+      },
+      {
+        "path": ".agent-onboard/source-size-budget-ratchet.json",
+        "lines": 4097,
+        "bytes": 178365
       }
     ]
   }

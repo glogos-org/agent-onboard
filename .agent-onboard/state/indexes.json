@@ -1,7 +1,7 @@
 {
   "schema": "agent-onboard-public-authority-indexes-state-shard-001",
   "package_name": "agent-onboard",
-  "release_line": "public_source_domain_runtime_service_near_god_reduction_gate",
+  "release_line": "public_runtime_composer_god_file_exit_gate",
   "raw_registries_loaded_by_default": false,
   "file_contents_inlined": false,
   "indexes": [
@@ -9,8 +9,8 @@
       "file_path": ".agent-onboard/authority-index.json",
       "kind": "compact_authority_index",
       "present": true,
-      "bytes": 7523,
-      "file_id": "ni:///sha-256;ZJS8wGPBgUhNYyhBs1fCEh108AjnY3O3Clf0p324WD4",
+      "bytes": 7505,
+      "file_id": "ni:///sha-256;0TyVPp14x_uZiE0Jz0pTO8arFH4NBW0dnYeUr8oietI",
       "schema": "agent-onboard-public-authority-compact-index-001",
       "status": null,
       "raw_registry_loaded_by_default": null,
@@ -21,15 +21,15 @@
       "file_path": ".agent-onboard/work-items.index.json",
       "kind": "work_items_compact_index",
       "present": true,
-      "bytes": 1486,
-      "file_id": "ni:///sha-256;85tBHt7xhQeYAlFHLYlfgT1S-uyq7MMBBeHz_1BcO5U",
+      "bytes": 1469,
+      "file_id": "ni:///sha-256;hiiv7Sg3iMiG-NWycZzTY0vcMY0tSxgxRlR-yjG1zJA",
       "schema": "agent-onboard-target-work-items-index-001",
       "status": "active",
       "raw_registry_loaded_by_default": false,
       "content_inlined": false,
-      "item_count": 191,
+      "item_count": 192,
       "open_count": 0,
-      "closed_count": 191
+      "closed_count": 192
     },
     {
       "file_path": ".agent-onboard/claims.index.json",
@@ -50,8 +50,8 @@
       "file_path": ".agent-onboard/work-items.json",
       "present": true,
       "kind": "work_items_raw_ledger",
-      "bytes": 52364,
-      "file_id": "ni:///sha-256;w-ejeDNv2TOhJCO05AsYY1pzimzRDo4jU-vY4ukaXj8",
+      "bytes": 52782,
+      "file_id": "ni:///sha-256;pkpIT0jKEkpp6nh2G_OC38XO4_V1R7RvV1Ssdvb_4aI",
       "content_inlined": false,
       "loaded_by_default": false
     },
@@ -65,7 +65,7 @@
       "loaded_by_default": false
     }
   ],
-  "authority_index_digest": "ni:///sha-256;ZJS8wGPBgUhNYyhBs1fCEh108AjnY3O3Clf0p324WD4",
-  "work_items_index_digest": "ni:///sha-256;85tBHt7xhQeYAlFHLYlfgT1S-uyq7MMBBeHz_1BcO5U",
+  "authority_index_digest": "ni:///sha-256;0TyVPp14x_uZiE0Jz0pTO8arFH4NBW0dnYeUr8oietI",
+  "work_items_index_digest": "ni:///sha-256;hiiv7Sg3iMiG-NWycZzTY0vcMY0tSxgxRlR-yjG1zJA",
   "claims_index_digest": "ni:///sha-256;otIDDGJGcys456Ufaq9WPeWXVrjiCX9kkTWzXjQyHGo"
 }

@@ -10,6 +10,7 @@ const COMPOSER_REL = 'cli/agent_onboard/runtime-composer.js';
 const SERVICE_REL = 'cli/agent_onboard/domains/architecture/services/runtime/public-architecture-command-runner-service.js';
 const ARTIFACT_REL = '.agent-onboard/architecture-command-runner-extraction.json';
 const CLEAN_RUNTIME_REL = 'cli/agent_onboard/domains/package/services/release-clean-closed-gates/clean-compaction-runtime.js';
+const ARCHITECTURE_COMPOSITION_SERVICE_REL = 'cli/agent_onboard/domains/architecture/services/runtime/public-architecture-composition-service.js';
 const MAX_COMPOSER_LINES = 5036;
 const MAX_COMPOSER_BYTES = 288088;
 const MAX_SERVICE_LINES = 150;
@@ -32,6 +33,7 @@ function main() {
   const composer = read(COMPOSER_REL);
   const serviceText = read(SERVICE_REL);
   const cleanRuntime = read(CLEAN_RUNTIME_REL);
+  const architectureComposition = fs.existsSync(abs(ARCHITECTURE_COMPOSITION_SERVICE_REL)) ? read(ARCHITECTURE_COMPOSITION_SERVICE_REL) : '';
   const artifact = readJson(ARTIFACT_REL);
   const packageFiles = new Set(Array.isArray(pkg.files) ? pkg.files : []);
   const composerMetric = metric(COMPOSER_REL);
@@ -46,8 +48,10 @@ function main() {
   if (serviceMetric.bytes > MAX_SERVICE_BYTES) failures.push(`${SERVICE_REL} byte size ${serviceMetric.bytes} exceeds ${MAX_SERVICE_BYTES}`);
   if (artifact.reduction.runtime_composer_after.lines !== MAX_COMPOSER_LINES) failures.push('artifact runtime_composer_after.lines must record the W6 ratchet baseline');
   if (artifact.reduction.runtime_composer_after.bytes !== MAX_COMPOSER_BYTES) failures.push('artifact runtime_composer_after.bytes must record the W6 ratchet baseline');
-  if (!composer.includes('createPublicArchitectureCommandRunnerService')) failures.push(`${COMPOSER_REL} must compose the architecture command runner service`);
-  if (!composer.includes('architectureCommandRunnerService.runArchitecture')) failures.push(`${COMPOSER_REL} must delegate architecture command routing through extracted service`);
+  const compositionSurface = `${composer}
+${architectureComposition}`;
+  if (!compositionSurface.includes('createPublicArchitectureCommandRunnerService')) failures.push(`runtime composition surface must compose the architecture command runner service`);
+  if (!compositionSurface.includes('architectureCommandRunnerService.runArchitecture')) failures.push(`runtime composition surface must delegate architecture command routing through extracted service`);
   if (composer.includes('architecture requires --map, --router, --facades')) failures.push(`${COMPOSER_REL} still owns the long architecture command error message`);
   if (!serviceText.includes('ARCHITECTURE_COMMANDS')) failures.push(`${SERVICE_REL} must own architecture command flag registry`);
   if (!serviceText.includes("['--router-adapter-delegation-check'")) failures.push(`${SERVICE_REL} must preserve router adapter delegation check dispatch`);

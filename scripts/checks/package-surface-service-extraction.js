@@ -58,16 +58,10 @@ function main() {
   const surfaceCheckSmoke = run(['release', '--surface-check']);
   const manifestSmoke = run(['release', '--source-manifest']);
   const manifestCheckSmoke = run(['release', '--source-manifest-check']);
-  const fastSmoke = run(['check', '--fast', '--json']);
-  const releaseSmoke = run(['release', '--check']);
-  const packSmoke = spawnSync('npm', ['pack', '--dry-run', '--json'], { cwd: ROOT, encoding: 'utf8', timeout: 120000, maxBuffer: 1024 * 1024 * 16 });
   if (surfaceSmoke.status !== 0) failures.push(`release --surface failed: ${surfaceSmoke.stderr || surfaceSmoke.stdout}`);
   if (surfaceCheckSmoke.status !== 0) failures.push(`release --surface-check failed: ${surfaceCheckSmoke.stderr || surfaceCheckSmoke.stdout}`);
   if (manifestSmoke.status !== 0) failures.push(`release --source-manifest failed: ${manifestSmoke.stderr || manifestSmoke.stdout}`);
   if (manifestCheckSmoke.status !== 0) failures.push(`release --source-manifest-check failed: ${manifestCheckSmoke.stderr || manifestCheckSmoke.stdout}`);
-  if (fastSmoke.status !== 0) failures.push(`check --fast --json failed: ${fastSmoke.stderr || fastSmoke.stdout}`);
-  if (releaseSmoke.status !== 0) failures.push(`release --check failed: ${releaseSmoke.stderr || releaseSmoke.stdout}`);
-  if (packSmoke.status !== 0) failures.push(`npm pack --dry-run --json failed: ${packSmoke.stderr || packSmoke.stdout}`);
 
   const result = {
     schema: 'agent-onboard-public-package-surface-service-extraction-check-001',
@@ -77,7 +71,7 @@ function main() {
     work_item_id: 'P1S3M7W9',
     composer: composerMetric,
     extracted_package_surface_service: serviceMetric,
-    smoke_count: 7,
+    smoke_count: 4,
     boundary: {
       writes_files: false,
       mutates_git: false,

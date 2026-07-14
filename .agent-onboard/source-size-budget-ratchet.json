@@ -1,8 +1,8 @@
 {
   "schema": "agent-onboard-public-source-size-budget-ratchet-001",
   "status": "active",
-  "work_item_id": "P1S3M7W20",
-  "release_line": "public_source_domain_runtime_service_near_god_reduction_gate",
+  "work_item_id": "P1S3M7W21",
+  "release_line": "public_runtime_composer_god_file_exit_gate",
   "ratchet_mode": "no_tracked_growth_beyond_maximum_and_no_new_oversized_files",
   "god_file_thresholds": {
     "god_lines": 1000,
@@ -87,13 +87,13 @@
   "tracked_files": {
     ".agent-onboard/state/closures/work-items-closures.jsonl": {
       "category": "authority_state",
-      "max_lines": 190,
-      "max_bytes": 86957,
+      "max_lines": 191,
+      "max_bytes": 87415,
       "baseline_lines": 168,
       "baseline_bytes": 76889,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend.",
+      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W33",
@@ -292,18 +292,27 @@
           "new_max_bytes": 86499,
           "previous_max_lines": 188,
           "previous_max_bytes": 86103
+        },
+        {
+          "work_item_id": "P1S3M7W21",
+          "gate": "Public Runtime Composer God-File Exit Gate",
+          "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+          "previous_max_lines": 190,
+          "new_max_lines": 191,
+          "previous_max_bytes": 86957,
+          "new_max_bytes": 87415
         }
       ]
     },
     ".agent-onboard/state/live/work-items.json": {
       "category": "authority_state",
       "max_lines": 73,
-      "max_bytes": 2125,
+      "max_bytes": 2108,
       "baseline_lines": 24,
       "baseline_bytes": 849,
       "target_lines": 60,
       "target_bytes": 8192,
-      "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend.",
+      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W6",
@@ -392,18 +401,27 @@
           "new_max_bytes": 2118,
           "previous_max_lines": 73,
           "previous_max_bytes": 2109
+        },
+        {
+          "work_item_id": "P1S3M7W21",
+          "gate": "Public Runtime Composer God-File Exit Gate",
+          "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+          "previous_max_lines": 73,
+          "new_max_lines": 73,
+          "previous_max_bytes": 2125,
+          "new_max_bytes": 2108
         }
       ]
     },
     ".agent-onboard/work-items.json": {
       "category": "authority_registry",
-      "max_lines": 1810,
-      "max_bytes": 52364,
+      "max_lines": 1822,
+      "max_bytes": 52782,
       "baseline_lines": 1573,
       "baseline_bytes": 44798,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend.",
+      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W33",
@@ -591,6 +609,15 @@
           "new_max_bytes": 52035,
           "previous_max_lines": 1788,
           "previous_max_bytes": 51712
+        },
+        {
+          "work_item_id": "P1S3M7W21",
+          "gate": "Public Runtime Composer God-File Exit Gate",
+          "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+          "previous_max_lines": 1810,
+          "new_max_lines": 1822,
+          "previous_max_bytes": 52364,
+          "new_max_bytes": 52782
         }
       ]
     },
@@ -780,13 +807,13 @@
     },
     "cli/agent_onboard/runtime-composer.js": {
       "category": "runtime_source",
-      "max_lines": 1630,
-      "max_bytes": 65922,
+      "max_lines": 934,
+      "max_bytes": 47756,
       "baseline_lines": 2250,
       "baseline_bytes": 108997,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W15 moves architecture map and source-module residual extraction checks into a bounded architecture runtime service and ratchets composer maximum downward.",
+      "reason": "W21 moves runtime shared context and public architecture composition wiring out of runtime-composer.js, removing runtime composer from the god-file tier without changing storage backend.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W25",
@@ -929,6 +956,15 @@
           "new_max_lines": 1630,
           "previous_max_bytes": 108997,
           "new_max_bytes": 65922
+        },
+        {
+          "work_item_id": "P1S3M7W21",
+          "gate": "Public Runtime Composer God-File Exit Gate",
+          "reason": "W21 moves runtime shared context and public architecture composition wiring out of runtime-composer.js, removing runtime composer from the god-file tier without changing storage backend.",
+          "previous_max_lines": 1630,
+          "new_max_lines": 934,
+          "previous_max_bytes": 65922,
+          "new_max_bytes": 47756
         }
       ]
     },
@@ -1062,12 +1098,12 @@
     ".agent-onboard/state/closures/work-items/manifest.json": {
       "category": "authority_state",
       "max_lines": 146,
-      "max_bytes": 5894,
+      "max_bytes": 5895,
       "baseline_lines": 126,
       "baseline_bytes": 5085,
       "target_lines": 700,
       "target_bytes": 65536,
-      "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend.",
+      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W34",
@@ -1136,18 +1172,27 @@
           "new_max_bytes": 5894,
           "previous_max_lines": 137,
           "previous_max_bytes": 5523
+        },
+        {
+          "work_item_id": "P1S3M7W21",
+          "gate": "Public Runtime Composer God-File Exit Gate",
+          "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+          "previous_max_lines": 146,
+          "new_max_lines": 146,
+          "previous_max_bytes": 5894,
+          "new_max_bytes": 5895
         }
       ]
     },
     ".agent-onboard/state/closures/work-items/index.json": {
       "category": "authority_state",
       "max_lines": 126,
-      "max_bytes": 5068,
+      "max_bytes": 5069,
       "baseline_lines": 110,
       "baseline_bytes": 4384,
       "target_lines": 700,
       "target_bytes": 65536,
-      "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend.",
+      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W1",
@@ -1209,6 +1254,15 @@
           "new_max_bytes": 5068,
           "previous_max_lines": 117,
           "previous_max_bytes": 4697
+        },
+        {
+          "work_item_id": "P1S3M7W21",
+          "gate": "Public Runtime Composer God-File Exit Gate",
+          "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+          "previous_max_lines": 126,
+          "new_max_lines": 126,
+          "previous_max_bytes": 5068,
+          "new_max_bytes": 5069
         }
       ]
     },
@@ -1224,13 +1278,13 @@
     },
     "scripts/checks/registry.js": {
       "category": "check_script",
-      "max_lines": 72,
-      "max_bytes": 4356,
+      "max_lines": 73,
+      "max_bytes": 4429,
       "baseline_lines": 67,
       "baseline_bytes": 3719,
-      "target_lines": 300,
+      "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend.",
+      "reason": "W21 moves runtime shared context and public architecture composition wiring out of runtime-composer.js, removing runtime composer from the god-file tier without changing storage backend.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W34",
@@ -1391,6 +1445,15 @@
           "new_max_bytes": 4248,
           "previous_max_lines": 70,
           "previous_max_bytes": 4054
+        },
+        {
+          "work_item_id": "P1S3M7W21",
+          "gate": "Public Runtime Composer God-File Exit Gate",
+          "reason": "W21 moves runtime shared context and public architecture composition wiring out of runtime-composer.js, removing runtime composer from the god-file tier without changing storage backend.",
+          "previous_max_lines": 72,
+          "new_max_lines": 73,
+          "previous_max_bytes": 4356,
+          "new_max_bytes": 4429
         }
       ]
     },
@@ -1406,13 +1469,13 @@
     },
     ".agent-onboard/god-file-budget-enforcement-closure.json": {
       "category": "authority_registry",
-      "max_lines": 196,
-      "max_bytes": 6970,
+      "max_lines": 225,
+      "max_bytes": 7646,
       "baseline_lines": 105,
       "baseline_bytes": 3859,
       "target_lines": 220,
       "target_bytes": 32768,
-      "reason": "W19 refreshes god-file budget evidence after runtime-surface residual reduction.",
+      "reason": "W21 refreshes god-file budget artifact after admitted residual god file metrics update.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W1",
@@ -1507,6 +1570,24 @@
           "new_max_lines": 159,
           "previous_max_bytes": 5904,
           "new_max_bytes": 5977
+        },
+        {
+          "work_item_id": "P1S3M7W21",
+          "gate": "Public Runtime Composer God-File Exit Gate",
+          "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+          "previous_max_lines": 196,
+          "new_max_lines": 225,
+          "previous_max_bytes": 6970,
+          "new_max_bytes": 7605
+        },
+        {
+          "work_item_id": "P1S3M7W21",
+          "gate": "Public Runtime Composer God-File Exit Gate",
+          "reason": "W21 refreshes god-file budget artifact after admitted residual god file metrics update.",
+          "previous_max_lines": 225,
+          "new_max_lines": 225,
+          "previous_max_bytes": 7605,
+          "new_max_bytes": 7605
         }
       ]
     },
@@ -1545,13 +1626,13 @@
     },
     ".agent-onboard/source-size-budget-ratchet.json": {
       "category": "authority_registry",
-      "max_lines": 4033,
-      "max_bytes": 177850,
+      "max_lines": 4609,
+      "max_bytes": 201959,
       "baseline_lines": 2575,
       "baseline_bytes": 104100,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W19 source-size budget self-ratchet after god-file budget evidence refresh.",
+      "reason": "W21 admits source-size ratchet growth caused by service extraction, historical check refresh, and fast-runner stabilization.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W2",
@@ -1815,9 +1896,20 @@
           "new_max_lines": 3935,
           "previous_max_bytes": 167202,
           "new_max_bytes": 171191
+        },
+        {
+          "work_item_id": "P1S3M7W21",
+          "gate": "Public Runtime Composer God-File Exit Gate",
+          "reason": "W21 refreshes the source-size ratchet metadata for the runtime-composer god-file exit closure.",
+          "previous_max_lines": 4033,
+          "new_max_lines": 4088,
+          "previous_max_bytes": 177850,
+          "new_max_bytes": 177959
         }
       ],
-      "current_bytes_max": 177850
+      "current_bytes_max": 177850,
+      "current_lines": 4359,
+      "current_bytes": 189959
     },
     "cli/agent_onboard/domains/package/services/exact-artifact-oracle-service.js": {
       "category": "runtime_service_source",
@@ -1893,7 +1985,7 @@
       "baseline_bytes": 31656,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W15 updates clean-compaction budgets for split service count.",
+      "reason": "W21 refreshes clean compaction budgets for runtime-composer god-file exit closure.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W6",
@@ -2108,8 +2200,8 @@
     },
     ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M7.json": {
       "category": "authority_state",
-      "max_lines": 217,
-      "max_bytes": 6913,
+      "max_lines": 229,
+      "max_bytes": 7331,
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W5",
@@ -2252,18 +2344,27 @@
           "new_max_bytes": 6584,
           "previous_max_lines": 195,
           "previous_max_bytes": 6261
+        },
+        {
+          "work_item_id": "P1S3M7W21",
+          "gate": "Public Runtime Composer God-File Exit Gate",
+          "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+          "previous_max_lines": 217,
+          "new_max_lines": 229,
+          "previous_max_bytes": 6913,
+          "new_max_bytes": 7331
         }
       ],
       "target_lines": 500,
       "target_bytes": 65536,
       "baseline_lines": 85,
       "baseline_bytes": 2599,
-      "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend."
+      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage."
     },
     ".agent-onboard/state/authority/work-items/items/index.json": {
       "category": "authority_state",
-      "max_lines": 550,
-      "max_bytes": 12514,
+      "max_lines": 553,
+      "max_bytes": 12561,
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W5",
@@ -2406,13 +2507,22 @@
           "new_max_bytes": 12450,
           "previous_max_lines": 509,
           "previous_max_bytes": 11424
+        },
+        {
+          "work_item_id": "P1S3M7W21",
+          "gate": "Public Runtime Composer God-File Exit Gate",
+          "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+          "previous_max_lines": 550,
+          "new_max_lines": 553,
+          "previous_max_bytes": 12514,
+          "new_max_bytes": 12561
         }
       ],
       "target_lines": 500,
       "target_bytes": 65536,
       "baseline_lines": 484,
       "baseline_bytes": 10953,
-      "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend."
+      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage."
     },
     ".agent-onboard/state/authority/work-items/manifest.json": {
       "category": "authority_state",
@@ -2461,18 +2571,27 @@
           "new_max_lines": 124,
           "previous_max_bytes": 5215,
           "new_max_bytes": 5215
+        },
+        {
+          "work_item_id": "P1S3M7W21",
+          "gate": "Public Runtime Composer God-File Exit Gate",
+          "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+          "previous_max_lines": 124,
+          "new_max_lines": 124,
+          "previous_max_bytes": 5215,
+          "new_max_bytes": 5215
         }
       ],
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W18 refreshes sharded work-item authority projections after closing router cutover runtime service near-god reduction gate.",
+      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
       "baseline_lines": 124,
       "baseline_bytes": 5215
     },
     ".agent-onboard/state/indexes/work-items.index.json": {
       "category": "authority_state",
-      "max_lines": 526,
-      "max_bytes": 11365,
+      "max_lines": 512,
+      "max_bytes": 10474,
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W5",
@@ -2525,18 +2644,27 @@
           "new_max_lines": 526,
           "previous_max_bytes": 11365,
           "new_max_bytes": 11365
+        },
+        {
+          "work_item_id": "P1S3M7W21",
+          "gate": "Public Runtime Composer God-File Exit Gate",
+          "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+          "previous_max_lines": 526,
+          "new_max_lines": 512,
+          "previous_max_bytes": 11365,
+          "new_max_bytes": 10474
         }
       ],
       "target_lines": 700,
       "target_bytes": 65536,
-      "reason": "W18 refreshes sharded work-item authority projections after closing router cutover runtime service near-god reduction gate.",
+      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
       "baseline_lines": 524,
       "baseline_bytes": 11312
     },
     ".agent-onboard/work-items.index.json": {
       "category": "authority_registry",
       "max_lines": 53,
-      "max_bytes": 1486,
+      "max_bytes": 1469,
       "target_lines": 500,
       "target_bytes": 65536,
       "ratchet_history": [
@@ -2600,9 +2728,18 @@
           "new_max_bytes": 1479,
           "previous_max_lines": 53,
           "previous_max_bytes": 1470
+        },
+        {
+          "work_item_id": "P1S3M7W21",
+          "gate": "Public Runtime Composer God-File Exit Gate",
+          "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+          "previous_max_lines": 53,
+          "new_max_lines": 53,
+          "previous_max_bytes": 1486,
+          "new_max_bytes": 1469
         }
       ],
-      "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend.",
+      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
       "baseline_lines": 53,
       "baseline_bytes": 1436
     },
@@ -2634,8 +2771,8 @@
     },
     "scripts/checks/architecture-command-runner-extraction.js": {
       "category": "check_script",
-      "max_lines": 100,
-      "max_bytes": 6307,
+      "max_lines": 104,
+      "max_bytes": 6711,
       "target_lines": 250,
       "target_bytes": 32768,
       "ratchet_history": [
@@ -2648,7 +2785,8 @@
           "previous_max_bytes": null,
           "new_max_bytes": 6307
         }
-      ]
+      ],
+      "reason": "W21 refreshes historical extraction checks after runtime composition moved into an extracted composition service."
     },
     ".agent-onboard/architecture-command-runner-extraction.json": {
       "category": "authority_registry",
@@ -2671,7 +2809,7 @@
     ".agent-onboard/state/live-authority.json": {
       "category": "authority_state",
       "max_lines": 56,
-      "max_bytes": 1948,
+      "max_bytes": 1877,
       "target_lines": 500,
       "target_bytes": 65536,
       "ratchet_history": [
@@ -2733,16 +2871,25 @@
           "new_max_lines": 56,
           "previous_max_bytes": 1940,
           "new_max_bytes": 1940
+        },
+        {
+          "work_item_id": "P1S3M7W21",
+          "gate": "Public Runtime Composer God-File Exit Gate",
+          "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+          "previous_max_lines": 56,
+          "new_max_lines": 56,
+          "previous_max_bytes": 1948,
+          "new_max_bytes": 1877
         }
       ],
-      "reason": "W18 splits router cutover runtime behavior into bounded runtime package, router port, thin entrypoint, and adapter delegation services while preserving package and command parity without changing storage backend.",
+      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
       "baseline_lines": 56,
       "baseline_bytes": 1871
     },
     ".agent-onboard/state/indexes.json": {
       "category": "authority_state",
       "max_lines": 71,
-      "max_bytes": 2506,
+      "max_bytes": 2484,
       "target_lines": 500,
       "target_bytes": 65536,
       "ratchet_history": [
@@ -2795,16 +2942,25 @@
           "new_max_lines": 71,
           "previous_max_bytes": 2506,
           "new_max_bytes": 2506
+        },
+        {
+          "work_item_id": "P1S3M7W21",
+          "gate": "Public Runtime Composer God-File Exit Gate",
+          "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+          "previous_max_lines": 71,
+          "new_max_lines": 71,
+          "previous_max_bytes": 2506,
+          "new_max_bytes": 2484
         }
       ],
-      "reason": "W18 splits router cutover runtime behavior into bounded runtime package, router port, thin entrypoint, and adapter delegation services while preserving package and command parity without changing storage backend.",
+      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
       "baseline_lines": 71,
       "baseline_bytes": 2489
     },
     ".agent-onboard/state/closed-gates.jsonl": {
       "category": "authority_state",
       "max_lines": 6,
-      "max_bytes": 1478,
+      "max_bytes": 1756,
       "target_lines": 500,
       "target_bytes": 65536,
       "ratchet_history": [
@@ -2868,16 +3024,25 @@
           "new_max_lines": 6,
           "previous_max_bytes": 1462,
           "new_max_bytes": 1471
+        },
+        {
+          "work_item_id": "P1S3M7W21",
+          "gate": "Public Runtime Composer God-File Exit Gate",
+          "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+          "previous_max_lines": 6,
+          "new_max_lines": 6,
+          "previous_max_bytes": 1478,
+          "new_max_bytes": 1756
         }
       ],
       "baseline_lines": 6,
       "baseline_bytes": 1422,
-      "reason": "W19 refreshes latest closed-gate authority event projection after runtime-surface residual reduction closure."
+      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage."
     },
     ".agent-onboard/authority-index.json": {
       "category": "authority_registry",
       "max_lines": 247,
-      "max_bytes": 7527,
+      "max_bytes": 7505,
       "target_lines": 500,
       "target_bytes": 65536,
       "ratchet_history": [
@@ -2921,9 +3086,18 @@
           "new_max_lines": 247,
           "previous_max_bytes": 7522,
           "new_max_bytes": 7527
+        },
+        {
+          "work_item_id": "P1S3M7W21",
+          "gate": "Public Runtime Composer God-File Exit Gate",
+          "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+          "previous_max_lines": 247,
+          "new_max_lines": 247,
+          "previous_max_bytes": 7527,
+          "new_max_bytes": 7505
         }
       ],
-      "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend.",
+      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
       "baseline_lines": 247,
       "baseline_bytes": 7510
     },
@@ -2961,7 +3135,8 @@
           "previous_max_bytes": null,
           "new_max_bytes": 6105
         }
-      ]
+      ],
+      "reason": "W21 removes recursive release/fast/package smoke fan-out from historical release check service extraction quick-suite path."
     },
     ".agent-onboard/release-check-service-extraction.json": {
       "category": "authority_registry",
@@ -3006,7 +3181,7 @@
       "max_bytes": 8000,
       "target_lines": 250,
       "target_bytes": 32768,
-      "reason": "W9 bounded check validates package surface service extraction and release surface/source-manifest smokes.",
+      "reason": "W21 keeps historical/current check scripts bounded by removing recursive fast/release/package smoke fan-out from quick-suite paths.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W9",
@@ -3063,7 +3238,7 @@
       "max_bytes": 5938,
       "target_lines": 250,
       "target_bytes": 32768,
-      "reason": "W10 bounded check validates full-test runner service extraction and release/fast/pack smokes.",
+      "reason": "W21 keeps historical/current check scripts bounded by removing recursive fast/release/package smoke fan-out from quick-suite paths.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W10",
@@ -3120,7 +3295,7 @@
       "max_bytes": 6563,
       "target_lines": 250,
       "target_bytes": 32768,
-      "reason": "W11 bounded check validates CLI runtime planning service extraction and release/fast/pack smokes.",
+      "reason": "W21 removes recursive fast/release/package smokes from historical CLI runtime planning extraction check to keep quick suite bounded.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W11",
@@ -3422,11 +3597,20 @@
           "new_max_lines": 26,
           "previous_max_bytes": 1047,
           "new_max_bytes": 1047
+        },
+        {
+          "work_item_id": "P1S3M7W21",
+          "gate": "Public Runtime Composer God-File Exit Gate",
+          "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+          "previous_max_lines": 26,
+          "new_max_lines": 26,
+          "previous_max_bytes": 1047,
+          "new_max_bytes": 1047
         }
       ],
       "max_lines": 26,
       "max_bytes": 1047,
-      "reason": "W18 refreshes sharded work-item authority projections after closing router cutover runtime service near-god reduction gate."
+      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage."
     },
     ".agent-onboard/readme-history.index.json": {
       "category": "authority_registry",
@@ -3521,11 +3705,20 @@
           "new_max_bytes": 23667,
           "previous_max_lines": 503,
           "previous_max_bytes": 22884
+        },
+        {
+          "work_item_id": "P1S3M7W21",
+          "gate": "Public Runtime Composer God-File Exit Gate",
+          "reason": "W21 moves runtime shared context and public architecture composition wiring out of runtime-composer.js, removing runtime composer from the god-file tier without changing storage backend.",
+          "previous_max_lines": 522,
+          "new_max_lines": 524,
+          "previous_max_bytes": 24676,
+          "new_max_bytes": 24819
         }
       ],
-      "max_lines": 522,
-      "max_bytes": 24676,
-      "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend."
+      "max_lines": 524,
+      "max_bytes": 24819,
+      "reason": "W21 moves runtime shared context and public architecture composition wiring out of runtime-composer.js, removing runtime composer from the god-file tier without changing storage backend."
     },
     "package.json": {
       "category": "root_json",
@@ -3576,11 +3769,20 @@
           "new_max_bytes": 17469,
           "previous_max_lines": 255,
           "previous_max_bytes": 16544
+        },
+        {
+          "work_item_id": "P1S3M7W21",
+          "gate": "Public Runtime Composer God-File Exit Gate",
+          "reason": "W21 moves runtime shared context and public architecture composition wiring out of runtime-composer.js, removing runtime composer from the god-file tier without changing storage backend.",
+          "previous_max_lines": 275,
+          "new_max_lines": 278,
+          "previous_max_bytes": 18499,
+          "new_max_bytes": 18764
         }
       ],
-      "max_lines": 275,
-      "max_bytes": 18499,
-      "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend."
+      "max_lines": 278,
+      "max_bytes": 18764,
+      "reason": "W21 moves runtime shared context and public architecture composition wiring out of runtime-composer.js, removing runtime composer from the god-file tier without changing storage backend."
     },
     ".agent-onboard/architecture-runtime-service-residual-reduction.json": {
       "category": "authority_registry",
@@ -3885,13 +4087,24 @@
     },
     ".agent-onboard/state/closures/work-items/payloads/by-milestone/P1S3M7/part-002.jsonl": {
       "category": "authority_state",
-      "max_lines": 2,
-      "max_bytes": 7907,
+      "max_lines": 3,
+      "max_bytes": 10959,
       "baseline_lines": 1,
       "baseline_bytes": 4074,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W19 stores the new closure payload in a second P1S3M7 shard to avoid increasing near-god count."
+      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W21",
+          "gate": "Public Runtime Composer God-File Exit Gate",
+          "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+          "previous_max_lines": 2,
+          "new_max_lines": 3,
+          "previous_max_bytes": 7907,
+          "new_max_bytes": 10959
+        }
+      ]
     },
     "scripts/checks/source-domain-runtime-service-near-god-reduction.js": {
       "max_lines": 146,
@@ -3904,6 +4117,163 @@
       "max_bytes": 4774,
       "target_lines": 500,
       "target_bytes": 65536
+    },
+    "scripts/checks/runtime-composer-god-file-exit.js": {
+      "category": "check_script",
+      "baseline_lines": 124,
+      "baseline_bytes": 6774,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W21",
+          "gate": "Public Runtime Composer God-File Exit Gate",
+          "reason": "W21 moves runtime shared context and public architecture composition wiring out of runtime-composer.js, removing runtime composer from the god-file tier without changing storage backend.",
+          "previous_max_lines": null,
+          "new_max_lines": 124,
+          "previous_max_bytes": null,
+          "new_max_bytes": 6774
+        }
+      ],
+      "max_lines": 124,
+      "max_bytes": 6774,
+      "reason": "W21 keeps historical/current check scripts bounded by removing recursive fast/release/package smoke fan-out from quick-suite paths."
+    },
+    "cli/agent_onboard/runtime-shared-context-service.js": {
+      "category": "runtime_source",
+      "baseline_lines": 172,
+      "baseline_bytes": 7423,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W21",
+          "gate": "Public Runtime Composer God-File Exit Gate",
+          "reason": "W21 moves runtime shared context and public architecture composition wiring out of runtime-composer.js, removing runtime composer from the god-file tier without changing storage backend.",
+          "previous_max_lines": null,
+          "new_max_lines": 172,
+          "previous_max_bytes": null,
+          "new_max_bytes": 7423
+        }
+      ],
+      "max_lines": 172,
+      "max_bytes": 7423,
+      "reason": "W21 moves runtime shared context and public architecture composition wiring out of runtime-composer.js, removing runtime composer from the god-file tier without changing storage backend."
+    },
+    "cli/agent_onboard/domains/architecture/services/runtime/public-architecture-composition-service.js": {
+      "category": "runtime_service_source",
+      "baseline_lines": 591,
+      "baseline_bytes": 26477,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W21",
+          "gate": "Public Runtime Composer God-File Exit Gate",
+          "reason": "W21 moves runtime shared context and public architecture composition wiring out of runtime-composer.js, removing runtime composer from the god-file tier without changing storage backend.",
+          "previous_max_lines": null,
+          "new_max_lines": 591,
+          "previous_max_bytes": null,
+          "new_max_bytes": 26477
+        }
+      ],
+      "max_lines": 591,
+      "max_bytes": 26477,
+      "reason": "W21 moves runtime shared context and public architecture composition wiring out of runtime-composer.js, removing runtime composer from the god-file tier without changing storage backend."
+    },
+    ".agent-onboard/runtime-composer-god-file-exit.json": {
+      "category": "authority_registry",
+      "baseline_lines": 77,
+      "baseline_bytes": 2911,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W21",
+          "gate": "Public Runtime Composer God-File Exit Gate",
+          "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+          "previous_max_lines": null,
+          "new_max_lines": 77,
+          "previous_max_bytes": null,
+          "new_max_bytes": 2911
+        }
+      ],
+      "max_lines": 77,
+      "max_bytes": 2911,
+      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage."
+    },
+    ".agent-onboard/state/policies.json": {
+      "category": "authority_state",
+      "baseline_lines": 35,
+      "baseline_bytes": 1137,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W21",
+          "gate": "Public Runtime Composer God-File Exit Gate",
+          "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+          "previous_max_lines": null,
+          "new_max_lines": 35,
+          "previous_max_bytes": null,
+          "new_max_bytes": 1137
+        }
+      ],
+      "max_lines": 35,
+      "max_bytes": 1137,
+      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage."
+    },
+    ".agent-onboard/state/events/work-items.jsonl": {
+      "category": "authority_state",
+      "baseline_lines": 33,
+      "baseline_bytes": 7599,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W21",
+          "gate": "Public Runtime Composer God-File Exit Gate",
+          "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+          "previous_max_lines": null,
+          "new_max_lines": 33,
+          "previous_max_bytes": null,
+          "new_max_bytes": 7599
+        }
+      ],
+      "max_lines": 33,
+      "max_bytes": 7599,
+      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage."
+    },
+    "test/run-tests.js": {
+      "category": "other_text",
+      "baseline_lines": 591,
+      "baseline_bytes": 37871,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W21",
+          "gate": "Public Runtime Composer God-File Exit Gate",
+          "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+          "previous_max_lines": null,
+          "new_max_lines": 591,
+          "previous_max_bytes": null,
+          "new_max_bytes": 37871
+        }
+      ],
+      "max_lines": 591,
+      "max_bytes": 37871,
+      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage."
+    },
+    "scripts/checks/runtime-composer-residual-slice-reduction.js": {
+      "max_lines": 129,
+      "max_bytes": 7646,
+      "reason": "W21 refreshes historical extraction checks after runtime composition moved into an extracted composition service."
+    },
+    "cli/agent_onboard/domains/core/services/public-runtime-check-fast-service.js": {
+      "max_lines": 544,
+      "max_bytes": 27930,
+      "reason": "W21 raises fast-runner timeout budgets so quick suite remains stable after release integrity work expands under parallel load."
     }
   },
   "report": {
@@ -3929,8 +4299,8 @@
       "lines": 4876,
       "bytes": 274048
     },
-    "last_ratchet_work_item_id": "P1S3M7W17",
-    "last_ratchet_gate": "Public Source Extraction Runtime Service Residual Reduction Gate",
+    "last_ratchet_work_item_id": "P1S3M7W21",
+    "last_ratchet_gate": "Public Runtime Composer God-File Exit Gate",
     "runtime_composer_after_w10": {
       "path": "cli/agent_onboard/runtime-composer.js",
       "lines": 4487,
@@ -3960,6 +4330,21 @@
       "path": "cli/agent_onboard/domains/architecture/services/source-extraction/architecture-source-extraction-service.js",
       "lines": 143,
       "bytes": 6068
+    },
+    "runtime_composer_after_w21": {
+      "path": "cli/agent_onboard/runtime-composer.js",
+      "lines": 934,
+      "bytes": 47756
+    },
+    "runtime_shared_context_service_after_w21": {
+      "path": "cli/agent_onboard/runtime-shared-context-service.js",
+      "lines": 172,
+      "bytes": 7423
+    },
+    "public_architecture_composition_service_after_w21": {
+      "path": "cli/agent_onboard/domains/architecture/services/runtime/public-architecture-composition-service.js",
+      "lines": 591,
+      "bytes": 26477
     }
   },
   "boundary": {

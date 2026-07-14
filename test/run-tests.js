@@ -244,6 +244,7 @@ function syntaxTasks() {
     nodeTask('syntax: command-router', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'command-router.js')]),
     nodeTask('syntax: public contracts', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'contracts', 'public-contracts.js')]),
     nodeTask('syntax: runtime contracts', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'runtime-contracts.js')]),
+    nodeTask('syntax: runtime shared context service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'runtime-shared-context-service.js')]),
     nodeTask('syntax: compatibility-command-port adapter', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'adapters', 'compatibility-command-port.js')]),
     nodeTask('syntax: compatibility-command-port port', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'ports', 'compatibility-command-port.js')]),
     nodeTask('syntax: core command adapter', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'adapters', 'commands', 'core.js')]),
@@ -256,6 +257,7 @@ function syntaxTasks() {
     nodeTask('syntax: architecture M3 runtime catalog', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'architecture', 'm3-runtime-catalog.js')]),
     nodeTask('syntax: architecture aggregate check service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'architecture', 'services', 'checks', 'architecture-check-service.js')]),
     nodeTask('syntax: architecture runtime service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'architecture', 'services', 'runtime', 'architecture-runtime-service.js')]),
+    nodeTask('syntax: architecture composition service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'architecture', 'services', 'runtime', 'public-architecture-composition-service.js')]),
     nodeTask('syntax: architecture CLI runtime planning service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'architecture', 'services', 'runtime', 'public-cli-runtime-planning-service.js')]),
     nodeTask('syntax: architecture source extraction service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'architecture', 'services', 'source-extraction', 'architecture-source-extraction-service.js')]),
     nodeTask('syntax: architecture source domain orchestrator service', ['-c', path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'architecture', 'services', 'source-domains', 'architecture-source-domain-service.js')]),
@@ -410,6 +412,7 @@ function quickTasks() {
     checkRegistryTask('package surface service extraction check', 'package-surface-service-extraction'),
     checkRegistryTask('full test runner service extraction check', 'full-test-runner-service-extraction'),
     checkRegistryTask('CLI runtime planning service extraction check', 'cli-runtime-planning-service-extraction'),
+    checkRegistryTask('runtime composer god-file exit check', 'runtime-composer-god-file-exit'),
     npmTask('npm pack dry run', ['pack', '--dry-run', '--json'], expectPackFiles)
   ];
 }

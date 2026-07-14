@@ -11,6 +11,7 @@ const TARGET_SERVICE_REL = 'cli/agent_onboard/domains/target/services/target-ser
 const SOURCE_MODULE_RESIDUAL_SERVICE_REL = 'cli/agent_onboard/domains/architecture/services/runtime/public-source-module-residual-extraction-service.js';
 const SOURCE_MODULE_SECOND_SLICE_SERVICE_REL = 'cli/agent_onboard/domains/architecture/services/runtime/public-source-module-second-slice-service.js';
 const SOURCE_MODULE_AUTHORITY_BUNDLE_PARITY_SERVICE_REL = 'cli/agent_onboard/domains/architecture/services/runtime/public-source-module-authority-bundle-parity-service.js';
+const ARCHITECTURE_COMPOSITION_SERVICE_REL = 'cli/agent_onboard/domains/architecture/services/runtime/public-architecture-composition-service.js';
 const ARTIFACT_REL = '.agent-onboard/runtime-composer-residual-slice-reduction.json';
 const MAX_COMPOSER_LINES = 7008;
 const MAX_COMPOSER_BYTES = 384741;
@@ -65,13 +66,19 @@ function main() {
     SOURCE_MODULE_SECOND_SLICE_SERVICE_REL,
     SOURCE_MODULE_AUTHORITY_BUNDLE_PARITY_SERVICE_REL
   ].filter((rel) => fs.existsSync(abs(rel))).map((rel) => ({ rel, source: read(rel) }));
+  const residualWrapperSources = [
+    COMPOSER_REL,
+    ARCHITECTURE_COMPOSITION_SERVICE_REL
+  ].filter((rel) => fs.existsSync(abs(rel))).map((rel) => ({ rel, source: read(rel) }));
 
   for (const name of RESIDUAL_FUNCTION_NAMES) {
     const functionPattern = new RegExp(`function\\s+${name}\\s*\\(`, 'g');
     const composerCount = regexCount(composer, functionPattern);
     const serviceCount = sourceModuleResidualSources.reduce((count, entry) => count + regexCount(entry.source, functionPattern), 0);
-    const expectedComposerCount = COMPOSER_RESIDUAL_WRAPPER_NAMES.has(name) ? 1 : 0;
-    if (composerCount !== expectedComposerCount) failures.push(`${COMPOSER_REL} must contain ${expectedComposerCount} ${name} residual wrapper definition(s); found ${composerCount}`);
+    const wrapperCount = residualWrapperSources.reduce((count, entry) => count + regexCount(entry.source, functionPattern), 0);
+    const expectedWrapperCount = COMPOSER_RESIDUAL_WRAPPER_NAMES.has(name) ? 1 : 0;
+    if (wrapperCount !== expectedWrapperCount) failures.push(`runtime composition surface must contain ${expectedWrapperCount} ${name} residual wrapper definition(s); found ${wrapperCount}`);
+    if (composerCount > expectedWrapperCount) failures.push(`${COMPOSER_REL} contains too many ${name} residual wrapper definition(s); found ${composerCount}`);
     if (serviceCount !== 1) failures.push(`source-module residual service set must contain exactly one ${name} implementation; found ${serviceCount}`);
   }
   for (const oldOwner of [

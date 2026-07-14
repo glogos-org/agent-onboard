@@ -2,7 +2,7 @@
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
-const RELEASE_LINE = 'public_source_domain_runtime_service_near_god_reduction_gate';
+const RELEASE_LINE = 'public_runtime_composer_god_file_exit_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
   agents: 'agents',
@@ -356,6 +356,7 @@ const PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES = Object.freeze([
   'cli/agent_onboard/domains/architecture/m3-runtime-catalog.js',
   'cli/agent_onboard/domains/architecture/services/checks/architecture-check-service.js',
   'cli/agent_onboard/domains/architecture/services/runtime/architecture-runtime-service.js',
+  'cli/agent_onboard/domains/architecture/services/runtime/public-architecture-composition-service.js',
   'cli/agent_onboard/domains/architecture/services/runtime/public-architecture-router-facade-service.js',
   'cli/agent_onboard/domains/architecture/services/runtime/public-authority-state-shard-service.js',
   'cli/agent_onboard/domains/architecture/services/runtime/public-authority-first-read-service.js',
@@ -473,6 +474,7 @@ const PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES = Object.freeze([
   'cli/agent_onboard/domains/work-items/static-catalog.js',
   'cli/agent_onboard/ports/compatibility-command-port.js',
   'cli/agent_onboard/runtime-command-registry.js',
+  'cli/agent_onboard/runtime-shared-context-service.js',
   'cli/agent_onboard/runtime-composer.js',
   'cli/agent_onboard/runtime-contracts.js',
   'package.json'

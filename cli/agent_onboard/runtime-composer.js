@@ -5,6 +5,7 @@ const os = require('os');
 const path = require('path');
 const { route: routeCommand } = require('./command-router');
 const { createRuntimeCompatibilityPortFromRegistry } = require('./runtime-command-registry');
+const { createRuntimeSharedContextService } = require('./runtime-shared-context-service');
 const { createPublicRuntimeGuardService } = require('./domains/authority/services/public-runtime-guard-service');
 const {
   commandSurfaceService,
@@ -62,20 +63,8 @@ process.stdout.on('error', (error) => {
 
 const { createPublicArchitectureCatalog } = require('./domains/architecture/static-catalog');
 const { createPublicTargetStaticCatalog } = require('./domains/target/static-catalog');
-const { createPublicArchitectureRuntimeService } = require('./domains/architecture/services/runtime/architecture-runtime-service');
-const { createPublicArchitectureCommandRunnerService } = require('./domains/architecture/services/runtime/public-architecture-command-runner-service');
+const { createPublicArchitectureCompositionService } = require('./domains/architecture/services/runtime/public-architecture-composition-service');
 const { createPublicCliRuntimePlanningService } = require('./domains/architecture/services/runtime/public-cli-runtime-planning-service');
-const { createPublicRouterSeedService } = require('./domains/architecture/services/runtime/public-router-seed-service');
-const { createPublicCommandAdapterExtractionService } = require('./domains/architecture/services/runtime/public-command-adapter-extraction-service');
-const { createPublicRouterCutoverService } = require('./domains/architecture/services/runtime/public-router-cutover-service');
-const { createPublicSourceModuleResidualExtractionService } = require('./domains/architecture/services/runtime/public-source-module-residual-extraction-service');
-const { createPublicArchitectureAggregateCheckService } = require('./domains/architecture/services/checks/architecture-check-service');
-let createPublicArchitectureSourceDomainService = null;
-try {
-  createPublicArchitectureSourceDomainService = require('./domains/architecture/services/source-domains/architecture-source-domain-service').createPublicArchitectureSourceDomainService;
-} catch (error) {
-  // Source-only domain service is omitted in installed package context
-}
 const { createTargetRuntimeService } = require('./domains/target/services/target-service');
 const { createTargetCommandRunnerService } = require('./domains/target/services/target-command-runner-service');
 
@@ -142,7 +131,31 @@ const {
 });
 
 
-const targetRuntimeService = createTargetRuntimeService({
+let targetRuntimeService;
+const runtimeSharedContextService = createRuntimeSharedContextService({
+  fs,
+  path,
+  runtimeDir: __dirname,
+  VERSION,
+  PUBLIC_RELEASE_CONTRACT,
+  readJson: (...args) => readJson(...args),
+  getPathValue: (...args) => targetRuntimeService.getPathValue(...args),
+  validateWorkItems: (...args) => targetRuntimeService.validateWorkItems(...args),
+  workItemCounts: (...args) => targetRuntimeService.workItemCounts(...args)
+});
+const {
+  listRelativeFiles,
+  packageRoot,
+  arrayEquals,
+  publicReleasePostPublishCommands,
+  packageJsonReleaseErrors,
+  packageJsonProjectedPackFiles,
+  publicArtifactMessagingErrors,
+  sourceWorkItemsLedgerCheck,
+  sourceContext
+} = runtimeSharedContextService;
+
+targetRuntimeService = createTargetRuntimeService({
   version: VERSION,
   releaseLine: RELEASE_LINE,
   publicReleaseContract: PUBLIC_RELEASE_CONTRACT,
@@ -266,73 +279,6 @@ const publicContractsCatalog = (...args) => publicContractsService.catalog(...ar
 const publicContractsCheck = (...args) => publicContractsService.check(...args);
 const runContracts = (args = []) => publicContractsService.runContracts(args);
 
-function listRelativeFiles(root) {
-  const files = [];
-  function walk(dir) {
-    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-      const absolute = path.join(dir, entry.name);
-      if (entry.isDirectory()) walk(absolute);
-      else files.push(path.relative(root, absolute).split(path.sep).join('/'));
-    }
-  }
-  if (fs.existsSync(root)) walk(root);
-  return files.sort();
-}
-
-function packageRoot() {
-  return path.resolve(__dirname, '../..');
-}
-
-function arrayEquals(left, right) {
-  if (!Array.isArray(left) || !Array.isArray(right)) return false;
-  if (left.length !== right.length) return false;
-  for (let index = 0; index < left.length; index += 1) {
-    if (left[index] !== right[index]) return false;
-  }
-  return true;
-}
-
-function publicReleasePostPublishCommands(version = VERSION) {
-  return PUBLIC_RELEASE_CONTRACT.post_publish_verification_commands.map((command) => command.replaceAll('<version>', version));
-}
-
-function packageJsonReleaseErrors(pkg, root = packageRoot()) {
-  const errors = [];
-  const required = PUBLIC_RELEASE_CONTRACT.required_package_json;
-  if (pkg.name !== required.name) errors.push(`package.json#name must be ${required.name}`);
-  if (pkg.version !== VERSION) errors.push(`package.json#version must match runtime version ${VERSION}`);
-  if (pkg.private === true) errors.push('package.json#private must not be true for a public package');
-  if (pkg.license !== required.license) errors.push(`package.json#license must be ${required.license}`);
-  if (pkg.type !== required.type) errors.push(`package.json#type must be ${required.type}`);
-  if (!pkg.engines || pkg.engines.node !== required.node_engine) errors.push(`package.json#engines.node must be ${required.node_engine}`);
-  for (const field of PUBLIC_RELEASE_CONTRACT.required_metadata_fields) {
-    const value = getPathValue(pkg, field);
-    const missing = Array.isArray(value) ? value.length === 0 : value === undefined || value === null || value === '';
-    if (missing) errors.push(`package.json#${field} is required`);
-  }
-  if (!Array.isArray(pkg.keywords) || pkg.keywords.length < 5) errors.push('package.json#keywords must contain at least 5 discovery terms');
-  const requiredBin = required.bin;
-  for (const [name, rel] of Object.entries(requiredBin)) {
-    if (!pkg.bin || pkg.bin[name] !== rel) errors.push(`package.json#bin.${name} must be ${rel}`);
-    else if (!fs.existsSync(path.join(root, rel))) errors.push(`package.json#bin.${name} points to missing file ${rel}`);
-  }
-  const actualFiles = Array.isArray(pkg.files) ? pkg.files.slice().sort() : [];
-  const expectedFiles = required.files.slice().sort();
-  if (!arrayEquals(actualFiles, expectedFiles)) errors.push(`package.json#files must match ${expectedFiles.join(', ')}`);
-  for (const rel of expectedFiles) {
-    if (!fs.existsSync(path.join(root, rel))) errors.push(`package.json#files includes missing path ${rel}`);
-  }
-  return errors;
-}
-
-function packageJsonProjectedPackFiles(pkg) {
-  const files = new Set(['package.json']);
-  if (Array.isArray(pkg.files)) {
-    for (const rel of pkg.files) files.add(rel);
-  }
-  return Array.from(files).sort();
-}
-
 const publicCliRuntimePlanningService = createPublicCliRuntimePlanningService({
   VERSION,
   PUBLIC_RELEASE_CONTRACT,
@@ -345,84 +291,6 @@ const publicCliRuntimePlanningService = createPublicCliRuntimePlanningService({
 });
 const publicCliRuntimeDeMonolithPlanning = (...args) => publicCliRuntimePlanningService.plan(...args);
 const publicCliRuntimeDeMonolithPlanningCheck = (...args) => publicCliRuntimePlanningService.check(...args);
-
-function publicArtifactMessagingErrors(root = packageRoot(), files = PUBLIC_RELEASE_CONTRACT.expected_pack_files) {
-  const errors = [];
-  const forbiddenConcreteWorkItem = /P\d+S\d+M\d+W\d+/;
-  const forbiddenKey = ['machine', 'identifier'].join('_');
-  const forbiddenNarrativePatterns = [
-    new RegExp(['pri', 'vate\\s*\\/\\s*pub', 'lic\\s+sp', 'lit'].join(''), 'i'),
-    new RegExp(['in', 'ternal\\s+line'].join(''), 'i'),
-    new RegExp(['rese', 'arch\\s+li', 'ne'].join(''), 'i'),
-    new RegExp(['str', 'ipp?ed'].join(''), 'i'),
-    new RegExp(['sani', 'ti[sz]ed'].join(''), 'i'),
-    new RegExp(['\\b', 'le', 'ak(?:age|ed|s|ing)?\\b'].join(''), 'i')
-  ];
-
-  for (const rel of files) {
-    const abs = path.join(root, rel);
-    if (!fs.existsSync(abs) || fs.statSync(abs).isDirectory()) continue;
-    const text = fs.readFileSync(abs, 'utf8');
-    if (text.includes(forbiddenKey)) errors.push(`${rel} contains reserved implementation key token`);
-    const workItemMatch = forbiddenConcreteWorkItem.exec(text);
-    if (workItemMatch) errors.push(`${rel} contains concrete work-item token ${workItemMatch[0]}`);
-    for (let index = 0; index < forbiddenNarrativePatterns.length; index += 1) {
-      const match = forbiddenNarrativePatterns[index].exec(text);
-      if (match) errors.push(`${rel} violates public artifact messaging rule ${index + 1}: ${match[0]}`);
-    }
-  }
-  return errors;
-}
-
-function sourceWorkItemsLedgerCheck(root = packageRoot()) {
-  const file = path.join(root, '.agent-onboard', 'work-items.json');
-  if (!fs.existsSync(file)) {
-    return {
-      present: false,
-      status: 'skipped',
-      reason: 'source work-item ledger is not present in this package context',
-      validated: true,
-      file: '.agent-onboard/work-items.json',
-      counts: null,
-      errors: []
-    };
-  }
-  let value;
-  try {
-    value = readJson(file);
-  } catch (error) {
-    return {
-      present: true,
-      status: 'error',
-      reason: 'source work-item ledger is not valid JSON',
-      validated: false,
-      file: '.agent-onboard/work-items.json',
-      counts: null,
-      errors: [error && error.message ? error.message : String(error)]
-    };
-  }
-  const errors = validateWorkItems(value);
-  const counts = workItemCounts(value);
-  return {
-    present: true,
-    status: errors.length === 0 ? 'ok' : 'error',
-    reason: errors.length === 0 ? 'source work-item ledger validates' : 'source work-item ledger validation failed',
-    validated: errors.length === 0,
-    file: '.agent-onboard/work-items.json',
-    counts,
-    open_work_items: Array.isArray(value.work_items) ? value.work_items.filter((item) => item.status !== 'closed').map((item) => ({ id: item.id, title: item.title, status: item.status })) : [],
-    errors
-  };
-}
-
-function sourceContext(root = packageRoot()) {
-  const sourceFiles = PUBLIC_RELEASE_CONTRACT.source_context_files.filter((rel) => fs.existsSync(path.join(root, rel)));
-  return {
-    package_context: sourceFiles.length > 0 ? 'source_repository' : 'installed_package',
-    source_context_files_present: sourceFiles,
-    source_context_files_missing: PUBLIC_RELEASE_CONTRACT.source_context_files.filter((rel) => !sourceFiles.includes(rel))
-  };
-}
 
 const packageSurfaceService = createPackageSurfaceService({
   version: VERSION,
@@ -453,139 +321,9 @@ const publicExactArtifactOracleService = createPublicExactArtifactOracleService(
 });
 const publicExactArtifactOracle = publicExactArtifactOracleService.publicExactArtifactOracle;
 
-let publicSourceModuleResidualExtractionService = null;
-function getPublicSourceModuleResidualExtractionService() {
-  if (!publicSourceModuleResidualExtractionService) throw new Error('public source module residual extraction service is not initialized');
-  return publicSourceModuleResidualExtractionService;
-}
-function publicArchitectureMap(root = packageRoot()) {
-  return getPublicSourceModuleResidualExtractionService().publicArchitectureMap(root);
-}
-function bundledAuthorityDomainForParity(root = packageRoot()) {
-  return getPublicSourceModuleResidualExtractionService().bundledAuthorityDomainForParity(root);
-}
-function publicSourceModuleExtractionAuthorityBundleParityCheck(root = packageRoot()) {
-  return getPublicSourceModuleResidualExtractionService().publicSourceModuleExtractionAuthorityBundleParityCheck(root);
-}
 
-const publicArchitectureRuntimeService = createPublicArchitectureRuntimeService({
-  version: VERSION,
-  publicArchitectureMapContract: PUBLIC_ARCHITECTURE_MAP,
-  publicCommandRouter: PUBLIC_COMMAND_ROUTER,
-  publicDomainServiceFacades: PUBLIC_DOMAIN_SERVICE_FACADES,
-  publicAuthorityFirstReadIndex: PUBLIC_AUTHORITY_FIRST_READ_INDEX,
-  publicTargetRuntimeNamespace: PUBLIC_TARGET_RUNTIME_NAMESPACE,
-  publicSourceDomainModulePartitionPlan: PUBLIC_SOURCE_DOMAIN_MODULE_PARTITION_PLAN,
-  publicSourceDomainExtractionRehearsal: PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL,
-  publicSourceExtractionGoldenOutputFreeze: PUBLIC_SOURCE_EXTRACTION_GOLDEN_OUTPUT_FREEZE,
-  publicVersionReferencePolicy: PUBLIC_VERSION_REFERENCE_POLICY,
-  publicSourceModuleExtractionAdapterBoundary: PUBLIC_SOURCE_MODULE_EXTRACTION_ADAPTER_BOUNDARY,
-  publicSourceModuleExtractionFirstSlice: PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE,
-  publicSourceModuleExtractionBundleParity: PUBLIC_SOURCE_MODULE_EXTRACTION_BUNDLE_PARITY,
-  publicSourceModuleExtractionRuntimeBridge: PUBLIC_SOURCE_MODULE_EXTRACTION_RUNTIME_BRIDGE,
-  publicSourceModuleExtractionAuthorityRuntimeBridge: PUBLIC_SOURCE_MODULE_EXTRACTION_AUTHORITY_RUNTIME_BRIDGE,
-  publicArchitectureM1ClosureM2Seed: PUBLIC_ARCHITECTURE_M1_CLOSURE_M2_SEED,
-  publicReleaseContract: PUBLIC_RELEASE_CONTRACT,
-  targetOnboardingSurfacePlan: TARGET_ONBOARDING_SURFACE_PLAN,
-  packageRoot,
-  sourceContext,
-  commandSurfaceService,
-  operatorGuideService,
-  quickstartService,
-  discoveryService,
-  createDryRunService,
-  arrayEquals,
-  readJson,
-  packageJsonProjectedPackFiles,
-  firstReadOrder,
-  llmsTxtTemplate,
-  authorityPathTemplate,
-  targetRuntimeNamespaceTemplate,
-  targetOnboardingWriteSet,
-  publicArchitectureMap,
-  bundledAuthorityDomainForParity,
-  publicSourceModuleExtractionAuthorityBundleParityCheck
-});
-const {
-  publicCommandRouter,
-  publicCommandRouterCheck,
-  publicDomainServiceFacades,
-  publicDomainServiceFacadesCheck,
-  publicSourceDomainModulePartitionPlan,
-  plainClone,
-  publicSourceDomainModulePartitionPlanCheck,
-  publicAuthorityFirstRead,
-  publicAuthorityFirstReadCheck,
-  publicAuthorityCompactIndexResult,
-  publicAuthorityCompactIndexCheck,
-  publicAuthorityStateShardingSeed,
-  publicAuthorityStateShardingSeedCheck,
-  publicTargetRuntimeNamespace,
-  publicTargetRuntimeNamespaceCheck,
-  publicSourceDomainExtractionRehearsal,
-  publicSourceDomainExtractionRehearsalCheck,
-  publicSourceExtractionGoldenOutputs,
-  scanCurrentVersionLiterals,
-  publicVersionReferencePolicyCheck,
-  publicSourceExtractionGoldenOutputFreezeCheck,
-  publicSourceModuleExtractionAdapterBoundary,
-  publicSourceModuleExtractionAdapterBoundaryCheck,
-  loadCoreFirstSliceModule,
-  publicSourceModuleExtractionFirstSlice,
-  publicSourceModuleExtractionFirstSliceCheck,
-  bundledCoreDomainForParity,
-  publicSourceModuleExtractionBundleParity,
-  publicSourceModuleExtractionBundleParityCheck,
-  resolveCoreDomainRuntimeBridge,
-  publicSourceModuleExtractionRuntimeBridge,
-  publicSourceModuleExtractionRuntimeBridgeCheck,
-  resolveAuthorityDomainRuntimeBridge,
-  publicSourceModuleExtractionAuthorityRuntimeBridge,
-  publicSourceModuleExtractionAuthorityRuntimeBridgeCheck,
-  publicArchitectureM1ClosureM2Seed,
-  workItemIdFromComponents,
-  workItemIdsFromComponentList,
-  publicArchitectureM1ClosureM2SeedCheck
-} = publicArchitectureRuntimeService;
-
-publicSourceModuleResidualExtractionService = createPublicSourceModuleResidualExtractionService({
-  VERSION,
-  PUBLIC_ARCHITECTURE_MAP,
-  PUBLIC_COMMAND_ROUTER,
-  PUBLIC_DOMAIN_SERVICE_FACADES,
-  PUBLIC_AUTHORITY_FIRST_READ_INDEX,
-  PUBLIC_TARGET_RUNTIME_NAMESPACE,
-  PUBLIC_SOURCE_DOMAIN_MODULE_PARTITION_PLAN,
-  PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL,
-  PUBLIC_SOURCE_EXTRACTION_GOLDEN_OUTPUT_FREEZE,
-  PUBLIC_VERSION_REFERENCE_POLICY,
-  PUBLIC_SOURCE_MODULE_EXTRACTION_ADAPTER_BOUNDARY,
-  PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE,
-  PUBLIC_SOURCE_MODULE_EXTRACTION_RUNTIME_BRIDGE,
-  PUBLIC_SOURCE_MODULE_EXTRACTION_INSTALLED_FALLBACK_SMOKE,
-  PUBLIC_SOURCE_MODULE_EXTRACTION_SECOND_SLICE_PLAN,
-  PUBLIC_SOURCE_MODULE_EXTRACTION_SECOND_SLICE_FIRST_SLICE,
-  PUBLIC_SOURCE_MODULE_EXTRACTION_AUTHORITY_BUNDLE_PARITY,
-  PUBLIC_RELEASE_CONTRACT,
-  packageRoot,
-  sourceContext,
-  arrayEquals,
-  readJson,
-  packageJsonProjectedPackFiles,
-  publicPackageSurfaceCheck,
-  publicSourceModuleExtractionRuntimeBridgeCheck
-});
-const {
-  publicSourceModuleExtractionInstalledFallbackSmoke,
-  publicSourceModuleExtractionInstalledFallbackSmokeCheck,
-  gitignoreSecondSlicePolicy,
-  publicSourceModuleExtractionSecondSlicePlan,
-  publicSourceModuleExtractionSecondSlicePlanCheck,
-  loadAuthoritySecondSliceModule,
-  publicSourceModuleExtractionSecondSliceFirstSlice,
-  publicSourceModuleExtractionSecondSliceFirstSliceCheck,
-  publicSourceModuleExtractionAuthorityBundleParity
-} = publicSourceModuleResidualExtractionService;
+const architectureCompositionService = createPublicArchitectureCompositionService({ VERSION, PUBLIC_ARCHITECTURE_MAP, PUBLIC_COMMAND_ROUTER, PUBLIC_DOMAIN_SERVICE_FACADES, PUBLIC_AUTHORITY_FIRST_READ_INDEX, PUBLIC_TARGET_RUNTIME_NAMESPACE, PUBLIC_SOURCE_DOMAIN_MODULE_PARTITION_PLAN, PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL, PUBLIC_SOURCE_EXTRACTION_GOLDEN_OUTPUT_FREEZE, PUBLIC_VERSION_REFERENCE_POLICY, PUBLIC_SOURCE_MODULE_EXTRACTION_ADAPTER_BOUNDARY, PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE, PUBLIC_SOURCE_MODULE_EXTRACTION_BUNDLE_PARITY, PUBLIC_SOURCE_MODULE_EXTRACTION_RUNTIME_BRIDGE, PUBLIC_SOURCE_MODULE_EXTRACTION_INSTALLED_FALLBACK_SMOKE, PUBLIC_SOURCE_MODULE_EXTRACTION_SECOND_SLICE_PLAN, PUBLIC_SOURCE_MODULE_EXTRACTION_SECOND_SLICE_FIRST_SLICE, PUBLIC_SOURCE_MODULE_EXTRACTION_AUTHORITY_BUNDLE_PARITY, PUBLIC_SOURCE_MODULE_EXTRACTION_AUTHORITY_RUNTIME_BRIDGE, PUBLIC_ARCHITECTURE_M1_CLOSURE_M2_SEED, PUBLIC_WORK_ITEMS_DOMAIN_SOURCE_EXTRACTION_PLAN, PUBLIC_WORK_ITEMS_DOMAIN_SOURCE_EXTRACTION_FIRST_SLICE, PUBLIC_WORK_ITEMS_DOMAIN_SOURCE_EXTRACTION_BUNDLE_PARITY, PUBLIC_WORK_ITEMS_DOMAIN_SOURCE_EXTRACTION_RUNTIME_BRIDGE, PUBLIC_WORK_ITEMS_DOMAIN_SOURCE_EXTRACTION_INSTALLED_FALLBACK_SMOKE, PUBLIC_CLAIMS_DOMAIN_SOURCE_EXTRACTION_PLAN, PUBLIC_CLAIMS_DOMAIN_SOURCE_EXTRACTION_FIRST_SLICE, PUBLIC_CLAIMS_DOMAIN_SOURCE_EXTRACTION_BUNDLE_PARITY, PUBLIC_CLAIMS_DOMAIN_SOURCE_EXTRACTION_RUNTIME_BRIDGE, PUBLIC_CLAIMS_DOMAIN_SOURCE_EXTRACTION_INSTALLED_FALLBACK_SMOKE, PUBLIC_SOURCE_DOMAIN_EXTRACTION_STABILIZATION_CLOSURE_REVIEW, PUBLIC_CLI_RUNTIME_DE_MONOLITH_PLANNING, PUBLIC_THIN_CLI_ROUTER_SEED, PUBLIC_COMPATIBILITY_COMMAND_PORT_SEED, PUBLIC_CORE_COMMAND_ADAPTER_EXTRACTION, PUBLIC_PACKAGE_COMMAND_ADAPTER_EXTRACTION, PUBLIC_ARCHITECTURE_COMMAND_ADAPTER_EXTRACTION, PUBLIC_AUTHORITY_COMMAND_ADAPTER_EXTRACTION, PUBLIC_MODULAR_RUNTIME_PACKAGE_INCLUSION_PLAN, PUBLIC_PACKAGED_ROUTER_PORT_INCLUSION, PUBLIC_THIN_ENTRYPOINT_ROUTER_CUTOVER_REHEARSAL, PUBLIC_THIN_ENTRYPOINT_ROUTER_CUTOVER_APPLICATION, PUBLIC_ROUTER_COMMAND_ADAPTER_DELEGATION_EXPANSION, PUBLIC_RELEASE_CONTRACT, TARGET_ONBOARDING_SURFACE_PLAN, packageRoot, sourceContext, commandSurfaceService, operatorGuideService, quickstartService, discoveryService, createDryRunService, arrayEquals, readJson, packageJsonProjectedPackFiles, firstReadOrder, llmsTxtTemplate, authorityPathTemplate, targetRuntimeNamespaceTemplate, targetOnboardingWriteSet, publicPackageSurfaceCheck, publicCliRuntimeDeMonolithPlanning, publicCliRuntimeDeMonolithPlanningCheck, routeCommand, createRuntimeCompatibilityPort, json });
+const { publicArchitectureMap, bundledAuthorityDomainForParity, publicSourceModuleExtractionAuthorityBundleParityCheck, publicCommandRouter, publicCommandRouterCheck, publicDomainServiceFacades, publicDomainServiceFacadesCheck, publicSourceDomainModulePartitionPlan, plainClone, publicSourceDomainModulePartitionPlanCheck, publicAuthorityFirstRead, publicAuthorityFirstReadCheck, publicAuthorityCompactIndexResult, publicAuthorityCompactIndexCheck, publicAuthorityStateShardingSeed, publicAuthorityStateShardingSeedCheck, publicTargetRuntimeNamespace, publicTargetRuntimeNamespaceCheck, publicSourceDomainExtractionRehearsal, publicSourceDomainExtractionRehearsalCheck, publicSourceExtractionGoldenOutputs, scanCurrentVersionLiterals, publicVersionReferencePolicyCheck, publicSourceExtractionGoldenOutputFreezeCheck, publicSourceModuleExtractionAdapterBoundary, publicSourceModuleExtractionAdapterBoundaryCheck, loadCoreFirstSliceModule, publicSourceModuleExtractionFirstSlice, publicSourceModuleExtractionFirstSliceCheck, bundledCoreDomainForParity, publicSourceModuleExtractionBundleParity, publicSourceModuleExtractionBundleParityCheck, resolveCoreDomainRuntimeBridge, publicSourceModuleExtractionRuntimeBridge, publicSourceModuleExtractionRuntimeBridgeCheck, resolveAuthorityDomainRuntimeBridge, publicSourceModuleExtractionAuthorityRuntimeBridge, publicSourceModuleExtractionAuthorityRuntimeBridgeCheck, publicArchitectureM1ClosureM2Seed, workItemIdFromComponents, workItemIdsFromComponentList, publicArchitectureM1ClosureM2SeedCheck, publicSourceModuleExtractionInstalledFallbackSmoke, publicSourceModuleExtractionInstalledFallbackSmokeCheck, gitignoreSecondSlicePolicy, publicSourceModuleExtractionSecondSlicePlan, publicSourceModuleExtractionSecondSlicePlanCheck, loadAuthoritySecondSliceModule, publicSourceModuleExtractionSecondSliceFirstSlice, publicSourceModuleExtractionSecondSliceFirstSliceCheck, publicSourceModuleExtractionAuthorityBundleParity, publicWorkItemsDomainSourceExtractionPlan, publicWorkItemsDomainSourceExtractionPlanCheck, loadWorkItemsFirstSliceModule, publicWorkItemsDomainSourceExtractionFirstSlice, publicWorkItemsDomainSourceExtractionFirstSliceCheck, bundledWorkItemsDomainForParity, publicWorkItemsDomainSourceExtractionBundleParity, publicWorkItemsDomainSourceExtractionBundleParityCheck, resolveWorkItemsDomainRuntimeBridge, publicWorkItemsDomainSourceExtractionRuntimeBridge, publicWorkItemsDomainSourceExtractionRuntimeBridgeCheck, publicWorkItemsDomainSourceExtractionInstalledFallbackSmoke, publicWorkItemsDomainSourceExtractionInstalledFallbackSmokeCheck, publicClaimsDomainSourceExtractionPlan, publicClaimsDomainSourceExtractionPlanCheck, loadClaimsFirstSliceModule, publicClaimsDomainSourceExtractionFirstSlice, publicClaimsDomainSourceExtractionFirstSliceCheck, bundledClaimsDomainForParity, publicClaimsDomainSourceExtractionBundleParity, publicClaimsDomainSourceExtractionBundleParityCheck, resolveClaimsDomainRuntimeBridge, publicClaimsDomainSourceExtractionRuntimeBridge, publicClaimsDomainSourceExtractionRuntimeBridgeCheck, publicClaimsDomainSourceExtractionInstalledFallbackSmoke, publicClaimsDomainSourceExtractionInstalledFallbackSmokeCheck, publicSourceDomainExtractionStabilizationClosureReview, publicSourceDomainExtractionStabilizationClosureReviewCheck, publicThinCliRouterSeed, publicThinCliRouterSeedCheck, publicCompatibilityCommandPortSeed, publicCompatibilityCommandPortSeedCheck, publicCoreCommandAdapterExtraction, publicCoreCommandAdapterExtractionCheck, publicPackageCommandAdapterExtraction, publicPackageCommandAdapterExtractionCheck, publicArchitectureCommandAdapterExtraction, publicArchitectureCommandAdapterExtractionCheck, publicAuthorityCommandAdapterExtraction, publicAuthorityCommandAdapterExtractionCheck, publicModularRuntimePackageInclusionPlan, publicModularRuntimePackageInclusionPlanCheck, publicPackagedRouterPortInclusion, publicPackagedRouterPortInclusionCheck, publicThinEntrypointRouterCutoverRehearsal, publicThinEntrypointRouterCutoverRehearsalCheck, publicThinEntrypointRouterCutoverApplication, publicThinEntrypointRouterCutoverApplicationCheck, publicRouterCommandAdapterDelegationExpansion, publicRouterCommandAdapterDelegationExpansionCheck, publicArchitectureCheck, runArchitecture } = architectureCompositionService;
 
 const targetCommandRunnerService = createTargetCommandRunnerService({
   version: VERSION,
@@ -598,199 +336,6 @@ const targetCommandRunnerService = createTargetCommandRunnerService({
   json,
   writeText: (value) => process.stdout.write(value)
 });
-
-const publicArchitectureSourceDomainService = typeof createPublicArchitectureSourceDomainService === 'function' ? createPublicArchitectureSourceDomainService({
-  version: VERSION,
-  publicDomainServiceFacades: PUBLIC_DOMAIN_SERVICE_FACADES,
-  publicReleaseContract: PUBLIC_RELEASE_CONTRACT,
-  publicWorkItemsDomainSourceExtractionPlan: PUBLIC_WORK_ITEMS_DOMAIN_SOURCE_EXTRACTION_PLAN,
-  publicWorkItemsDomainSourceExtractionFirstSlice: PUBLIC_WORK_ITEMS_DOMAIN_SOURCE_EXTRACTION_FIRST_SLICE,
-  publicWorkItemsDomainSourceExtractionBundleParity: PUBLIC_WORK_ITEMS_DOMAIN_SOURCE_EXTRACTION_BUNDLE_PARITY,
-  publicWorkItemsDomainSourceExtractionRuntimeBridge: PUBLIC_WORK_ITEMS_DOMAIN_SOURCE_EXTRACTION_RUNTIME_BRIDGE,
-  publicWorkItemsDomainSourceExtractionInstalledFallbackSmoke: PUBLIC_WORK_ITEMS_DOMAIN_SOURCE_EXTRACTION_INSTALLED_FALLBACK_SMOKE,
-  publicClaimsDomainSourceExtractionPlan: PUBLIC_CLAIMS_DOMAIN_SOURCE_EXTRACTION_PLAN,
-  publicClaimsDomainSourceExtractionFirstSlice: PUBLIC_CLAIMS_DOMAIN_SOURCE_EXTRACTION_FIRST_SLICE,
-  publicClaimsDomainSourceExtractionBundleParity: PUBLIC_CLAIMS_DOMAIN_SOURCE_EXTRACTION_BUNDLE_PARITY,
-  publicClaimsDomainSourceExtractionRuntimeBridge: PUBLIC_CLAIMS_DOMAIN_SOURCE_EXTRACTION_RUNTIME_BRIDGE,
-  publicClaimsDomainSourceExtractionInstalledFallbackSmoke: PUBLIC_CLAIMS_DOMAIN_SOURCE_EXTRACTION_INSTALLED_FALLBACK_SMOKE,
-  publicSourceDomainExtractionStabilizationClosureReview: PUBLIC_SOURCE_DOMAIN_EXTRACTION_STABILIZATION_CLOSURE_REVIEW,
-  publicDomainServiceFacadesContract: PUBLIC_DOMAIN_SERVICE_FACADES,
-  packageRoot,
-  sourceContext,
-  commandSurfaceService,
-  operatorGuideService,
-  quickstartService,
-  discoveryService,
-  createDryRunService,
-  arrayEquals,
-  readJson,
-  packageJsonProjectedPackFiles,
-  publicDomainServiceFacades,
-  publicArchitectureMap,
-  workItemIdFromComponents,
-  publicArchitectureM1ClosureM2SeedCheck,
-  publicSourceModuleExtractionAuthorityRuntimeBridgeCheck,
-  publicPackageSurfaceCheck,
-  publicVersionReferencePolicyCheck
-}) : {};
-const {
-  publicWorkItemsDomainSourceExtractionPlan,
-  publicWorkItemsDomainSourceExtractionPlanCheck,
-  loadWorkItemsFirstSliceModule,
-  publicWorkItemsDomainSourceExtractionFirstSlice,
-  publicWorkItemsDomainSourceExtractionFirstSliceCheck,
-  bundledWorkItemsDomainForParity,
-  publicWorkItemsDomainSourceExtractionBundleParity,
-  publicWorkItemsDomainSourceExtractionBundleParityCheck,
-  resolveWorkItemsDomainRuntimeBridge,
-  publicWorkItemsDomainSourceExtractionRuntimeBridge,
-  publicWorkItemsDomainSourceExtractionRuntimeBridgeCheck,
-  publicWorkItemsDomainSourceExtractionInstalledFallbackSmoke,
-  publicWorkItemsDomainSourceExtractionInstalledFallbackSmokeCheck,
-  publicClaimsDomainSourceExtractionPlan,
-  publicClaimsDomainSourceExtractionPlanCheck,
-  loadClaimsFirstSliceModule,
-  publicClaimsDomainSourceExtractionFirstSlice,
-  publicClaimsDomainSourceExtractionFirstSliceCheck,
-  bundledClaimsDomainForParity,
-  publicClaimsDomainSourceExtractionBundleParity,
-  publicClaimsDomainSourceExtractionBundleParityCheck,
-  resolveClaimsDomainRuntimeBridge,
-  publicClaimsDomainSourceExtractionRuntimeBridge,
-  publicClaimsDomainSourceExtractionRuntimeBridgeCheck,
-  publicClaimsDomainSourceExtractionInstalledFallbackSmoke,
-  publicClaimsDomainSourceExtractionInstalledFallbackSmokeCheck,
-  publicSourceDomainExtractionStabilizationClosureReview,
-  publicSourceDomainExtractionStabilizationClosureReviewCheck
-} = publicArchitectureSourceDomainService;
-
-function countFileLines(root, rel) {
-  const filePath = path.join(root, rel);
-  if (!fs.existsSync(filePath)) return 0;
-  const content = fs.readFileSync(filePath, 'utf8');
-  if (content.length === 0) return 0;
-  return content.split(/\r?\n/).length - (content.endsWith('\n') ? 1 : 0);
-}
-
-const publicRouterSeedService = createPublicRouterSeedService({
-  VERSION,
-  PUBLIC_RELEASE_CONTRACT,
-  PUBLIC_THIN_CLI_ROUTER_SEED,
-  PUBLIC_COMPATIBILITY_COMMAND_PORT_SEED,
-  packageRoot,
-  sourceContext,
-  arrayEquals,
-  readJson,
-  packageJsonProjectedPackFiles
-});
-const {
-  publicThinCliRouterSeed,
-  publicThinCliRouterSeedCheck,
-  publicCompatibilityCommandPortSeed,
-  publicCompatibilityCommandPortSeedCheck
-} = publicRouterSeedService;
-
-const publicCommandAdapterExtractionService = createPublicCommandAdapterExtractionService({
-  VERSION,
-  PUBLIC_RELEASE_CONTRACT,
-  PUBLIC_CORE_COMMAND_ADAPTER_EXTRACTION,
-  PUBLIC_PACKAGE_COMMAND_ADAPTER_EXTRACTION,
-  PUBLIC_ARCHITECTURE_COMMAND_ADAPTER_EXTRACTION,
-  PUBLIC_AUTHORITY_COMMAND_ADAPTER_EXTRACTION,
-  packageRoot,
-  sourceContext,
-  arrayEquals,
-  readJson,
-  packageJsonProjectedPackFiles
-});
-const {
-  publicCoreCommandAdapterExtraction,
-  publicCoreCommandAdapterExtractionCheck,
-  publicPackageCommandAdapterExtraction,
-  publicPackageCommandAdapterExtractionCheck,
-  publicArchitectureCommandAdapterExtraction,
-  publicArchitectureCommandAdapterExtractionCheck,
-  publicAuthorityCommandAdapterExtraction,
-  publicAuthorityCommandAdapterExtractionCheck
-} = publicCommandAdapterExtractionService;
-
-const publicRouterCutoverService = createPublicRouterCutoverService({
-  VERSION,
-  PUBLIC_RELEASE_CONTRACT,
-  PUBLIC_MODULAR_RUNTIME_PACKAGE_INCLUSION_PLAN,
-  PUBLIC_PACKAGED_ROUTER_PORT_INCLUSION,
-  PUBLIC_THIN_ENTRYPOINT_ROUTER_CUTOVER_REHEARSAL,
-  PUBLIC_THIN_ENTRYPOINT_ROUTER_CUTOVER_APPLICATION,
-  PUBLIC_ROUTER_COMMAND_ADAPTER_DELEGATION_EXPANSION,
-  packageRoot,
-  sourceContext,
-  arrayEquals,
-  readJson,
-  packageJsonProjectedPackFiles,
-  routeCommand,
-  createRuntimeCompatibilityPort
-});
-const {
-  publicModularRuntimePackageInclusionPlan,
-  publicModularRuntimePackageInclusionPlanCheck,
-  publicPackagedRouterPortInclusion,
-  publicPackagedRouterPortInclusionCheck,
-  publicThinEntrypointRouterCutoverRehearsal,
-  publicThinEntrypointRouterCutoverRehearsalCheck,
-  publicThinEntrypointRouterCutoverApplication,
-  publicThinEntrypointRouterCutoverApplicationCheck,
-  publicRouterCommandAdapterDelegationExpansion,
-  publicRouterCommandAdapterDelegationExpansionCheck
-} = publicRouterCutoverService;
-
-const publicArchitectureAggregateCheckService = createPublicArchitectureAggregateCheckService({
-  version: VERSION,
-  publicArchitectureMapContract: PUBLIC_ARCHITECTURE_MAP,
-  arrayEquals,
-  publicArchitectureMap,
-  publicCommandRouterCheck,
-  publicDomainServiceFacadesCheck,
-  publicAuthorityFirstReadCheck,
-  publicTargetRuntimeNamespaceCheck,
-  publicSourceDomainModulePartitionPlanCheck,
-  publicSourceDomainExtractionRehearsalCheck,
-  publicSourceExtractionGoldenOutputFreezeCheck,
-  publicSourceModuleExtractionAdapterBoundaryCheck,
-  publicSourceModuleExtractionFirstSliceCheck,
-  publicSourceModuleExtractionBundleParityCheck,
-  publicSourceModuleExtractionRuntimeBridgeCheck,
-  publicSourceModuleExtractionInstalledFallbackSmokeCheck,
-  publicSourceModuleExtractionSecondSlicePlanCheck,
-  publicSourceModuleExtractionSecondSliceFirstSliceCheck,
-  publicSourceModuleExtractionAuthorityBundleParityCheck,
-  publicSourceModuleExtractionAuthorityRuntimeBridgeCheck,
-  publicArchitectureM1ClosureM2SeedCheck,
-  publicWorkItemsDomainSourceExtractionPlanCheck,
-  publicWorkItemsDomainSourceExtractionFirstSliceCheck,
-  publicWorkItemsDomainSourceExtractionBundleParityCheck,
-  publicWorkItemsDomainSourceExtractionRuntimeBridgeCheck,
-  publicWorkItemsDomainSourceExtractionInstalledFallbackSmokeCheck,
-  publicClaimsDomainSourceExtractionPlanCheck,
-  publicClaimsDomainSourceExtractionFirstSliceCheck,
-  publicClaimsDomainSourceExtractionBundleParityCheck,
-  publicClaimsDomainSourceExtractionRuntimeBridgeCheck,
-  publicClaimsDomainSourceExtractionInstalledFallbackSmokeCheck,
-  publicSourceDomainExtractionStabilizationClosureReviewCheck,
-  publicCliRuntimeDeMonolithPlanningCheck,
-  publicThinCliRouterSeedCheck,
-  publicCompatibilityCommandPortSeedCheck,
-  publicCoreCommandAdapterExtractionCheck,
-  publicPackageCommandAdapterExtractionCheck,
-  publicArchitectureCommandAdapterExtractionCheck,
-  publicAuthorityCommandAdapterExtractionCheck,
-  publicModularRuntimePackageInclusionPlanCheck,
-  publicPackagedRouterPortInclusionCheck,
-  publicThinEntrypointRouterCutoverRehearsalCheck,
-  publicThinEntrypointRouterCutoverApplicationCheck,
-  publicRouterCommandAdapterDelegationExpansionCheck
-});
-const { publicArchitectureCheck } = publicArchitectureAggregateCheckService;
-
 
 const publicReleaseCleanClosedGatesRuntimeSliceService = createPublicReleaseCleanClosedGatesRuntimeSliceService({
   PACKAGE_NAME,
@@ -1104,92 +649,6 @@ function publicReleaseCheck(root = packageRoot()) {
   return publicReleaseCheckService.publicReleaseCheck(root);
 }
 
-const architectureCommandRunnerService = createPublicArchitectureCommandRunnerService({
-  json,
-  handlers: Object.freeze({
-    publicArchitectureMap,
-    publicCommandRouter,
-    publicDomainServiceFacades,
-    publicSourceDomainModulePartitionPlan,
-    publicSourceDomainModulePartitionPlanCheck,
-    publicSourceDomainExtractionRehearsal,
-    publicSourceDomainExtractionRehearsalCheck,
-    publicSourceExtractionGoldenOutputs,
-    publicSourceExtractionGoldenOutputFreezeCheck,
-    publicSourceModuleExtractionAdapterBoundary,
-    publicSourceModuleExtractionAdapterBoundaryCheck,
-    publicSourceModuleExtractionFirstSlice,
-    publicSourceModuleExtractionFirstSliceCheck,
-    publicSourceModuleExtractionBundleParity,
-    publicSourceModuleExtractionBundleParityCheck,
-    publicSourceModuleExtractionRuntimeBridge,
-    publicSourceModuleExtractionRuntimeBridgeCheck,
-    publicSourceModuleExtractionInstalledFallbackSmoke,
-    publicSourceModuleExtractionInstalledFallbackSmokeCheck,
-    publicSourceModuleExtractionSecondSlicePlan,
-    publicSourceModuleExtractionSecondSlicePlanCheck,
-    publicSourceModuleExtractionSecondSliceFirstSlice,
-    publicSourceModuleExtractionSecondSliceFirstSliceCheck,
-    publicSourceModuleExtractionAuthorityBundleParity,
-    publicSourceModuleExtractionAuthorityBundleParityCheck,
-    publicSourceModuleExtractionAuthorityRuntimeBridge,
-    publicSourceModuleExtractionAuthorityRuntimeBridgeCheck,
-    publicArchitectureM1ClosureM2Seed,
-    publicArchitectureM1ClosureM2SeedCheck,
-    publicWorkItemsDomainSourceExtractionPlan,
-    publicWorkItemsDomainSourceExtractionPlanCheck,
-    publicWorkItemsDomainSourceExtractionFirstSlice,
-    publicWorkItemsDomainSourceExtractionFirstSliceCheck,
-    publicWorkItemsDomainSourceExtractionBundleParity,
-    publicWorkItemsDomainSourceExtractionBundleParityCheck,
-    publicWorkItemsDomainSourceExtractionRuntimeBridge,
-    publicWorkItemsDomainSourceExtractionRuntimeBridgeCheck,
-    publicWorkItemsDomainSourceExtractionInstalledFallbackSmoke,
-    publicWorkItemsDomainSourceExtractionInstalledFallbackSmokeCheck,
-    publicClaimsDomainSourceExtractionPlan,
-    publicClaimsDomainSourceExtractionPlanCheck,
-    publicClaimsDomainSourceExtractionFirstSlice,
-    publicClaimsDomainSourceExtractionFirstSliceCheck,
-    publicClaimsDomainSourceExtractionBundleParity,
-    publicClaimsDomainSourceExtractionBundleParityCheck,
-    publicClaimsDomainSourceExtractionRuntimeBridge,
-    publicClaimsDomainSourceExtractionRuntimeBridgeCheck,
-    publicClaimsDomainSourceExtractionInstalledFallbackSmoke,
-    publicClaimsDomainSourceExtractionInstalledFallbackSmokeCheck,
-    publicSourceDomainExtractionStabilizationClosureReview,
-    publicSourceDomainExtractionStabilizationClosureReviewCheck,
-    publicCliRuntimeDeMonolithPlanning,
-    publicCliRuntimeDeMonolithPlanningCheck,
-    publicThinCliRouterSeed,
-    publicThinCliRouterSeedCheck,
-    publicCompatibilityCommandPortSeed,
-    publicCompatibilityCommandPortSeedCheck,
-    publicCoreCommandAdapterExtraction,
-    publicCoreCommandAdapterExtractionCheck,
-    publicPackageCommandAdapterExtraction,
-    publicPackageCommandAdapterExtractionCheck,
-    publicArchitectureCommandAdapterExtraction,
-    publicArchitectureCommandAdapterExtractionCheck,
-    publicAuthorityCommandAdapterExtraction,
-    publicAuthorityCommandAdapterExtractionCheck,
-    publicModularRuntimePackageInclusionPlan,
-    publicModularRuntimePackageInclusionPlanCheck,
-    publicPackagedRouterPortInclusion,
-    publicPackagedRouterPortInclusionCheck,
-    publicThinEntrypointRouterCutoverRehearsal,
-    publicThinEntrypointRouterCutoverRehearsalCheck,
-    publicThinEntrypointRouterCutoverApplication,
-    publicThinEntrypointRouterCutoverApplicationCheck,
-    publicRouterCommandAdapterDelegationExpansion,
-    publicRouterCommandAdapterDelegationExpansionCheck,
-    publicArchitectureCheck
-  })
-});
-
-function runArchitecture(args = []) {
-  return architectureCommandRunnerService.runArchitecture(args);
-}
-
 function runAuthority(args) {
   if (args.length === 1 && args[0] === '--first-read') {
     json(publicAuthorityFirstRead());
@@ -1261,6 +720,7 @@ const PUBLIC_RUNTIME_RELEASE_COMMAND_SERVICE = createPublicRuntimeReleaseCommand
     PUBLIC_SOURCE_MODULE_EXTRACTION_ADAPTER_BOUNDARY,
     PUBLIC_SOURCE_MODULE_EXTRACTION_BUNDLE_PARITY,
     PUBLIC_SOURCE_MODULE_EXTRACTION_FIRST_SLICE,
+    PUBLIC_SOURCE_MODULE_EXTRACTION_BUNDLE_PARITY,
     PUBLIC_SOURCE_MODULE_EXTRACTION_RUNTIME_BRIDGE,
     PUBLIC_SOURCE_MODULE_EXTRACTION_SECOND_SLICE_FIRST_SLICE,
     PUBLIC_SOURCE_MODULE_EXTRACTION_SECOND_SLICE_PLAN,
@@ -1471,160 +931,4 @@ function createRuntimeCompatibilityPort() {
   });
 }
 
-module.exports = {
-  targetConfigTemplate,
-  validateTargetConfig,
-  validateWorkItems,
-  validateWorkItemsGraph,
-  appendWorkItemDryRun,
-  claimWorkItemDryRun,
-  closeWorkItemDryRun,
-  publicContractsCatalog,
-  publicContractsCheck,
-  handoffEvidenceChecklist,
-  participationLifecycleNextSteps,
-  workItemsTemplate,
-  initWriteSet,
-  planWrites,
-  agentsMdTemplate,
-  bridgeMarkerBlock,
-  bridgePlan,
-  bridgeCheck,
-  bridgeWrite,
-  evaluateTargetBoundaryConfig,
-  sourceWorkItemsLedgerCheck,
-  sourceContext,
-  commandSurfaceService,
-  operatorGuideService,
-  quickstartService,
-  discoveryService,
-  createDryRunService,
-  issueIntakeService,
-  ciSurfaceService,
-  publicReleaseCheck,
-  publicCleanCompactionBaseline,
-  publicCleanCompactionBaselineCheck,
-  publicCleanCompactionBaselineText,
-  publicClosedGateArtifactCompactionPlan,
-  publicClosedGateArtifactCompactionPlanCheck,
-  publicClosedGateArtifactCompactionPlanText,
-  publicClosedGateArtifactCompactionDryRun,
-  publicClosedGateArtifactCompactionDryRunCheck,
-  publicClosedGateArtifactCompactionDryRunText,
-  publicClosedGateArtifactCompactionApply,
-  publicClosedGateArtifactCompactionApplyCheck,
-  publicClosedGateRawArtifactPruneApply,
-  publicClosedGateRawArtifactPruneApplyCheck,
-  publicClosedGateArchiveReader,
-  publicClosedGateArchiveReaderCheck,
-  publicClosedGateArchiveReaderText,
-  publicArchitectureMap,
-  publicCommandRouter,
-  publicCommandRouterCheck,
-  publicArchitectureCheck,
-  publicAuthorityFirstRead,
-  publicAuthorityFirstReadCheck,
-  publicAuthorityCompactIndexResult,
-  publicAuthorityCompactIndexCheck,
-  publicSourceDomainExtractionRehearsal,
-  publicSourceDomainExtractionRehearsalCheck,
-  publicSourceModuleExtractionAuthorityBundleParity,
-  publicSourceModuleExtractionAuthorityBundleParityCheck,
-  publicWorkItemsDomainSourceExtractionPlan,
-  publicWorkItemsDomainSourceExtractionPlanCheck,
-  publicWorkItemsDomainSourceExtractionFirstSlice,
-  publicWorkItemsDomainSourceExtractionFirstSliceCheck,
-  publicWorkItemsDomainSourceExtractionBundleParity,
-  publicWorkItemsDomainSourceExtractionBundleParityCheck,
-  publicWorkItemsDomainSourceExtractionRuntimeBridge,
-  publicWorkItemsDomainSourceExtractionRuntimeBridgeCheck,
-  publicWorkItemsDomainSourceExtractionInstalledFallbackSmoke,
-  publicWorkItemsDomainSourceExtractionInstalledFallbackSmokeCheck,
-  publicArchitectureCommandAdapterExtraction,
-  publicArchitectureCommandAdapterExtractionCheck,
-  publicAuthorityCommandAdapterExtraction,
-  publicAuthorityCommandAdapterExtractionCheck,
-  publicModularRuntimePackageInclusionPlan,
-  publicModularRuntimePackageInclusionPlanCheck,
-  publicPackagedRouterPortInclusion,
-  publicPackagedRouterPortInclusionCheck,
-  publicThinEntrypointRouterCutoverRehearsal,
-  publicThinEntrypointRouterCutoverRehearsalCheck,
-  publicThinEntrypointRouterCutoverApplication,
-  publicThinEntrypointRouterCutoverApplicationCheck,
-  publicRouterCommandAdapterDelegationExpansion,
-  publicRouterCommandAdapterDelegationExpansionCheck,
-  publicClaimsDomainSourceExtractionPlan,
-  publicClaimsDomainSourceExtractionPlanCheck,
-  publicClaimsDomainSourceExtractionFirstSlice,
-  publicClaimsDomainSourceExtractionFirstSliceCheck,
-  publicClaimsDomainSourceExtractionBundleParity,
-  publicClaimsDomainSourceExtractionBundleParityCheck,
-  publicClaimsDomainSourceExtractionRuntimeBridge,
-  publicClaimsDomainSourceExtractionRuntimeBridgeCheck,
-  publicClaimsDomainSourceExtractionInstalledFallbackSmoke,
-  publicClaimsDomainSourceExtractionInstalledFallbackSmokeCheck,
-  publicInstalledPackageParitySmoke,
-  publicInstalledParityArchitectureSmoke,
-  publicTargetOnboardingInstalledPackageSmoke,
-  publicTargetOnboardingPostPublishHandoff,
-  publicTargetOnboardingPublishedAcceptance,
-  publicTargetOnboardingRealTargetRepoTrial,
-  targetOnboardingSurfacePlan,
-  targetOnboardingDryRunFixture,
-  targetOnboardingRealTargetTrial,
-  targetOnboardingWriteSet,
-  targetDoctor,
-  targetRepair,
-  targetProfile,
-  targetInventory,
-  formatTargetInventoryText,
-  targetWorkItemsPreview,
-  formatTargetWorkItemsPreviewText,
-  targetGovernancePreview,
-  formatTargetGovernancePreviewText,
-  targetGovernanceBudgetContract,
-  formatTargetGovernanceBudgetContractText,
-  targetGovernanceBudgetCheck,
-  formatTargetGovernanceBudgetCheckText,
-  targetGovernanceIndexMaterializationDryRun,
-  formatTargetGovernanceIndexMaterializationDryRunText,
-  targetGovernanceIndexMaterializationWrite,
-  formatTargetGovernanceIndexMaterializationWriteText,
-  targetGovernanceIndexDriftCheck,
-  formatTargetGovernanceIndexDriftCheckText,
-  targetGovernanceIndexRefreshAfterMutation,
-  targetHandoffPreview,
-  formatTargetHandoffPreviewText,
-  targetRuntimeNamespaceTemplate,
-  planTargetOnboardingWritesForRoot,
-  TARGET_ONBOARDING_SURFACE_PLAN,
-  TARGET_ONBOARDING_DRY_RUN_FIXTURE_MATRIX,
-  PUBLIC_RELEASE_FIXTURE_MATRIX,
-  RUNTIME_CONTRACTS,
-  PUBLIC_ARCHITECTURE_MAP,
-  PUBLIC_COMMAND_ROUTER,
-  PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL,
-  PUBLIC_SOURCE_MODULE_EXTRACTION_ADAPTER_BOUNDARY,
-  PUBLIC_SOURCE_MODULE_EXTRACTION_AUTHORITY_BUNDLE_PARITY,
-  PUBLIC_WORK_ITEMS_DOMAIN_SOURCE_EXTRACTION_PLAN,
-  PUBLIC_WORK_ITEMS_DOMAIN_SOURCE_EXTRACTION_FIRST_SLICE,
-  PUBLIC_WORK_ITEMS_DOMAIN_SOURCE_EXTRACTION_BUNDLE_PARITY,
-  PUBLIC_WORK_ITEMS_DOMAIN_SOURCE_EXTRACTION_RUNTIME_BRIDGE,
-  PUBLIC_WORK_ITEMS_DOMAIN_SOURCE_EXTRACTION_INSTALLED_FALLBACK_SMOKE,
-  PUBLIC_CLAIMS_DOMAIN_SOURCE_EXTRACTION_PLAN,
-  PUBLIC_CLAIMS_DOMAIN_SOURCE_EXTRACTION_FIRST_SLICE,
-  PUBLIC_CLAIMS_DOMAIN_SOURCE_EXTRACTION_BUNDLE_PARITY,
-  PUBLIC_CLAIMS_DOMAIN_SOURCE_EXTRACTION_INSTALLED_FALLBACK_SMOKE,
-  PUBLIC_TARGET_RUNTIME_NAMESPACE,
-  PUBLIC_INSTALLED_PARITY_ARCHITECTURE_SMOKE,
-  PUBLIC_ROUTER_COMMAND_ADAPTER_DELEGATION_EXPANSION,
-  PUBLIC_CLI_RUNTIME_DE_MONOLITH_PLANNING,
-  PUBLIC_ARCHITECTURE_COMMAND_ADAPTER_EXTRACTION,
-  PUBLIC_AUTHORITY_COMMAND_ADAPTER_EXTRACTION,
-  PUBLIC_MODULAR_RUNTIME_PACKAGE_INCLUSION_PLAN,
-  PUBLIC_PACKAGED_ROUTER_PORT_INCLUSION,
-  PUBLIC_THIN_ENTRYPOINT_ROUTER_CUTOVER_REHEARSAL,
-  PUBLIC_THIN_ENTRYPOINT_ROUTER_CUTOVER_APPLICATION,
-  createRuntimeCompatibilityPort
-};
+module.exports = { targetConfigTemplate, validateTargetConfig, validateWorkItems, validateWorkItemsGraph, appendWorkItemDryRun, claimWorkItemDryRun, closeWorkItemDryRun, publicContractsCatalog, publicContractsCheck, handoffEvidenceChecklist, participationLifecycleNextSteps, workItemsTemplate, initWriteSet, planWrites, agentsMdTemplate, bridgeMarkerBlock, bridgePlan, bridgeCheck, bridgeWrite, evaluateTargetBoundaryConfig, sourceWorkItemsLedgerCheck, sourceContext, commandSurfaceService, operatorGuideService, quickstartService, discoveryService, createDryRunService, issueIntakeService, ciSurfaceService, publicReleaseCheck, publicCleanCompactionBaseline, publicCleanCompactionBaselineCheck, publicCleanCompactionBaselineText, publicClosedGateArtifactCompactionPlan, publicClosedGateArtifactCompactionPlanCheck, publicClosedGateArtifactCompactionPlanText, publicClosedGateArtifactCompactionDryRun, publicClosedGateArtifactCompactionDryRunCheck, publicClosedGateArtifactCompactionDryRunText, publicClosedGateArtifactCompactionApply, publicClosedGateArtifactCompactionApplyCheck, publicClosedGateRawArtifactPruneApply, publicClosedGateRawArtifactPruneApplyCheck, publicClosedGateArchiveReader, publicClosedGateArchiveReaderCheck, publicClosedGateArchiveReaderText, publicArchitectureMap, publicCommandRouter, publicCommandRouterCheck, publicArchitectureCheck, publicAuthorityFirstRead, publicAuthorityFirstReadCheck, publicAuthorityCompactIndexResult, publicAuthorityCompactIndexCheck, publicSourceDomainExtractionRehearsal, publicSourceDomainExtractionRehearsalCheck, publicSourceModuleExtractionAuthorityBundleParity, publicSourceModuleExtractionAuthorityBundleParityCheck, publicWorkItemsDomainSourceExtractionPlan, publicWorkItemsDomainSourceExtractionPlanCheck, publicWorkItemsDomainSourceExtractionFirstSlice, publicWorkItemsDomainSourceExtractionFirstSliceCheck, publicWorkItemsDomainSourceExtractionBundleParity, publicWorkItemsDomainSourceExtractionBundleParityCheck, publicWorkItemsDomainSourceExtractionRuntimeBridge, publicWorkItemsDomainSourceExtractionRuntimeBridgeCheck, publicWorkItemsDomainSourceExtractionInstalledFallbackSmoke, publicWorkItemsDomainSourceExtractionInstalledFallbackSmokeCheck, publicArchitectureCommandAdapterExtraction, publicArchitectureCommandAdapterExtractionCheck, publicAuthorityCommandAdapterExtraction, publicAuthorityCommandAdapterExtractionCheck, publicModularRuntimePackageInclusionPlan, publicModularRuntimePackageInclusionPlanCheck, publicPackagedRouterPortInclusion, publicPackagedRouterPortInclusionCheck, publicThinEntrypointRouterCutoverRehearsal, publicThinEntrypointRouterCutoverRehearsalCheck, publicThinEntrypointRouterCutoverApplication, publicThinEntrypointRouterCutoverApplicationCheck, publicRouterCommandAdapterDelegationExpansion, publicRouterCommandAdapterDelegationExpansionCheck, publicClaimsDomainSourceExtractionPlan, publicClaimsDomainSourceExtractionPlanCheck, publicClaimsDomainSourceExtractionFirstSlice, publicClaimsDomainSourceExtractionFirstSliceCheck, publicClaimsDomainSourceExtractionBundleParity, publicClaimsDomainSourceExtractionBundleParityCheck, publicClaimsDomainSourceExtractionRuntimeBridge, publicClaimsDomainSourceExtractionRuntimeBridgeCheck, publicClaimsDomainSourceExtractionInstalledFallbackSmoke, publicClaimsDomainSourceExtractionInstalledFallbackSmokeCheck, publicInstalledPackageParitySmoke, publicInstalledParityArchitectureSmoke, publicTargetOnboardingInstalledPackageSmoke, publicTargetOnboardingPostPublishHandoff, publicTargetOnboardingPublishedAcceptance, publicTargetOnboardingRealTargetRepoTrial, targetOnboardingSurfacePlan, targetOnboardingDryRunFixture, targetOnboardingRealTargetTrial, targetOnboardingWriteSet, targetDoctor, targetRepair, targetProfile, targetInventory, formatTargetInventoryText, targetWorkItemsPreview, formatTargetWorkItemsPreviewText, targetGovernancePreview, formatTargetGovernancePreviewText, targetGovernanceBudgetContract, formatTargetGovernanceBudgetContractText, targetGovernanceBudgetCheck, formatTargetGovernanceBudgetCheckText, targetGovernanceIndexMaterializationDryRun, formatTargetGovernanceIndexMaterializationDryRunText, targetGovernanceIndexMaterializationWrite, formatTargetGovernanceIndexMaterializationWriteText, targetGovernanceIndexDriftCheck, formatTargetGovernanceIndexDriftCheckText, targetGovernanceIndexRefreshAfterMutation, targetHandoffPreview, formatTargetHandoffPreviewText, targetRuntimeNamespaceTemplate, planTargetOnboardingWritesForRoot, TARGET_ONBOARDING_SURFACE_PLAN, TARGET_ONBOARDING_DRY_RUN_FIXTURE_MATRIX, PUBLIC_RELEASE_FIXTURE_MATRIX, RUNTIME_CONTRACTS, PUBLIC_ARCHITECTURE_MAP, PUBLIC_COMMAND_ROUTER, PUBLIC_SOURCE_DOMAIN_EXTRACTION_REHEARSAL, PUBLIC_SOURCE_MODULE_EXTRACTION_ADAPTER_BOUNDARY, PUBLIC_SOURCE_MODULE_EXTRACTION_AUTHORITY_BUNDLE_PARITY, PUBLIC_WORK_ITEMS_DOMAIN_SOURCE_EXTRACTION_PLAN, PUBLIC_WORK_ITEMS_DOMAIN_SOURCE_EXTRACTION_FIRST_SLICE, PUBLIC_WORK_ITEMS_DOMAIN_SOURCE_EXTRACTION_BUNDLE_PARITY, PUBLIC_WORK_ITEMS_DOMAIN_SOURCE_EXTRACTION_RUNTIME_BRIDGE, PUBLIC_WORK_ITEMS_DOMAIN_SOURCE_EXTRACTION_INSTALLED_FALLBACK_SMOKE, PUBLIC_CLAIMS_DOMAIN_SOURCE_EXTRACTION_PLAN, PUBLIC_CLAIMS_DOMAIN_SOURCE_EXTRACTION_FIRST_SLICE, PUBLIC_CLAIMS_DOMAIN_SOURCE_EXTRACTION_BUNDLE_PARITY, PUBLIC_CLAIMS_DOMAIN_SOURCE_EXTRACTION_INSTALLED_FALLBACK_SMOKE, PUBLIC_TARGET_RUNTIME_NAMESPACE, PUBLIC_INSTALLED_PARITY_ARCHITECTURE_SMOKE, PUBLIC_ROUTER_COMMAND_ADAPTER_DELEGATION_EXPANSION, PUBLIC_CLI_RUNTIME_DE_MONOLITH_PLANNING, PUBLIC_ARCHITECTURE_COMMAND_ADAPTER_EXTRACTION, PUBLIC_AUTHORITY_COMMAND_ADAPTER_EXTRACTION, PUBLIC_MODULAR_RUNTIME_PACKAGE_INCLUSION_PLAN, PUBLIC_PACKAGED_ROUTER_PORT_INCLUSION, PUBLIC_THIN_ENTRYPOINT_ROUTER_CUTOVER_REHEARSAL, PUBLIC_THIN_ENTRYPOINT_ROUTER_CUTOVER_APPLICATION, createRuntimeCompatibilityPort };

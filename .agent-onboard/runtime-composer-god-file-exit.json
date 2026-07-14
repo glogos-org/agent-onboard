@@ -1,0 +1,77 @@
+{
+  "schema": "agent-onboard-public-runtime-composer-god-file-exit-closure-001",
+  "package_name": "agent-onboard",
+  "version": "0.0.204",
+  "release_line": "public_runtime_composer_god_file_exit_gate",
+  "work_item_id": "P1S3M7W21",
+  "status": "closed",
+  "gate": "Public Runtime Composer God-File Exit Gate",
+  "objective": "Remove runtime-composer.js from the god-file tier by extracting shared runtime context and architecture composition wiring into bounded services.",
+  "closure_result": {
+    "runtime_composer_removed_from_god_files": true,
+    "runtime_composer_before": {
+      "path": "cli/agent_onboard/runtime-composer.js",
+      "lines": 1630,
+      "bytes": 65922,
+      "level": "god"
+    },
+    "runtime_composer_after": {
+      "path": "cli/agent_onboard/runtime-composer.js",
+      "lines": 934,
+      "bytes": 47756,
+      "level": "near_god"
+    },
+    "remaining_god_files_after_w21": 3,
+    "near_god_files_after_w21": 35,
+    "storage_backend_changed": false
+  },
+  "extracted_services": [
+    {
+      "path": "cli/agent_onboard/runtime-shared-context-service.js",
+      "lines": 172,
+      "bytes": 7423
+    },
+    {
+      "path": "cli/agent_onboard/domains/architecture/services/runtime/public-architecture-composition-service.js",
+      "lines": 591,
+      "bytes": 26477
+    }
+  ],
+  "package_surface_updates": {
+    "package_json_files_updated": true,
+    "runtime_contracts_pack_files_updated": true,
+    "release_line": "public_runtime_composer_god_file_exit_gate"
+  },
+  "checks_run": [
+    "node scripts/check.js runtime-composer-god-file-exit",
+    "node scripts/check.js source-size-budget",
+    "node scripts/check.js god-file-budget-enforcement-closure",
+    "node scripts/check.js state-projection-authority-cutover",
+    "node scripts/check.js closure-payload-reference-compaction",
+    "node cli/agent-onboard.js authority --index-check",
+    "node cli/agent-onboard.js authority --state-check",
+    "node cli/agent-onboard.js release --source-manifest-check",
+    "node cli/agent-onboard.js release --clean-check",
+    "node cli/agent-onboard.js release --check",
+    "node cli/agent-onboard.js architecture --check",
+    "node cli/agent-onboard.js check --fast --json",
+    "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+    "npm pack --dry-run --json"
+  ],
+  "checks_not_run": [
+    "npm publish was not run."
+  ],
+  "known_non_pass": [
+    "Full npm test is not counted as pass in this local handoff; targeted runtime-composer, source-size, god-file, authority, state, release, architecture, fast-check, work-item, and npm pack dry-run checks are decisive evidence."
+  ],
+  "boundary": {
+    "writes_files": true,
+    "mutates_git": false,
+    "network": false,
+    "publishes_package": false,
+    "storage_backend_changed": false,
+    "sqlite_introduced": false,
+    "lmdb_introduced": false,
+    "mdbx_introduced": false
+  }
+}

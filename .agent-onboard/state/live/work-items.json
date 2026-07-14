@@ -5,12 +5,12 @@
   "authority_role": "compatibility_live_projection",
   "projection_of": "canonical_sharded_work_items_authority",
   "legacy_full_projection": false,
-  "item_count": 191,
+  "item_count": 192,
   "open_count": 0,
   "claimed_count": 0,
-  "closed_count": 191,
-  "latest_work_item_id": "P1S3M7W20",
-  "latest_closed_work_item_id": "P1S3M7W20",
+  "closed_count": 192,
+  "latest_work_item_id": "P1S3M7W21",
+  "latest_closed_work_item_id": "P1S3M7W21",
   "rebuildable_from": [
     ".agent-onboard/state/authority/work-items/manifest.json",
     ".agent-onboard/state/authority/work-items/items/index.json",
@@ -24,23 +24,16 @@
   "counts": {
     "open": 0,
     "claimed": 0,
-    "closed": 191,
+    "closed": 192,
     "programs": 1,
     "stages": 3,
     "milestones": 10,
-    "work_items": 191
+    "work_items": 192
   },
-  "current_work_item": "P1S3M7W20",
+  "current_work_item": "P1S3M7W21",
   "next_open_work_item": null,
-  "updated_at": "2026-07-10T11:00:00.000Z",
+  "updated_at": "2026-07-10T12:20:00.000Z",
   "latest_closed_work_items": [
-    {
-      "id": "P1S3M7W16",
-      "title": "Public Architecture Runtime Service Residual Reduction Gate",
-      "status": "closed",
-      "milestone_id": "P1S3M7",
-      "domain": null
-    },
     {
       "id": "P1S3M7W17",
       "title": "Public Source Extraction Runtime Service Residual Reduction Gate",
@@ -65,6 +58,13 @@
     {
       "id": "P1S3M7W20",
       "title": "Public Source Domain Runtime Service Near-God Reduction Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M7",
+      "domain": null
+    },
+    {
+      "id": "P1S3M7W21",
+      "title": "Public Runtime Composer God-File Exit Gate",
       "status": "closed",
       "milestone_id": "P1S3M7",
       "domain": null

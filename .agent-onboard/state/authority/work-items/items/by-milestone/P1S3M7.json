@@ -3,7 +3,7 @@
   "package_name": "agent-onboard",
   "source": ".agent-onboard/work-items.json",
   "milestone_id": "P1S3M7",
-  "item_count": 20,
+  "item_count": 21,
   "items": [
     {
       "id": "P1S3M7W1",
@@ -212,6 +212,18 @@
         "claimed_at": "2026-07-10T11:00:00.000Z"
       },
       "closure_ref": "closures:P1S3M7W20"
+    },
+    {
+      "id": "P1S3M7W21",
+      "milestone_id": "P1S3M7",
+      "title": "Public Runtime Composer God-File Exit Gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-10T12:20:00.000Z",
+        "note": "Remove runtime-composer.js from the god-file tier without changing the storage backend."
+      },
+      "closure_ref": "closures:P1S3M7W21"
     }
   ]
 }

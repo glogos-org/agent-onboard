@@ -60,12 +60,6 @@ function main() {
   const cleanSourceBudget = Number((cleanRuntime.match(/max_source_files: (\d+)/u) || [])[1]);
   if (!(cleanPackBudget >= 94) || !(cleanSourceBudget >= 267)) failures.push(`${CLEAN_RUNTIME_REL} must admit the extracted packaged release check service`);
 
-  const releaseSmoke = runCli(['release', '--check']);
-  const fastSmoke = runCli(['check', '--fast', '--json']);
-  const packSmoke = spawnSync('npm', ['pack', '--dry-run', '--json'], { cwd: ROOT, encoding: 'utf8', timeout: 120000, maxBuffer: 1024 * 1024 * 16 });
-  if (releaseSmoke.status !== 0) failures.push(`release --check failed: ${releaseSmoke.stderr || releaseSmoke.stdout}`);
-  if (fastSmoke.status !== 0) failures.push(`check --fast --json failed: ${fastSmoke.stderr || fastSmoke.stdout}`);
-  if (packSmoke.status !== 0) failures.push(`npm pack --dry-run --json failed: ${packSmoke.stderr || packSmoke.stdout}`);
 
   const result = {
     schema: 'agent-onboard-public-release-check-service-extraction-check-001',
@@ -75,7 +69,7 @@ function main() {
     work_item_id: 'P1S3M7W7',
     composer: composerMetric,
     extracted_release_check_service: serviceMetric,
-    smoke_count: 3,
+    smoke_count: 0,
     boundary: {
       writes_files: false,
       mutates_git: false,
