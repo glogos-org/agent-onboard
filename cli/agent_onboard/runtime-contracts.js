@@ -376,6 +376,7 @@ const PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES = Object.freeze([
   'cli/agent_onboard/domains/core/services/config-guard-service.js',
   'cli/agent_onboard/domains/core/services/ni-uri-service.js',
   'cli/agent_onboard/domains/core/services/public-runtime-surface-service.js',
+  'cli/agent_onboard/domains/core/services/public-core-surface-command-runner-service.js',
   'cli/agent_onboard/domains/core/services/public-runtime-check-fast-service.js',
   'cli/agent_onboard/domains/core/services/public-runtime-mcp-bridge-service.js',
   'cli/agent_onboard/domains/package/index.js',

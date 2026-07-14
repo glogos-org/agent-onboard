@@ -22,6 +22,7 @@ const { createPublicTargetOnboardingAcceptanceService } = require('./domains/pac
 const { createPublicReleaseCleanClosedGatesRuntimeSliceService } = require('./domains/package/services/release-clean-closed-gates-runtime-slice-service');
 const { createPublicRuntimeCheckFastService } = require('./domains/core/services/public-runtime-check-fast-service');
 const { createPublicRuntimeMcpBridgeService } = require('./domains/core/services/public-runtime-mcp-bridge-service');
+const { createPublicCoreSurfaceCommandRunnerService } = require('./domains/core/services/public-core-surface-command-runner-service');
 const { createPublicRuntimeAgentsBridgeService } = require('./domains/authority/services/public-runtime-agents-bridge-service');
 const { sourceManifest: packageSourceManifestDomain } = require('./domains/package');
 const {
@@ -5045,373 +5046,25 @@ const runBridge = (args = []) => agentsBridgeService.runBridge(args);
 const runAgents = (args = []) => agentsBridgeService.runAgents(args);
 
 
-function help() {
-  process.stdout.write(`agent-onboard ${VERSION}\n\n${PRODUCT_HELP_LINES.join('\n')}\n`);
-  return 0;
-}
-
-function printVersion() {
-  process.stdout.write(`${VERSION}\n`);
-  return 0;
-}
-
-function runStatus() {
-  json({ schema: 'agent-onboard-status-001', status: 'ok', version: VERSION, release_line: PUBLIC_RELEASE_CONTRACT.release_line });
-  return 0;
-}
-
-function runCommands(args = []) {
-  const wantsJson = args.includes(OUTPUT_FLAG.json);
-  const wantsText = args.includes(OUTPUT_FLAG.text) || !wantsJson;
-  if (wantsJson && wantsText && args.includes(OUTPUT_FLAG.text)) {
-    json({
-      schema: 'agent-onboard-public-command-surface-error-001',
-      status: 'error',
-      command_family: 'commands',
-      message: 'commands accepts either --json or --text, not both',
-      writes_files: false,
-      publishes_package: false
-    });
-    return 1;
-  }
-  if (args.some((arg) => ![OUTPUT_FLAG.json, OUTPUT_FLAG.text].includes(arg))) {
-    json({
-      schema: 'agent-onboard-public-command-surface-error-001',
-      status: 'error',
-      command_family: 'commands',
-      message: 'commands supports only --json or --text',
-      writes_files: false,
-      publishes_package: false
-    });
-    return 1;
-  }
-  if (wantsJson) json(commandSurfaceService.catalog());
-  else process.stdout.write(commandSurfaceService.text());
-  return 0;
-}
-
-
-function runGuide(args = []) {
-  const wantsJson = args.includes(OUTPUT_FLAG.json);
-  const wantsText = args.includes(OUTPUT_FLAG.text) || !wantsJson;
-  if (wantsJson && wantsText && args.includes(OUTPUT_FLAG.text)) {
-    json({
-      schema: 'agent-onboard-public-operator-guide-error-001',
-      status: 'error',
-      command_family: 'guide',
-      message: 'guide accepts either --json or --text, not both',
-      writes_files: false,
-      publishes_package: false
-    });
-    return 1;
-  }
-  if (args.some((arg) => ![OUTPUT_FLAG.json, OUTPUT_FLAG.text].includes(arg))) {
-    json({
-      schema: 'agent-onboard-public-operator-guide-error-001',
-      status: 'error',
-      command_family: 'guide',
-      message: 'guide supports only --json or --text',
-      writes_files: false,
-      publishes_package: false
-    });
-    return 1;
-  }
-  if (wantsJson) json(operatorGuideService.catalog());
-  else process.stdout.write(operatorGuideService.text());
-  return 0;
-}
-
-
-function runQuickstart(args = []) {
-  const allowed = [OUTPUT_FLAG.json, OUTPUT_FLAG.text, '--dry-run'];
-  const selected = args.filter((arg) => allowed.includes(arg));
-  if (args.some((arg) => !allowed.includes(arg))) {
-    json({
-      schema: 'agent-onboard-public-quickstart-error-001',
-      status: 'error',
-      command_family: 'quickstart',
-      message: 'quickstart supports only --json, --text, or --dry-run',
-      writes_files: false,
-      publishes_package: false
-    });
-    return 1;
-  }
-  if (selected.length > 1) {
-    json({
-      schema: 'agent-onboard-public-quickstart-error-001',
-      status: 'error',
-      command_family: 'quickstart',
-      message: 'quickstart accepts only one output mode: --json, --text, or --dry-run',
-      writes_files: false,
-      publishes_package: false
-    });
-    return 1;
-  }
-  const mode = selected[0] || OUTPUT_FLAG.text;
-  if (mode === OUTPUT_FLAG.json || mode === '--dry-run') json(quickstartService.catalog());
-  else process.stdout.write(quickstartService.text());
-  return 0;
-}
-
-
-function runDiscovery(args = []) {
-  const allowed = ['--llms', OUTPUT_FLAG.json, OUTPUT_FLAG.text];
-  const selected = args.filter((arg) => allowed.includes(arg));
-  if (args.some((arg) => !allowed.includes(arg))) {
-    json({
-      schema: 'agent-onboard-public-ai-discovery-error-001',
-      status: 'error',
-      command_family: 'discovery',
-      message: 'discovery supports only --llms, --json, or --text',
-      writes_files: false,
-      publishes_package: false
-    });
-    return 1;
-  }
-  if (selected.length > 1) {
-    json({
-      schema: 'agent-onboard-public-ai-discovery-error-001',
-      status: 'error',
-      command_family: 'discovery',
-      message: 'discovery accepts only one output mode: --llms, --json, or --text',
-      writes_files: false,
-      publishes_package: false
-    });
-    return 1;
-  }
-  const mode = selected[0] || OUTPUT_FLAG.text;
-  if (mode === '--llms') process.stdout.write(discoveryService.llms());
-  else if (mode === OUTPUT_FLAG.json) json(discoveryService.catalog());
-  else process.stdout.write(discoveryService.text());
-  return 0;
-}
-
-function runCreate(args = []) {
-  const allowed = ['--dry-run', OUTPUT_FLAG.json, OUTPUT_FLAG.text];
-  const selected = args.filter((arg) => allowed.includes(arg));
-  if (args.some((arg) => !allowed.includes(arg))) {
-    json({
-      schema: 'agent-onboard-public-create-dry-run-error-001',
-      status: 'not_admitted',
-      command_family: 'create',
-      message: 'create supports only --dry-run, --json, or --text in this public gate',
-      reason: 'create --write, init, dependency installation, target scanning, managed-project command execution, Git mutation, and npm publish require later explicit gates.',
-      writes_files: false,
-      publishes_package: false
-    });
-    return 2;
-  }
-  if (selected.length > 1) {
-    json({
-      schema: 'agent-onboard-public-create-dry-run-error-001',
-      status: 'error',
-      command_family: 'create',
-      message: 'create accepts only one output mode: --dry-run, --json, or --text',
-      writes_files: false,
-      publishes_package: false
-    });
-    return 1;
-  }
-  const mode = selected[0] || '--dry-run';
-  if (mode === OUTPUT_FLAG.text) process.stdout.write(createDryRunService.text());
-  else json(createDryRunService.catalog());
-  return 0;
-}
-
-
-function runIssue(args = []) {
-  const hasClassify = args.includes('--classify-dry-run');
-  const wantsJson = args.includes(OUTPUT_FLAG.json);
-  const wantsText = args.includes(OUTPUT_FLAG.text);
-  if (!hasClassify) {
-    json({
-      schema: 'agent-onboard-public-issue-intake-error-001',
-      status: 'not_admitted',
-      command_family: 'issue',
-      message: 'issue requires --classify-dry-run in this public gate',
-      reason: 'GitHub API access, issue import, issue mutation, canonical work item creation, and claim admission require later explicit gates.',
-      writes_files: false,
-      publishes_package: false
-    });
-    return 2;
-  }
-  if (wantsJson && wantsText) {
-    json({
-      schema: 'agent-onboard-public-issue-intake-error-001',
-      status: 'error',
-      command_family: 'issue',
-      message: 'issue accepts either --json or --text, not both',
-      writes_files: false,
-      publishes_package: false
-    });
-    return 1;
-  }
-  const parsed = issueIntakeService.input(args);
-  if (parsed.error) {
-    json({
-      schema: 'agent-onboard-public-issue-intake-error-001',
-      status: 'error',
-      command_family: 'issue',
-      message: parsed.error,
-      writes_files: false,
-      publishes_package: false
-    });
-    return 1;
-  }
-  const result = issueIntakeService.classify(parsed.input);
-  if (wantsText) process.stdout.write(issueIntakeService.text(result));
-  else json(result);
-  return 0;
-}
-
-
-function runContributor(args = []) {
-  const hasAdmission = args.includes('--admission-dry-run');
-  const wantsJson = args.includes(OUTPUT_FLAG.json);
-  const wantsText = args.includes(OUTPUT_FLAG.text);
-  if (!hasAdmission) {
-    json({
-      schema: 'agent-onboard-public-contributor-admission-error-001',
-      status: 'not_admitted',
-      command_family: 'contributor',
-      message: 'contributor requires --admission-dry-run in this public gate',
-      reason: 'Contributor ledger writes, external identity verification, GitHub API access, Git mutation, claim admission, and repository scans require later explicit gates.',
-      writes_files: false,
-      publishes_package: false
-    });
-    return 2;
-  }
-  if (wantsJson && wantsText) {
-    json({
-      schema: 'agent-onboard-public-contributor-admission-error-001',
-      status: 'error',
-      command_family: 'contributor',
-      message: 'contributor accepts either --json or --text, not both',
-      writes_files: false,
-      publishes_package: false
-    });
-    return 1;
-  }
-  const parsed = contributorAdmissionService.input(args);
-  if (parsed.error) {
-    json({
-      schema: 'agent-onboard-public-contributor-admission-error-001',
-      status: 'error',
-      command_family: 'contributor',
-      message: parsed.error,
-      writes_files: false,
-      publishes_package: false
-    });
-    return 1;
-  }
-  const result = contributorAdmissionService.preview(parsed.input);
-  if (wantsText) process.stdout.write(contributorAdmissionService.text(result));
-  else json(result);
-  return 0;
-}
-
-
-
-function runCi(args = []) {
-  const allowed = ['--github-action', OUTPUT_FLAG.json, OUTPUT_FLAG.text];
-  const selected = args.filter((arg) => allowed.includes(arg));
-  if (args.some((arg) => !allowed.includes(arg))) {
-    json({
-      schema: 'agent-onboard-public-ci-surface-error-001',
-      status: 'error',
-      command_family: 'ci',
-      message: 'ci supports only --github-action, --json, or --text',
-      writes_files: false,
-      publishes_package: false
-    });
-    return 1;
-  }
-  if (selected.length > 1) {
-    json({
-      schema: 'agent-onboard-public-ci-surface-error-001',
-      status: 'error',
-      command_family: 'ci',
-      message: 'ci accepts only one output mode: --github-action, --json, or --text',
-      writes_files: false,
-      publishes_package: false
-    });
-    return 1;
-  }
-  const mode = selected[0] || OUTPUT_FLAG.text;
-  if (mode === '--github-action') process.stdout.write(ciSurfaceService.githubAction());
-  else if (mode === OUTPUT_FLAG.json) json(ciSurfaceService.catalog());
-  else process.stdout.write(ciSurfaceService.text());
-  return 0;
-}
-
-
-
-
-function runCheck(args = []) {
-  const hasPlan = args.includes('--plan');
-  const hasFast = args.includes('--fast');
-  const wantsJson = args.includes(OUTPUT_FLAG.json);
-  const wantsText = args.includes(OUTPUT_FLAG.text);
-  const wantsProgressJsonl = args.includes('--progress-jsonl');
-  const allowed = new Set(['--plan', '--fast', '--progress-jsonl', OUTPUT_FLAG.json, OUTPUT_FLAG.text]);
-  const unknown = args.filter((arg) => !allowed.has(arg));
-  if (unknown.length > 0) {
-    json({
-      schema: 'agent-onboard-public-check-plan-fast-error-001',
-      status: 'error',
-      command_family: 'check',
-      message: `check does not support: ${unknown.join(', ')}`,
-      writes_files: false,
-      publishes_package: false
-    });
-    return 1;
-  }
-  if (wantsProgressJsonl && !hasFast) {
-    json({
-      schema: 'agent-onboard-public-check-plan-fast-error-001',
-      status: 'error',
-      command_family: 'check',
-      message: 'check --progress-jsonl is only supported with --fast',
-      writes_files: false,
-      publishes_package: false
-    });
-    return 1;
-  }
-  if (hasPlan && hasFast) {
-    json({
-      schema: 'agent-onboard-public-check-plan-fast-error-001',
-      status: 'error',
-      command_family: 'check',
-      message: 'check accepts exactly one primary mode: --plan or --fast',
-      writes_files: false,
-      publishes_package: false
-    });
-    return 1;
-  }
-  if (wantsJson && wantsText) {
-    json({
-      schema: 'agent-onboard-public-check-plan-fast-error-001',
-      status: 'error',
-      command_family: 'check',
-      message: 'check accepts either --json or --text, not both',
-      writes_files: false,
-      publishes_package: false
-    });
-    return 1;
-  }
-  const mode = hasFast ? '--fast' : '--plan';
-  const outputText = wantsText || (!wantsJson && mode === '--plan');
-  if (mode === '--plan') {
-    const plan = checkPlanFastService.plan();
-    if (outputText) process.stdout.write(checkPlanFastService.planText(plan));
-    else json(plan);
-    return 0;
-  }
-  const result = checkPlanFastService.fast(packageRoot(), { progressJsonl: wantsProgressJsonl });
-  if (outputText) process.stdout.write(checkPlanFastService.fastText(result));
-  else json(result);
-  return result.status === 'ok' ? 0 : 1;
-}
+const coreSurfaceCommandRunnerService = createPublicCoreSurfaceCommandRunnerService({
+  VERSION,
+  RELEASE_LINE,
+  PUBLIC_RELEASE_CONTRACT,
+  PRODUCT_HELP_LINES,
+  OUTPUT_FLAG,
+  commandSurfaceService,
+  operatorGuideService,
+  quickstartService,
+  discoveryService,
+  createDryRunService,
+  issueIntakeService,
+  contributorAdmissionService,
+  ciSurfaceService,
+  checkPlanFastService,
+  packageRoot,
+  json,
+  writeText: (value) => process.stdout.write(value)
+});
 
 
 
@@ -5420,19 +5073,19 @@ function runCheck(args = []) {
 
 const DOMAIN_SERVICE_FACADES = Object.freeze({
   coreService: Object.freeze({
-    help,
-    printVersion,
-    runStatus,
-    runCommands,
-    runGuide,
-    runQuickstart,
-    runDiscovery,
-    runCreate,
-    runIssue,
-    runContributor,
+    help: coreSurfaceCommandRunnerService.help,
+    printVersion: coreSurfaceCommandRunnerService.printVersion,
+    runStatus: coreSurfaceCommandRunnerService.runStatus,
+    runCommands: coreSurfaceCommandRunnerService.runCommands,
+    runGuide: coreSurfaceCommandRunnerService.runGuide,
+    runQuickstart: coreSurfaceCommandRunnerService.runQuickstart,
+    runDiscovery: coreSurfaceCommandRunnerService.runDiscovery,
+    runCreate: coreSurfaceCommandRunnerService.runCreate,
+    runIssue: coreSurfaceCommandRunnerService.runIssue,
+    runContributor: coreSurfaceCommandRunnerService.runContributor,
     runContracts,
-    runCheck,
-    runCi,
+    runCheck: coreSurfaceCommandRunnerService.runCheck,
+    runCi: coreSurfaceCommandRunnerService.runCi,
     runMcp,
     runArchitecture
   }),

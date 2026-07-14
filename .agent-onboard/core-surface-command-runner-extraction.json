@@ -1,0 +1,67 @@
+{
+  "schema": "agent-onboard-public-core-surface-command-runner-extraction-001",
+  "package_name": "agent-onboard",
+  "version": "0.0.188",
+  "release_line": "public_runtime_guard_service_decomposition_gate",
+  "milestone_id": "P1S3M7",
+  "work_item_id": "P1S3M7W5",
+  "title": "Public Core Surface Command Runner Extraction Gate",
+  "objective": "Reduce runtime composer residual slice debt by moving core public surface command runner wrappers into a bounded core domain service without changing command behavior or storage backend.",
+  "extracted_service": {
+    "path": "cli/agent_onboard/domains/core/services/public-core-surface-command-runner-service.js",
+    "export": "createPublicCoreSurfaceCommandRunnerService",
+    "owned_commands": [
+      "agent-onboard help",
+      "agent-onboard version",
+      "agent-onboard status",
+      "agent-onboard commands",
+      "agent-onboard guide",
+      "agent-onboard quickstart",
+      "agent-onboard discovery",
+      "agent-onboard create",
+      "agent-onboard issue",
+      "agent-onboard contributor",
+      "agent-onboard check",
+      "agent-onboard ci"
+    ]
+  },
+  "reduction": {
+    "runtime_composer_before": {
+      "path": "cli/agent_onboard/runtime-composer.js",
+      "lines": 5650,
+      "bytes": 309900
+    },
+    "runtime_composer_after": {
+      "path": "cli/agent_onboard/runtime-composer.js",
+      "lines": 5303,
+      "bytes": 298982
+    },
+    "line_delta": -347,
+    "byte_delta": -10918
+  },
+  "admission": {
+    "package_files_includes_service": true,
+    "runtime_contracts_pack_files_includes_service": true,
+    "source_size_ratchet_reduced_runtime_composer": true,
+    "clean_compaction_budget_admits_one_packaged_service": true
+  },
+  "checks": [
+    "node scripts/check.js core-surface-command-runner-extraction",
+    "node scripts/check.js target-onboarding-acceptance-service-extraction",
+    "node scripts/check.js source-size-budget",
+    "node scripts/check.js god-file-budget-enforcement-closure",
+    "node cli/agent-onboard.js check --fast --json",
+    "node cli/agent-onboard.js release --check"
+  ],
+  "boundary": {
+    "writes_files": false,
+    "mutates_git": false,
+    "network": false,
+    "publishes_package": false,
+    "storage_backend": "json_and_jsonl_text_first",
+    "sqlite_introduced": false,
+    "lightning_memory_mapped_database_introduced": false,
+    "lmdb_introduced": false,
+    "mdbx_introduced": false
+  }
+}

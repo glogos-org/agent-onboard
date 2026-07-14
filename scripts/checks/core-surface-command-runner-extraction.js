@@ -7,13 +7,13 @@ const { spawnSync } = require('child_process');
 
 const ROOT = path.resolve(__dirname, '..', '..');
 const COMPOSER_REL = 'cli/agent_onboard/runtime-composer.js';
-const SERVICE_REL = 'cli/agent_onboard/domains/package/services/target-onboarding-acceptance-service.js';
+const SERVICE_REL = 'cli/agent_onboard/domains/core/services/public-core-surface-command-runner-service.js';
 const CLEAN_RUNTIME_REL = 'cli/agent_onboard/domains/package/services/release-clean-closed-gates/clean-compaction-runtime.js';
-const ARTIFACT_REL = '.agent-onboard/target-onboarding-acceptance-service-extraction.json';
-const MAX_COMPOSER_LINES = 5650;
-const MAX_COMPOSER_BYTES = 309900;
-const MAX_SERVICE_LINES = 700;
-const MAX_SERVICE_BYTES = 40000;
+const ARTIFACT_REL = '.agent-onboard/core-surface-command-runner-extraction.json';
+const MAX_COMPOSER_LINES = 5303;
+const MAX_COMPOSER_BYTES = 298982;
+const MAX_SERVICE_LINES = 350;
+const MAX_SERVICE_BYTES = 20000;
 
 function abs(rel) { return path.join(ROOT, rel); }
 function read(rel) { return fs.readFileSync(abs(rel), 'utf8'); }
@@ -21,12 +21,7 @@ function readJson(rel) { return JSON.parse(read(rel)); }
 function lineCount(text) { return text.length === 0 ? 0 : text.split(/\r?\n/u).length - (text.endsWith('\n') ? 1 : 0); }
 function metric(rel) { const text = read(rel); return { path: rel, lines: lineCount(text), bytes: fs.statSync(abs(rel)).size }; }
 function runCli(args) {
-  const result = spawnSync(process.execPath, ['cli/agent-onboard.js', ...args], {
-    cwd: ROOT,
-    encoding: 'utf8',
-    timeout: 120000,
-    maxBuffer: 1024 * 1024 * 12
-  });
+  const result = spawnSync(process.execPath, ['cli/agent-onboard.js', ...args], { cwd: ROOT, encoding: 'utf8', timeout: 120000, maxBuffer: 1024 * 1024 * 8 });
   return { args, status: result.status, stdout: result.stdout, stderr: result.stderr };
 }
 
@@ -42,61 +37,65 @@ function main() {
   const composerMetric = metric(COMPOSER_REL);
   const serviceMetric = metric(SERVICE_REL);
 
-  if (artifact.schema !== 'agent-onboard-public-target-onboarding-acceptance-service-extraction-001') failures.push('artifact schema mismatch');
-  if (artifact.work_item_id !== 'P1S3M7W4') failures.push('artifact work_item_id must be P1S3M7W4');
-  if (artifact.version !== '0.0.187') failures.push('artifact version must record W4 closure version 0.0.187');
+  if (artifact.schema !== 'agent-onboard-public-core-surface-command-runner-extraction-001') failures.push('artifact schema mismatch');
+  if (artifact.work_item_id !== 'P1S3M7W5') failures.push('artifact work_item_id must be P1S3M7W5');
+  if (artifact.version !== '0.0.188') failures.push('artifact version must record W5 closure version 0.0.188');
   if (typeof pkg.version !== 'string' || pkg.version.length === 0) failures.push('package version must be present');
   if (composerMetric.lines > MAX_COMPOSER_LINES) failures.push(`${COMPOSER_REL} line count ${composerMetric.lines} exceeds ${MAX_COMPOSER_LINES}`);
   if (composerMetric.bytes > MAX_COMPOSER_BYTES) failures.push(`${COMPOSER_REL} byte size ${composerMetric.bytes} exceeds ${MAX_COMPOSER_BYTES}`);
   if (serviceMetric.lines > MAX_SERVICE_LINES) failures.push(`${SERVICE_REL} line count ${serviceMetric.lines} exceeds ${MAX_SERVICE_LINES}`);
   if (serviceMetric.bytes > MAX_SERVICE_BYTES) failures.push(`${SERVICE_REL} byte size ${serviceMetric.bytes} exceeds ${MAX_SERVICE_BYTES}`);
-
-  if (artifact.reduction.runtime_composer_after.lines !== MAX_COMPOSER_LINES) failures.push('artifact runtime_composer_after.lines must record the W4 ratchet baseline');
-  if (artifact.reduction.runtime_composer_after.bytes !== MAX_COMPOSER_BYTES) failures.push('artifact runtime_composer_after.bytes must record the W4 ratchet baseline');
-  if (composerMetric.lines > artifact.reduction.runtime_composer_after.lines) failures.push('runtime composer regressed above W4 line baseline');
-  if (composerMetric.bytes > artifact.reduction.runtime_composer_after.bytes) failures.push('runtime composer regressed above W4 byte baseline');
-  if (!composer.includes('createPublicTargetOnboardingAcceptanceService')) failures.push(`${COMPOSER_REL} must compose the target onboarding acceptance service`);
-  if (!composer.includes('publicTargetOnboardingAcceptanceService')) failures.push(`${COMPOSER_REL} must retain a named target onboarding acceptance service facade`);
+  if (artifact.reduction.runtime_composer_after.lines !== MAX_COMPOSER_LINES) failures.push('artifact runtime_composer_after.lines must record the W5 ratchet baseline');
+  if (artifact.reduction.runtime_composer_after.bytes !== MAX_COMPOSER_BYTES) failures.push('artifact runtime_composer_after.bytes must record the W5 ratchet baseline');
+  if (!composer.includes('createPublicCoreSurfaceCommandRunnerService')) failures.push(`${COMPOSER_REL} must compose the core surface command runner service`);
+  if (!composer.includes('coreSurfaceCommandRunnerService.runCommands')) failures.push(`${COMPOSER_REL} must delegate core surface commands through extracted service`);
   for (const forbidden of [
-    'function publicInstalledPackageParitySmoke(',
-    'function publicInstalledParityArchitectureSmoke(',
-    'function publicTargetOnboardingInstalledPackageSmoke(',
-    'function publicTargetOnboardingPostPublishHandoff(',
-    'function publicTargetOnboardingPublishedAcceptance(',
-    'function publicReleaseTargetRepoProductCheck('
+    'function help(',
+    'function printVersion(',
+    'function runStatus(',
+    'function runCommands(',
+    'function runGuide(',
+    'function runQuickstart(',
+    'function runDiscovery(',
+    'function runCreate(',
+    'function runIssue(',
+    'function runContributor(',
+    'function runCi(',
+    'function runCheck('
   ]) {
-    if (composer.includes(forbidden)) failures.push(`${COMPOSER_REL} still owns target onboarding acceptance residual: ${forbidden}`);
+    if (composer.includes(forbidden)) failures.push(`${COMPOSER_REL} still owns core surface command runner residual: ${forbidden}`);
   }
-  if (!serviceText.includes('function createPublicTargetOnboardingAcceptanceService(')) failures.push(`${SERVICE_REL} must export createPublicTargetOnboardingAcceptanceService`);
-  if (!serviceText.includes('creates_temp_target_repository: true')) failures.push(`${SERVICE_REL} must preserve temporary target smoke boundary`);
-  if (!serviceText.includes('network_registry_read_required_before_operator_acceptance: true')) failures.push(`${SERVICE_REL} must preserve post-publish registry-read boundary`);
+  if (!serviceText.includes('function createPublicCoreSurfaceCommandRunnerService(')) failures.push(`${SERVICE_REL} must export createPublicCoreSurfaceCommandRunnerService`);
+  if (!serviceText.includes('checkPlanFastService.fast(packageRoot()')) failures.push(`${SERVICE_REL} must own check fast runner dispatch`);
+  if (!serviceText.includes('create --write, init, dependency installation')) failures.push(`${SERVICE_REL} must preserve create command non-admission boundary`);
+
   const cleanPackBudget = Number((cleanRuntime.match(/max_projected_pack_files: (\d+)/u) || [])[1]);
   const cleanSourceBudget = Number((cleanRuntime.match(/max_source_files: (\d+)/u) || [])[1]);
   const cleanAgentOnboardBudget = Number((cleanRuntime.match(/max_agent_onboard_files: (\d+)/u) || [])[1]);
-  if (!(cleanPackBudget >= 91) || !(cleanSourceBudget >= 260) || !(cleanAgentOnboardBudget >= 113)) failures.push(`${CLEAN_RUNTIME_REL} must admit the extracted packaged service in clean compaction budgets`);
-
+  if (!(cleanPackBudget >= 92) || !(cleanSourceBudget >= 263) || !(cleanAgentOnboardBudget >= 114)) failures.push(`${CLEAN_RUNTIME_REL} must admit the extracted packaged service in clean compaction budgets`);
   if (!packageFiles.has(SERVICE_REL)) failures.push(`package.json#files must include ${SERVICE_REL}`);
   if (!contracts.PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES.includes(SERVICE_REL)) failures.push(`runtime contracts pack files must include ${SERVICE_REL}`);
   const service = require(abs(SERVICE_REL));
-  if (typeof service.createPublicTargetOnboardingAcceptanceService !== 'function') failures.push(`${SERVICE_REL} must export createPublicTargetOnboardingAcceptanceService`);
+  if (typeof service.createPublicCoreSurfaceCommandRunnerService !== 'function') failures.push(`${SERVICE_REL} must export createPublicCoreSurfaceCommandRunnerService`);
 
   const smokes = [
-    runCli(['release', '--target-onboarding-smoke']),
-    runCli(['release', '--published-acceptance']),
-    runCli(['release', '--check'])
+    runCli(['commands', '--json']),
+    runCli(['guide', '--text']),
+    runCli(['check', '--fast', '--json']),
+    runCli(['ci', '--github-action'])
   ];
   for (const smoke of smokes) {
     if (smoke.status !== 0) failures.push(`CLI smoke failed for ${smoke.args.join(' ')}: ${smoke.stderr || smoke.stdout}`);
   }
 
   const result = {
-    schema: 'agent-onboard-public-target-onboarding-acceptance-service-extraction-check-001',
+    schema: 'agent-onboard-public-core-surface-command-runner-extraction-check-001',
     status: failures.length === 0 ? 'ok' : 'error',
     package_name: pkg.name,
     version: pkg.version,
-    work_item_id: 'P1S3M7W4',
+    work_item_id: 'P1S3M7W5',
     composer: composerMetric,
-    extracted_target_onboarding_acceptance_service: serviceMetric,
+    extracted_core_surface_command_runner_service: serviceMetric,
     smoke_count: smokes.length,
     boundary: {
       writes_files: false,

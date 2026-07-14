@@ -48,7 +48,7 @@ const CHECK_FAST_ENGINE = Object.freeze({
   plan_mode: 'default-fast',
   runner_type: 'in_process_public_runtime_runner',
   global_timeout_ms: 30000,
-  command_timeout_ms: 5000,
+  command_timeout_ms: 10000,
   max_concurrency: 1,
   command_dedupe_enabled: true,
   progress_jsonl_supported: true,

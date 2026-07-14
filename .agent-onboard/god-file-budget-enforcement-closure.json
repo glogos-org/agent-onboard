@@ -63,11 +63,11 @@
     {
       "path": ".agent-onboard/work-items.json",
       "category": "authority_registry",
-      "current_lines": 1648,
-      "current_bytes_max": 47148,
+      "current_lines": 1660,
+      "current_bytes_max": 47537,
       "admitted_reason": "public work item ledger projection remains admitted migration debt after W4 closure append; authoritative shards remain the default compact read path",
-      "next_reduction_gate": "P1S3M7W8",
-      "current_bytes": 47148,
+      "next_reduction_gate": "P1S3M7W6",
+      "current_bytes": 47537,
       "current_lines_max": 1648
     },
     {

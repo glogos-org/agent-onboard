@@ -1,6 +1,6 @@
 {
   "name": "agent-onboard",
-  "version": "0.0.187",
+  "version": "0.0.188",
   "description": "CLI for onboarding and managing target repositories.",
   "license": "Apache-2.0",
   "author": "Thanh Le <vnlemanhthanh@gmail.com>",
@@ -111,7 +111,8 @@
     "check:runtime-composer-residual-slice-reduction": "node scripts/check.js runtime-composer-residual-slice-reduction",
     "check:target-command-runner-extraction": "node scripts/check.js target-command-runner-extraction",
     "check:exact-artifact-oracle-service-extraction": "node scripts/check.js exact-artifact-oracle-service-extraction",
-    "check:target-onboarding-acceptance-service-extraction": "node scripts/check.js target-onboarding-acceptance-service-extraction"
+    "check:target-onboarding-acceptance-service-extraction": "node scripts/check.js target-onboarding-acceptance-service-extraction",
+    "check:core-surface-command-runner-extraction": "node scripts/check.js core-surface-command-runner-extraction"
   },
   "bin": {
     "agent-onboard": "cli/agent-onboard.js",
@@ -154,6 +155,7 @@
     "cli/agent_onboard/domains/core/services/config-guard-service.js",
     "cli/agent_onboard/domains/core/services/ni-uri-service.js",
     "cli/agent_onboard/domains/core/services/public-runtime-surface-service.js",
+    "cli/agent_onboard/domains/core/services/public-core-surface-command-runner-service.js",
     "cli/agent_onboard/domains/core/services/public-runtime-check-fast-service.js",
     "cli/agent_onboard/domains/core/services/public-runtime-mcp-bridge-service.js",
     "cli/agent_onboard/domains/package/index.js",
