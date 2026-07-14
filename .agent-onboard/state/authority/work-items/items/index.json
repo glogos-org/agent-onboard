@@ -9,14 +9,14 @@
   "counts": {
     "open": 0,
     "claimed": 0,
-    "closed": 190,
+    "closed": 191,
     "programs": 1,
     "stages": 3,
     "milestones": 10,
-    "work_items": 190
+    "work_items": 191
   },
-  "latest_work_item_id": "P1S3M7W19",
-  "latest_closed_work_item_id": "P1S3M7W19",
+  "latest_work_item_id": "P1S3M7W20",
+  "latest_closed_work_item_id": "P1S3M7W20",
   "by_status": {
     "open": [],
     "claimed": [],
@@ -204,6 +204,7 @@
       "P1S3M7W18",
       "P1S3M7W19",
       "P1S3M7W2",
+      "P1S3M7W20",
       "P1S3M7W3",
       "P1S3M7W4",
       "P1S3M7W5",
@@ -421,7 +422,9 @@
       "P1S3M7W15",
       "P1S3M7W16",
       "P1S3M7W17",
-      "P1S3M7W18"
+      "P1S3M7W18",
+      "P1S3M7W19",
+      "P1S3M7W20"
     ]
   },
   "item_shards": [
@@ -500,21 +503,14 @@
     {
       "milestone_id": "P1S3M7",
       "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M7.json",
-      "item_count": 19,
-      "bytes": 6584,
-      "sha256": "095627cb1fe131768a93c95be06b55d8184e5184dc6d9ce57231df596c982b66",
-      "file_id": "ni:///sha-256;CVYnyx_hMXaKk8lb4GtV2BhOUYTcbZzlcjHfWWyYK2Y"
+      "item_count": 20,
+      "bytes": 6913,
+      "sha256": "fbebf529d3c28458f229a7cd124fba2230c463e87145adb55f56ad31fa2bade3",
+      "file_id": "ni:///sha-256;--v1KdPChFjyKafNEk-6IjDEY-hxRa21X1atMforreM"
     }
   ],
-  "updated_at": "2026-07-10T10:05:00.000Z",
+  "updated_at": "2026-07-10T11:00:00.000Z",
   "latest_closed_work_items": [
-    {
-      "id": "P1S3M7W15",
-      "title": "Public Source Module Residual Service Extraction Gate",
-      "status": "closed",
-      "milestone_id": "P1S3M7",
-      "domain": null
-    },
     {
       "id": "P1S3M7W16",
       "title": "Public Architecture Runtime Service Residual Reduction Gate",
@@ -539,6 +535,13 @@
     {
       "id": "P1S3M7W19",
       "title": "Public Runtime Surface Service Residual Reduction Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M7",
+      "domain": null
+    },
+    {
+      "id": "P1S3M7W20",
+      "title": "Public Source Domain Runtime Service Near-God Reduction Gate",
       "status": "closed",
       "milestone_id": "P1S3M7",
       "domain": null

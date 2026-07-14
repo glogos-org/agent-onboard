@@ -2,7 +2,7 @@
   "schema": "agent-onboard-public-authority-compact-index-001",
   "package_name": "agent-onboard",
   "package_version_source": "package.json#version",
-  "release_line": "public_runtime_surface_service_residual_reduction_gate",
+  "release_line": "public_source_domain_runtime_service_near_god_reduction_gate",
   "index_file": ".agent-onboard/authority-index.json",
   "first_read_command": "agent-onboard authority --first-read",
   "check_command": "agent-onboard authority --check",
@@ -145,8 +145,8 @@
       "file_path": "package.json",
       "present": true,
       "kind": "file",
-      "bytes": 17469,
-      "file_id": "ni:///sha-256;xKqE69nD571LJBV_cY58auP1kClHSmAfBoZUxpLIS_c",
+      "bytes": 18499,
+      "file_id": "ni:///sha-256;iD_hKNiYadPjoAiBLF5F0vm2bh79q48nN2xWeJtur70",
       "content_inlined": false
     },
     {
@@ -177,8 +177,8 @@
       "file_path": ".agent-onboard/work-items.json",
       "present": true,
       "kind": "file",
-      "bytes": 52035,
-      "file_id": "ni:///sha-256;9tizc4yrw9nPG3HkmgYcDttQ99FQGFyNWOS58c9qTKs",
+      "bytes": 52364,
+      "file_id": "ni:///sha-256;w-ejeDNv2TOhJCO05AsYY1pzimzRDo4jU-vY4ukaXj8",
       "content_inlined": false
     }
   ],
@@ -216,7 +216,7 @@
     "indexed_file_count": 9,
     "present_file_count": 9,
     "missing_file_count": 0,
-    "present_bytes": 148398,
+    "present_bytes": 149757,
     "missing_files": [],
     "excluded_file_count": 7,
     "state_shard_count": 4,

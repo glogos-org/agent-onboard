@@ -2,7 +2,7 @@
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
-const RELEASE_LINE = 'public_runtime_surface_service_residual_reduction_gate';
+const RELEASE_LINE = 'public_source_domain_runtime_service_near_god_reduction_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
   agents: 'agents',
@@ -379,6 +379,16 @@ const PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES = Object.freeze([
   'cli/agent_onboard/domains/architecture/services/source-domains/claims-source-domain-service.js',
   'cli/agent_onboard/domains/architecture/services/source-domains/source-domain-closure-service.js',
   'cli/agent_onboard/domains/architecture/services/source-domains/work-items-source-domain-service.js',
+  'cli/agent_onboard/domains/architecture/services/source-domains/claims/plan-service.js',
+  'cli/agent_onboard/domains/architecture/services/source-domains/claims/first-slice-service.js',
+  'cli/agent_onboard/domains/architecture/services/source-domains/claims/bundle-parity-service.js',
+  'cli/agent_onboard/domains/architecture/services/source-domains/claims/runtime-bridge-service.js',
+  'cli/agent_onboard/domains/architecture/services/source-domains/claims/installed-fallback-service.js',
+  'cli/agent_onboard/domains/architecture/services/source-domains/work-items/plan-service.js',
+  'cli/agent_onboard/domains/architecture/services/source-domains/work-items/first-slice-service.js',
+  'cli/agent_onboard/domains/architecture/services/source-domains/work-items/bundle-parity-service.js',
+  'cli/agent_onboard/domains/architecture/services/source-domains/work-items/runtime-bridge-service.js',
+  'cli/agent_onboard/domains/architecture/services/source-domains/work-items/installed-fallback-service.js',
   'cli/agent_onboard/domains/architecture/services/source-extraction/architecture-source-extraction-service.js',
   'cli/agent_onboard/domains/architecture/services/source-extraction/public-source-extraction-golden-service.js', 'cli/agent_onboard/domains/architecture/services/source-extraction/public-source-module-adapter-boundary-service.js', 'cli/agent_onboard/domains/architecture/services/source-extraction/public-source-module-core-slice-service.js',
   'cli/agent_onboard/domains/architecture/services/source-extraction/public-source-module-core-runtime-bridge-service.js', 'cli/agent_onboard/domains/architecture/services/source-extraction/public-source-module-authority-runtime-bridge-service.js',

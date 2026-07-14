@@ -1,0 +1,130 @@
+{
+  "schema": "agent-onboard-public-source-domain-runtime-service-near-god-reduction-closure-001",
+  "status": "closed",
+  "package_name": "agent-onboard",
+  "version": "0.0.203",
+  "release_line": "public_source_domain_runtime_service_near_god_reduction_gate",
+  "milestone_id": "P1S3M7",
+  "work_item_id": "P1S3M7W20",
+  "title": "Public Source Domain Runtime Service Near-God Reduction Gate",
+  "objective": "Reduce source-domain runtime service near-god debt by turning the claims and work-items source-domain services into thin facades over bounded sub-services.",
+  "reduction": {
+    "claims_source_domain_service_before": {
+      "lines": 965,
+      "bytes": 63712
+    },
+    "claims_source_domain_facade_after": {
+      "path": "cli/agent_onboard/domains/architecture/services/source-domains/claims-source-domain-service.js",
+      "lines": 42,
+      "bytes": 2275
+    },
+    "work_items_source_domain_service_before": {
+      "lines": 935,
+      "bytes": 60869
+    },
+    "work_items_source_domain_facade_after": {
+      "path": "cli/agent_onboard/domains/architecture/services/source-domains/work-items-source-domain-service.js",
+      "lines": 42,
+      "bytes": 2373
+    },
+    "god_files_removed": 2,
+    "near_god_budget_increased": false,
+    "monolith_growth_allowed": false
+  },
+  "extracted_services": [
+    {
+      "path": "cli/agent_onboard/domains/architecture/services/source-domains/claims/plan-service.js",
+      "lines": 216,
+      "bytes": 12261
+    },
+    {
+      "path": "cli/agent_onboard/domains/architecture/services/source-domains/claims/first-slice-service.js",
+      "lines": 242,
+      "bytes": 14055
+    },
+    {
+      "path": "cli/agent_onboard/domains/architecture/services/source-domains/claims/bundle-parity-service.js",
+      "lines": 256,
+      "bytes": 16101
+    },
+    {
+      "path": "cli/agent_onboard/domains/architecture/services/source-domains/claims/runtime-bridge-service.js",
+      "lines": 289,
+      "bytes": 17280
+    },
+    {
+      "path": "cli/agent_onboard/domains/architecture/services/source-domains/claims/installed-fallback-service.js",
+      "lines": 211,
+      "bytes": 13167
+    },
+    {
+      "path": "cli/agent_onboard/domains/architecture/services/source-domains/work-items/plan-service.js",
+      "lines": 219,
+      "bytes": 12749
+    },
+    {
+      "path": "cli/agent_onboard/domains/architecture/services/source-domains/work-items/first-slice-service.js",
+      "lines": 240,
+      "bytes": 13700
+    },
+    {
+      "path": "cli/agent_onboard/domains/architecture/services/source-domains/work-items/bundle-parity-service.js",
+      "lines": 243,
+      "bytes": 14852
+    },
+    {
+      "path": "cli/agent_onboard/domains/architecture/services/source-domains/work-items/runtime-bridge-service.js",
+      "lines": 281,
+      "bytes": 16534
+    },
+    {
+      "path": "cli/agent_onboard/domains/architecture/services/source-domains/work-items/installed-fallback-service.js",
+      "lines": 209,
+      "bytes": 12749
+    }
+  ],
+  "preserved_public_surfaces": [
+    "agent-onboard architecture --work-items-check",
+    "agent-onboard architecture --work-items-first-slice-check",
+    "agent-onboard architecture --work-items-bundle-parity-check",
+    "agent-onboard architecture --work-items-runtime-bridge-check",
+    "agent-onboard architecture --work-items-installed-fallback-check",
+    "agent-onboard architecture --claims-check",
+    "agent-onboard architecture --claims-first-slice-check",
+    "agent-onboard architecture --claims-bundle-parity-check",
+    "agent-onboard architecture --claims-runtime-bridge-check",
+    "agent-onboard architecture --claims-installed-fallback-check",
+    "agent-onboard architecture --source-domain-closure-check"
+  ],
+  "clean_baseline_adjustment": {
+    "reason": "Ten bounded source-domain service files replace two near-god/god source-domain files; all new packaged service files stay below near-god thresholds.",
+    "max_source_files": 339,
+    "max_agent_onboard_files": 130,
+    "max_projected_pack_files": 138
+  },
+  "checks_required": [
+    "source-domain-runtime-service-near-god-reduction",
+    "source-size-budget",
+    "god-file-budget-enforcement-closure",
+    "state-projection-authority-cutover",
+    "closure-payload-reference-compaction",
+    "authority --index-check",
+    "authority --state-check",
+    "target metadata --check",
+    "release --source-manifest-check",
+    "release --clean-check",
+    "release --check",
+    "check --fast --json",
+    "work-items --validate",
+    "npm pack --dry-run --json"
+  ],
+  "boundary": {
+    "storage_backend_changed": false,
+    "sqlite_introduced": false,
+    "lmdb_introduced": false,
+    "mdbx_introduced": false,
+    "git_mutation": false,
+    "network": false,
+    "package_publish": false
+  }
+}

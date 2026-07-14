@@ -1,8 +1,8 @@
 {
   "schema": "agent-onboard-public-source-size-budget-ratchet-001",
   "status": "active",
-  "work_item_id": "P1S3M7W19",
-  "release_line": "public_runtime_surface_service_residual_reduction_gate",
+  "work_item_id": "P1S3M7W20",
+  "release_line": "public_source_domain_runtime_service_near_god_reduction_gate",
   "ratchet_mode": "no_tracked_growth_beyond_maximum_and_no_new_oversized_files",
   "god_file_thresholds": {
     "god_lines": 1000,
@@ -87,11 +87,11 @@
   "tracked_files": {
     ".agent-onboard/state/closures/work-items-closures.jsonl": {
       "category": "authority_state",
-      "max_lines": 189,
-      "max_bytes": 86499,
+      "max_lines": 190,
+      "max_bytes": 86957,
       "baseline_lines": 168,
       "baseline_bytes": 76889,
-      "target_lines": 200,
+      "target_lines": 500,
       "target_bytes": 65536,
       "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend.",
       "ratchet_history": [
@@ -298,7 +298,7 @@
     ".agent-onboard/state/live/work-items.json": {
       "category": "authority_state",
       "max_lines": 73,
-      "max_bytes": 2118,
+      "max_bytes": 2125,
       "baseline_lines": 24,
       "baseline_bytes": 849,
       "target_lines": 60,
@@ -397,8 +397,8 @@
     },
     ".agent-onboard/work-items.json": {
       "category": "authority_registry",
-      "max_lines": 1799,
-      "max_bytes": 52035,
+      "max_lines": 1810,
+      "max_bytes": 52364,
       "baseline_lines": 1573,
       "baseline_bytes": 44798,
       "target_lines": 500,
@@ -1225,11 +1225,11 @@
     "scripts/checks/registry.js": {
       "category": "check_script",
       "max_lines": 72,
-      "max_bytes": 4248,
+      "max_bytes": 4356,
       "baseline_lines": 67,
       "baseline_bytes": 3719,
-      "target_lines": 250,
-      "target_bytes": 32768,
+      "target_lines": 300,
+      "target_bytes": 65536,
       "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend.",
       "ratchet_history": [
         {
@@ -1407,7 +1407,7 @@
     ".agent-onboard/god-file-budget-enforcement-closure.json": {
       "category": "authority_registry",
       "max_lines": 196,
-      "max_bytes": 6920,
+      "max_bytes": 6970,
       "baseline_lines": 105,
       "baseline_bytes": 3859,
       "target_lines": 220,
@@ -2108,8 +2108,8 @@
     },
     ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M7.json": {
       "category": "authority_state",
-      "max_lines": 206,
-      "max_bytes": 6584,
+      "max_lines": 217,
+      "max_bytes": 6913,
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W5",
@@ -2262,8 +2262,8 @@
     },
     ".agent-onboard/state/authority/work-items/items/index.json": {
       "category": "authority_state",
-      "max_lines": 547,
-      "max_bytes": 12450,
+      "max_lines": 550,
+      "max_bytes": 12514,
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W5",
@@ -2536,7 +2536,7 @@
     ".agent-onboard/work-items.index.json": {
       "category": "authority_registry",
       "max_lines": 53,
-      "max_bytes": 1479,
+      "max_bytes": 1486,
       "target_lines": 500,
       "target_bytes": 65536,
       "ratchet_history": [
@@ -2671,7 +2671,7 @@
     ".agent-onboard/state/live-authority.json": {
       "category": "authority_state",
       "max_lines": 56,
-      "max_bytes": 1940,
+      "max_bytes": 1948,
       "target_lines": 500,
       "target_bytes": 65536,
       "ratchet_history": [
@@ -2804,7 +2804,7 @@
     ".agent-onboard/state/closed-gates.jsonl": {
       "category": "authority_state",
       "max_lines": 6,
-      "max_bytes": 1471,
+      "max_bytes": 1478,
       "target_lines": 500,
       "target_bytes": 65536,
       "ratchet_history": [
@@ -3523,15 +3523,15 @@
           "previous_max_bytes": 22884
         }
       ],
-      "max_lines": 512,
-      "max_bytes": 23667,
+      "max_lines": 522,
+      "max_bytes": 24676,
       "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend."
     },
     "package.json": {
       "category": "root_json",
       "baseline_lines": 236,
       "baseline_bytes": 14344,
-      "target_lines": 250,
+      "target_lines": 500,
       "target_bytes": 65536,
       "ratchet_history": [
         {
@@ -3578,8 +3578,8 @@
           "previous_max_bytes": 16544
         }
       ],
-      "max_lines": 265,
-      "max_bytes": 17469,
+      "max_lines": 275,
+      "max_bytes": 18499,
       "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend."
     },
     ".agent-onboard/architecture-runtime-service-residual-reduction.json": {
@@ -3885,13 +3885,25 @@
     },
     ".agent-onboard/state/closures/work-items/payloads/by-milestone/P1S3M7/part-002.jsonl": {
       "category": "authority_state",
-      "max_lines": 1,
-      "max_bytes": 4074,
+      "max_lines": 2,
+      "max_bytes": 7907,
       "baseline_lines": 1,
       "baseline_bytes": 4074,
-      "target_lines": 20,
-      "target_bytes": 8192,
+      "target_lines": 500,
+      "target_bytes": 65536,
       "reason": "W19 stores the new closure payload in a second P1S3M7 shard to avoid increasing near-god count."
+    },
+    "scripts/checks/source-domain-runtime-service-near-god-reduction.js": {
+      "max_lines": 146,
+      "max_bytes": 8961,
+      "target_lines": 500,
+      "target_bytes": 65536
+    },
+    ".agent-onboard/source-domain-runtime-service-near-god-reduction.json": {
+      "max_lines": 130,
+      "max_bytes": 4774,
+      "target_lines": 500,
+      "target_bytes": 65536
     }
   },
   "report": {

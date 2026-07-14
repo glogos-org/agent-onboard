@@ -81,32 +81,32 @@
       "category": "runtime_source",
       "current_lines": 1630,
       "current_bytes": 65922,
-      "admitted_reason": "composer remains residual migration debt after W17 focused on source extraction runtime service reduction.",
-      "next_reduction_gate": "P1S3M7W20"
+      "admitted_reason": "W20 kept runtime composer stable while reducing source-domain service residuals; composer remains admitted migration debt.",
+      "next_reduction_gate": "P1S3M7W21"
     },
     {
       "path": ".agent-onboard/work-items.json",
       "category": "authority_registry",
-      "current_lines": 1799,
-      "admitted_reason": "W19 split public runtime-surface implementation into bounded runtime-surface services; remaining god files remain admitted migration debt.",
-      "next_reduction_gate": "P1S3M7W20",
-      "current_bytes": 52035
+      "current_lines": 1810,
+      "admitted_reason": "W20 reduced source-domain runtime services without increasing god-file count; authority registry growth remains admitted migration debt pending registry compaction.",
+      "next_reduction_gate": "P1S3M7W21",
+      "current_bytes": 52364
     },
     {
       "path": "README.md",
       "category": "documentation",
       "current_lines": 1315,
       "current_bytes": 86801,
-      "admitted_reason": "W19 split public runtime-surface implementation into bounded runtime-surface services; remaining god files remain admitted migration debt.",
-      "next_reduction_gate": "P1S3M7W20"
+      "admitted_reason": "W20 avoided README growth; documentation god file remains admitted public surface debt pending documentation compaction.",
+      "next_reduction_gate": "P1S3M7W21"
     },
     {
       "path": ".agent-onboard/source-size-budget-ratchet.json",
       "category": "authority_registry",
-      "current_lines": 3962,
-      "current_bytes": 172236,
-      "admitted_reason": "W19 split public runtime-surface implementation into bounded runtime-surface services; remaining god files remain admitted migration debt.",
-      "next_reduction_gate": "P1S3M7W20",
+      "current_lines": 3974,
+      "current_bytes": 172560,
+      "admitted_reason": "W20 reduced source-domain runtime services without increasing god-file count; authority registry growth remains admitted migration debt pending registry compaction.",
+      "next_reduction_gate": "P1S3M7W21",
       "current_bytes_max": 200000,
       "note": "W18 source-size budget self-ratchet grew within admitted metadata update for router-cutover residual split."
     }

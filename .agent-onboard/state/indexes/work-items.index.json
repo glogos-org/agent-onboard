@@ -1,87 +1,58 @@
 {
   "schema": "agent-onboard-work-items-derived-index-002",
   "package_name": "agent-onboard",
-  "status": "active",
   "source": ".agent-onboard/state/authority/work-items/manifest.json",
+  "status": "active",
   "legacy_root_projection": ".agent-onboard/work-items.json",
   "live_projection": ".agent-onboard/state/live/work-items.json",
   "closure_payload_authority": ".agent-onboard/state/closures/work-items/manifest.json",
-  "rebuildable_from": [
-    ".agent-onboard/state/authority/work-items/manifest.json",
-    ".agent-onboard/state/authority/work-items/items/index.json",
-    ".agent-onboard/state/closures/work-items-closures.jsonl",
-    ".agent-onboard/state/closures/work-items/manifest.json"
-  ],
-  "item_count": 190,
+  "item_count": 191,
   "open_count": 0,
   "claimed_count": 0,
-  "closed_count": 190,
-  "latest_work_item_id": "P1S3M7W19",
-  "latest_closed_work_item_id": "P1S3M7W19",
+  "closed_count": 191,
+  "inline_closure_count": 0,
+  "closure_ref_count": 190,
+  "latest_work_item_id": "P1S3M7W20",
+  "latest_closed_work_item_id": "P1S3M7W20",
   "latest_work_items": [
     {
-      "id": "P1S3M7W15",
-      "milestone_id": "P1S3M7",
-      "title": "Public Source Module Residual Service Extraction Gate",
-      "status": "closed",
-      "claim": {
-        "actor": "gpt-5.5-thinking",
-        "claimed_at": "2026-07-10T08:05:00.000Z",
-        "note": "Extract source-module residual architecture behavior from runtime composer without changing storage backend."
-      },
-      "closure_ref": "closures:P1S3M7W15"
-    },
-    {
       "id": "P1S3M7W16",
-      "milestone_id": "P1S3M7",
       "title": "Public Architecture Runtime Service Residual Reduction Gate",
       "status": "closed",
-      "claim": {
-        "actor": "gpt-5.5-thinking",
-        "claimed_at": "2026-07-10T09:05:00.000Z",
-        "note": "Reduce architecture-runtime-service residual god-file debt without changing storage backend."
-      },
-      "closure_ref": "closures:P1S3M7W16"
+      "milestone_id": "P1S3M7",
+      "domain": null
     },
     {
       "id": "P1S3M7W17",
-      "milestone_id": "P1S3M7",
       "title": "Public Source Extraction Runtime Service Residual Reduction Gate",
       "status": "closed",
-      "closure_ref": "closures:P1S3M7W17"
+      "milestone_id": "P1S3M7",
+      "domain": null
     },
     {
       "id": "P1S3M7W18",
-      "milestone_id": "P1S3M7",
       "title": "Public Router Cutover Runtime Service Near-God Reduction Gate",
       "status": "closed",
-      "claim": {
-        "actor": "gpt-5.5-thinking",
-        "claimed_at": "2026-07-09T18:50:55.172Z"
-      },
-      "closure_ref": "closures:P1S3M7W18"
+      "milestone_id": "P1S3M7",
+      "domain": null
     },
     {
       "id": "P1S3M7W19",
-      "milestone_id": "P1S3M7",
       "title": "Public Runtime Surface Service Residual Reduction Gate",
       "status": "closed",
-      "claim": {
-        "actor": "gpt-5.5-thinking",
-        "claimed_at": "2026-07-09T19:14:40.142Z"
-      },
-      "closure_ref": "closures:P1S3M7W19"
+      "milestone_id": "P1S3M7",
+      "domain": null
+    },
+    {
+      "id": "P1S3M7W20",
+      "title": "Public Source Domain Runtime Service Near-God Reduction Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M7",
+      "domain": null
     }
   ],
   "latest_closed_work_items": [
     {
-      "id": "P1S3M7W15",
-      "title": "Public Source Module Residual Service Extraction Gate",
-      "status": "closed",
-      "milestone_id": "P1S3M7",
-      "domain": null
-    },
-    {
       "id": "P1S3M7W16",
       "title": "Public Architecture Runtime Service Residual Reduction Gate",
       "status": "closed",
@@ -108,12 +79,15 @@
       "status": "closed",
       "milestone_id": "P1S3M7",
       "domain": null
+    },
+    {
+      "id": "P1S3M7W20",
+      "title": "Public Source Domain Runtime Service Near-God Reduction Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M7",
+      "domain": null
     }
   ],
-  "archived_closure_count": 189,
-  "inline_closure_count": 0,
-  "closure_ref_count": 190,
-  "closure_payload_shard_count": 12,
   "by_status": {
     "open": [],
     "claimed": [],
@@ -301,6 +275,7 @@
       "P1S3M7W18",
       "P1S3M7W19",
       "P1S3M7W2",
+      "P1S3M7W20",
       "P1S3M7W3",
       "P1S3M7W4",
       "P1S3M7W5",
@@ -518,8 +493,18 @@
       "P1S3M7W15",
       "P1S3M7W16",
       "P1S3M7W17",
-      "P1S3M7W18"
+      "P1S3M7W18",
+      "P1S3M7W19",
+      "P1S3M7W20"
     ]
   },
-  "updated_at": "2026-07-09T19:20:00.000Z"
+  "rebuildable_from": [
+    ".agent-onboard/state/authority/work-items/manifest.json",
+    ".agent-onboard/state/authority/work-items/items/index.json",
+    ".agent-onboard/state/closures/work-items-closures.jsonl",
+    ".agent-onboard/state/closures/work-items/manifest.json"
+  ],
+  "updated_at": "2026-07-10T11:00:00.000Z",
+  "archived_closure_count": 190,
+  "closure_payload_shard_count": 12
 }
