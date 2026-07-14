@@ -1,1 +1,56 @@
-{"schema":"agent-onboard-public-authority-live-state-shard-001","package_name":"agent-onboard","package_version_source":"package.json#version","release_line":"public_runtime_guard_service_decomposition_gate","authority_state_source_layout":"sharded_seed","state_root":".agent-onboard/state","current_work_item":"P1S3M7W12","current_work_item_title":"Public Router Seed Service Extraction Gate","last_closed_work_item":"P1S3M7W12","last_closed_title":"Public Router Seed Service Extraction Gate","default_first_read":true,"compact_authority_index_file":".agent-onboard/authority-index.json","state_command":"agent-onboard authority --state","state_check_command":"agent-onboard authority --state-check","raw_authority_loaded_by_default":false,"raw_growth_files_loaded_by_default":false,"file_contents_inlined":false,"latest_closed_work_items":[{"id":"P1S3M7W8","title":"Public Contracts Command Service Extraction Gate","status":"closed","milestone_id":"P1S3M7","domain":null},{"id":"P1S3M7W9","title":"Public Package Surface Service Extraction Gate","status":"closed","milestone_id":"P1S3M7","domain":null},{"id":"P1S3M7W10","title":"Public Full Test Runner Service Extraction Gate","status":"closed","milestone_id":"P1S3M7","domain":null},{"id":"P1S3M7W11","title":"Public CLI Runtime Planning Service Extraction Gate","status":"closed","milestone_id":"P1S3M7","domain":null},{"id":"P1S3M7W12","title":"Public Router Seed Service Extraction Gate","status":"closed","milestone_id":"P1S3M7","domain":null}]}
+{
+  "schema": "agent-onboard-public-authority-live-state-shard-001",
+  "package_name": "agent-onboard",
+  "package_version_source": "package.json#version",
+  "release_line": "public_runtime_guard_service_decomposition_gate",
+  "authority_state_source_layout": "sharded_seed",
+  "state_root": ".agent-onboard/state",
+  "current_work_item": "P1S3M7W13",
+  "current_work_item_title": "Public Command Adapter Extraction Service Extraction Gate",
+  "last_closed_work_item": "P1S3M7W13",
+  "last_closed_title": "Public Command Adapter Extraction Service Extraction Gate",
+  "default_first_read": true,
+  "compact_authority_index_file": ".agent-onboard/authority-index.json",
+  "state_command": "agent-onboard authority --state",
+  "state_check_command": "agent-onboard authority --state-check",
+  "raw_authority_loaded_by_default": false,
+  "raw_growth_files_loaded_by_default": false,
+  "file_contents_inlined": false,
+  "latest_closed_work_items": [
+    {
+      "id": "P1S3M7W9",
+      "title": "Public Package Surface Service Extraction Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M7",
+      "domain": null
+    },
+    {
+      "id": "P1S3M7W10",
+      "title": "Public Full Test Runner Service Extraction Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M7",
+      "domain": null
+    },
+    {
+      "id": "P1S3M7W11",
+      "title": "Public CLI Runtime Planning Service Extraction Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M7",
+      "domain": null
+    },
+    {
+      "id": "P1S3M7W12",
+      "title": "Public Router Seed Service Extraction Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M7",
+      "domain": null
+    },
+    {
+      "id": "P1S3M7W13",
+      "title": "Public Command Adapter Extraction Service Extraction Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M7",
+      "domain": null
+    }
+  ]
+}

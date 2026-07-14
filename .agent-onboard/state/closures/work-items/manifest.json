@@ -26,8 +26,8 @@
     "binary_storage_admitted_now": false
   },
   "counts": {
-    "compact_records": 182,
-    "payload_records": 182,
+    "compact_records": 183,
+    "payload_records": 183,
     "payload_shards": 11
   },
   "checker": "node scripts/check.js closure-payload-reference-compaction",
@@ -126,11 +126,11 @@
       "path": ".agent-onboard/state/closures/work-items/payloads/by-milestone/P1S3M7/part-001.jsonl",
       "milestone_id": "P1S3M7",
       "part": 1,
-      "record_count": 12,
-      "bytes": 32029,
-      "sha256": "9cbf2bc98f7f236de491e3d548031b1a98c3cc77269826d2e37737ae3955bf1c",
-      "file_id": "ni:///sha-256;nL8ryY9_I23kkePVSAMbGpjDzHcmmCbS43c3rjlVvxw"
+      "record_count": 13,
+      "bytes": 35401,
+      "sha256": "861b00e4bbbf4b6a7148634716f806d168b45babe30dc1fdccb8741527f74550",
+      "file_id": "ni:///sha-256;hhsA5Lu_S2pxSGNHFvgG0Wi0W6vjDcH9zLh0FSf3RVA"
     }
   ],
-  "updated_at": "2026-07-09T15:41:13.220Z"
+  "updated_at": "2026-07-09T16:35:00.000Z"
 }

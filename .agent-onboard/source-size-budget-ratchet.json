@@ -1,8 +1,8 @@
 {
   "schema": "agent-onboard-public-source-size-budget-ratchet-001",
   "status": "active",
-  "work_item_id": "P1S3M7W12",
-  "release_line": "public_router_seed_service_extraction_gate",
+  "work_item_id": "P1S3M7W13",
+  "release_line": "public_command_adapter_extraction_service_extraction_gate",
   "ratchet_mode": "no_tracked_growth_beyond_maximum_and_no_new_oversized_files",
   "god_file_thresholds": {
     "god_lines": 1000,
@@ -87,13 +87,13 @@
   "tracked_files": {
     ".agent-onboard/state/closures/work-items-closures.jsonl": {
       "category": "authority_state",
-      "max_lines": 182,
-      "max_bytes": 83287,
+      "max_lines": 183,
+      "max_bytes": 83746,
       "baseline_lines": 168,
       "baseline_bytes": 76889,
       "target_lines": 200,
       "target_bytes": 65536,
-      "reason": "W12 closes the router seed service extraction gate and refreshes compact authority, closure, and work-item projections.",
+      "reason": "W13 appends one compact closure reference for command adapter extraction service extraction.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W33",
@@ -222,18 +222,27 @@
           "new_max_lines": 182,
           "previous_max_bytes": 82828,
           "new_max_bytes": 83287
+        },
+        {
+          "work_item_id": "P1S3M7W13",
+          "gate": "Public Command Adapter Extraction Service Extraction Gate",
+          "reason": "W13 appends one compact closure reference for command adapter extraction service extraction.",
+          "previous_max_lines": 182,
+          "new_max_lines": 183,
+          "previous_max_bytes": 83287,
+          "new_max_bytes": 83746
         }
       ]
     },
     ".agent-onboard/state/live/work-items.json": {
       "category": "authority_state",
       "max_lines": 73,
-      "max_bytes": 2060,
+      "max_bytes": 2069,
       "baseline_lines": 24,
       "baseline_bytes": 849,
       "target_lines": 60,
       "target_bytes": 8192,
-      "reason": "W11 closes the CLI runtime planning service extraction gate and refreshes compact authority, closure, and work-item projections.",
+      "reason": "W13 refreshes compact live work-item projection after closing command adapter extraction service gate.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W6",
@@ -270,18 +279,27 @@
           "new_max_lines": 73,
           "previous_max_bytes": 1644,
           "new_max_bytes": 2060
+        },
+        {
+          "work_item_id": "P1S3M7W13",
+          "gate": "Public Command Adapter Extraction Service Extraction Gate",
+          "reason": "W13 refreshes compact live work-item projection after closing command adapter extraction service gate.",
+          "previous_max_lines": 73,
+          "new_max_lines": 73,
+          "previous_max_bytes": 2060,
+          "new_max_bytes": 2069
         }
       ]
     },
     ".agent-onboard/work-items.json": {
       "category": "authority_registry",
-      "max_lines": 1722,
-      "max_bytes": 49405,
+      "max_lines": 1734,
+      "max_bytes": 49850,
       "baseline_lines": 1573,
       "baseline_bytes": 44798,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W12 closes the router seed service extraction gate and refreshes compact authority, closure, and work-item projections.",
+      "reason": "W13 closes command adapter extraction service work item, growing the admitted public ledger migration debt.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W33",
@@ -408,6 +426,15 @@
           "new_max_lines": 1722,
           "previous_max_bytes": 49094,
           "new_max_bytes": 49405
+        },
+        {
+          "work_item_id": "P1S3M7W13",
+          "gate": "Public Command Adapter Extraction Service Extraction Gate",
+          "reason": "W13 closes command adapter extraction service work item, growing the admitted public ledger migration debt.",
+          "previous_max_lines": 1722,
+          "new_max_lines": 1734,
+          "previous_max_bytes": 49405,
+          "new_max_bytes": 49850
         }
       ]
     },
@@ -564,13 +591,13 @@
     },
     "cli/agent_onboard/runtime-composer.js": {
       "category": "runtime_source",
-      "max_lines": 3946,
-      "max_bytes": 216148,
-      "baseline_lines": 3946,
-      "baseline_bytes": 216148,
+      "max_lines": 3179,
+      "max_bytes": 166436,
+      "baseline_lines": 3179,
+      "baseline_bytes": 166436,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W12 moves thin router and compatibility port seed command/check ownership into a bounded architecture runtime service and ratchets composer maximum downward.",
+      "reason": "W13 moves command adapter extraction command/check ownership into a bounded architecture runtime service and ratchets composer maximum downward.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W25",
@@ -686,6 +713,15 @@
           "new_max_lines": 3946,
           "previous_max_bytes": 240173,
           "new_max_bytes": 216148
+        },
+        {
+          "work_item_id": "P1S3M7W13",
+          "gate": "Public Command Adapter Extraction Service Extraction Gate",
+          "reason": "W13 extracts core, package, architecture, and authority command adapter extraction behavior into a bounded architecture runtime service.",
+          "previous_max_lines": 3946,
+          "new_max_lines": 3179,
+          "previous_max_bytes": 216148,
+          "new_max_bytes": 166436
         }
       ]
     },
@@ -922,13 +958,13 @@
     },
     "scripts/checks/registry.js": {
       "category": "check_script",
-      "max_lines": 64,
-      "max_bytes": 3442,
+      "max_lines": 65,
+      "max_bytes": 3545,
       "baseline_lines": 51,
       "baseline_bytes": 2319,
       "target_lines": 250,
       "target_bytes": 32768,
-      "reason": "W12 registers one additional bounded router seed service extraction check.",
+      "reason": "W13 admits one additional public check id for command adapter extraction service extraction.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W34",
@@ -1026,6 +1062,15 @@
           "new_max_lines": 64,
           "previous_max_bytes": 3369,
           "new_max_bytes": 3442
+        },
+        {
+          "work_item_id": "P1S3M7W13",
+          "gate": "Public Command Adapter Extraction Service Extraction Gate",
+          "reason": "Check registry adds command-adapter-extraction-service-extraction.",
+          "previous_max_lines": 64,
+          "new_max_lines": 65,
+          "previous_max_bytes": 3442,
+          "new_max_bytes": 3545
         }
       ]
     },
@@ -1041,13 +1086,13 @@
     },
     ".agent-onboard/god-file-budget-enforcement-closure.json": {
       "category": "authority_registry",
-      "max_lines": 130,
-      "max_bytes": 6000,
+      "max_lines": 140,
+      "max_bytes": 6969,
       "baseline_lines": 105,
       "baseline_bytes": 3859,
       "target_lines": 220,
       "target_bytes": 32768,
-      "reason": "W34 god-file budget enforcement closure policy artifact",
+      "reason": "W13 extends god-file closure required work item/check lists and updates remaining migration debt metrics.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W1",
@@ -1080,6 +1125,15 @@
           "previous_max_lines": 111,
           "new_max_lines": 130,
           "previous_max_bytes": 4203,
+          "new_max_bytes": 6000
+        },
+        {
+          "work_item_id": "P1S3M7W13",
+          "gate": "Public Command Adapter Extraction Service Extraction Gate",
+          "reason": "W13 extends god-file closure required work item/check lists and updates remaining migration debt metrics.",
+          "previous_max_lines": 130,
+          "new_max_lines": 130,
+          "previous_max_bytes": 6000,
           "new_max_bytes": 6000
         }
       ]
@@ -1119,13 +1173,13 @@
     },
     ".agent-onboard/source-size-budget-ratchet.json": {
       "category": "authority_registry",
-      "max_lines": 2160,
-      "max_bytes": 88000,
+      "max_lines": 2400,
+      "max_bytes": 99000,
       "baseline_lines": 705,
       "baseline_bytes": 26644,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W12 ratchet metadata admits extraction and authority projection bookkeeping for router seed service extraction.",
+      "reason": "W13 source-size budget self-ratchet admits command adapter extraction service tracking rows.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W2",
@@ -1283,6 +1337,15 @@
           "new_max_lines": 2140,
           "previous_max_bytes": 84460,
           "new_max_bytes": 87000
+        },
+        {
+          "work_item_id": "P1S3M7W13",
+          "gate": "Public Command Adapter Extraction Service Extraction Gate",
+          "reason": "W13 ratchet file records new service/check/artifact tracking rows and reduced runtime-composer maximum.",
+          "previous_max_lines": 2160,
+          "new_max_lines": 2300,
+          "previous_max_bytes": 88000,
+          "new_max_bytes": 95000
         }
       ]
     },
@@ -1372,8 +1435,8 @@
     },
     ".agent-onboard/state/closures/work-items/payloads/by-milestone/P1S3M7/part-001.jsonl": {
       "category": "authority_state",
-      "max_lines": 12,
-      "max_bytes": 32029,
+      "max_lines": 13,
+      "max_bytes": 35401,
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W5",
@@ -1464,18 +1527,36 @@
           "new_max_lines": 12,
           "previous_max_bytes": 31579,
           "new_max_bytes": 32029
+        },
+        {
+          "work_item_id": "P1S3M7W13",
+          "gate": "Public Command Adapter Extraction Service Extraction Gate",
+          "reason": "W13 appends one P1S3M7 closure payload record for command adapter extraction service extraction.",
+          "previous_max_lines": 12,
+          "new_max_lines": 13,
+          "previous_max_bytes": 32029,
+          "new_max_bytes": 35153
+        },
+        {
+          "work_item_id": "P1S3M7W13",
+          "gate": "Public Command Adapter Extraction Service Extraction Gate",
+          "reason": "W13 closure payload records npm test timeout note while preserving compact JSONL closure backend.",
+          "previous_max_lines": 13,
+          "new_max_lines": 13,
+          "previous_max_bytes": 35153,
+          "new_max_bytes": 35401
         }
       ],
       "target_lines": 20,
       "target_bytes": 65536,
       "baseline_lines": 7,
       "baseline_bytes": 17395,
-      "reason": "W12 final closure payload metadata refresh after router seed service extraction."
+      "reason": "W13 closure payload records npm test timeout note while preserving compact JSONL closure backend."
     },
     ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M7.json": {
       "category": "authority_state",
-      "max_lines": 129,
-      "max_bytes": 3952,
+      "max_lines": 141,
+      "max_bytes": 4397,
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W5",
@@ -1557,18 +1638,27 @@
           "new_max_lines": 129,
           "previous_max_bytes": 3641,
           "new_max_bytes": 3952
+        },
+        {
+          "work_item_id": "P1S3M7W13",
+          "gate": "Public Command Adapter Extraction Service Extraction Gate",
+          "reason": "W13 adds one closed item to the P1S3M7 authority item shard for command adapter extraction service extraction.",
+          "previous_max_lines": 129,
+          "new_max_lines": 141,
+          "previous_max_bytes": 3952,
+          "new_max_bytes": 4397
         }
       ],
       "target_lines": 500,
       "target_bytes": 65536,
       "baseline_lines": 85,
       "baseline_bytes": 2599,
-      "reason": "W12 closes the router seed service extraction gate and refreshes compact authority, closure, and work-item projections."
+      "reason": "W13 adds one closed item to the P1S3M7 authority item shard for command adapter extraction service extraction."
     },
     ".agent-onboard/state/authority/work-items/items/index.json": {
       "category": "authority_state",
-      "max_lines": 496,
-      "max_bytes": 11177,
+      "max_lines": 499,
+      "max_bytes": 11234,
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W5",
@@ -1650,13 +1740,22 @@
           "new_max_lines": 496,
           "previous_max_bytes": 11158,
           "new_max_bytes": 11177
+        },
+        {
+          "work_item_id": "P1S3M7W13",
+          "gate": "Public Command Adapter Extraction Service Extraction Gate",
+          "reason": "W13 increments the sharded work-item item index counts and latest closed pointers.",
+          "previous_max_lines": 496,
+          "new_max_lines": 499,
+          "previous_max_bytes": 11177,
+          "new_max_bytes": 11234
         }
       ],
       "target_lines": 500,
       "target_bytes": 65536,
       "baseline_lines": 484,
       "baseline_bytes": 10953,
-      "reason": "W12 closes the router seed service extraction gate and refreshes compact authority, closure, and work-item projections."
+      "reason": "W13 increments the sharded work-item item index counts and latest closed pointers."
     },
     ".agent-onboard/state/authority/work-items/manifest.json": {
       "category": "authority_state",
@@ -1822,7 +1921,7 @@
     ".agent-onboard/state/live-authority.json": {
       "category": "authority_state",
       "max_lines": 56,
-      "max_bytes": 1865,
+      "max_bytes": 1873,
       "target_lines": 500,
       "target_bytes": 65536,
       "ratchet_history": [
@@ -1834,6 +1933,15 @@
           "new_max_lines": 56,
           "previous_max_bytes": null,
           "new_max_bytes": 1865
+        },
+        {
+          "work_item_id": "P1S3M7W13",
+          "gate": "Public Command Adapter Extraction Service Extraction Gate",
+          "reason": "W13 authority live shard refreshed after command adapter extraction closure and README history index digest update.",
+          "previous_max_lines": 56,
+          "new_max_lines": 56,
+          "previous_max_bytes": 1865,
+          "new_max_bytes": 1873
         }
       ]
     },
@@ -2108,6 +2216,63 @@
           "new_max_bytes": 6563
         }
       ]
+    },
+    "cli/agent_onboard/domains/architecture/services/runtime/public-command-adapter-extraction-service.js": {
+      "category": "runtime_service_source",
+      "max_lines": 320,
+      "max_bytes": 19428,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "W13 bounded architecture runtime service owns core/package/architecture/authority command adapter extraction plan/check behavior.",
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W13",
+          "gate": "Public Command Adapter Extraction Service Extraction Gate",
+          "reason": "W13 bounded architecture runtime service owns core/package/architecture/authority command adapter extraction plan/check behavior.",
+          "previous_max_lines": null,
+          "new_max_lines": 320,
+          "previous_max_bytes": null,
+          "new_max_bytes": 19428
+        }
+      ]
+    },
+    "scripts/checks/command-adapter-extraction-service-extraction.js": {
+      "category": "check_script",
+      "max_lines": 111,
+      "max_bytes": 7067,
+      "target_lines": 250,
+      "target_bytes": 32768,
+      "reason": "W13 bounded check validates command adapter extraction service extraction and release/fast/pack smokes.",
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W13",
+          "gate": "Public Command Adapter Extraction Service Extraction Gate",
+          "reason": "W13 bounded check validates command adapter extraction service extraction and release/fast/pack smokes.",
+          "previous_max_lines": null,
+          "new_max_lines": 111,
+          "previous_max_bytes": null,
+          "new_max_bytes": 7067
+        }
+      ]
+    },
+    ".agent-onboard/command-adapter-extraction-service-extraction.json": {
+      "category": "authority_registry",
+      "max_lines": 65,
+      "max_bytes": 2526,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "Compact W13 closure artifact for command adapter extraction service extraction.",
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W13",
+          "gate": "Public Command Adapter Extraction Service Extraction Gate",
+          "reason": "Compact W13 closure artifact for command adapter extraction service extraction.",
+          "previous_max_lines": null,
+          "new_max_lines": 65,
+          "previous_max_bytes": null,
+          "new_max_bytes": 2526
+        }
+      ]
     }
   },
   "report": {
@@ -2133,12 +2298,17 @@
       "lines": 4876,
       "bytes": 274048
     },
-    "last_ratchet_work_item_id": "P1S3M7W10",
-    "last_ratchet_gate": "Public Full Test Runner Service Extraction Gate",
+    "last_ratchet_work_item_id": "P1S3M7W13",
+    "last_ratchet_gate": "Public Command Adapter Extraction Service Extraction Gate",
     "runtime_composer_after_w10": {
       "path": "cli/agent_onboard/runtime-composer.js",
       "lines": 4487,
       "bytes": 250876
+    },
+    "runtime_composer_after_w13": {
+      "path": "cli/agent_onboard/runtime-composer.js",
+      "lines": 3179,
+      "bytes": 166436
     }
   },
   "boundary": {

@@ -1,0 +1,65 @@
+{
+  "schema": "agent-onboard-public-command-adapter-extraction-service-extraction-001",
+  "package_name": "agent-onboard",
+  "version": "0.0.196",
+  "work_item_id": "P1S3M7W13",
+  "milestone_id": "P1S3M7",
+  "gate": "Public Command Adapter Extraction Service Extraction Gate",
+  "status": "closed",
+  "purpose": "Continue runtime composer residual reduction by moving the core, package, architecture, and authority command adapter extraction plan/check implementations into a bounded architecture runtime service.",
+  "extracted_service": {
+    "path": "cli/agent_onboard/domains/architecture/services/runtime/public-command-adapter-extraction-service.js",
+    "factory_export": "createPublicCommandAdapterExtractionService",
+    "owned_commands": [
+      "architecture --core-adapter",
+      "architecture --core-adapter-check",
+      "architecture --package-adapter",
+      "architecture --package-adapter-check",
+      "architecture --architecture-adapter",
+      "architecture --architecture-adapter-check",
+      "architecture --authority-adapter",
+      "architecture --authority-adapter-check"
+    ]
+  },
+  "reduction": {
+    "runtime_composer_before": {
+      "path": "cli/agent_onboard/runtime-composer.js",
+      "lines": 3946,
+      "bytes": 216148,
+      "source": "P1S3M7W12 baseline"
+    },
+    "runtime_composer_after": {
+      "path": "cli/agent_onboard/runtime-composer.js",
+      "lines": 3179,
+      "bytes": 166436
+    },
+    "lines_removed_from_composer": 767,
+    "bytes_removed_from_composer": 49712
+  },
+  "package_surface": {
+    "package_json_files_includes_service": true,
+    "runtime_contracts_include_service": true,
+    "expected_pack_files_changed_only_by_service_addition": true
+  },
+  "checks": [
+    "node scripts/check.js command-adapter-extraction-service-extraction",
+    "node scripts/check.js router-seed-service-extraction",
+    "node scripts/check.js source-size-budget-ratchet",
+    "node scripts/check.js god-file-budget-enforcement-closure",
+    "node cli/agent-onboard.js release --check",
+    "node cli/agent-onboard.js check --fast --json",
+    "npm pack --dry-run --json"
+  ],
+  "boundary": {
+    "writes_files": false,
+    "mutates_git": false,
+    "installs_dependencies": false,
+    "runs_package_manager_for_dependency_install": false,
+    "network": false,
+    "publishes_package": false,
+    "storage_backend": "json_jsonl_text_first_unchanged",
+    "sqlite_introduced": false,
+    "lightning_memory_mapped_database_introduced": false,
+    "mdbx_introduced": false
+  }
+}

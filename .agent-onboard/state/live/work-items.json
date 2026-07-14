@@ -5,12 +5,12 @@
   "authority_role": "compatibility_live_projection",
   "projection_of": "canonical_sharded_work_items_authority",
   "legacy_full_projection": false,
-  "item_count": 183,
+  "item_count": 184,
   "open_count": 0,
   "claimed_count": 0,
-  "closed_count": 183,
-  "latest_work_item_id": "P1S3M7W12",
-  "latest_closed_work_item_id": "P1S3M7W12",
+  "closed_count": 184,
+  "latest_work_item_id": "P1S3M7W13",
+  "latest_closed_work_item_id": "P1S3M7W13",
   "rebuildable_from": [
     ".agent-onboard/state/authority/work-items/manifest.json",
     ".agent-onboard/state/authority/work-items/items/index.json",
@@ -24,23 +24,16 @@
   "counts": {
     "open": 0,
     "claimed": 0,
-    "closed": 183,
+    "closed": 184,
     "programs": 1,
     "stages": 3,
     "milestones": 10,
-    "work_items": 183
+    "work_items": 184
   },
-  "current_work_item": "P1S3M7W12",
+  "current_work_item": "P1S3M7W13",
   "next_open_work_item": null,
-  "updated_at": "2026-07-09T15:41:13.220Z",
+  "updated_at": "2026-07-09T16:30:00.000Z",
   "latest_closed_work_items": [
-    {
-      "id": "P1S3M7W8",
-      "title": "Public Contracts Command Service Extraction Gate",
-      "status": "closed",
-      "milestone_id": "P1S3M7",
-      "domain": null
-    },
     {
       "id": "P1S3M7W9",
       "title": "Public Package Surface Service Extraction Gate",
@@ -65,6 +58,13 @@
     {
       "id": "P1S3M7W12",
       "title": "Public Router Seed Service Extraction Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M7",
+      "domain": null
+    },
+    {
+      "id": "P1S3M7W13",
+      "title": "Public Command Adapter Extraction Service Extraction Gate",
       "status": "closed",
       "milestone_id": "P1S3M7",
       "domain": null
