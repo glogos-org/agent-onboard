@@ -1,0 +1,48 @@
+{
+  "schema": "agent-onboard-public-architecture-command-runner-extraction-001",
+  "status": "closed",
+  "package_name": "agent-onboard",
+  "version": "0.0.189",
+  "work_item_id": "P1S3M7W6",
+  "title": "Public Architecture Command Runner Extraction Gate",
+  "purpose": "Reduce residual runtime composer command-dispatch debt by moving architecture command flag routing into a bounded architecture runtime service.",
+  "reduction": {
+    "runtime_composer_before": {
+      "path": "cli/agent_onboard/runtime-composer.js",
+      "lines": 5303,
+      "bytes": 298982
+    },
+    "runtime_composer_after": {
+      "path": "cli/agent_onboard/runtime-composer.js",
+      "lines": 5036,
+      "bytes": 288088
+    },
+    "extracted_service": {
+      "path": "cli/agent_onboard/domains/architecture/services/runtime/public-architecture-command-runner-service.js",
+      "lines": 118,
+      "bytes": 7822
+    },
+    "runtime_composer_line_delta": -267,
+    "runtime_composer_byte_delta": -10894
+  },
+  "checks": [
+    "node scripts/check.js architecture-command-runner-extraction",
+    "node scripts/check.js core-surface-command-runner-extraction",
+    "node scripts/check.js source-size-budget",
+    "node scripts/check.js god-file-budget-enforcement-closure",
+    "node cli/agent-onboard.js architecture --check",
+    "node cli/agent-onboard.js release --check",
+    "node cli/agent-onboard.js check --fast --json",
+    "npm pack --dry-run --json"
+  ],
+  "boundary": {
+    "storage_backend": "json_jsonl_text_first_unchanged",
+    "sqlite_introduced": false,
+    "lmdb_introduced": false,
+    "mdbx_introduced": false,
+    "network": false,
+    "git_mutation": false,
+    "package_publish": false
+  },
+  "next_runtime_composer_reduction_gate": "P1S3M7W7"
+}

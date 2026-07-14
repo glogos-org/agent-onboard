@@ -32,6 +32,7 @@ const CHECK_MODULES = Object.freeze({
   'exact-artifact-oracle-service-extraction': 'exact-artifact-oracle-service-extraction.js',
   'target-onboarding-acceptance-service-extraction': 'target-onboarding-acceptance-service-extraction.js'
 ,  'core-surface-command-runner-extraction': 'core-surface-command-runner-extraction.js'
+,  'architecture-command-runner-extraction': 'architecture-command-runner-extraction.js'
 });
 
 function normalizeCheckId(value) {

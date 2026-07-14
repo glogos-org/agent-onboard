@@ -61,6 +61,7 @@ process.stdout.on('error', (error) => {
 const { createPublicArchitectureCatalog } = require('./domains/architecture/static-catalog');
 const { createPublicTargetStaticCatalog } = require('./domains/target/static-catalog');
 const { createPublicArchitectureRuntimeService } = require('./domains/architecture/services/runtime/architecture-runtime-service');
+const { createPublicArchitectureCommandRunnerService } = require('./domains/architecture/services/runtime/public-architecture-command-runner-service');
 const { createPublicArchitectureAggregateCheckService } = require('./domains/architecture/services/checks/architecture-check-service');
 let createPublicArchitectureSourceDomainService = null;
 try {
@@ -4509,358 +4510,90 @@ function publicReleaseCheck(root = packageRoot()) {
 
 
 
-function runArchitecture(args) {
-  if (args.length === 1 && args[0] === '--map') {
-    json(publicArchitectureMap());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--router') {
-    json(publicCommandRouter());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--facades') {
-    json(publicDomainServiceFacades());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--partition-plan') {
-    json(publicSourceDomainModulePartitionPlan());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--partition-check') {
-    const result = publicSourceDomainModulePartitionPlanCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--extraction-rehearsal') {
-    json(publicSourceDomainExtractionRehearsal());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--extraction-check') {
-    const result = publicSourceDomainExtractionRehearsalCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--golden-outputs') {
-    json(publicSourceExtractionGoldenOutputs());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--golden-check') {
-    const result = publicSourceExtractionGoldenOutputFreezeCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--adapter-boundary') {
-    json(publicSourceModuleExtractionAdapterBoundary());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--adapter-check') {
-    const result = publicSourceModuleExtractionAdapterBoundaryCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--first-slice') {
-    json(publicSourceModuleExtractionFirstSlice());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--first-slice-check') {
-    const result = publicSourceModuleExtractionFirstSliceCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--bundle-parity') {
-    json(publicSourceModuleExtractionBundleParity());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--bundle-parity-check') {
-    const result = publicSourceModuleExtractionBundleParityCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--runtime-bridge') {
-    json(publicSourceModuleExtractionRuntimeBridge());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--runtime-bridge-check') {
-    const result = publicSourceModuleExtractionRuntimeBridgeCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--installed-fallback-smoke') {
-    json(publicSourceModuleExtractionInstalledFallbackSmoke());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--installed-fallback-check') {
-    const result = publicSourceModuleExtractionInstalledFallbackSmokeCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--second-slice-plan') {
-    json(publicSourceModuleExtractionSecondSlicePlan());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--second-slice-check') {
-    const result = publicSourceModuleExtractionSecondSlicePlanCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--second-slice-first-slice') {
-    json(publicSourceModuleExtractionSecondSliceFirstSlice());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--second-slice-first-slice-check') {
-    const result = publicSourceModuleExtractionSecondSliceFirstSliceCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--authority-bundle-parity') {
-    json(publicSourceModuleExtractionAuthorityBundleParity());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--authority-bundle-parity-check') {
-    const result = publicSourceModuleExtractionAuthorityBundleParityCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--authority-runtime-bridge') {
-    json(publicSourceModuleExtractionAuthorityRuntimeBridge());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--authority-runtime-bridge-check') {
-    const result = publicSourceModuleExtractionAuthorityRuntimeBridgeCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--m2-seed') {
-    json(publicArchitectureM1ClosureM2Seed());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--m2-seed-check') {
-    const result = publicArchitectureM1ClosureM2SeedCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--work-items-plan') {
-    json(publicWorkItemsDomainSourceExtractionPlan());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--work-items-check') {
-    const result = publicWorkItemsDomainSourceExtractionPlanCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--work-items-first-slice') {
-    json(publicWorkItemsDomainSourceExtractionFirstSlice());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--work-items-first-slice-check') {
-    const result = publicWorkItemsDomainSourceExtractionFirstSliceCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--work-items-bundle-parity') {
-    json(publicWorkItemsDomainSourceExtractionBundleParity());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--work-items-bundle-parity-check') {
-    const result = publicWorkItemsDomainSourceExtractionBundleParityCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--work-items-runtime-bridge') {
-    json(publicWorkItemsDomainSourceExtractionRuntimeBridge());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--work-items-runtime-bridge-check') {
-    const result = publicWorkItemsDomainSourceExtractionRuntimeBridgeCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--work-items-installed-fallback-smoke') {
-    json(publicWorkItemsDomainSourceExtractionInstalledFallbackSmoke());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--work-items-installed-fallback-check') {
-    const result = publicWorkItemsDomainSourceExtractionInstalledFallbackSmokeCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--claims-plan') {
-    json(publicClaimsDomainSourceExtractionPlan());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--claims-check') {
-    const result = publicClaimsDomainSourceExtractionPlanCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--claims-first-slice') {
-    json(publicClaimsDomainSourceExtractionFirstSlice());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--claims-first-slice-check') {
-    const result = publicClaimsDomainSourceExtractionFirstSliceCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
+const architectureCommandRunnerService = createPublicArchitectureCommandRunnerService({
+  json,
+  handlers: Object.freeze({
+    publicArchitectureMap,
+    publicCommandRouter,
+    publicDomainServiceFacades,
+    publicSourceDomainModulePartitionPlan,
+    publicSourceDomainModulePartitionPlanCheck,
+    publicSourceDomainExtractionRehearsal,
+    publicSourceDomainExtractionRehearsalCheck,
+    publicSourceExtractionGoldenOutputs,
+    publicSourceExtractionGoldenOutputFreezeCheck,
+    publicSourceModuleExtractionAdapterBoundary,
+    publicSourceModuleExtractionAdapterBoundaryCheck,
+    publicSourceModuleExtractionFirstSlice,
+    publicSourceModuleExtractionFirstSliceCheck,
+    publicSourceModuleExtractionBundleParity,
+    publicSourceModuleExtractionBundleParityCheck,
+    publicSourceModuleExtractionRuntimeBridge,
+    publicSourceModuleExtractionRuntimeBridgeCheck,
+    publicSourceModuleExtractionInstalledFallbackSmoke,
+    publicSourceModuleExtractionInstalledFallbackSmokeCheck,
+    publicSourceModuleExtractionSecondSlicePlan,
+    publicSourceModuleExtractionSecondSlicePlanCheck,
+    publicSourceModuleExtractionSecondSliceFirstSlice,
+    publicSourceModuleExtractionSecondSliceFirstSliceCheck,
+    publicSourceModuleExtractionAuthorityBundleParity,
+    publicSourceModuleExtractionAuthorityBundleParityCheck,
+    publicSourceModuleExtractionAuthorityRuntimeBridge,
+    publicSourceModuleExtractionAuthorityRuntimeBridgeCheck,
+    publicArchitectureM1ClosureM2Seed,
+    publicArchitectureM1ClosureM2SeedCheck,
+    publicWorkItemsDomainSourceExtractionPlan,
+    publicWorkItemsDomainSourceExtractionPlanCheck,
+    publicWorkItemsDomainSourceExtractionFirstSlice,
+    publicWorkItemsDomainSourceExtractionFirstSliceCheck,
+    publicWorkItemsDomainSourceExtractionBundleParity,
+    publicWorkItemsDomainSourceExtractionBundleParityCheck,
+    publicWorkItemsDomainSourceExtractionRuntimeBridge,
+    publicWorkItemsDomainSourceExtractionRuntimeBridgeCheck,
+    publicWorkItemsDomainSourceExtractionInstalledFallbackSmoke,
+    publicWorkItemsDomainSourceExtractionInstalledFallbackSmokeCheck,
+    publicClaimsDomainSourceExtractionPlan,
+    publicClaimsDomainSourceExtractionPlanCheck,
+    publicClaimsDomainSourceExtractionFirstSlice,
+    publicClaimsDomainSourceExtractionFirstSliceCheck,
+    publicClaimsDomainSourceExtractionBundleParity,
+    publicClaimsDomainSourceExtractionBundleParityCheck,
+    publicClaimsDomainSourceExtractionRuntimeBridge,
+    publicClaimsDomainSourceExtractionRuntimeBridgeCheck,
+    publicClaimsDomainSourceExtractionInstalledFallbackSmoke,
+    publicClaimsDomainSourceExtractionInstalledFallbackSmokeCheck,
+    publicSourceDomainExtractionStabilizationClosureReview,
+    publicSourceDomainExtractionStabilizationClosureReviewCheck,
+    publicCliRuntimeDeMonolithPlanning,
+    publicCliRuntimeDeMonolithPlanningCheck,
+    publicThinCliRouterSeed,
+    publicThinCliRouterSeedCheck,
+    publicCompatibilityCommandPortSeed,
+    publicCompatibilityCommandPortSeedCheck,
+    publicCoreCommandAdapterExtraction,
+    publicCoreCommandAdapterExtractionCheck,
+    publicPackageCommandAdapterExtraction,
+    publicPackageCommandAdapterExtractionCheck,
+    publicArchitectureCommandAdapterExtraction,
+    publicArchitectureCommandAdapterExtractionCheck,
+    publicAuthorityCommandAdapterExtraction,
+    publicAuthorityCommandAdapterExtractionCheck,
+    publicModularRuntimePackageInclusionPlan,
+    publicModularRuntimePackageInclusionPlanCheck,
+    publicPackagedRouterPortInclusion,
+    publicPackagedRouterPortInclusionCheck,
+    publicThinEntrypointRouterCutoverRehearsal,
+    publicThinEntrypointRouterCutoverRehearsalCheck,
+    publicThinEntrypointRouterCutoverApplication,
+    publicThinEntrypointRouterCutoverApplicationCheck,
+    publicRouterCommandAdapterDelegationExpansion,
+    publicRouterCommandAdapterDelegationExpansionCheck,
+    publicArchitectureCheck
+  })
+});
 
-  if (args.length === 1 && args[0] === '--claims-bundle-parity') {
-    json(publicClaimsDomainSourceExtractionBundleParity());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--claims-bundle-parity-check') {
-    const result = publicClaimsDomainSourceExtractionBundleParityCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--claims-runtime-bridge') {
-    json(publicClaimsDomainSourceExtractionRuntimeBridge());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--claims-runtime-bridge-check') {
-    const result = publicClaimsDomainSourceExtractionRuntimeBridgeCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--claims-installed-fallback-smoke') {
-    json(publicClaimsDomainSourceExtractionInstalledFallbackSmoke());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--claims-installed-fallback-check') {
-    const result = publicClaimsDomainSourceExtractionInstalledFallbackSmokeCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--source-domain-closure-review') {
-    json(publicSourceDomainExtractionStabilizationClosureReview());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--source-domain-closure-check') {
-    const result = publicSourceDomainExtractionStabilizationClosureReviewCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--cli-runtime-plan') {
-    json(publicCliRuntimeDeMonolithPlanning());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--cli-runtime-check') {
-    const result = publicCliRuntimeDeMonolithPlanningCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--thin-router') {
-    json(publicThinCliRouterSeed());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--thin-router-check') {
-    const result = publicThinCliRouterSeedCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--compatibility-port') {
-    json(publicCompatibilityCommandPortSeed());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--compatibility-port-check') {
-    const result = publicCompatibilityCommandPortSeedCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--core-adapter') {
-    json(publicCoreCommandAdapterExtraction());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--core-adapter-check') {
-    const result = publicCoreCommandAdapterExtractionCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--package-adapter') {
-    json(publicPackageCommandAdapterExtraction());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--package-adapter-check') {
-    const result = publicPackageCommandAdapterExtractionCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--architecture-adapter') {
-    json(publicArchitectureCommandAdapterExtraction());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--architecture-adapter-check') {
-    const result = publicArchitectureCommandAdapterExtractionCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--authority-adapter') {
-    json(publicAuthorityCommandAdapterExtraction());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--authority-adapter-check') {
-    const result = publicAuthorityCommandAdapterExtractionCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--module-inclusion-plan') {
-    json(publicModularRuntimePackageInclusionPlan());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--module-inclusion-check') {
-    const result = publicModularRuntimePackageInclusionPlanCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--packaged-router-port') {
-    json(publicPackagedRouterPortInclusion());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--packaged-router-port-check') {
-    const result = publicPackagedRouterPortInclusionCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--thin-entrypoint-rehearsal') {
-    json(publicThinEntrypointRouterCutoverRehearsal());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--thin-entrypoint-rehearsal-check') {
-    const result = publicThinEntrypointRouterCutoverRehearsalCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--thin-entrypoint-cutover') {
-    json(publicThinEntrypointRouterCutoverApplication());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--thin-entrypoint-cutover-check') {
-    const result = publicThinEntrypointRouterCutoverApplicationCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--router-adapter-delegation') {
-    json(publicRouterCommandAdapterDelegationExpansion());
-    return 0;
-  }
-  if (args.length === 1 && args[0] === '--router-adapter-delegation-check') {
-    const result = publicRouterCommandAdapterDelegationExpansionCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  if (args.length === 1 && args[0] === '--check') {
-    const result = publicArchitectureCheck();
-    json(result);
-    return result.status === 'ok' ? 0 : 1;
-  }
-  json({
-    schema: 'agent-onboard-architecture-command-error-001',
-    status: 'error',
-    command_family: 'architecture',
-    message: 'architecture requires --map, --router, --facades, --partition-plan, --partition-check, --extraction-rehearsal, --extraction-check, --golden-outputs, --golden-check, --adapter-boundary, --adapter-check, --first-slice, --first-slice-check, --bundle-parity, --bundle-parity-check, --runtime-bridge, --runtime-bridge-check, --installed-fallback-smoke, --installed-fallback-check, --second-slice-plan, --second-slice-check, --second-slice-first-slice, --second-slice-first-slice-check, --authority-bundle-parity, --authority-bundle-parity-check, --authority-runtime-bridge, --authority-runtime-bridge-check, --m2-seed, --m2-seed-check, --work-items-plan, --work-items-check, --work-items-first-slice, --work-items-first-slice-check, --work-items-bundle-parity, --work-items-bundle-parity-check, --work-items-runtime-bridge, --work-items-runtime-bridge-check, --work-items-installed-fallback-smoke, --work-items-installed-fallback-check, --claims-plan, --claims-check, --claims-first-slice, --claims-first-slice-check, --claims-bundle-parity, --claims-bundle-parity-check, --claims-runtime-bridge, --claims-runtime-bridge-check, --claims-installed-fallback-smoke, --claims-installed-fallback-check, --source-domain-closure-review, --source-domain-closure-check, --cli-runtime-plan, --cli-runtime-check, --thin-router, --thin-router-check, --compatibility-port, --compatibility-port-check, --core-adapter, --core-adapter-check, --package-adapter, --package-adapter-check, --architecture-adapter, --architecture-adapter-check, --authority-adapter, --authority-adapter-check, --module-inclusion-plan, --module-inclusion-check, --packaged-router-port, --packaged-router-port-check, --thin-entrypoint-rehearsal, --thin-entrypoint-rehearsal-check, --thin-entrypoint-cutover, --thin-entrypoint-cutover-check, --router-adapter-delegation, --router-adapter-delegation-check, or --check',
-    writes_files: false,
-    publishes_package: false
-  });
-  return 1;
+function runArchitecture(args = []) {
+  return architectureCommandRunnerService.runArchitecture(args);
 }
 
 function runAuthority(args) {

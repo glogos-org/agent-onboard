@@ -49,26 +49,25 @@
     "runtime-composer-residual-slice-reduction",
     "target-command-runner-extraction",
     "exact-artifact-oracle-service-extraction",
-    "target-onboarding-acceptance-service-extraction"
+    "target-onboarding-acceptance-service-extraction",
+    "architecture-command-runner-extraction"
   ],
   "remaining_god_files": [
     {
       "path": "cli/agent_onboard/runtime-composer.js",
       "category": "runtime_source",
-      "current_lines": 5650,
-      "current_bytes": 309900,
-      "admitted_reason": "runtime composer still carries command implementation debt after W4 target onboarding acceptance service extraction",
-      "next_reduction_gate": "P1S3M7W5"
+      "current_lines": 5036,
+      "current_bytes": 288088,
+      "admitted_reason": "runtime composer remains admitted residual command composition debt after W6 architecture command runner extraction",
+      "next_reduction_gate": "P1S3M7W7"
     },
     {
       "path": ".agent-onboard/work-items.json",
       "category": "authority_registry",
-      "current_lines": 1660,
-      "current_bytes_max": 47537,
-      "admitted_reason": "public work item ledger projection remains admitted migration debt after W4 closure append; authoritative shards remain the default compact read path",
-      "next_reduction_gate": "P1S3M7W6",
-      "current_bytes": 47537,
-      "current_lines_max": 1648
+      "current_lines": 1671,
+      "admitted_reason": "public work item ledger projection remains admitted migration debt after W6 closure append; authoritative shards remain the default compact read path",
+      "next_reduction_gate": "P1S3M7W7",
+      "current_bytes": 47854
     },
     {
       "path": "cli/agent_onboard/domains/architecture/services/runtime/architecture-runtime-service.js",
@@ -76,7 +75,7 @@
       "current_lines": 1544,
       "current_bytes": 85962,
       "admitted_reason": "architecture runtime still aggregates authority-state, namespace, and extraction checks",
-      "next_reduction_gate": "P1S3M7W6"
+      "next_reduction_gate": "P1S3M7W7"
     },
     {
       "path": "README.md",
@@ -100,7 +99,7 @@
       "current_lines": 1087,
       "current_bytes": 68279,
       "admitted_reason": "source extraction orchestration still combines scan, validation, and installed fallback logic",
-      "next_reduction_gate": "P1S3M7W6"
+      "next_reduction_gate": "P1S3M7W7"
     }
   ],
   "closure_result": {

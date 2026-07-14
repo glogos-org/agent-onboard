@@ -3,7 +3,7 @@
   "package_name": "agent-onboard",
   "source": "sharded_work_items_authority",
   "milestone_id": "P1S3M7",
-  "item_count": 5,
+  "item_count": 6,
   "items": [
     {
       "id": "P1S3M7W1",
@@ -62,6 +62,17 @@
         "note": "Implement W5 core surface command runner extraction."
       },
       "closure_ref": "closures:P1S3M7W5"
+    },
+    {
+      "id": "P1S3M7W6",
+      "milestone_id": "P1S3M7",
+      "title": "Public Architecture Command Runner Extraction Gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-09T07:25:31.208Z"
+      },
+      "closure_ref": "closures:P1S3M7W6"
     }
   ]
 }
