@@ -12,14 +12,14 @@
     ".agent-onboard/state/closures/work-items-closures.jsonl",
     ".agent-onboard/state/closures/work-items/manifest.json"
   ],
-  "item_count": 179,
+  "item_count": 180,
   "open_count": 0,
   "claimed_count": 0,
-  "closed_count": 179,
-  "latest_closed_work_item_id": "P1S3M7W8",
-  "archived_closure_count": 178,
+  "closed_count": 180,
+  "latest_closed_work_item_id": "P1S3M7W9",
+  "archived_closure_count": 179,
   "inline_closure_count": 0,
-  "closure_ref_count": 178,
+  "closure_ref_count": 179,
   "closure_payload_shard_count": 11,
   "by_status": {
     "open": [],
@@ -203,7 +203,8 @@
       "P1S3M7W5",
       "P1S3M7W6",
       "P1S3M7W7",
-      "P1S3M7W8"
+      "P1S3M7W8",
+      "P1S3M7W9"
     ]
   },
   "by_milestone": {
@@ -404,81 +405,13 @@
       "P1S3M7W5",
       "P1S3M7W6",
       "P1S3M7W7",
-      "P1S3M7W8"
+      "P1S3M7W8",
+      "P1S3M7W9"
     ]
   },
-  "updated_at": "2026-07-09T08:36:09.704Z",
+  "updated_at": "2026-07-09T09:45:40.390Z",
   "latest_closed_work_items": [
     {
-      "id": "P1S3M6W33",
-      "milestone_id": "P1S3M6",
-      "title": "Public Check Registry Compaction Gate",
-      "status": "closed",
-      "claim": {
-        "actor": "gpt-5.5-thinking",
-        "claimed_at": "2026-07-08T12:05:00.000Z"
-      },
-      "closure_ref": "closures:P1S3M6W33"
-    },
-    {
-      "id": "P1S3M6W34",
-      "milestone_id": "P1S3M6",
-      "title": "Public God File Budget Enforcement Closure Gate",
-      "status": "closed",
-      "claim": {
-        "actor": "gpt-5.5-thinking",
-        "claimed_at": "2026-07-08T13:20:00.000Z",
-        "note": "Close the god-file budget enforcement run with hard no-new-god-file gates."
-      },
-      "closure_ref": "closures:P1S3M6W34"
-    },
-    {
-      "id": "P1S3M7W1",
-      "milestone_id": "P1S3M7",
-      "title": "Public Runtime Composer Residual Slice Reduction Gate",
-      "status": "closed",
-      "claim": {
-        "actor": "gpt-5.5-thinking",
-        "claimed_at": "2026-07-08T16:45:00.000Z",
-        "note": "Reduce residual runtime composer slices without changing storage backend."
-      },
-      "closure_ref": "closures:P1S3M7W1"
-    },
-    {
-      "id": "P1S3M7W2",
-      "milestone_id": "P1S3M7",
-      "title": "Public Target Command Runner Extraction Gate",
-      "status": "closed",
-      "claim": {
-        "actor": "gpt-5.5-thinking",
-        "claimed_at": "2026-07-08T18:57:10.972Z"
-      },
-      "closure_ref": "closures:P1S3M7W2"
-    },
-    {
-      "id": "P1S3M7W3",
-      "milestone_id": "P1S3M7",
-      "title": "Public Exact Artifact Oracle Service Extraction Gate",
-      "status": "closed",
-      "claim": {
-        "actor": "gpt-5.5-thinking",
-        "claimed_at": "2026-07-08T20:25:00.000Z",
-        "note": "Extract exact artifact oracle behavior from runtime composer without changing storage backend."
-      },
-      "closure_ref": "closures:P1S3M7W3"
-    },
-    {
-      "id": "P1S3M7W4",
-      "milestone_id": "P1S3M7",
-      "title": "Public Target Onboarding Acceptance Service Extraction Gate",
-      "status": "closed",
-      "claim": {
-        "actor": "gpt-5.5-thinking",
-        "claimed_at": "2026-07-09T05:18:30.979Z"
-      },
-      "closure_ref": "closures:P1S3M7W4"
-    },
-    {
       "id": "P1S3M7W5",
       "milestone_id": "P1S3M7",
       "title": "Public Core Surface Command Runner Extraction Gate",
@@ -514,21 +447,17 @@
       "title": "Public Contracts Command Service Extraction Gate",
       "status": "closed",
       "closure_ref": "closures:P1S3M7W8"
+    },
+    {
+      "id": "P1S3M7W9",
+      "milestone_id": "P1S3M7",
+      "title": "Public Package Surface Service Extraction Gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M7W9"
     }
   ],
-  "latest_work_item_id": "P1S3M7W8",
+  "latest_work_item_id": "P1S3M7W9",
   "latest_work_items": [
-    {
-      "id": "P1S3M7W4",
-      "milestone_id": "P1S3M7",
-      "title": "Public Target Onboarding Acceptance Service Extraction Gate",
-      "status": "closed",
-      "claim": {
-        "actor": "gpt-5.5-thinking",
-        "claimed_at": "2026-07-09T05:18:30.979Z"
-      },
-      "closure_ref": "closures:P1S3M7W4"
-    },
     {
       "id": "P1S3M7W5",
       "milestone_id": "P1S3M7",
@@ -565,6 +494,13 @@
       "title": "Public Contracts Command Service Extraction Gate",
       "status": "closed",
       "closure_ref": "closures:P1S3M7W8"
+    },
+    {
+      "id": "P1S3M7W9",
+      "milestone_id": "P1S3M7",
+      "title": "Public Package Surface Service Extraction Gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M7W9"
     }
   ]
 }

@@ -1,0 +1,75 @@
+{
+  "schema": "agent-onboard-public-package-surface-service-extraction-001",
+  "status": "closed",
+  "package_name": "agent-onboard",
+  "version": "0.0.192",
+  "release_line": "public_package_surface_service_extraction_gate",
+  "work_item_id": "P1S3M7W9",
+  "title": "Public Package Surface Service Extraction Gate",
+  "objective": "Move package surface and package source manifest release command implementations out of runtime-composer and into the bounded package surface service without changing the JSON/JSONL text-first storage backend.",
+  "reduction": {
+    "runtime_composer_before": {
+      "path": "cli/agent_onboard/runtime-composer.js",
+      "lines": 4783,
+      "bytes": 269150
+    },
+    "runtime_composer_after": {
+      "path": "cli/agent_onboard/runtime-composer.js",
+      "lines": 4664,
+      "bytes": 262146
+    },
+    "lines_removed": 119,
+    "bytes_removed": 7004,
+    "service_after": {
+      "path": "cli/agent_onboard/domains/package/services/package-surface-service.js",
+      "lines": 201,
+      "bytes": 10608
+    }
+  },
+  "extracted_surface": {
+    "service_path": "cli/agent_onboard/domains/package/services/package-surface-service.js",
+    "owned_runtime_functions": [
+      "publicPackageSurface",
+      "publicPackageSurfaceCheck",
+      "publicPackageSourceManifest",
+      "publicPackageSourceManifestCheck"
+    ],
+    "composer_role_after_gate": "compose package surface service and delegate release surface/source-manifest behavior",
+    "source_manifest_service_preserved": true
+  },
+  "boundary": {
+    "storage_backend": "json_jsonl_text_first_unchanged",
+    "sqlite_introduced": false,
+    "lmdb_introduced": false,
+    "mdbx_introduced": false,
+    "network": false,
+    "git_mutation": false,
+    "package_publish": false
+  },
+  "checks_run": [
+    "node scripts/check.js package-surface-service-extraction",
+    "node cli/agent-onboard.js release --surface",
+    "node cli/agent-onboard.js release --surface-check",
+    "node cli/agent-onboard.js release --source-manifest",
+    "node cli/agent-onboard.js release --source-manifest-check",
+    "node scripts/check.js contracts-command-service-extraction",
+    "node scripts/check.js release-check-service-extraction",
+    "node scripts/check.js source-size-budget",
+    "node scripts/check.js god-file-budget-enforcement-closure",
+    "node scripts/check.js check-registry-compaction",
+    "node scripts/check.js state-projection-authority-cutover",
+    "node scripts/check.js closure-payload-reference-compaction",
+    "node cli/agent-onboard.js authority --index-check",
+    "node cli/agent-onboard.js authority --state-check",
+    "node cli/agent-onboard.js release --check",
+    "node cli/agent-onboard.js check --fast --json",
+    "node cli/agent-onboard.js check --fast --text",
+    "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+    "npm test",
+    "npm pack --dry-run --json"
+  ],
+  "checks_not_run": [
+    "npm publish was not run."
+  ],
+  "known_non_pass": []
+}

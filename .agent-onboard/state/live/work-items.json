@@ -5,12 +5,12 @@
   "authority_role": "compatibility_live_projection",
   "projection_of": "canonical_sharded_work_items_authority",
   "legacy_full_projection": false,
-  "item_count": 179,
+  "item_count": 180,
   "open_count": 0,
   "claimed_count": 0,
-  "closed_count": 179,
-  "latest_work_item_id": "P1S3M7W8",
-  "latest_closed_work_item_id": "P1S3M7W8",
+  "closed_count": 180,
+  "latest_work_item_id": "P1S3M7W9",
+  "latest_closed_work_item_id": "P1S3M7W9",
   "rebuildable_from": [
     ".agent-onboard/state/authority/work-items/manifest.json",
     ".agent-onboard/state/authority/work-items/items/index.json",
@@ -24,13 +24,13 @@
   "counts": {
     "open": 0,
     "claimed": 0,
-    "closed": 179,
+    "closed": 180,
     "programs": 1,
     "stages": 3,
     "milestones": 10,
-    "work_items": 179
+    "work_items": 180
   },
   "current_work_item": null,
   "next_open_work_item": null,
-  "updated_at": "2026-07-09T08:36:09.704Z"
+  "updated_at": "2026-07-09T09:45:40.390Z"
 }

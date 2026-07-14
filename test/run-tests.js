@@ -406,6 +406,7 @@ function quickTasks() {
     checkRegistryTask('architecture command runner extraction check', 'architecture-command-runner-extraction'),
     checkRegistryTask('release check service extraction check', 'release-check-service-extraction'),
     checkRegistryTask('contracts command service extraction check', 'contracts-command-service-extraction'),
+    checkRegistryTask('package surface service extraction check', 'package-surface-service-extraction'),
     npmTask('npm pack dry run', ['pack', '--dry-run', '--json'], expectPackFiles)
   ];
 }

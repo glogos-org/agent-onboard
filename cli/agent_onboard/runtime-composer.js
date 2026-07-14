@@ -19,6 +19,7 @@ const {
 const { createPublicRuntimeReleaseCommandService } = require('./domains/package/services/public-runtime-release-service');
 const { createPublicReleaseCheckService } = require('./domains/package/services/public-release-check-service');
 const { createPublicContractsCommandService } = require('./domains/package/services/public-contracts-command-service');
+const { createPackageSurfaceService } = require('./domains/package/services/package-surface-service');
 const { createPublicExactArtifactOracleService } = require('./domains/package/services/exact-artifact-oracle-service');
 const { createPublicTargetOnboardingAcceptanceService } = require('./domains/package/services/target-onboarding-acceptance-service');
 const { createPublicReleaseCleanClosedGatesRuntimeSliceService } = require('./domains/package/services/release-clean-closed-gates-runtime-slice-service');
@@ -26,7 +27,6 @@ const { createPublicRuntimeCheckFastService } = require('./domains/core/services
 const { createPublicRuntimeMcpBridgeService } = require('./domains/core/services/public-runtime-mcp-bridge-service');
 const { createPublicCoreSurfaceCommandRunnerService } = require('./domains/core/services/public-core-surface-command-runner-service');
 const { createPublicRuntimeAgentsBridgeService } = require('./domains/authority/services/public-runtime-agents-bridge-service');
-const { sourceManifest: packageSourceManifestDomain } = require('./domains/package');
 const {
   OUTPUT_FLAG,
   PACKAGE_NAME,
@@ -404,6 +404,23 @@ function sourceContext(root = packageRoot()) {
     source_context_files_missing: PUBLIC_RELEASE_CONTRACT.source_context_files.filter((rel) => !sourceFiles.includes(rel))
   };
 }
+
+const packageSurfaceService = createPackageSurfaceService({
+  version: VERSION,
+  publicReleaseContract: PUBLIC_RELEASE_CONTRACT,
+  publicPackageSurfacePreservation: PUBLIC_PACKAGE_SURFACE_PRESERVATION,
+  packageRoot,
+  readJson,
+  packageJsonProjectedPackFiles,
+  sourceContext,
+  publicArtifactMessagingErrors,
+  arrayEquals
+});
+const publicPackageSurface = packageSurfaceService.surface;
+const publicPackageSurfaceCheck = packageSurfaceService.surfaceCheck;
+const publicPackageSourceManifest = packageSurfaceService.sourceManifest;
+const publicPackageSourceManifestCheck = packageSurfaceService.sourceManifestCheck;
+
 
 const publicExactArtifactOracleService = createPublicExactArtifactOracleService({
   PACKAGE_NAME,
@@ -3630,95 +3647,6 @@ const publicArchitectureAggregateCheckService = createPublicArchitectureAggregat
 });
 const { publicArchitectureCheck } = publicArchitectureAggregateCheckService;
 
-function createPublicPackageSourceManifestService() {
-  return packageSourceManifestDomain.createPackageSourceManifestService({
-    packageName: PUBLIC_RELEASE_CONTRACT.package_name,
-    version: VERSION,
-    releaseLine: PUBLIC_RELEASE_CONTRACT.release_line,
-    expectedPackFiles: PUBLIC_PACKAGE_SURFACE_PRESERVATION.expected_pack_files,
-    sourceOnlyFiles: PUBLIC_PACKAGE_SURFACE_PRESERVATION.source_only_files
-  });
-}
-
-function publicPackageSurface(root = packageRoot()) {
-  const pkg = readJson(path.join(root, 'package.json'));
-  const projectedPackFiles = packageJsonProjectedPackFiles(pkg);
-  const expectedPackFiles = PUBLIC_PACKAGE_SURFACE_PRESERVATION.expected_pack_files.slice().sort();
-  const requiredPackageJsonFiles = PUBLIC_PACKAGE_SURFACE_PRESERVATION.required_package_json_files.slice().sort();
-  const actualPackageJsonFiles = Array.isArray(pkg.files) ? pkg.files.slice().sort() : [];
-  const context = sourceContext(root);
-  const sourceOnlyFiles = PUBLIC_PACKAGE_SURFACE_PRESERVATION.source_only_files.slice();
-  const sourceOnlyPresent = sourceOnlyFiles.filter((rel) => fs.existsSync(path.join(root, rel)));
-  const sourceOnlyProjected = sourceOnlyFiles.filter((rel) => projectedPackFiles.includes(rel));
-  const expectedPresent = expectedPackFiles.filter((rel) => fs.existsSync(path.join(root, rel)));
-  const expectedMissing = expectedPackFiles.filter((rel) => !fs.existsSync(path.join(root, rel)));
-  const binTargets = Object.values(PUBLIC_RELEASE_CONTRACT.required_package_json.bin);
-  const binTargetsInProjectedPack = binTargets.every((rel) => projectedPackFiles.includes(rel));
-  return {
-    schema: 'agent-onboard-public-package-surface-preservation-result-001',
-    status: 'ok',
-    package_name: PUBLIC_PACKAGE_SURFACE_PRESERVATION.package_name,
-    version: VERSION,
-    release_line: PUBLIC_PACKAGE_SURFACE_PRESERVATION.release_line,
-    contract_schema: PUBLIC_RELEASE_CONTRACT.schema,
-    command: PUBLIC_PACKAGE_SURFACE_PRESERVATION.command,
-    check_command: PUBLIC_PACKAGE_SURFACE_PRESERVATION.check_command,
-    package_root: root,
-    package_context: context.package_context,
-    expected_pack_files: expectedPackFiles,
-    projected_pack_files: projectedPackFiles,
-    required_package_json_files: requiredPackageJsonFiles,
-    actual_package_json_files: actualPackageJsonFiles,
-    source_only_files: sourceOnlyFiles,
-    source_only_files_present: sourceOnlyPresent,
-    source_only_files_projected_into_pack: sourceOnlyProjected,
-    expected_pack_files_present: expectedPresent,
-    expected_pack_files_missing: expectedMissing,
-    bin_targets: binTargets,
-    bin_targets_in_projected_pack: binTargetsInProjectedPack,
-    installed_context_policy: PUBLIC_PACKAGE_SURFACE_PRESERVATION.installed_context_policy,
-    boundary: {
-      writes_files: false,
-      writes_package_root: false,
-      writes_target_repository_state: false,
-      git_mutation: false,
-      installs_dependencies: false,
-      runs_package_manager: false,
-      runs_build_test_deploy: false,
-      publishes_package: false,
-      mutates_registry: false,
-      network_registry_publish_required: false
-    }
-  };
-}
-
-function publicPackageSourceManifest(root = packageRoot()) {
-  const result = createPublicPackageSourceManifestService().build(root);
-  return Object.assign({}, result, {
-    command: 'agent-onboard release --source-manifest',
-    package_root: root,
-    boundary: Object.assign({}, result.boundary, {
-      writes_files: false,
-      runs_package_manager: false,
-      publishes_package: false,
-      mutates_registry: false
-    })
-  });
-}
-
-function publicPackageSourceManifestCheck(root = packageRoot()) {
-  const result = createPublicPackageSourceManifestService().check(root);
-  return Object.assign({}, result, {
-    command: 'agent-onboard release --source-manifest-check',
-    package_root: root,
-    boundary: Object.assign({}, result.boundary, {
-      writes_files: false,
-      runs_package_manager: false,
-      publishes_package: false,
-      mutates_registry: false
-    })
-  });
-}
 
 const publicReleaseCleanClosedGatesRuntimeSliceService = createPublicReleaseCleanClosedGatesRuntimeSliceService({
   PACKAGE_NAME,
@@ -3827,53 +3755,6 @@ const checkPlanFastService = createPublicRuntimeCheckFastService({
   publicReleaseCheck
 });
 
-
-function publicPackageSurfaceCheck(root = packageRoot()) {
-  const surface = publicPackageSurface(root);
-  const packageSourceManifest = createPublicPackageSourceManifestService().check(root);
-  const errors = [];
-  const messagingErrors = publicArtifactMessagingErrors(root, surface.expected_pack_files);
-  if (!arrayEquals(surface.projected_pack_files, surface.expected_pack_files)) errors.push(`projected npm pack files must be ${surface.expected_pack_files.join(', ')}`);
-  if (!arrayEquals(surface.actual_package_json_files, surface.required_package_json_files)) errors.push(`package.json#files must be ${surface.required_package_json_files.join(', ')}`);
-  if (surface.expected_pack_files_missing.length > 0) errors.push(`expected npm package files missing: ${surface.expected_pack_files_missing.join(', ')}`);
-  if (surface.source_only_files_projected_into_pack.length > 0) errors.push(`source-only files projected into npm package: ${surface.source_only_files_projected_into_pack.join(', ')}`);
-  if (!surface.bin_targets_in_projected_pack) errors.push('all bin targets must remain inside the projected npm package surface');
-  if (packageSourceManifest.status !== 'ok') errors.push(...packageSourceManifest.errors.map((error) => `package source manifest: ${error}`));
-  errors.push(...messagingErrors.map((error) => `public artifact messaging: ${error}`));
-  return {
-    schema: 'agent-onboard-public-package-surface-preservation-check-result-001',
-    status: errors.length === 0 ? 'ok' : 'error',
-    package_name: PUBLIC_PACKAGE_SURFACE_PRESERVATION.package_name,
-    version: VERSION,
-    release_line: PUBLIC_PACKAGE_SURFACE_PRESERVATION.release_line,
-    contract_schema: PUBLIC_RELEASE_CONTRACT.schema,
-    command: PUBLIC_PACKAGE_SURFACE_PRESERVATION.check_command,
-    package_root: root,
-    package_context: surface.package_context,
-    validated: {
-      controlled_modular_package_surface: arrayEquals(surface.projected_pack_files, surface.expected_pack_files),
-      package_json_files_allowlist: arrayEquals(surface.actual_package_json_files, surface.required_package_json_files),
-      expected_pack_files_present: surface.expected_pack_files_missing.length === 0,
-      source_only_context_excluded_from_pack: surface.source_only_files_projected_into_pack.length === 0,
-      source_growth_files_present_in_source_repo: surface.package_context === 'installed_package' || surface.source_only_files_present.length >= 5,
-      bin_entrypoints_in_pack: surface.bin_targets_in_projected_pack,
-      public_artifact_messaging: messagingErrors.length === 0,
-      package_source_manifest: packageSourceManifest.status === 'ok',
-      package_source_manifest_content_addressed: packageSourceManifest.validated.package_files_are_content_addressed,
-      package_source_manifest_hash_cache_excluded: packageSourceManifest.validated.hash_cache_not_projected_into_package,
-      surface_commands_no_write: PUBLIC_PACKAGE_SURFACE_PRESERVATION.boundary.surface_command_writes_files === false && PUBLIC_PACKAGE_SURFACE_PRESERVATION.boundary.check_command_writes_files === false
-    },
-    expected_pack_files: surface.expected_pack_files,
-    projected_pack_files: surface.projected_pack_files,
-    required_package_json_files: surface.required_package_json_files,
-    actual_package_json_files: surface.actual_package_json_files,
-    source_only_files_present: surface.source_only_files_present,
-    source_only_files_projected_into_pack: surface.source_only_files_projected_into_pack,
-    package_source_manifest: packageSourceManifest,
-    boundary: surface.boundary,
-    errors
-  };
-}
 
 const PUBLIC_INSTALLED_AUTHORITY_STATE_SHARD_PARITY = Object.freeze({
   schema: 'agent-onboard-public-installed-authority-state-shard-parity-contract-001',

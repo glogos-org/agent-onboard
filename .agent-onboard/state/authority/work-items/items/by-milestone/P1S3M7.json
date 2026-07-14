@@ -3,7 +3,7 @@
   "package_name": "agent-onboard",
   "source": "sharded_work_items_authority",
   "milestone_id": "P1S3M7",
-  "item_count": 8,
+  "item_count": 9,
   "items": [
     {
       "id": "P1S3M7W1",
@@ -87,6 +87,13 @@
       "title": "Public Contracts Command Service Extraction Gate",
       "status": "closed",
       "closure_ref": "closures:P1S3M7W8"
+    },
+    {
+      "id": "P1S3M7W9",
+      "milestone_id": "P1S3M7",
+      "title": "Public Package Surface Service Extraction Gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M7W9"
     }
   ]
 }

@@ -59,18 +59,18 @@
     {
       "path": "cli/agent_onboard/runtime-composer.js",
       "category": "runtime_source",
-      "current_lines": 4783,
-      "current_bytes": 269150,
-      "admitted_reason": "runtime composer remains admitted migration debt but shrank during W8 contracts command service extraction",
-      "next_reduction_gate": "P1S3M7W9"
+      "current_lines": 4664,
+      "current_bytes": 262146,
+      "admitted_reason": "runtime composer remains admitted migration debt but shrank during W9 package surface service extraction",
+      "next_reduction_gate": "P1S3M7W10"
     },
     {
       "path": ".agent-onboard/work-items.json",
       "category": "authority_registry",
-      "current_lines": 1685,
-      "admitted_reason": "public work item ledger projection remains admitted migration debt after W8 closure append; authoritative shards remain the default compact read path",
-      "next_reduction_gate": "P1S3M7W9",
-      "current_bytes": 48256
+      "current_lines": 1692,
+      "admitted_reason": "public work item ledger projection remains admitted migration debt after W9 closure append; authoritative shards remain the default compact read path",
+      "next_reduction_gate": "P1S3M7W10",
+      "current_bytes": 48457
     },
     {
       "path": "cli/agent_onboard/domains/architecture/services/runtime/architecture-runtime-service.js",
