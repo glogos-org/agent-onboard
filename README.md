@@ -7,7 +7,7 @@ CLI for onboarding and managing target repositories.
 The generated files are intended to be read by agents, wrappers, CI hooks, or future runtimes that choose to honor the declared boundaries.
 
 
-Current release: this line continues runtime composer decomposition by extracting full-test runner completion logic into `cli/agent_onboard/domains/package/services/full-test-runner-service.js`. `runtime-composer.js` remains the compatibility composer and public export surface, but it no longer owns the full-test runner completion contract and checker body. The surface remains read-only and no-install/no-network/no-Git; no SQLite, Lightning Memory-Mapped Database, MDBX, dependency addition, registry mutation, or package publish is admitted.
+Current release: this line continues runtime composer decomposition by extracting CLI runtime planning and check logic into `cli/agent_onboard/domains/architecture/services/runtime/public-cli-runtime-planning-service.js`. `runtime-composer.js` remains the compatibility composer and public export surface, but it no longer owns the `architecture --cli-runtime-plan` and `architecture --cli-runtime-check` planning contract. The surface remains read-only and no-install/no-network/no-Git; no SQLite, Lightning Memory-Mapped Database, MDBX, dependency addition, registry mutation, or package publish is admitted.
 
 ## Install
 

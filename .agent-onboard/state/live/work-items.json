@@ -1,1 +1,73 @@
-{"schema":"agent-onboard-work-items-live-projection-002","package_name":"agent-onboard","source":".agent-onboard/state/authority/work-items/manifest.json","authority_role":"compatibility_live_projection","projection_of":"canonical_sharded_work_items_authority","legacy_full_projection":false,"item_count":181,"open_count":0,"claimed_count":0,"closed_count":181,"latest_work_item_id":"P1S3M7W10","latest_closed_work_item_id":"P1S3M7W10","rebuildable_from":[".agent-onboard/state/authority/work-items/manifest.json",".agent-onboard/state/authority/work-items/items/index.json",".agent-onboard/state/authority/work-items/items/by-milestone/*.json"],"boundary":{"contains_full_work_item_records":false,"writes_files":false,"storage_backend_changed":false},"counts":{"open":0,"claimed":0,"closed":181,"programs":1,"stages":3,"milestones":10,"work_items":181},"current_work_item":"P1S3M7W10","next_open_work_item":null,"updated_at":"2026-07-09T10:15:50.901Z","latest_closed_work_items":[{"id":"P1S3M7W6","title":"Public Architecture Command Runner Extraction Gate","status":"closed","milestone_id":"P1S3M7","domain":null},{"id":"P1S3M7W7","title":"Public Release Check Service Extraction Gate","status":"closed","milestone_id":"P1S3M7","domain":null},{"id":"P1S3M7W8","title":"Public Contracts Command Service Extraction Gate","status":"closed","milestone_id":"P1S3M7","domain":null},{"id":"P1S3M7W9","title":"Public Package Surface Service Extraction Gate","status":"closed","milestone_id":"P1S3M7","domain":null},{"id":"P1S3M7W10","title":"Public Full Test Runner Service Extraction Gate","status":"closed","milestone_id":"P1S3M7","domain":null}]}
+{
+  "schema": "agent-onboard-work-items-live-projection-002",
+  "package_name": "agent-onboard",
+  "source": ".agent-onboard/state/authority/work-items/manifest.json",
+  "authority_role": "compatibility_live_projection",
+  "projection_of": "canonical_sharded_work_items_authority",
+  "legacy_full_projection": false,
+  "item_count": 182,
+  "open_count": 0,
+  "claimed_count": 0,
+  "closed_count": 182,
+  "latest_work_item_id": "P1S3M7W11",
+  "latest_closed_work_item_id": "P1S3M7W11",
+  "rebuildable_from": [
+    ".agent-onboard/state/authority/work-items/manifest.json",
+    ".agent-onboard/state/authority/work-items/items/index.json",
+    ".agent-onboard/state/authority/work-items/items/by-milestone/*.json"
+  ],
+  "boundary": {
+    "contains_full_work_item_records": false,
+    "writes_files": false,
+    "storage_backend_changed": false
+  },
+  "counts": {
+    "open": 0,
+    "claimed": 0,
+    "closed": 182,
+    "programs": 1,
+    "stages": 3,
+    "milestones": 10,
+    "work_items": 182
+  },
+  "current_work_item": "P1S3M7W11",
+  "next_open_work_item": null,
+  "updated_at": "2026-07-09T12:20:00.000Z",
+  "latest_closed_work_items": [
+    {
+      "id": "P1S3M7W7",
+      "title": "Public Release Check Service Extraction Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M7",
+      "domain": null
+    },
+    {
+      "id": "P1S3M7W8",
+      "title": "Public Contracts Command Service Extraction Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M7",
+      "domain": null
+    },
+    {
+      "id": "P1S3M7W9",
+      "title": "Public Package Surface Service Extraction Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M7",
+      "domain": null
+    },
+    {
+      "id": "P1S3M7W10",
+      "title": "Public Full Test Runner Service Extraction Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M7",
+      "domain": null
+    },
+    {
+      "id": "P1S3M7W11",
+      "title": "Public CLI Runtime Planning Service Extraction Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M7",
+      "domain": null
+    }
+  ]
+}

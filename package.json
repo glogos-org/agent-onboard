@@ -1,6 +1,6 @@
 {
   "name": "agent-onboard",
-  "version": "0.0.193",
+  "version": "0.0.194",
   "description": "CLI for onboarding and managing target repositories.",
   "license": "Apache-2.0",
   "author": "Thanh Le <vnlemanhthanh@gmail.com>",
@@ -117,7 +117,8 @@
     "check:release-check-service-extraction": "node scripts/check.js release-check-service-extraction",
     "check:contracts-command-service-extraction": "node scripts/check.js contracts-command-service-extraction",
     "check:package-surface-service-extraction": "node scripts/check.js package-surface-service-extraction",
-    "check:full-test-runner-service-extraction": "node scripts/check.js full-test-runner-service-extraction"
+    "check:full-test-runner-service-extraction": "node scripts/check.js full-test-runner-service-extraction",
+    "check:cli-runtime-planning-service-extraction": "node scripts/check.js cli-runtime-planning-service-extraction"
   },
   "bin": {
     "agent-onboard": "cli/agent-onboard.js",
@@ -141,6 +142,7 @@
     "cli/agent_onboard/domains/architecture/services/checks/architecture-check-service.js",
     "cli/agent_onboard/domains/architecture/services/runtime/architecture-runtime-service.js",
     "cli/agent_onboard/domains/architecture/services/runtime/public-architecture-command-runner-service.js",
+    "cli/agent_onboard/domains/architecture/services/runtime/public-cli-runtime-planning-service.js",
     "cli/agent_onboard/domains/architecture/services/source-domains/architecture-source-domain-service.js",
     "cli/agent_onboard/domains/architecture/services/source-domains/claims-source-domain-service.js",
     "cli/agent_onboard/domains/architecture/services/source-domains/source-domain-closure-service.js",

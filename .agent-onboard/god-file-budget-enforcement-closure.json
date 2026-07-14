@@ -33,7 +33,8 @@
     "P1S3M6W32",
     "P1S3M6W33",
     "P1S3M6W34",
-    "P1S3M7W10"
+    "P1S3M7W10",
+    "P1S3M7W11"
   ],
   "required_check_ids": [
     "source-size-budget",
@@ -56,24 +57,25 @@
     "release-check-service-extraction",
     "contracts-command-service-extraction",
     "package-surface-service-extraction",
-    "full-test-runner-service-extraction"
+    "full-test-runner-service-extraction",
+    "cli-runtime-planning-service-extraction"
   ],
   "remaining_god_files": [
     {
       "path": "cli/agent_onboard/runtime-composer.js",
       "category": "runtime_source",
-      "current_lines": 4487,
-      "current_bytes": 250876,
-      "admitted_reason": "runtime composer remains admitted migration debt but shrank during W10 full-test runner service extraction",
-      "next_reduction_gate": "P1S3M7W11"
+      "current_lines": 4338,
+      "current_bytes": 240173,
+      "admitted_reason": "runtime composer remains admitted migration debt and shrank during W11 CLI runtime planning service extraction",
+      "next_reduction_gate": "P1S3M7W12"
     },
     {
       "path": ".agent-onboard/work-items.json",
       "category": "authority_registry",
-      "current_lines": 1699,
-      "admitted_reason": "public work item ledger projection remains admitted migration debt after W10 closure append; authoritative shards remain the default compact read path",
-      "next_reduction_gate": "P1S3M7W11",
-      "current_bytes": 48661
+      "current_lines": 1711,
+      "admitted_reason": "public work item ledger projection remains admitted migration debt after W11 closure append; authoritative shards remain the default compact read path",
+      "next_reduction_gate": "P1S3M7W12",
+      "current_bytes": 49094
     },
     {
       "path": "cli/agent_onboard/domains/architecture/services/runtime/architecture-runtime-service.js",
@@ -87,9 +89,9 @@
       "path": "README.md",
       "category": "documentation",
       "current_lines": 1313,
-      "current_bytes": 86673,
-      "admitted_reason": "first-read surface still contains command catalog prose and current-release note updated for W10",
-      "next_reduction_gate": "P1S3M7W11"
+      "current_bytes": 86737,
+      "admitted_reason": "first-read surface still contains command catalog prose and current-release note updated for W11",
+      "next_reduction_gate": "P1S3M7W12"
     },
     {
       "path": "cli/agent_onboard/domains/core/services/public-runtime-surface-service.js",

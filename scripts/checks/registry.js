@@ -37,6 +37,7 @@ const CHECK_MODULES = Object.freeze({
 ,  'contracts-command-service-extraction': 'contracts-command-service-extraction.js'
 ,  'package-surface-service-extraction': 'package-surface-service-extraction.js'
 ,  'full-test-runner-service-extraction': 'full-test-runner-service-extraction.js'
+,  'cli-runtime-planning-service-extraction': 'cli-runtime-planning-service-extraction.js'
 });
 
 function normalizeCheckId(value) {

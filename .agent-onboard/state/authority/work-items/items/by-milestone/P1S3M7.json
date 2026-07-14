@@ -3,7 +3,7 @@
   "package_name": "agent-onboard",
   "source": "sharded_work_items_authority",
   "milestone_id": "P1S3M7",
-  "item_count": 10,
+  "item_count": 11,
   "items": [
     {
       "id": "P1S3M7W1",
@@ -101,6 +101,18 @@
       "title": "Public Full Test Runner Service Extraction Gate",
       "status": "closed",
       "closure_ref": "closures:P1S3M7W10"
+    },
+    {
+      "id": "P1S3M7W11",
+      "milestone_id": "P1S3M7",
+      "title": "Public CLI Runtime Planning Service Extraction Gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-09T12:20:00.000Z",
+        "note": "Extract CLI runtime planning behavior from runtime composer without changing storage backend."
+      },
+      "closure_ref": "closures:P1S3M7W11"
     }
   ]
 }
