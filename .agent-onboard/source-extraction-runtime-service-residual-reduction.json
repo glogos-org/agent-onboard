@@ -1,0 +1,108 @@
+{
+  "schema": "agent-onboard-public-source-extraction-runtime-service-residual-reduction-001",
+  "package_name": "agent-onboard",
+  "version": "0.0.200",
+  "release_line": "public_source_extraction_runtime_service_residual_reduction_gate",
+  "milestone_id": "P1S3M7",
+  "work_item_id": "P1S3M7W17",
+  "title": "Public Source Extraction Runtime Service Residual Reduction Gate",
+  "status": "closed",
+  "objective": "Reduce source-extraction runtime residual debt by converting architecture-source-extraction-service.js into a bounded composition facade and moving golden output, adapter boundary, core slice, core runtime bridge, and authority runtime bridge behavior into small source-extraction services while preserving public architecture command outputs.",
+  "reduction": {
+    "source_extraction_service_before": {
+      "lines": 1090,
+      "bytes": 68279,
+      "source": "P1S3M7W16 baseline"
+    },
+    "source_extraction_facade_after": {
+      "lines": 143,
+      "bytes": 6068
+    },
+    "line_reduction": 947,
+    "byte_reduction": 62211,
+    "god_file_removed": false,
+    "near_god_file_removed": true,
+    "monolith_growth_allowed": false
+  },
+  "extracted_service_set": [
+    {
+      "id": "golden_version",
+      "path": "cli/agent_onboard/domains/architecture/services/source-extraction/public-source-extraction-golden-service.js",
+      "factory": "createPublicSourceExtractionGoldenService",
+      "lines": 210,
+      "bytes": 10568,
+      "package_projected": true
+    },
+    {
+      "id": "adapter_boundary",
+      "path": "cli/agent_onboard/domains/architecture/services/source-extraction/public-source-module-adapter-boundary-service.js",
+      "factory": "createPublicSourceModuleAdapterBoundaryService",
+      "lines": 162,
+      "bytes": 9273,
+      "package_projected": true
+    },
+    {
+      "id": "core_slice_and_bundle_parity",
+      "path": "cli/agent_onboard/domains/architecture/services/source-extraction/public-source-module-core-slice-service.js",
+      "factory": "createPublicSourceModuleCoreSliceService",
+      "lines": 372,
+      "bytes": 23151,
+      "package_projected": true
+    },
+    {
+      "id": "core_runtime_bridge",
+      "path": "cli/agent_onboard/domains/architecture/services/source-extraction/public-source-module-core-runtime-bridge-service.js",
+      "factory": "createPublicSourceModuleCoreRuntimeBridgeService",
+      "lines": 227,
+      "bytes": 12455,
+      "package_projected": true
+    },
+    {
+      "id": "authority_runtime_bridge",
+      "path": "cli/agent_onboard/domains/architecture/services/source-extraction/public-source-module-authority-runtime-bridge-service.js",
+      "factory": "createPublicSourceModuleAuthorityRuntimeBridgeService",
+      "lines": 262,
+      "bytes": 17065,
+      "package_projected": true
+    }
+  ],
+  "public_commands_preserved": [
+    "agent-onboard architecture --golden-check",
+    "agent-onboard architecture --adapter-check",
+    "agent-onboard architecture --first-slice-check",
+    "agent-onboard architecture --bundle-parity-check",
+    "agent-onboard architecture --runtime-bridge-check",
+    "agent-onboard architecture --authority-runtime-bridge-check",
+    "agent-onboard architecture --check",
+    "agent-onboard check --fast --json",
+    "agent-onboard release --check",
+    "npm pack --dry-run --json"
+  ],
+  "split_policy": {
+    "new_services_remain_below_near_god_threshold": true,
+    "near_god_threshold_lines": 500,
+    "near_god_threshold_bytes": 51200,
+    "storage_backend_remains_json_and_jsonl_text_first": true,
+    "source_modules_remain_shadow_modules_not_public_import_api": true
+  },
+  "checks": {
+    "gate_check": "node scripts/check.js source-extraction-runtime-service-residual-reduction",
+    "architecture_check": "node cli/agent-onboard.js architecture --check",
+    "release_check": "node cli/agent-onboard.js release --check",
+    "pack_dry_run": "npm pack --dry-run --json"
+  },
+  "boundary": {
+    "writes_files_at_runtime": false,
+    "mutates_target_repository_state": false,
+    "mutates_git": false,
+    "installs_dependencies": false,
+    "runs_package_manager_inside_checker": false,
+    "publishes_package": false,
+    "mutates_registry": false,
+    "network": false,
+    "storage_backend_changed": false,
+    "sqlite_introduced": false,
+    "lightning_memory_mapped_database_introduced": false,
+    "mdbx_introduced": false
+  }
+}

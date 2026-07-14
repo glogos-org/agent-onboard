@@ -19,11 +19,11 @@
   "counts": {
     "open": 0,
     "claimed": 0,
-    "closed": 187,
+    "closed": 188,
     "programs": 1,
     "stages": 3,
     "milestones": 10,
-    "work_items": 187
+    "work_items": 188
   },
   "shard_count": 14,
   "rebuild_order": [
@@ -61,64 +61,64 @@
     },
     {
       "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S1M1.json",
-      "bytes": 1153,
-      "sha256": "256f48a9c9161d1e0ed530513fe6fb774384ea207468878f379c87d259acb4de",
-      "file_id": "ni:///sha-256;JW9IqckWHR4O1TBRP-b7d0OE6iB0aIePN5yH0lmstN4"
+      "bytes": 1155,
+      "sha256": "c6402e5dff108b3e3ce8993efb88db15088633c7129737602e0e29a584a79329",
+      "file_id": "ni:///sha-256;xkAuXf8Qiz486Jk--4jbFQiGM8cSlzdgLg4ppYSnkyk"
     },
     {
       "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S1M2.json",
-      "bytes": 794,
-      "sha256": "71a1b7a06ba4849675b7480d1f84c831878f3be9db69ace956648f45163fc9f3",
-      "file_id": "ni:///sha-256;caG3oGukhJZ1t0gNH4TIMYePO-nbaazpVmSPRRY_yfM"
+      "bytes": 796,
+      "sha256": "ce4019fbdb4b5f47c2b45a0c4025668355fcfeea728f442c450d340c494a4695",
+      "file_id": "ni:///sha-256;zkAZ-9tLX0fCtFoMQCVmg1X8_upyj0QsRQ00DElKRpU"
     },
     {
       "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S2M1.json",
-      "bytes": 1873,
-      "sha256": "5f8eb3aea15dab87a64e3632291b99e42df90e1d6d3bf5039d71d4b52b99dc15",
-      "file_id": "ni:///sha-256;X46zrqFdq4emTjYyKRuZ5C35Dh1tO_UDnXHUtSuZ3BU"
+      "bytes": 1875,
+      "sha256": "900f8c9dd8079d78f96e59ccdf779e3666352ee3b6b028ec513c39ef502e866c",
+      "file_id": "ni:///sha-256;kA-MndgHnXj5blnM33eeNmY1LuO2sCjsUTw571Auhmw"
     },
     {
       "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M1.json",
-      "bytes": 4084,
-      "sha256": "97d8bd94d6fa026138cd03cc097e8dbe6609e217d37ce95355f4bc7b7e2dcc30",
-      "file_id": "ni:///sha-256;l9i9lNb6AmE4zQPMCX6NvmYJ4hfTfOlTVfS8e34tzDA"
+      "bytes": 4086,
+      "sha256": "371fbbb71a85a9e2f1d349b95b691f719104ec8a2ca298a981798123d379ff77",
+      "file_id": "ni:///sha-256;Nx-7txqFqeLx00m5W2kfcZEE7IosopipgXmBI9N5_3c"
     },
     {
       "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M2.json",
-      "bytes": 2790,
-      "sha256": "8f5da384688b98b9c90563af0975fdb62893cd15ea148b4303d8b766f832e534",
-      "file_id": "ni:///sha-256;j12jhGiLmLnJBWOvCXX9tiiTzRXqFItDA9i3Zvgy5TQ"
+      "bytes": 2792,
+      "sha256": "56b7b9fcdca65b70fecc6b3207b9597dbb09252b05eaf14a4e44fa3245da3432",
+      "file_id": "ni:///sha-256;Vre5_NymW3D-zGsyB7lZfbsJJSsF6vFKTkT6MkXaNDI"
     },
     {
       "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M3.json",
-      "bytes": 9242,
-      "sha256": "ae9e52e24ad594455e5a3642293f89566a297d16b2682a673301ebb55c1ac3d8",
-      "file_id": "ni:///sha-256;rp5S4krVlEVeWjZCKT-JVmopfRayaCpnMwHrtVwaw9g"
+      "bytes": 9244,
+      "sha256": "461b105b75af8646d2395b3c1f3351b2cd7340f2b316869834dc88f0e53373b4",
+      "file_id": "ni:///sha-256;RhsQW3WvhkbSOVs8HzNRss1zQPKzFoaYNNyI8OUzc7Q"
     },
     {
       "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M4.json",
-      "bytes": 4911,
-      "sha256": "b5e7aa21a66eaea67481d89de5630dc9c5c3b671de8e12a64ed456384ae2c30c",
-      "file_id": "ni:///sha-256;teeqIaZurqZ0gdid5WMNycXDtnHejhKmTtRWOEriwww"
+      "bytes": 4913,
+      "sha256": "62dc134ae014547e78394485779c6d863dcfb2106574a47cd9f571ec70112219",
+      "file_id": "ni:///sha-256;YtwTSuAUVH54OUSFd5xthj3PshBldKR82fVx7HARIhk"
     },
     {
       "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M5.json",
-      "bytes": 10676,
-      "sha256": "ea40edb4b223165a06614d84a8c24457d62bb92b03cefbe48ae264e3942ed537",
-      "file_id": "ni:///sha-256;6kDttLIjFloGYU2EqMJEV9YruSsDzvvkiuJk45Qu1Tc"
+      "bytes": 10678,
+      "sha256": "3a04c2bd62ec557d7dd21c03f4922486adb8902e3e9bc6f664971c2c101666fe",
+      "file_id": "ni:///sha-256;OgTCvWLsVX190hwD9JIkhq24kC4-m8b2ZJccLBAWZv4"
     },
     {
       "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M6.json",
-      "bytes": 9321,
-      "sha256": "cc4699fb1e17589aa071abe8299e6c8c9236737ece6d86dc953b6042e170496c",
-      "file_id": "ni:///sha-256;zEaZ-x4XWJqgcavoKZ5sjJI2c37ObYbclTtgQuFwSWw"
+      "bytes": 9323,
+      "sha256": "aaef7278ec3af909082c362b2dca5b2eb771847ec3724bff54d6979b55b557b6",
+      "file_id": "ni:///sha-256;qu9yeOw6-QkILDYrLcpbLrdxhH7Dckv_VNaXm1W1V7Y"
     },
     {
       "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M7.json",
-      "bytes": 5708,
-      "sha256": "8c39b5089b8591e5ba8787ea3bb07b79bad0db7c01eaed18b7322f8d272f400f",
-      "file_id": "ni:///sha-256;jDm1CJuFkeW6h4fqO7B7ebrQ23wB6u0YtzIvjScvQA8"
+      "bytes": 5931,
+      "sha256": "d83604b1b2918b398ee5c940e53011e0d4d75b28aac700460003d5bc4074a51c",
+      "file_id": "ni:///sha-256;2DYEsbKRizmO5clA5TAR4NTXWyiqxwBGAAPVvEB0pRw"
     }
   ],
-  "updated_at": "2026-07-10T09:20:00.000Z"
+  "updated_at": "2026-07-10T09:35:00.000Z"
 }

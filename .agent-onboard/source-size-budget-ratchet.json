@@ -1,8 +1,8 @@
 {
   "schema": "agent-onboard-public-source-size-budget-ratchet-001",
   "status": "active",
-  "work_item_id": "P1S3M7W16",
-  "release_line": "public_architecture_runtime_service_residual_reduction_gate",
+  "work_item_id": "P1S3M7W17",
+  "release_line": "public_source_extraction_runtime_service_residual_reduction_gate",
   "ratchet_mode": "no_tracked_growth_beyond_maximum_and_no_new_oversized_files",
   "god_file_thresholds": {
     "god_lines": 1000,
@@ -87,13 +87,13 @@
   "tracked_files": {
     ".agent-onboard/state/closures/work-items-closures.jsonl": {
       "category": "authority_state",
-      "max_lines": 186,
-      "max_bytes": 85123,
+      "max_lines": 187,
+      "max_bytes": 85582,
       "baseline_lines": 168,
       "baseline_bytes": 76889,
       "target_lines": 200,
       "target_bytes": 65536,
-      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+      "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W33",
@@ -256,18 +256,27 @@
           "new_max_lines": 186,
           "previous_max_bytes": 84664,
           "new_max_bytes": 85123
+        },
+        {
+          "work_item_id": "P1S3M7W17",
+          "gate": "Public Source Extraction Runtime Service Residual Reduction Gate",
+          "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend.",
+          "previous_max_lines": 186,
+          "new_max_lines": 187,
+          "previous_max_bytes": 85123,
+          "new_max_bytes": 85582
         }
       ]
     },
     ".agent-onboard/state/live/work-items.json": {
       "category": "authority_state",
       "max_lines": 73,
-      "max_bytes": 2083,
+      "max_bytes": 2105,
       "baseline_lines": 24,
       "baseline_bytes": 849,
       "target_lines": 60,
       "target_bytes": 8192,
-      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+      "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W6",
@@ -329,18 +338,27 @@
           "new_max_lines": 73,
           "previous_max_bytes": 2075,
           "new_max_bytes": 2083
+        },
+        {
+          "work_item_id": "P1S3M7W17",
+          "gate": "Public Source Extraction Runtime Service Residual Reduction Gate",
+          "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend.",
+          "previous_max_lines": 73,
+          "new_max_lines": 73,
+          "previous_max_bytes": 2083,
+          "new_max_bytes": 2105
         }
       ]
     },
     ".agent-onboard/work-items.json": {
       "category": "authority_registry",
-      "max_lines": 1770,
-      "max_bytes": 51161,
+      "max_lines": 1777,
+      "max_bytes": 51382,
       "baseline_lines": 1573,
       "baseline_bytes": 44798,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+      "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W33",
@@ -501,6 +519,15 @@
           "new_max_lines": 1770,
           "previous_max_bytes": 50721,
           "new_max_bytes": 51161
+        },
+        {
+          "work_item_id": "P1S3M7W17",
+          "gate": "Public Source Extraction Runtime Service Residual Reduction Gate",
+          "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend.",
+          "previous_max_lines": 1770,
+          "new_max_lines": 1777,
+          "previous_max_bytes": 51161,
+          "new_max_bytes": 51382
         }
       ]
     },
@@ -1076,13 +1103,13 @@
     },
     "scripts/checks/registry.js": {
       "category": "check_script",
-      "max_lines": 68,
-      "max_bytes": 3826,
+      "max_lines": 69,
+      "max_bytes": 3943,
       "baseline_lines": 67,
       "baseline_bytes": 3719,
       "target_lines": 250,
       "target_bytes": 32768,
-      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+      "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W34",
@@ -1216,6 +1243,15 @@
           "new_max_lines": 68,
           "previous_max_bytes": 3719,
           "new_max_bytes": 3826
+        },
+        {
+          "work_item_id": "P1S3M7W17",
+          "gate": "Public Source Extraction Runtime Service Residual Reduction Gate",
+          "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend.",
+          "previous_max_lines": 68,
+          "new_max_lines": 69,
+          "previous_max_bytes": 3826,
+          "new_max_bytes": 3943
         }
       ]
     },
@@ -1231,13 +1267,13 @@
     },
     ".agent-onboard/god-file-budget-enforcement-closure.json": {
       "category": "authority_registry",
-      "max_lines": 135,
-      "max_bytes": 5051,
+      "max_lines": 137,
+      "max_bytes": 5089,
       "baseline_lines": 105,
       "baseline_bytes": 3859,
       "target_lines": 220,
       "target_bytes": 32768,
-      "reason": "W16 refreshes admitted god-file budget after removing architecture runtime service from god-file set.",
+      "reason": "W17 refreshes admitted god-file budget after removing the source extraction service from the god-file set.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W1",
@@ -1296,6 +1332,15 @@
           "new_max_lines": 135,
           "previous_max_bytes": 5161,
           "new_max_bytes": 5051
+        },
+        {
+          "work_item_id": "P1S3M7W17",
+          "gate": "Public Source Extraction Runtime Service Residual Reduction Gate",
+          "reason": "W17 refreshes admitted god-file budget after removing the source extraction service from the god-file set.",
+          "previous_max_lines": 135,
+          "new_max_lines": 137,
+          "previous_max_bytes": 5051,
+          "new_max_bytes": 5089
         }
       ]
     },
@@ -1340,7 +1385,7 @@
       "baseline_bytes": 104100,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W16 records architecture runtime residual split and admits bounded ratchet metadata growth with headroom to avoid self-referential churn.",
+      "reason": "W17 source-size budget self-ratchet admits bounded metadata growth from W17 tracking rows.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W2",
@@ -1658,8 +1703,8 @@
     },
     ".agent-onboard/state/closures/work-items/payloads/by-milestone/P1S3M7/part-001.jsonl": {
       "category": "authority_state",
-      "max_lines": 16,
-      "max_bytes": 46699,
+      "max_lines": 17,
+      "max_bytes": 49209,
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W5",
@@ -1814,18 +1859,27 @@
           "new_max_lines": 16,
           "previous_max_bytes": 42600,
           "new_max_bytes": 46699
+        },
+        {
+          "work_item_id": "P1S3M7W17",
+          "gate": "Public Source Extraction Runtime Service Residual Reduction Gate",
+          "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend.",
+          "previous_max_lines": 16,
+          "new_max_lines": 17,
+          "previous_max_bytes": 46699,
+          "new_max_bytes": 49209
         }
       ],
       "target_lines": 20,
       "target_bytes": 65536,
       "baseline_lines": 7,
       "baseline_bytes": 17395,
-      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend."
+      "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend."
     },
     ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M7.json": {
       "category": "authority_state",
-      "max_lines": 177,
-      "max_bytes": 5708,
+      "max_lines": 184,
+      "max_bytes": 5931,
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W5",
@@ -1941,18 +1995,27 @@
           "new_max_lines": 177,
           "previous_max_bytes": 5268,
           "new_max_bytes": 5708
+        },
+        {
+          "work_item_id": "P1S3M7W17",
+          "gate": "Public Source Extraction Runtime Service Residual Reduction Gate",
+          "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend.",
+          "previous_max_lines": 177,
+          "new_max_lines": 184,
+          "previous_max_bytes": 5708,
+          "new_max_bytes": 5931
         }
       ],
       "target_lines": 500,
       "target_bytes": 65536,
       "baseline_lines": 85,
       "baseline_bytes": 2599,
-      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend."
+      "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend."
     },
     ".agent-onboard/state/authority/work-items/items/index.json": {
       "category": "authority_state",
-      "max_lines": 505,
-      "max_bytes": 11348,
+      "max_lines": 507,
+      "max_bytes": 11386,
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W5",
@@ -2068,13 +2131,22 @@
           "new_max_lines": 505,
           "previous_max_bytes": 11310,
           "new_max_bytes": 11348
+        },
+        {
+          "work_item_id": "P1S3M7W17",
+          "gate": "Public Source Extraction Runtime Service Residual Reduction Gate",
+          "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend.",
+          "previous_max_lines": 505,
+          "new_max_lines": 507,
+          "previous_max_bytes": 11348,
+          "new_max_bytes": 11386
         }
       ],
       "target_lines": 500,
       "target_bytes": 65536,
       "baseline_lines": 484,
       "baseline_bytes": 10953,
-      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend."
+      "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend."
     },
     ".agent-onboard/state/authority/work-items/manifest.json": {
       "category": "authority_state",
@@ -2180,7 +2252,7 @@
     ".agent-onboard/work-items.index.json": {
       "category": "authority_registry",
       "max_lines": 53,
-      "max_bytes": 1444,
+      "max_bytes": 1466,
       "target_lines": 500,
       "target_bytes": 65536,
       "ratchet_history": [
@@ -2217,9 +2289,18 @@
           "new_max_lines": 53,
           "previous_max_bytes": 1436,
           "new_max_bytes": 1444
+        },
+        {
+          "work_item_id": "P1S3M7W17",
+          "gate": "Public Source Extraction Runtime Service Residual Reduction Gate",
+          "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend.",
+          "previous_max_lines": 53,
+          "new_max_lines": 53,
+          "previous_max_bytes": 1444,
+          "new_max_bytes": 1466
         }
       ],
-      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+      "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend.",
       "baseline_lines": 53,
       "baseline_bytes": 1436
     },
@@ -2288,7 +2369,7 @@
     ".agent-onboard/state/live-authority.json": {
       "category": "authority_state",
       "max_lines": 56,
-      "max_bytes": 1903,
+      "max_bytes": 1940,
       "target_lines": 500,
       "target_bytes": 65536,
       "ratchet_history": [
@@ -2332,16 +2413,25 @@
           "new_max_lines": 56,
           "previous_max_bytes": 1877,
           "new_max_bytes": 1903
+        },
+        {
+          "work_item_id": "P1S3M7W17",
+          "gate": "Public Source Extraction Runtime Service Residual Reduction Gate",
+          "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend.",
+          "previous_max_lines": 56,
+          "new_max_lines": 56,
+          "previous_max_bytes": 1903,
+          "new_max_bytes": 1940
         }
       ],
-      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+      "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend.",
       "baseline_lines": 56,
       "baseline_bytes": 1871
     },
     ".agent-onboard/state/indexes.json": {
       "category": "authority_state",
       "max_lines": 71,
-      "max_bytes": 2501,
+      "max_bytes": 2506,
       "target_lines": 500,
       "target_bytes": 65536,
       "ratchet_history": [
@@ -2376,16 +2466,25 @@
           "new_max_lines": 71,
           "previous_max_bytes": 2495,
           "new_max_bytes": 2501
+        },
+        {
+          "work_item_id": "P1S3M7W17",
+          "gate": "Public Source Extraction Runtime Service Residual Reduction Gate",
+          "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend.",
+          "previous_max_lines": 71,
+          "new_max_lines": 71,
+          "previous_max_bytes": 2501,
+          "new_max_bytes": 2506
         }
       ],
-      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+      "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend.",
       "baseline_lines": 71,
       "baseline_bytes": 2489
     },
     ".agent-onboard/state/closed-gates.jsonl": {
       "category": "authority_state",
       "max_lines": 6,
-      "max_bytes": 1437,
+      "max_bytes": 1458,
       "target_lines": 500,
       "target_bytes": 65536,
       "ratchet_history": [
@@ -2422,16 +2521,25 @@
           "new_max_lines": 6,
           "previous_max_bytes": 1428,
           "new_max_bytes": 1437
+        },
+        {
+          "work_item_id": "P1S3M7W17",
+          "gate": "Public Source Extraction Runtime Service Residual Reduction Gate",
+          "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend.",
+          "previous_max_lines": 6,
+          "new_max_lines": 6,
+          "previous_max_bytes": 1437,
+          "new_max_bytes": 1458
         }
       ],
       "baseline_lines": 6,
       "baseline_bytes": 1422,
-      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend."
+      "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend."
     },
     ".agent-onboard/authority-index.json": {
       "category": "authority_registry",
       "max_lines": 247,
-      "max_bytes": 7522,
+      "max_bytes": 7527,
       "target_lines": 500,
       "target_bytes": 65536,
       "ratchet_history": [
@@ -2466,9 +2574,18 @@
           "new_max_lines": 247,
           "previous_max_bytes": 7516,
           "new_max_bytes": 7522
+        },
+        {
+          "work_item_id": "P1S3M7W17",
+          "gate": "Public Source Extraction Runtime Service Residual Reduction Gate",
+          "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend.",
+          "previous_max_lines": 247,
+          "new_max_lines": 247,
+          "previous_max_bytes": 7522,
+          "new_max_bytes": 7527
         }
       ],
-      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+      "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend.",
       "baseline_lines": 247,
       "baseline_bytes": 7510
     },
@@ -3005,11 +3122,20 @@
           "new_max_lines": 496,
           "previous_max_bytes": 21130,
           "new_max_bytes": 21753
+        },
+        {
+          "work_item_id": "P1S3M7W17",
+          "gate": "Public Source Extraction Runtime Service Residual Reduction Gate",
+          "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend.",
+          "previous_max_lines": 496,
+          "new_max_lines": 498,
+          "previous_max_bytes": 21753,
+          "new_max_bytes": 22351
         }
       ],
-      "max_lines": 496,
-      "max_bytes": 21753,
-      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend."
+      "max_lines": 498,
+      "max_bytes": 22351,
+      "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend."
     },
     "package.json": {
       "category": "root_json",
@@ -3033,11 +3159,20 @@
           "new_max_lines": 243,
           "previous_max_bytes": 14344,
           "new_max_bytes": 15107
+        },
+        {
+          "work_item_id": "P1S3M7W17",
+          "gate": "Public Source Extraction Runtime Service Residual Reduction Gate",
+          "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend.",
+          "previous_max_lines": 243,
+          "new_max_lines": 249,
+          "previous_max_bytes": 15107,
+          "new_max_bytes": 15860
         }
       ],
-      "max_lines": 243,
-      "max_bytes": 15107,
-      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend."
+      "max_lines": 249,
+      "max_bytes": 15860,
+      "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend."
     },
     ".agent-onboard/architecture-runtime-service-residual-reduction.json": {
       "category": "authority_registry",
@@ -3231,8 +3366,8 @@
       "lines": 4876,
       "bytes": 274048
     },
-    "last_ratchet_work_item_id": "P1S3M7W16",
-    "last_ratchet_gate": "Public Architecture Runtime Service Residual Reduction Gate",
+    "last_ratchet_work_item_id": "P1S3M7W17",
+    "last_ratchet_gate": "Public Source Extraction Runtime Service Residual Reduction Gate",
     "runtime_composer_after_w10": {
       "path": "cli/agent_onboard/runtime-composer.js",
       "lines": 4487,
@@ -3257,6 +3392,11 @@
       "path": "cli/agent_onboard/runtime-composer.js",
       "lines": 1630,
       "bytes": 65922
+    },
+    "architecture_source_extraction_service_after_w17": {
+      "path": "cli/agent_onboard/domains/architecture/services/source-extraction/architecture-source-extraction-service.js",
+      "lines": 143,
+      "bytes": 6068
     }
   },
   "boundary": {

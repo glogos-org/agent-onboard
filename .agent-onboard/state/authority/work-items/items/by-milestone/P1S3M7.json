@@ -1,9 +1,9 @@
 {
   "schema": "agent-onboard-work-items-authority-item-shard-001",
   "package_name": "agent-onboard",
-  "source": "sharded_work_items_authority",
+  "source": ".agent-onboard/work-items.json",
   "milestone_id": "P1S3M7",
-  "item_count": 16,
+  "item_count": 17,
   "items": [
     {
       "id": "P1S3M7W1",
@@ -172,6 +172,13 @@
         "note": "Reduce architecture-runtime-service residual god-file debt without changing storage backend."
       },
       "closure_ref": "closures:P1S3M7W16"
+    },
+    {
+      "id": "P1S3M7W17",
+      "milestone_id": "P1S3M7",
+      "title": "Public Source Extraction Runtime Service Residual Reduction Gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M7W17"
     }
   ]
 }

@@ -1765,6 +1765,13 @@
         "note": "Reduce architecture-runtime-service residual god-file debt without changing storage backend."
       },
       "closure_ref": "closures:P1S3M7W16"
+    },
+    {
+      "id": "P1S3M7W17",
+      "milestone_id": "P1S3M7",
+      "title": "Public Source Extraction Runtime Service Residual Reduction Gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M7W17"
     }
   ]
 }

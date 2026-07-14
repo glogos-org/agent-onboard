@@ -2,7 +2,7 @@
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
-const RELEASE_LINE = 'public_architecture_runtime_service_residual_reduction_gate';
+const RELEASE_LINE = 'public_source_extraction_runtime_service_residual_reduction_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
   agents: 'agents',
@@ -375,6 +375,8 @@ const PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES = Object.freeze([
   'cli/agent_onboard/domains/architecture/services/source-domains/source-domain-closure-service.js',
   'cli/agent_onboard/domains/architecture/services/source-domains/work-items-source-domain-service.js',
   'cli/agent_onboard/domains/architecture/services/source-extraction/architecture-source-extraction-service.js',
+  'cli/agent_onboard/domains/architecture/services/source-extraction/public-source-extraction-golden-service.js', 'cli/agent_onboard/domains/architecture/services/source-extraction/public-source-module-adapter-boundary-service.js', 'cli/agent_onboard/domains/architecture/services/source-extraction/public-source-module-core-slice-service.js',
+  'cli/agent_onboard/domains/architecture/services/source-extraction/public-source-module-core-runtime-bridge-service.js', 'cli/agent_onboard/domains/architecture/services/source-extraction/public-source-module-authority-runtime-bridge-service.js',
   'cli/agent_onboard/domains/architecture/static-catalog.js',
   'cli/agent_onboard/domains/architecture/catalog-shards/public-architecture-map-catalog.js',
   'cli/agent_onboard/domains/architecture/catalog-shards/public-architecture-boundary-catalog.js',

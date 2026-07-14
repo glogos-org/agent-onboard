@@ -1,7 +1,7 @@
 {
   "schema": "agent-onboard-public-authority-policies-state-shard-001",
   "package_name": "agent-onboard",
-  "release_line": "public_architecture_runtime_service_residual_reduction_gate",
+  "release_line": "public_source_extraction_runtime_service_residual_reduction_gate",
   "policies": {
     "first_read": {
       "default_first_read": true,

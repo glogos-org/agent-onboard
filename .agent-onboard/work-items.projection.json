@@ -17,10 +17,10 @@
   "counts": {
     "open": 0,
     "claimed": 0,
-    "closed": 187,
+    "closed": 188,
     "programs": 1,
     "stages": 3,
     "milestones": 10,
-    "work_items": 187
+    "work_items": 188
   }
 }

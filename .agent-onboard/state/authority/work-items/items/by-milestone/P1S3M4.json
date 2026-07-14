@@ -1,7 +1,7 @@
 {
   "schema": "agent-onboard-work-items-authority-item-shard-001",
   "package_name": "agent-onboard",
-  "source": "sharded_work_items_authority",
+  "source": ".agent-onboard/work-items.json",
   "milestone_id": "P1S3M4",
   "item_count": 15,
   "items": [
