@@ -1729,6 +1729,18 @@
         "note": "Extract command adapter extraction behavior from runtime composer without changing storage backend."
       },
       "closure_ref": "closures:P1S3M7W13"
+    },
+    {
+      "id": "P1S3M7W14",
+      "milestone_id": "P1S3M7",
+      "title": "Public Router Cutover Service Extraction Gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-09T16:50:00.000Z",
+        "note": "Extract router cutover behavior from runtime composer without changing storage backend."
+      },
+      "closure_ref": "closures:P1S3M7W14"
     }
   ]
 }

@@ -18,7 +18,7 @@
   },
   "maximums": {
     "god_files": 7,
-    "near_god_files": 34,
+    "near_god_files": 35,
     "top_level_check_scripts": 0
   },
   "required_closed_work_items": [
@@ -36,7 +36,8 @@
     "P1S3M7W10",
     "P1S3M7W11",
     "P1S3M7W12",
-    "P1S3M7W13"
+    "P1S3M7W13",
+    "P1S3M7W14"
   ],
   "required_check_ids": [
     "source-size-budget",
@@ -62,24 +63,25 @@
     "full-test-runner-service-extraction",
     "cli-runtime-planning-service-extraction",
     "router-seed-service-extraction",
-    "command-adapter-extraction-service-extraction"
+    "command-adapter-extraction-service-extraction",
+    "router-cutover-service-extraction"
   ],
   "remaining_god_files": [
     {
       "path": "cli/agent_onboard/runtime-composer.js",
       "category": "runtime_source",
-      "current_lines": 3179,
-      "current_bytes": 166436,
-      "admitted_reason": "runtime composer remains admitted migration debt and shrank during W13 command adapter extraction service extraction",
-      "next_reduction_gate": "P1S3M7W14"
+      "current_lines": 2250,
+      "current_bytes": 108997,
+      "admitted_reason": "runtime composer remains admitted migration debt and shrank during W14 router cutover service extraction.",
+      "next_reduction_gate": "P1S3M7W15"
     },
     {
       "path": ".agent-onboard/work-items.json",
       "category": "authority_registry",
-      "current_lines": 1734,
-      "admitted_reason": "public work item ledger remains admitted migration debt after W13 closure append; compact state shards remain the default read path",
-      "next_reduction_gate": "P1S3M7W14",
-      "current_bytes": 49850
+      "current_lines": 1746,
+      "admitted_reason": "public work item ledger remains admitted migration debt after W14 closure append; compact state shards remain the default read path.",
+      "next_reduction_gate": "P1S3M7W15",
+      "current_bytes": 50271
     },
     {
       "path": "cli/agent_onboard/domains/architecture/services/runtime/architecture-runtime-service.js",
@@ -93,9 +95,9 @@
       "path": "README.md",
       "category": "documentation",
       "current_lines": 1313,
-      "current_bytes": 87022,
-      "admitted_reason": "first-read surface remains admitted documentation debt; W13 updates the live current-release line for command adapter extraction service extraction.",
-      "next_reduction_gate": "P1S3M7W14"
+      "current_bytes": 87192,
+      "admitted_reason": "first-read surface remains admitted documentation debt; W14 updates the live current-release line for router cutover service extraction.",
+      "next_reduction_gate": "P1S3M7W15"
     },
     {
       "path": "cli/agent_onboard/domains/core/services/public-runtime-surface-service.js",
@@ -116,10 +118,10 @@
     {
       "path": ".agent-onboard/source-size-budget-ratchet.json",
       "category": "authority_registry",
-      "current_lines": 2323,
-      "current_bytes": 93362,
-      "admitted_reason": "source-size ratchet remains admitted authority metadata debt after W13 final closure payload timeout note budget update.",
-      "next_reduction_gate": "P1S3M7W14"
+      "current_lines": 2474,
+      "current_bytes": 99966,
+      "admitted_reason": "source-size ratchet remains admitted authority metadata debt after W14 authority and closure projection refresh.",
+      "next_reduction_gate": "P1S3M7W15"
     }
   ],
   "closure_result": {

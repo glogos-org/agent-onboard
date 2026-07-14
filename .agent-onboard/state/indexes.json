@@ -10,7 +10,7 @@
       "kind": "compact_authority_index",
       "present": true,
       "bytes": 7510,
-      "file_id": "ni:///sha-256;6MMU999GsRJXuWv4G8ZthvhbvnhWKT2zXV7IIPeZeeY",
+      "file_id": "ni:///sha-256;ZweIie74T_XwJV_GsNknYzFh6x6zN6X4sA8sY0ZbwqA",
       "schema": "agent-onboard-public-authority-compact-index-001",
       "status": null,
       "raw_registry_loaded_by_default": null,
@@ -22,14 +22,14 @@
       "kind": "work_items_compact_index",
       "present": true,
       "bytes": 1430,
-      "file_id": "ni:///sha-256;-OaY_QJMq70xslViTYeIHyDDWJa0l1PGn8m3G6oMiMk",
+      "file_id": "ni:///sha-256;z1m1PHgGTStpgV1FBx1AIpyOZv5EZBM95fcOuzvPTVw",
       "schema": "agent-onboard-target-work-items-index-001",
       "status": "active",
       "raw_registry_loaded_by_default": false,
       "content_inlined": false,
-      "item_count": 184,
+      "item_count": 185,
       "open_count": 0,
-      "closed_count": 184
+      "closed_count": 185
     },
     {
       "file_path": ".agent-onboard/claims.index.json",
@@ -50,8 +50,8 @@
       "file_path": ".agent-onboard/work-items.json",
       "present": true,
       "kind": "work_items_raw_ledger",
-      "bytes": 49850,
-      "file_id": "ni:///sha-256;WGc8M0DfGCFxp6A4OlObkxAhLlyLjlGUJfZsRkOR9Cc",
+      "bytes": 50271,
+      "file_id": "ni:///sha-256;9EVMQlKO349iB1gF6Ymv-frXswpHJOlOihePUl2x0Dw",
       "content_inlined": false,
       "loaded_by_default": false
     },
@@ -65,7 +65,7 @@
       "loaded_by_default": false
     }
   ],
-  "authority_index_digest": "ni:///sha-256;6MMU999GsRJXuWv4G8ZthvhbvnhWKT2zXV7IIPeZeeY",
-  "work_items_index_digest": "ni:///sha-256;-OaY_QJMq70xslViTYeIHyDDWJa0l1PGn8m3G6oMiMk",
+  "authority_index_digest": "ni:///sha-256;ZweIie74T_XwJV_GsNknYzFh6x6zN6X4sA8sY0ZbwqA",
+  "work_items_index_digest": "ni:///sha-256;z1m1PHgGTStpgV1FBx1AIpyOZv5EZBM95fcOuzvPTVw",
   "claims_index_digest": "ni:///sha-256;otIDDGJGcys456Ufaq9WPeWXVrjiCX9kkTWzXjQyHGo"
 }

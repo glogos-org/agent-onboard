@@ -40,6 +40,7 @@ const CHECK_MODULES = Object.freeze({
 ,  'cli-runtime-planning-service-extraction': 'cli-runtime-planning-service-extraction.js'
 ,  'router-seed-service-extraction': 'router-seed-service-extraction.js'
 ,  'command-adapter-extraction-service-extraction': 'command-adapter-extraction-service-extraction.js'
+,  'router-cutover-service-extraction': 'router-cutover-service-extraction.js'
 });
 
 function normalizeCheckId(value) {

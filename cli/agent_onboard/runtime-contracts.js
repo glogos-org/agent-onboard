@@ -360,6 +360,7 @@ const PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES = Object.freeze([
   'cli/agent_onboard/domains/architecture/services/runtime/public-cli-runtime-planning-service.js',
   'cli/agent_onboard/domains/architecture/services/runtime/public-router-seed-service.js',
   'cli/agent_onboard/domains/architecture/services/runtime/public-command-adapter-extraction-service.js',
+  'cli/agent_onboard/domains/architecture/services/runtime/public-router-cutover-service.js',
   'cli/agent_onboard/domains/architecture/services/source-domains/architecture-source-domain-service.js',
   'cli/agent_onboard/domains/architecture/services/source-domains/claims-source-domain-service.js',
   'cli/agent_onboard/domains/architecture/services/source-domains/source-domain-closure-service.js',

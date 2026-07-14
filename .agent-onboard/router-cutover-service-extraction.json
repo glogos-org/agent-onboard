@@ -1,0 +1,72 @@
+{
+  "schema": "agent-onboard-public-router-cutover-service-extraction-001",
+  "package_name": "agent-onboard",
+  "version": "0.0.197",
+  "release_line": "public_router_cutover_service_extraction_gate",
+  "milestone_id": "P1S3M7",
+  "work_item_id": "P1S3M7W14",
+  "title": "Public Router Cutover Service Extraction Gate",
+  "status": "closed",
+  "objective": "Move modular runtime inclusion, packaged router port inclusion, thin entrypoint cutover, and router command-adapter delegation plan/check implementation ownership out of runtime-composer.js into a bounded architecture-domain runtime service while preserving the public command contract.",
+  "extracted_service": {
+    "path": "cli/agent_onboard/domains/architecture/services/runtime/public-router-cutover-service.js",
+    "factory": "createPublicRouterCutoverService",
+    "owned_handlers": [
+      "publicModularRuntimePackageInclusionPlan",
+      "publicModularRuntimePackageInclusionPlanCheck",
+      "publicPackagedRouterPortInclusion",
+      "publicPackagedRouterPortInclusionCheck",
+      "publicThinEntrypointRouterCutoverRehearsal",
+      "publicThinEntrypointRouterCutoverRehearsalCheck",
+      "publicThinEntrypointRouterCutoverApplication",
+      "publicThinEntrypointRouterCutoverApplicationCheck",
+      "publicRouterCommandAdapterDelegationExpansion",
+      "publicRouterCommandAdapterDelegationExpansionCheck"
+    ],
+    "service_domain": "architecture.runtime",
+    "package_projected": true
+  },
+  "reduction": {
+    "runtime_composer_before": {
+      "lines": 3179,
+      "bytes": 166436,
+      "source": "P1S3M7W13 baseline"
+    },
+    "runtime_composer_after": {
+      "lines": 2250,
+      "bytes": 108997
+    },
+    "line_reduction": 929,
+    "byte_reduction": 57439,
+    "monolith_growth_allowed": false
+  },
+  "public_commands_preserved": [
+    "agent-onboard architecture --module-inclusion-check",
+    "agent-onboard architecture --packaged-router-port-check",
+    "agent-onboard architecture --thin-entrypoint-rehearsal-check",
+    "agent-onboard architecture --thin-entrypoint-cutover-check",
+    "agent-onboard architecture --router-adapter-delegation-check",
+    "agent-onboard check --fast --json",
+    "agent-onboard release --check",
+    "npm pack --dry-run --json"
+  ],
+  "checks": {
+    "gate_check": "node scripts/check.js router-cutover-service-extraction",
+    "quick_test": "npm test",
+    "public_artifact_boundary": "node scripts/check.js public-artifact-boundary"
+  },
+  "boundary": {
+    "writes_files_at_runtime": false,
+    "mutates_target_repository_state": false,
+    "mutates_git": false,
+    "installs_dependencies": false,
+    "runs_package_manager_inside_checker": false,
+    "publishes_package": false,
+    "mutates_registry": false,
+    "network": false,
+    "storage_backend_changed": false,
+    "sqlite_introduced": false,
+    "lightning_memory_mapped_database_introduced": false,
+    "mdbx_introduced": false
+  }
+}

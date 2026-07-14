@@ -1,8 +1,8 @@
 {
   "schema": "agent-onboard-public-source-size-budget-ratchet-001",
   "status": "active",
-  "work_item_id": "P1S3M7W13",
-  "release_line": "public_command_adapter_extraction_service_extraction_gate",
+  "work_item_id": "P1S3M7W14",
+  "release_line": "public_router_cutover_service_extraction_gate",
   "ratchet_mode": "no_tracked_growth_beyond_maximum_and_no_new_oversized_files",
   "god_file_thresholds": {
     "god_lines": 1000,
@@ -87,13 +87,13 @@
   "tracked_files": {
     ".agent-onboard/state/closures/work-items-closures.jsonl": {
       "category": "authority_state",
-      "max_lines": 183,
-      "max_bytes": 83746,
+      "max_lines": 184,
+      "max_bytes": 86363,
       "baseline_lines": 168,
       "baseline_bytes": 76889,
       "target_lines": 200,
       "target_bytes": 65536,
-      "reason": "W13 appends one compact closure reference for command adapter extraction service extraction.",
+      "reason": "W14 refreshes closure payload, work-item authority, and compact indexes after router cutover service extraction.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W33",
@@ -231,6 +231,15 @@
           "new_max_lines": 183,
           "previous_max_bytes": 83287,
           "new_max_bytes": 83746
+        },
+        {
+          "work_item_id": "P1S3M7W14",
+          "gate": "Public Router Cutover Service Extraction Gate",
+          "reason": "W14 appends one compact closure reference row for router cutover service extraction.",
+          "previous_max_lines": 183,
+          "new_max_lines": 184,
+          "previous_max_bytes": 83746,
+          "new_max_bytes": 86363
         }
       ]
     },
@@ -242,7 +251,7 @@
       "baseline_bytes": 849,
       "target_lines": 60,
       "target_bytes": 8192,
-      "reason": "W13 refreshes compact live work-item projection after closing command adapter extraction service gate.",
+      "reason": "W14 refreshes closure payload, work-item authority, and compact indexes after router cutover service extraction.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W6",
@@ -293,13 +302,13 @@
     },
     ".agent-onboard/work-items.json": {
       "category": "authority_registry",
-      "max_lines": 1734,
-      "max_bytes": 49850,
+      "max_lines": 1746,
+      "max_bytes": 50271,
       "baseline_lines": 1573,
       "baseline_bytes": 44798,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W13 closes command adapter extraction service work item, growing the admitted public ledger migration debt.",
+      "reason": "W14 refreshes closure payload, work-item authority, and compact indexes after router cutover service extraction.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W33",
@@ -435,6 +444,15 @@
           "new_max_lines": 1734,
           "previous_max_bytes": 49405,
           "new_max_bytes": 49850
+        },
+        {
+          "work_item_id": "P1S3M7W14",
+          "gate": "Public Router Cutover Service Extraction Gate",
+          "reason": "W14 closes router cutover service extraction work item in the canonical work-item ledger.",
+          "previous_max_lines": 1734,
+          "new_max_lines": 1746,
+          "previous_max_bytes": 49850,
+          "new_max_bytes": 50271
         }
       ]
     },
@@ -591,13 +609,13 @@
     },
     "cli/agent_onboard/runtime-composer.js": {
       "category": "runtime_source",
-      "max_lines": 3179,
-      "max_bytes": 166436,
+      "max_lines": 2250,
+      "max_bytes": 108997,
       "baseline_lines": 3179,
       "baseline_bytes": 166436,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W13 moves command adapter extraction command/check ownership into a bounded architecture runtime service and ratchets composer maximum downward.",
+      "reason": "W14 moves router cutover plan/check ownership into a bounded architecture runtime service and ratchets composer maximum downward.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W25",
@@ -722,6 +740,15 @@
           "new_max_lines": 3179,
           "previous_max_bytes": 216148,
           "new_max_bytes": 166436
+        },
+        {
+          "work_item_id": "P1S3M7W14",
+          "gate": "Public Router Cutover Service Extraction Gate",
+          "reason": "W14 moves router cutover plan/check ownership into a bounded architecture runtime service and ratchets composer maximum downward.",
+          "previous_max_lines": 3179,
+          "new_max_lines": 2250,
+          "previous_max_bytes": 166436,
+          "new_max_bytes": 108997
         }
       ]
     },
@@ -860,7 +887,7 @@
       "baseline_bytes": 5085,
       "target_lines": 700,
       "target_bytes": 65536,
-      "reason": "W10 updates closure payload manifest counts and file identifiers after adding one sharded payload record.",
+      "reason": "W14 refreshes closure payload, work-item authority, and compact indexes after router cutover service extraction.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W34",
@@ -906,7 +933,7 @@
       "baseline_bytes": 4384,
       "target_lines": 700,
       "target_bytes": 65536,
-      "reason": "W12 final closure payload metadata refresh after router seed service extraction.",
+      "reason": "W14 refreshes closure payload, work-item authority, and compact indexes after router cutover service extraction.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W1",
@@ -958,13 +985,13 @@
     },
     "scripts/checks/registry.js": {
       "category": "check_script",
-      "max_lines": 65,
-      "max_bytes": 3545,
+      "max_lines": 66,
+      "max_bytes": 3624,
       "baseline_lines": 51,
       "baseline_bytes": 2319,
       "target_lines": 250,
       "target_bytes": 32768,
-      "reason": "W13 admits one additional public check id for command adapter extraction service extraction.",
+      "reason": "W14 admits one additional public check id for router cutover service extraction.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W34",
@@ -1071,6 +1098,15 @@
           "new_max_lines": 65,
           "previous_max_bytes": 3442,
           "new_max_bytes": 3545
+        },
+        {
+          "work_item_id": "P1S3M7W14",
+          "gate": "Public Router Cutover Service Extraction Gate",
+          "reason": "W14 admits one additional public check id for router cutover service extraction.",
+          "previous_max_lines": 65,
+          "new_max_lines": 66,
+          "previous_max_bytes": 3545,
+          "new_max_bytes": 3624
         }
       ]
     },
@@ -1173,13 +1209,13 @@
     },
     ".agent-onboard/source-size-budget-ratchet.json": {
       "category": "authority_registry",
-      "max_lines": 2400,
-      "max_bytes": 99000,
+      "max_lines": 2550,
+      "max_bytes": 115000,
       "baseline_lines": 705,
       "baseline_bytes": 26644,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W13 source-size budget self-ratchet admits command adapter extraction service tracking rows.",
+      "reason": "W14 source-size ratchet metadata admits exact authority projection growth after router cutover service extraction.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W2",
@@ -1346,6 +1382,15 @@
           "new_max_lines": 2300,
           "previous_max_bytes": 88000,
           "new_max_bytes": 95000
+        },
+        {
+          "work_item_id": "P1S3M7W14",
+          "gate": "Public Router Cutover Service Extraction Gate",
+          "reason": "W14 added router cutover service/check/artifact tracking rows.",
+          "previous_max_lines": 2400,
+          "new_max_lines": 2500,
+          "previous_max_bytes": 99000,
+          "new_max_bytes": 110000
         }
       ]
     },
@@ -1418,9 +1463,12 @@
     "cli/agent_onboard/domains/package/services/release-clean-closed-gates/clean-compaction-runtime.js": {
       "category": "runtime_service_source",
       "max_lines": 567,
-      "max_bytes": 31655,
+      "max_bytes": 31656,
+      "baseline_lines": 567,
+      "baseline_bytes": 31656,
       "target_lines": 500,
       "target_bytes": 65536,
+      "reason": "W14 clean compaction budget admits one extracted packaged service, one check script, and one compact closure artifact.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W6",
@@ -1430,13 +1478,22 @@
           "new_max_lines": 567,
           "previous_max_bytes": 31655,
           "new_max_bytes": 31655
+        },
+        {
+          "work_item_id": "P1S3M7W14",
+          "gate": "Public Router Cutover Service Extraction Gate",
+          "reason": "W14 clean compaction budget admits one extracted packaged service, one check script, and one compact closure artifact.",
+          "previous_max_lines": 567,
+          "new_max_lines": 567,
+          "previous_max_bytes": 31655,
+          "new_max_bytes": 31656
         }
       ]
     },
     ".agent-onboard/state/closures/work-items/payloads/by-milestone/P1S3M7/part-001.jsonl": {
       "category": "authority_state",
-      "max_lines": 13,
-      "max_bytes": 35401,
+      "max_lines": 14,
+      "max_bytes": 38767,
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W5",
@@ -1545,18 +1602,27 @@
           "new_max_lines": 13,
           "previous_max_bytes": 35153,
           "new_max_bytes": 35401
+        },
+        {
+          "work_item_id": "P1S3M7W14",
+          "gate": "Public Router Cutover Service Extraction Gate",
+          "reason": "W14 refreshes closure payload, work-item authority, and compact indexes after router cutover service extraction.",
+          "previous_max_lines": 13,
+          "new_max_lines": 14,
+          "previous_max_bytes": 35401,
+          "new_max_bytes": 38767
         }
       ],
       "target_lines": 20,
       "target_bytes": 65536,
       "baseline_lines": 7,
       "baseline_bytes": 17395,
-      "reason": "W13 closure payload records npm test timeout note while preserving compact JSONL closure backend."
+      "reason": "W14 refreshes closure payload, work-item authority, and compact indexes after router cutover service extraction."
     },
     ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M7.json": {
       "category": "authority_state",
-      "max_lines": 141,
-      "max_bytes": 4397,
+      "max_lines": 153,
+      "max_bytes": 4818,
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W5",
@@ -1647,18 +1713,27 @@
           "new_max_lines": 141,
           "previous_max_bytes": 3952,
           "new_max_bytes": 4397
+        },
+        {
+          "work_item_id": "P1S3M7W14",
+          "gate": "Public Router Cutover Service Extraction Gate",
+          "reason": "W14 refreshes closure payload, work-item authority, and compact indexes after router cutover service extraction.",
+          "previous_max_lines": 141,
+          "new_max_lines": 153,
+          "previous_max_bytes": 4397,
+          "new_max_bytes": 4818
         }
       ],
       "target_lines": 500,
       "target_bytes": 65536,
       "baseline_lines": 85,
       "baseline_bytes": 2599,
-      "reason": "W13 adds one closed item to the P1S3M7 authority item shard for command adapter extraction service extraction."
+      "reason": "W14 refreshes closure payload, work-item authority, and compact indexes after router cutover service extraction."
     },
     ".agent-onboard/state/authority/work-items/items/index.json": {
       "category": "authority_state",
-      "max_lines": 499,
-      "max_bytes": 11234,
+      "max_lines": 501,
+      "max_bytes": 11272,
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W5",
@@ -1749,13 +1824,22 @@
           "new_max_lines": 499,
           "previous_max_bytes": 11177,
           "new_max_bytes": 11234
+        },
+        {
+          "work_item_id": "P1S3M7W14",
+          "gate": "Public Router Cutover Service Extraction Gate",
+          "reason": "W14 refreshes closure payload, work-item authority, and compact indexes after router cutover service extraction.",
+          "previous_max_lines": 499,
+          "new_max_lines": 501,
+          "previous_max_bytes": 11234,
+          "new_max_bytes": 11272
         }
       ],
       "target_lines": 500,
       "target_bytes": 65536,
       "baseline_lines": 484,
       "baseline_bytes": 10953,
-      "reason": "W13 increments the sharded work-item item index counts and latest closed pointers."
+      "reason": "W14 refreshes closure payload, work-item authority, and compact indexes after router cutover service extraction."
     },
     ".agent-onboard/state/authority/work-items/manifest.json": {
       "category": "authority_state",
@@ -1791,7 +1875,8 @@
         }
       ],
       "target_lines": 500,
-      "target_bytes": 65536
+      "target_bytes": 65536,
+      "reason": "W14 refreshes closure payload, work-item authority, and compact indexes after router cutover service extraction."
     },
     ".agent-onboard/state/indexes/work-items.index.json": {
       "category": "authority_state",
@@ -1827,7 +1912,8 @@
         }
       ],
       "target_lines": 700,
-      "target_bytes": 65536
+      "target_bytes": 65536,
+      "reason": "W14 refreshes closure payload, work-item authority, and compact indexes after router cutover service extraction."
     },
     ".agent-onboard/work-items.index.json": {
       "category": "authority_registry",
@@ -1854,7 +1940,8 @@
           "previous_max_bytes": 1441,
           "new_max_bytes": 1438
         }
-      ]
+      ],
+      "reason": "W14 refreshes closure payload, work-item authority, and compact indexes after router cutover service extraction."
     },
     "cli/agent_onboard/domains/core/services/public-core-surface-command-runner-service.js": {
       "category": "runtime_service_source",
@@ -2273,6 +2360,65 @@
           "new_max_bytes": 2526
         }
       ]
+    },
+    "cli/agent_onboard/domains/architecture/services/runtime/public-router-cutover-service.js": {
+      "category": "runtime_service_source",
+      "max_lines": 1013,
+      "max_bytes": 62174,
+      "baseline_lines": 1013,
+      "baseline_bytes": 62174,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "W14 extracts router cutover planning/check behavior from runtime-composer.js into this bounded architecture runtime service.",
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W14",
+          "gate": "Public Router Cutover Service Extraction Gate",
+          "reason": "W14 extracts router cutover planning/check behavior from runtime-composer.js into this bounded architecture runtime service.",
+          "previous_max_lines": null,
+          "new_max_lines": 1013,
+          "previous_max_bytes": null,
+          "new_max_bytes": 62174
+        }
+      ]
+    },
+    "scripts/checks/router-cutover-service-extraction.js": {
+      "category": "check_script",
+      "max_lines": 124,
+      "max_bytes": 7302,
+      "baseline_lines": 124,
+      "baseline_bytes": 7302,
+      "target_lines": 250,
+      "target_bytes": 32768,
+      "reason": "W14 adds a compact public gate checker for router cutover service extraction.",
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W14",
+          "gate": "Public Router Cutover Service Extraction Gate",
+          "reason": "Admit router-cutover-service-extraction checker.",
+          "new_max_lines": 124,
+          "new_max_bytes": 7302
+        }
+      ]
+    },
+    ".agent-onboard/router-cutover-service-extraction.json": {
+      "category": "authority_registry",
+      "max_lines": 72,
+      "max_bytes": 2929,
+      "baseline_lines": 72,
+      "baseline_bytes": 2929,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "W14 adds compact closure artifact for router cutover service extraction.",
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W14",
+          "gate": "Public Router Cutover Service Extraction Gate",
+          "reason": "Admit compact router cutover service extraction closure artifact.",
+          "new_max_lines": 72,
+          "new_max_bytes": 2929
+        }
+      ]
     }
   },
   "report": {
@@ -2298,8 +2444,8 @@
       "lines": 4876,
       "bytes": 274048
     },
-    "last_ratchet_work_item_id": "P1S3M7W13",
-    "last_ratchet_gate": "Public Command Adapter Extraction Service Extraction Gate",
+    "last_ratchet_work_item_id": "P1S3M7W14",
+    "last_ratchet_gate": "Public Router Cutover Service Extraction Gate",
     "runtime_composer_after_w10": {
       "path": "cli/agent_onboard/runtime-composer.js",
       "lines": 4487,
@@ -2309,6 +2455,11 @@
       "path": "cli/agent_onboard/runtime-composer.js",
       "lines": 3179,
       "bytes": 166436
+    },
+    "runtime_composer_after_w14": {
+      "path": "cli/agent_onboard/runtime-composer.js",
+      "lines": 2250,
+      "bytes": 108997
     }
   },
   "boundary": {
