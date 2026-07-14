@@ -1,6 +1,7 @@
-node_modules/
-coverage/
 .agent-onboard/tmp/
 .agent-onboard/cache/
 .agent-onboard/local/
-.DS_Store
+node_modules/
+coverage/
+dist/
+tmp/

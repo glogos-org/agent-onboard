@@ -1741,6 +1741,18 @@
         "note": "Extract router cutover behavior from runtime composer without changing storage backend."
       },
       "closure_ref": "closures:P1S3M7W14"
+    },
+    {
+      "id": "P1S3M7W15",
+      "milestone_id": "P1S3M7",
+      "title": "Public Source Module Residual Service Extraction Gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-10T08:05:00.000Z",
+        "note": "Extract source-module residual architecture behavior from runtime composer without changing storage backend."
+      },
+      "closure_ref": "closures:P1S3M7W15"
     }
   ]
 }

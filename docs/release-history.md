@@ -3,7 +3,11 @@
 Historical release prose archived from README.md by P1S3M6W6.
 README.md remains the live first-read surface for install, quickstart, current commands, and no-mutation boundary material.
 
-## Current release: runtime guard service decomposition gate
+## Current release: source module residual service extraction gate
+
+The current release extracts architecture map residuals, installed fallback smoke checks, source-module second-slice planning/first-slice validation, and authority bundle parity checks from `cli/agent_onboard/runtime-composer.js` into bounded architecture runtime services. `runtime-composer.js` is reduced to 1,630 lines and remains the compatibility composer/public export surface. The service split keeps each new W15 service below near-god thresholds and preserves read-only/no-install/no-network/no-Git behavior; no SQLite, Lightning Memory-Mapped Database, MDBX, dependency addition, registry mutation, or package publish is admitted.
+
+## Previous release: runtime guard service decomposition gate
 
 The current release extracts public guard command composition from `cli/agent_onboard/runtime-composer.js` into `cli/agent_onboard/domains/authority/services/public-runtime-guard-service.js`. The composer now composes that service instead of instantiating the core config guard directly. Package projection and runtime contracts include the new service, and `scripts/check-runtime-guard-service-decomposition.js` guards the boundary. The guard remains read-only and no-install/no-network/no-Git; no SQLite, Lightning Memory-Mapped Database, MDBX, dependency addition, registry mutation, or package publish is admitted.
 

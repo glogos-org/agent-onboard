@@ -2,7 +2,7 @@
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
-const RELEASE_LINE = 'public_runtime_guard_service_decomposition_gate';
+const RELEASE_LINE = 'public_source_module_residual_service_extraction_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
   agents: 'agents',
@@ -361,6 +361,9 @@ const PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES = Object.freeze([
   'cli/agent_onboard/domains/architecture/services/runtime/public-router-seed-service.js',
   'cli/agent_onboard/domains/architecture/services/runtime/public-command-adapter-extraction-service.js',
   'cli/agent_onboard/domains/architecture/services/runtime/public-router-cutover-service.js',
+  'cli/agent_onboard/domains/architecture/services/runtime/public-source-module-residual-extraction-service.js',
+  'cli/agent_onboard/domains/architecture/services/runtime/public-source-module-second-slice-service.js',
+  'cli/agent_onboard/domains/architecture/services/runtime/public-source-module-authority-bundle-parity-service.js',
   'cli/agent_onboard/domains/architecture/services/source-domains/architecture-source-domain-service.js',
   'cli/agent_onboard/domains/architecture/services/source-domains/claims-source-domain-service.js',
   'cli/agent_onboard/domains/architecture/services/source-domains/source-domain-closure-service.js',

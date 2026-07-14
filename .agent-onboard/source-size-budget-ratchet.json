@@ -1,8 +1,8 @@
 {
   "schema": "agent-onboard-public-source-size-budget-ratchet-001",
   "status": "active",
-  "work_item_id": "P1S3M7W14",
-  "release_line": "public_router_cutover_service_extraction_gate",
+  "work_item_id": "P1S3M7W15",
+  "release_line": "public_source_module_residual_service_extraction_gate",
   "ratchet_mode": "no_tracked_growth_beyond_maximum_and_no_new_oversized_files",
   "god_file_thresholds": {
     "god_lines": 1000,
@@ -87,13 +87,13 @@
   "tracked_files": {
     ".agent-onboard/state/closures/work-items-closures.jsonl": {
       "category": "authority_state",
-      "max_lines": 184,
-      "max_bytes": 86363,
+      "max_lines": 185,
+      "max_bytes": 84664,
       "baseline_lines": 168,
       "baseline_bytes": 76889,
       "target_lines": 200,
       "target_bytes": 65536,
-      "reason": "W14 refreshes closure payload, work-item authority, and compact indexes after router cutover service extraction.",
+      "reason": "W15 appends one compact closure reference row.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W33",
@@ -240,18 +240,25 @@
           "new_max_lines": 184,
           "previous_max_bytes": 83746,
           "new_max_bytes": 86363
+        },
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 appends one compact closure reference row.",
+          "new_max_lines": 185,
+          "new_max_bytes": 84664
         }
       ]
     },
     ".agent-onboard/state/live/work-items.json": {
       "category": "authority_state",
       "max_lines": 73,
-      "max_bytes": 2069,
+      "max_bytes": 2075,
       "baseline_lines": 24,
       "baseline_bytes": 849,
       "target_lines": 60,
       "target_bytes": 8192,
-      "reason": "W14 refreshes closure payload, work-item authority, and compact indexes after router cutover service extraction.",
+      "reason": "W15 refreshes compact live work-item projection.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W6",
@@ -297,18 +304,25 @@
           "new_max_lines": 73,
           "previous_max_bytes": 2060,
           "new_max_bytes": 2069
+        },
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 refreshes compact live work-item projection.",
+          "new_max_lines": 73,
+          "new_max_bytes": 2075
         }
       ]
     },
     ".agent-onboard/work-items.json": {
       "category": "authority_registry",
-      "max_lines": 1746,
-      "max_bytes": 50271,
+      "max_lines": 1758,
+      "max_bytes": 50721,
       "baseline_lines": 1573,
       "baseline_bytes": 44798,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W14 refreshes closure payload, work-item authority, and compact indexes after router cutover service extraction.",
+      "reason": "W15 closes one work item in the compatibility root projection.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W33",
@@ -453,6 +467,13 @@
           "new_max_lines": 1746,
           "previous_max_bytes": 49850,
           "new_max_bytes": 50271
+        },
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 closes one work item in the compatibility root projection.",
+          "new_max_lines": 1758,
+          "new_max_bytes": 50721
         }
       ]
     },
@@ -609,13 +630,13 @@
     },
     "cli/agent_onboard/runtime-composer.js": {
       "category": "runtime_source",
-      "max_lines": 2250,
-      "max_bytes": 108997,
-      "baseline_lines": 3179,
-      "baseline_bytes": 166436,
+      "max_lines": 1630,
+      "max_bytes": 65922,
+      "baseline_lines": 2250,
+      "baseline_bytes": 108997,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W14 moves router cutover plan/check ownership into a bounded architecture runtime service and ratchets composer maximum downward.",
+      "reason": "W15 moves architecture map and source-module residual extraction checks into a bounded architecture runtime service and ratchets composer maximum downward.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W25",
@@ -749,6 +770,15 @@
           "new_max_lines": 2250,
           "previous_max_bytes": 166436,
           "new_max_bytes": 108997
+        },
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 extracts architecture map, installed fallback, second-slice, and authority bundle parity behavior into a bounded architecture runtime service.",
+          "previous_max_lines": 2250,
+          "new_max_lines": 1630,
+          "previous_max_bytes": 108997,
+          "new_max_bytes": 65922
         }
       ]
     },
@@ -887,7 +917,7 @@
       "baseline_bytes": 5085,
       "target_lines": 700,
       "target_bytes": 65536,
-      "reason": "W14 refreshes closure payload, work-item authority, and compact indexes after router cutover service extraction.",
+      "reason": "W15 refreshes closure payload manifest digests.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W34",
@@ -922,6 +952,13 @@
           "new_max_lines": 136,
           "previous_max_bytes": 5501,
           "new_max_bytes": 5502
+        },
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 refreshes closure payload manifest digests.",
+          "new_max_lines": 136,
+          "new_max_bytes": 5502
         }
       ]
     },
@@ -933,7 +970,7 @@
       "baseline_bytes": 4384,
       "target_lines": 700,
       "target_bytes": 65536,
-      "reason": "W14 refreshes closure payload, work-item authority, and compact indexes after router cutover service extraction.",
+      "reason": "W15 refreshes closure payload index.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W1",
@@ -970,6 +1007,13 @@
           "new_max_lines": 117,
           "previous_max_bytes": 4641,
           "new_max_bytes": 4697
+        },
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 refreshes closure payload index.",
+          "new_max_lines": 117,
+          "new_max_bytes": 4697
         }
       ]
     },
@@ -985,13 +1029,13 @@
     },
     "scripts/checks/registry.js": {
       "category": "check_script",
-      "max_lines": 66,
-      "max_bytes": 3624,
-      "baseline_lines": 51,
-      "baseline_bytes": 2319,
+      "max_lines": 67,
+      "max_bytes": 3719,
+      "baseline_lines": 67,
+      "baseline_bytes": 3719,
       "target_lines": 250,
       "target_bytes": 32768,
-      "reason": "W14 admits one additional public check id for router cutover service extraction.",
+      "reason": "W15 admits one additional public check id for source-module residual service extraction.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W34",
@@ -1107,6 +1151,15 @@
           "new_max_lines": 66,
           "previous_max_bytes": 3545,
           "new_max_bytes": 3624
+        },
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "Admit source-module-residual-service-extraction checker.",
+          "previous_max_lines": 66,
+          "new_max_lines": 67,
+          "previous_max_bytes": 3624,
+          "new_max_bytes": 3719
         }
       ]
     },
@@ -1122,13 +1175,13 @@
     },
     ".agent-onboard/god-file-budget-enforcement-closure.json": {
       "category": "authority_registry",
-      "max_lines": 140,
-      "max_bytes": 6969,
+      "max_lines": 134,
+      "max_bytes": 5161,
       "baseline_lines": 105,
       "baseline_bytes": 3859,
       "target_lines": 220,
       "target_bytes": 32768,
-      "reason": "W13 extends god-file closure required work item/check lists and updates remaining migration debt metrics.",
+      "reason": "W15 refreshes god-file enforcement ledger after service split.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W1",
@@ -1171,6 +1224,13 @@
           "new_max_lines": 130,
           "previous_max_bytes": 6000,
           "new_max_bytes": 6000
+        },
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 refreshes god-file enforcement ledger after service split.",
+          "new_max_lines": 134,
+          "new_max_bytes": 5161
         }
       ]
     },
@@ -1209,13 +1269,13 @@
     },
     ".agent-onboard/source-size-budget-ratchet.json": {
       "category": "authority_registry",
-      "max_lines": 2550,
-      "max_bytes": 115000,
-      "baseline_lines": 705,
-      "baseline_bytes": 26644,
+      "max_lines": 3093,
+      "max_bytes": 135256,
+      "baseline_lines": 2575,
+      "baseline_bytes": 104100,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W14 source-size ratchet metadata admits exact authority projection growth after router cutover service extraction.",
+      "reason": "W15 admits source-size ratchet metadata growth for split service tracking and state refresh.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W2",
@@ -1391,6 +1451,13 @@
           "new_max_lines": 2500,
           "previous_max_bytes": 99000,
           "new_max_bytes": 110000
+        },
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "Admit tracked budget entries for W15 service, checker, artifact, and .gitignore local-state policy.",
+          "new_max_lines": 2575,
+          "new_max_bytes": 104100
         }
       ]
     },
@@ -1468,7 +1535,7 @@
       "baseline_bytes": 31656,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W14 clean compaction budget admits one extracted packaged service, one check script, and one compact closure artifact.",
+      "reason": "W15 updates clean-compaction budgets for split service count.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W6",
@@ -1487,13 +1554,20 @@
           "new_max_lines": 567,
           "previous_max_bytes": 31655,
           "new_max_bytes": 31656
+        },
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 updates clean-compaction budgets for split service count.",
+          "new_max_lines": 567,
+          "new_max_bytes": 31656
         }
       ]
     },
     ".agent-onboard/state/closures/work-items/payloads/by-milestone/P1S3M7/part-001.jsonl": {
       "category": "authority_state",
-      "max_lines": 14,
-      "max_bytes": 38767,
+      "max_lines": 15,
+      "max_bytes": 42600,
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W5",
@@ -1611,18 +1685,46 @@
           "new_max_lines": 14,
           "previous_max_bytes": 35401,
           "new_max_bytes": 38767
+        },
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 appends one payload closure record.",
+          "new_max_lines": 15,
+          "new_max_bytes": 41879
+        },
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 appends one payload closure record.",
+          "new_max_lines": 15,
+          "new_max_bytes": 42217
+        },
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 appends one payload closure record.",
+          "new_max_lines": 15,
+          "new_max_bytes": 42345
+        },
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 appends one payload closure record.",
+          "new_max_lines": 15,
+          "new_max_bytes": 42600
         }
       ],
       "target_lines": 20,
       "target_bytes": 65536,
       "baseline_lines": 7,
       "baseline_bytes": 17395,
-      "reason": "W14 refreshes closure payload, work-item authority, and compact indexes after router cutover service extraction."
+      "reason": "W15 appends one payload closure record."
     },
     ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M7.json": {
       "category": "authority_state",
-      "max_lines": 153,
-      "max_bytes": 4818,
+      "max_lines": 165,
+      "max_bytes": 5268,
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W5",
@@ -1722,18 +1824,25 @@
           "new_max_lines": 153,
           "previous_max_bytes": 4397,
           "new_max_bytes": 4818
+        },
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 adds one item to the P1S3M7 authority shard.",
+          "new_max_lines": 165,
+          "new_max_bytes": 5268
         }
       ],
       "target_lines": 500,
       "target_bytes": 65536,
       "baseline_lines": 85,
       "baseline_bytes": 2599,
-      "reason": "W14 refreshes closure payload, work-item authority, and compact indexes after router cutover service extraction."
+      "reason": "W15 adds one item to the P1S3M7 authority shard."
     },
     ".agent-onboard/state/authority/work-items/items/index.json": {
       "category": "authority_state",
-      "max_lines": 501,
-      "max_bytes": 11272,
+      "max_lines": 503,
+      "max_bytes": 11310,
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W5",
@@ -1833,18 +1942,25 @@
           "new_max_lines": 501,
           "previous_max_bytes": 11234,
           "new_max_bytes": 11272
+        },
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 refreshes the sharded work-item authority index.",
+          "new_max_lines": 503,
+          "new_max_bytes": 11310
         }
       ],
       "target_lines": 500,
       "target_bytes": 65536,
       "baseline_lines": 484,
       "baseline_bytes": 10953,
-      "reason": "W14 refreshes closure payload, work-item authority, and compact indexes after router cutover service extraction."
+      "reason": "W15 refreshes the sharded work-item authority index."
     },
     ".agent-onboard/state/authority/work-items/manifest.json": {
       "category": "authority_state",
-      "max_lines": 144,
-      "max_bytes": 5771,
+      "max_lines": 124,
+      "max_bytes": 5215,
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W5",
@@ -1872,16 +1988,25 @@
           "new_max_lines": 144,
           "previous_max_bytes": 5771,
           "new_max_bytes": 5771
+        },
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 refreshes authority shard digests.",
+          "new_max_lines": 124,
+          "new_max_bytes": 5215
         }
       ],
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W14 refreshes closure payload, work-item authority, and compact indexes after router cutover service extraction."
+      "reason": "W15 refreshes authority shard digests.",
+      "baseline_lines": 124,
+      "baseline_bytes": 5215
     },
     ".agent-onboard/state/indexes/work-items.index.json": {
       "category": "authority_state",
-      "max_lines": 582,
-      "max_bytes": 13309,
+      "max_lines": 524,
+      "max_bytes": 11312,
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W5",
@@ -1909,16 +2034,25 @@
           "new_max_lines": 582,
           "previous_max_bytes": 11486,
           "new_max_bytes": 13309
+        },
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 refreshes derived work-item state index.",
+          "new_max_lines": 524,
+          "new_max_bytes": 11312
         }
       ],
       "target_lines": 700,
       "target_bytes": 65536,
-      "reason": "W14 refreshes closure payload, work-item authority, and compact indexes after router cutover service extraction."
+      "reason": "W15 refreshes derived work-item state index.",
+      "baseline_lines": 524,
+      "baseline_bytes": 11312
     },
     ".agent-onboard/work-items.index.json": {
       "category": "authority_registry",
       "max_lines": 53,
-      "max_bytes": 1438,
+      "max_bytes": 1436,
       "target_lines": 500,
       "target_bytes": 65536,
       "ratchet_history": [
@@ -1939,9 +2073,18 @@
           "new_max_lines": 53,
           "previous_max_bytes": 1441,
           "new_max_bytes": 1438
+        },
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 refreshes compact work-item index.",
+          "new_max_lines": 53,
+          "new_max_bytes": 1436
         }
       ],
-      "reason": "W14 refreshes closure payload, work-item authority, and compact indexes after router cutover service extraction."
+      "reason": "W15 refreshes compact work-item index.",
+      "baseline_lines": 53,
+      "baseline_bytes": 1436
     },
     "cli/agent_onboard/domains/core/services/public-core-surface-command-runner-service.js": {
       "category": "runtime_service_source",
@@ -2008,7 +2151,7 @@
     ".agent-onboard/state/live-authority.json": {
       "category": "authority_state",
       "max_lines": 56,
-      "max_bytes": 1873,
+      "max_bytes": 1877,
       "target_lines": 500,
       "target_bytes": 65536,
       "ratchet_history": [
@@ -2029,13 +2172,30 @@
           "new_max_lines": 56,
           "previous_max_bytes": 1865,
           "new_max_bytes": 1873
+        },
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 refreshes live authority state shard.",
+          "new_max_lines": 56,
+          "new_max_bytes": 1871
+        },
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 refreshes live authority state shard.",
+          "new_max_lines": 56,
+          "new_max_bytes": 1877
         }
-      ]
+      ],
+      "reason": "W15 refreshes live authority state shard.",
+      "baseline_lines": 56,
+      "baseline_bytes": 1871
     },
     ".agent-onboard/state/indexes.json": {
       "category": "authority_state",
       "max_lines": 71,
-      "max_bytes": 2489,
+      "max_bytes": 2495,
       "target_lines": 500,
       "target_bytes": 65536,
       "ratchet_history": [
@@ -2047,13 +2207,30 @@
           "new_max_lines": 71,
           "previous_max_bytes": null,
           "new_max_bytes": 2489
+        },
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 refreshes authority index state shard.",
+          "new_max_lines": 71,
+          "new_max_bytes": 2489
+        },
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 refreshes authority index state shard.",
+          "new_max_lines": 71,
+          "new_max_bytes": 2495
         }
-      ]
+      ],
+      "reason": "W15 refreshes authority index state shard.",
+      "baseline_lines": 71,
+      "baseline_bytes": 2489
     },
     ".agent-onboard/state/closed-gates.jsonl": {
       "category": "authority_state",
-      "max_lines": 6,
-      "max_bytes": 1425,
+      "max_lines": 5,
+      "max_bytes": 1428,
       "target_lines": 500,
       "target_bytes": 65536,
       "ratchet_history": [
@@ -2074,16 +2251,23 @@
           "new_max_lines": 6,
           "previous_max_bytes": 1425,
           "new_max_bytes": 1425
+        },
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 refreshes latest closed gate event shard.",
+          "new_max_lines": 5,
+          "new_max_bytes": 1428
         }
       ],
       "baseline_lines": 6,
       "baseline_bytes": 1422,
-      "reason": "W8 authority closed-gate event projection admits one additional compact row."
+      "reason": "W15 refreshes latest closed gate event shard."
     },
     ".agent-onboard/authority-index.json": {
       "category": "authority_registry",
       "max_lines": 247,
-      "max_bytes": 7510,
+      "max_bytes": 7516,
       "target_lines": 500,
       "target_bytes": 65536,
       "ratchet_history": [
@@ -2095,8 +2279,25 @@
           "new_max_lines": 247,
           "previous_max_bytes": null,
           "new_max_bytes": 7510
+        },
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 refreshes compact authority index.",
+          "new_max_lines": 247,
+          "new_max_bytes": 7510
+        },
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 refreshes compact authority index.",
+          "new_max_lines": 247,
+          "new_max_bytes": 7516
         }
-      ]
+      ],
+      "reason": "W15 refreshes compact authority index.",
+      "baseline_lines": 247,
+      "baseline_bytes": 7510
     },
     "cli/agent_onboard/domains/package/services/public-release-check-service.js": {
       "category": "runtime_service_source",
@@ -2419,6 +2620,224 @@
           "new_max_bytes": 2929
         }
       ]
+    },
+    "cli/agent_onboard/domains/architecture/services/runtime/public-source-module-residual-extraction-service.js": {
+      "category": "runtime_service_source",
+      "max_lines": 292,
+      "max_bytes": 18553,
+      "baseline_lines": 732,
+      "baseline_bytes": 49993,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "W15 split residual orchestrator service owns architecture map and installed fallback residuals below near-god thresholds.",
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 bounded architecture runtime service owns architecture map and source-module residual extraction checks.",
+          "new_max_lines": 732,
+          "new_max_bytes": 49993
+        },
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 split residual orchestrator service owns architecture map and installed fallback residuals below near-god thresholds.",
+          "new_max_lines": 292,
+          "new_max_bytes": 18553
+        }
+      ]
+    },
+    "scripts/checks/source-module-residual-service-extraction.js": {
+      "category": "check_script",
+      "max_lines": 140,
+      "max_bytes": 9385,
+      "baseline_lines": 124,
+      "baseline_bytes": 7443,
+      "target_lines": 250,
+      "target_bytes": 32768,
+      "reason": "W15 checker updated to validate the split service set and preserved runtime contracts.",
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 adds a compact public gate checker for source-module residual service extraction.",
+          "new_max_lines": 124,
+          "new_max_bytes": 7443
+        },
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 checker updated to validate the split service set and preserved runtime contracts.",
+          "new_max_lines": 140,
+          "new_max_bytes": 9385
+        }
+      ]
+    },
+    ".agent-onboard/source-module-residual-service-extraction.json": {
+      "category": "authority_registry",
+      "max_lines": 97,
+      "max_bytes": 3768,
+      "baseline_lines": 72,
+      "baseline_bytes": 2991,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "W15 closure artifact records split service ownership and composer reduction.",
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 adds compact closure artifact for source-module residual service extraction.",
+          "new_max_lines": 72,
+          "new_max_bytes": 2991
+        },
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 closure artifact records split service ownership and composer reduction.",
+          "new_max_lines": 97,
+          "new_max_bytes": 3768
+        }
+      ]
+    },
+    ".gitignore": {
+      "category": "other_text",
+      "max_lines": 7,
+      "max_bytes": 99,
+      "baseline_lines": 7,
+      "baseline_bytes": 99,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "W15 adds local-state ignore policy required by source-module second-slice checks.",
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 admits compact local-state ignore policy required by source-module second-slice checks.",
+          "new_max_lines": 7,
+          "new_max_bytes": 99
+        }
+      ]
+    },
+    "cli/agent_onboard/domains/architecture/services/runtime/public-source-module-second-slice-service.js": {
+      "category": "runtime_service_source",
+      "baseline_lines": 369,
+      "baseline_bytes": 24385,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 split second-slice source-module planning and first-slice validation into a bounded service.",
+          "new_max_lines": 369,
+          "new_max_bytes": 24385
+        }
+      ],
+      "max_lines": 369,
+      "max_bytes": 24385,
+      "reason": "W15 split second-slice source-module planning and first-slice validation into a bounded service."
+    },
+    "cli/agent_onboard/domains/architecture/services/runtime/public-source-module-authority-bundle-parity-service.js": {
+      "category": "runtime_service_source",
+      "baseline_lines": 193,
+      "baseline_bytes": 13378,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 split authority bundle parity validation into a bounded service.",
+          "new_max_lines": 193,
+          "new_max_bytes": 13378
+        }
+      ],
+      "max_lines": 193,
+      "max_bytes": 13378,
+      "reason": "W15 split authority bundle parity validation into a bounded service."
+    },
+    ".agent-onboard/work-items.projection.json": {
+      "category": "authority_registry",
+      "baseline_lines": 26,
+      "baseline_bytes": 1047,
+      "target_lines": 250,
+      "target_bytes": 65536,
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 refreshes compatibility projection sidecar counts.",
+          "new_max_lines": 26,
+          "new_max_bytes": 1047
+        }
+      ],
+      "max_lines": 26,
+      "max_bytes": 1047,
+      "reason": "W15 refreshes compatibility projection sidecar counts."
+    },
+    ".agent-onboard/readme-history.index.json": {
+      "category": "authority_registry",
+      "baseline_lines": 257,
+      "baseline_bytes": 9014,
+      "target_lines": 250,
+      "target_bytes": 65536,
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 refreshes README history index digests.",
+          "new_max_lines": 257,
+          "new_max_bytes": 9014
+        }
+      ],
+      "max_lines": 257,
+      "max_bytes": 9014,
+      "reason": "W15 refreshes README history index digests."
+    },
+    "cli/agent_onboard/runtime-contracts.js": {
+      "category": "runtime_source",
+      "baseline_lines": 490,
+      "baseline_bytes": 21124,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 adds split service files to packaged router port contract surface.",
+          "new_max_lines": 490,
+          "new_max_bytes": 21124
+        },
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 adds split service files to packaged router port contract surface.",
+          "new_max_lines": 490,
+          "new_max_bytes": 21130
+        }
+      ],
+      "max_lines": 490,
+      "max_bytes": 21130,
+      "reason": "W15 adds split service files to packaged router port contract surface."
+    },
+    "package.json": {
+      "category": "root_json",
+      "baseline_lines": 236,
+      "baseline_bytes": 14344,
+      "target_lines": 250,
+      "target_bytes": 65536,
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W15",
+          "gate": "Public Source Module Residual Service Extraction Gate",
+          "reason": "W15 adds split service files and gate checker script to package metadata.",
+          "new_max_lines": 236,
+          "new_max_bytes": 14344
+        }
+      ],
+      "max_lines": 236,
+      "max_bytes": 14344,
+      "reason": "W15 adds split service files and gate checker script to package metadata."
     }
   },
   "report": {

@@ -2,304 +2,8 @@
   "authorities": [],
   "file_urns": [
     {
-      "file_path": ".agent-onboard/architecture-command-adapter-extraction.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-architecture-command-adapter-extraction-json-c138388e"
-    },
-    {
-      "file_path": ".agent-onboard/authority-command-adapter-extraction.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-authority-command-adapter-extraction-json-d836eacf"
-    },
-    {
-      "file_path": ".agent-onboard/authority-index.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-authority-index-json-0bcd2304"
-    },
-    {
-      "file_path": ".agent-onboard/authority-path.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-authority-path-json-9c1fc126"
-    },
-    {
-      "file_path": ".agent-onboard/claims.index.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-claims-index-json-30119f4c"
-    },
-    {
-      "file_path": ".agent-onboard/claims.jsonl",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-claims-jsonl-dd87ff59"
-    },
-    {
-      "file_path": ".agent-onboard/cli-runtime-de-monolith-planning.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-cli-runtime-de-monolith-planning-json-4876c2d0"
-    },
-    {
-      "file_path": ".agent-onboard/closed-gate-state-layout-migration.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-closed-gate-state-layout-migration-json-d5aad149"
-    },
-    {
-      "file_path": ".agent-onboard/closed-gates.archive.jsonl",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-closed-gates-archive-jsonl-76e50641"
-    },
-    {
-      "file_path": ".agent-onboard/closed-gates.index.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-closed-gates-index-json-7d4285a2"
-    },
-    {
-      "file_path": ".agent-onboard/compatibility-command-port-seed.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-compatibility-command-port-seed-json-e63f5635"
-    },
-    {
-      "file_path": ".agent-onboard/core-command-adapter-extraction.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-core-command-adapter-extraction-json-da3b0b54"
-    },
-    {
-      "file_path": ".agent-onboard/metadata-policy.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-metadata-policy-json-fbba7f6e"
-    },
-    {
-      "file_path": ".agent-onboard/modular-runtime-package-inclusion-plan.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-modular-runtime-package-inclusion-plan-json-f5289e97"
-    },
-    {
-      "file_path": ".agent-onboard/package-command-adapter-extraction.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-package-command-adapter-extraction-json-d64d35fb"
-    },
-    {
-      "file_path": ".agent-onboard/packaged-router-port-inclusion.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-packaged-router-port-inclusion-json-572e8ee7"
-    },
-    {
-      "file_path": ".agent-onboard/project.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-project-json-8a439734"
-    },
-    {
-      "file_path": ".agent-onboard/public-architecture-m1-closure-m2-seed.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-public-architecture-m1-closure-m2-seed-json-2aa8e507"
-    },
-    {
-      "file_path": ".agent-onboard/public-closed-gate-raw-artifact-prune-apply-admission.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-public-closed-gate-raw-artifact-prune-apply-admission-json-9a699294"
-    },
-    {
-      "file_path": ".agent-onboard/readme-history.index.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-readme-history-index-json-11cf628c"
-    },
-    {
-      "file_path": ".agent-onboard/router-command-adapter-delegation-expansion.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-router-command-adapter-delegation-expansion-json-ae638e03"
-    },
-    {
-      "file_path": ".agent-onboard/runtime-agents-bridge-service-decomposition.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-runtime-agents-bridge-service-decomposition-json-140af04d"
-    },
-    {
-      "file_path": ".agent-onboard/runtime-check-fast-service-decomposition.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-runtime-check-fast-service-decomposition-json-e0c1d194"
-    },
-    {
-      "file_path": ".agent-onboard/runtime-composer-decomposition.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-runtime-composer-decomposition-json-1dce6a60"
-    },
-    {
-      "file_path": ".agent-onboard/runtime-mcp-bridge-service-decomposition.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-runtime-mcp-bridge-service-decomposition-json-36a42669"
-    },
-    {
-      "file_path": ".agent-onboard/runtime-namespace.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-runtime-namespace-json-f9932fdd"
-    },
-    {
-      "file_path": ".agent-onboard/runtime-release-service-decomposition.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-runtime-release-service-decomposition-json-3d0fa65e"
-    },
-    {
-      "file_path": ".agent-onboard/runtime-state-architecture-growth-arrest.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-runtime-state-architecture-growth-arrest-json-97311ebb"
-    },
-    {
-      "file_path": ".agent-onboard/source-domain-extraction-stabilization-closure-review.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-domain-extraction-stabilization-closure-review-json-2ee227bb"
-    },
-    {
-      "file_path": ".agent-onboard/source-extraction-golden-outputs.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-extraction-golden-outputs-json-6e66ff76"
-    },
-    {
-      "file_path": ".agent-onboard/source-extraction-rehearsal.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-extraction-rehearsal-json-43e3391a"
-    },
-    {
-      "file_path": ".agent-onboard/source-module-extraction-adapter-boundary.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-adapter-boundary-json-c127831a"
-    },
-    {
-      "file_path": ".agent-onboard/source-module-extraction-authority-bundle-parity.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-authority-bundle-parity-json-358f4e46"
-    },
-    {
-      "file_path": ".agent-onboard/source-module-extraction-authority-runtime-bridge.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-authority-runtime-bridge-json-76c7922e"
-    },
-    {
-      "file_path": ".agent-onboard/source-module-extraction-bundle-parity.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-bundle-parity-json-d3b3643a"
-    },
-    {
-      "file_path": ".agent-onboard/source-module-extraction-claims-bundle-parity.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-claims-bundle-parity-json-7f74e420"
-    },
-    {
-      "file_path": ".agent-onboard/source-module-extraction-claims-first-slice.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-claims-first-slice-json-da14acce"
-    },
-    {
-      "file_path": ".agent-onboard/source-module-extraction-claims-installed-fallback-smoke.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-claims-installed-fallback-smoke-json-9a04bedc"
-    },
-    {
-      "file_path": ".agent-onboard/source-module-extraction-claims-plan.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-claims-plan-json-c5b37f5d"
-    },
-    {
-      "file_path": ".agent-onboard/source-module-extraction-claims-runtime-bridge.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-claims-runtime-bridge-json-f8d5eff9"
-    },
-    {
-      "file_path": ".agent-onboard/source-module-extraction-first-slice.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-first-slice-json-d668c456"
-    },
-    {
-      "file_path": ".agent-onboard/source-module-extraction-installed-fallback-smoke.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-installed-fallback-smoke-json-9d1a45d4"
-    },
-    {
-      "file_path": ".agent-onboard/source-module-extraction-runtime-bridge.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-runtime-bridge-json-30ba33c3"
-    },
-    {
-      "file_path": ".agent-onboard/source-module-extraction-second-slice-first-slice.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-second-slice-first-slice-json-4d58a90c"
-    },
-    {
-      "file_path": ".agent-onboard/source-module-extraction-second-slice-plan.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-second-slice-plan-json-af5b10e1"
-    },
-    {
-      "file_path": ".agent-onboard/source-module-extraction-work-items-bundle-parity.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-work-items-bundle-parity-json-ece1d58f"
-    },
-    {
-      "file_path": ".agent-onboard/source-module-extraction-work-items-first-slice.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-work-items-first-slice-json-00c0ed93"
-    },
-    {
-      "file_path": ".agent-onboard/source-module-extraction-work-items-installed-fallback-smoke.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-work-items-installed-fallback-smoke-json-1b67466e"
-    },
-    {
-      "file_path": ".agent-onboard/source-module-extraction-work-items-plan.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-work-items-plan-json-15f1860c"
-    },
-    {
-      "file_path": ".agent-onboard/source-module-extraction-work-items-runtime-bridge.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-work-items-runtime-bridge-json-a9471308"
-    },
-    {
-      "file_path": ".agent-onboard/source-partition-plan.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-partition-plan-json-d9bbb1e5"
-    },
-    {
-      "file_path": ".agent-onboard/state/closed-gates.jsonl",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-state-closed-gates-jsonl-b6b6876e"
-    },
-    {
-      "file_path": ".agent-onboard/state/closures/closed-gate-closures.jsonl",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-state-closures-closed-gate-closures-jsonl-f1dae317"
-    },
-    {
-      "file_path": ".agent-onboard/state/closures/work-items-closures.jsonl",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-state-closures-work-items-closures-jsonl-4be43fe5"
-    },
-    {
-      "file_path": ".agent-onboard/state/events/closed-gates.jsonl",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-state-events-closed-gates-jsonl-052b75cb"
-    },
-    {
-      "file_path": ".agent-onboard/state/events/work-items.jsonl",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-state-events-work-items-jsonl-e35344bc"
-    },
-    {
-      "file_path": ".agent-onboard/state/indexes.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-state-indexes-json-1f8ab4d4"
-    },
-    {
-      "file_path": ".agent-onboard/state/indexes/closed-gates.index.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-state-indexes-closed-gates-index-json-5fda47de"
-    },
-    {
-      "file_path": ".agent-onboard/state/indexes/work-items.index.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-state-indexes-work-items-index-json-33068bba"
-    },
-    {
-      "file_path": ".agent-onboard/state/live-authority.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-state-live-authority-json-aadb77a0"
-    },
-    {
-      "file_path": ".agent-onboard/state/live/closed-gates.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-state-live-closed-gates-json-68d5ffab"
-    },
-    {
-      "file_path": ".agent-onboard/state/live/work-items.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-state-live-work-items-json-d1c58464"
-    },
-    {
-      "file_path": ".agent-onboard/state/policies.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-state-policies-json-59cfb4e7"
-    },
-    {
-      "file_path": ".agent-onboard/storage-backend-policy.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-storage-backend-policy-json-9afda83b"
-    },
-    {
-      "file_path": ".agent-onboard/target-command-adapter-extraction.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-target-command-adapter-extraction-json-47b189e2"
-    },
-    {
-      "file_path": ".agent-onboard/target-repo-product-refactor-plan.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-target-repo-product-refactor-plan-json-0bcc1b6c"
-    },
-    {
-      "file_path": ".agent-onboard/target.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-target-json-38c70815"
-    },
-    {
-      "file_path": ".agent-onboard/thin-cli-router-seed.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-thin-cli-router-seed-json-40125140"
-    },
-    {
-      "file_path": ".agent-onboard/thin-entrypoint-router-cutover-application.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-thin-entrypoint-router-cutover-application-json-3a91d6f2"
-    },
-    {
-      "file_path": ".agent-onboard/thin-entrypoint-router-cutover-rehearsal.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-thin-entrypoint-router-cutover-rehearsal-json-3c1ef9ca"
-    },
-    {
-      "file_path": ".agent-onboard/work-item-ledger-compaction-migration.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-work-item-ledger-compaction-migration-json-6d30e80a"
-    },
-    {
-      "file_path": ".agent-onboard/work-items-runtime-service-partition-seed.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-work-items-runtime-service-partition-seed-json-a5319c9c"
-    },
-    {
-      "file_path": ".agent-onboard/work-items.index.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-work-items-index-json-e4fde6be"
-    },
-    {
       "file_path": ".editorconfig",
       "file_urn": "urn:agent-onboard:file:editorconfig-0947e272"
-    },
-    {
-      "file_path": ".gitattributes",
-      "file_urn": "urn:agent-onboard:file:gitattributes-618cd5b8"
     },
     {
       "file_path": ".gitignore",
@@ -370,6 +74,38 @@
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-contracts-public-contracts-js-88744470"
     },
     {
+      "file_path": "cli/agent_onboard/domains/architecture/catalog-shards/public-architecture-boundary-catalog.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-catalog-shards-public-architecture-boundary-catalog-js-f242e155"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/architecture/catalog-shards/public-architecture-map-catalog.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-catalog-shards-public-architecture-map-catalog-js-1757655a"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/architecture/catalog-shards/public-claims-source-catalog.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-catalog-shards-public-claims-source-catalog-js-6d111bcf"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/architecture/catalog-shards/public-release-contract-catalog.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-catalog-shards-public-release-contract-catalog-js-4336115a"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/architecture/catalog-shards/public-release-fixture-catalog.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-catalog-shards-public-release-fixture-catalog-js-6723c1a9"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/architecture/catalog-shards/public-source-authority-catalog.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-catalog-shards-public-source-authority-catalog-js-463b8089"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/architecture/catalog-shards/public-source-kernel-catalog.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-catalog-shards-public-source-kernel-catalog-js-ee3cb606"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/architecture/catalog-shards/public-work-items-source-catalog.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-catalog-shards-public-work-items-source-catalog-js-dd6a7653"
+    },
+    {
       "file_path": "cli/agent_onboard/domains/architecture/m3-runtime-catalog.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-m3-runtime-catalog-js-f7a62dad"
     },
@@ -380,6 +116,38 @@
     {
       "file_path": "cli/agent_onboard/domains/architecture/services/runtime/architecture-runtime-service.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-services-runtime-architecture-runtime-service-js-c6bf2de8"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/architecture/services/runtime/public-architecture-command-runner-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-services-runtime-public-architecture-command-runner-service-js-19e374c2"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/architecture/services/runtime/public-cli-runtime-planning-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-services-runtime-public-cli-runtime-planning-service-js-1e46d774"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/architecture/services/runtime/public-command-adapter-extraction-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-services-runtime-public-command-adapter-extraction-service-js-957ad3e0"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/architecture/services/runtime/public-router-cutover-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-services-runtime-public-router-cutover-service-js-5ce435f5"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/architecture/services/runtime/public-router-seed-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-services-runtime-public-router-seed-service-js-5235c523"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/architecture/services/runtime/public-source-module-authority-bundle-parity-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-services-runtime-public-source-module-authority-bundle-parity-service-js-3115a24a"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/architecture/services/runtime/public-source-module-residual-extraction-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-services-runtime-public-source-module-residual-extraction-service-js-4fe5d450"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/architecture/services/runtime/public-source-module-second-slice-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-services-runtime-public-source-module-second-slice-service-js-bfdb36d1"
     },
     {
       "file_path": "cli/agent_onboard/domains/architecture/services/source-domains/architecture-source-domain-service.js",
@@ -410,6 +178,10 @@
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-authority-services-public-runtime-agents-bridge-service-js-a9add9a0"
     },
     {
+      "file_path": "cli/agent_onboard/domains/authority/services/public-runtime-guard-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-authority-services-public-runtime-guard-service-js-8413e898"
+    },
+    {
       "file_path": "cli/agent_onboard/domains/core/index.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-core-index-js-f5c1c229"
     },
@@ -420,6 +192,10 @@
     {
       "file_path": "cli/agent_onboard/domains/core/services/ni-uri-service.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-core-services-ni-uri-service-js-a57bcf9f"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/core/services/public-core-surface-command-runner-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-core-services-public-core-surface-command-runner-service-js-d7253562"
     },
     {
       "file_path": "cli/agent_onboard/domains/core/services/public-runtime-check-fast-service.js",
@@ -438,6 +214,14 @@
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-index-js-d556ab24"
     },
     {
+      "file_path": "cli/agent_onboard/domains/package/services/exact-artifact-oracle-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-exact-artifact-oracle-service-js-f0b17eda"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/package/services/full-test-runner-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-full-test-runner-service-js-635d9643"
+    },
+    {
       "file_path": "cli/agent_onboard/domains/package/services/installed-first-read-contract.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-installed-first-read-contract-js-202c53a8"
     },
@@ -454,16 +238,80 @@
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-package-surface-service-js-6f8b2bad"
     },
     {
+      "file_path": "cli/agent_onboard/domains/package/services/public-contracts-command-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-public-contracts-command-service-js-cc44677a"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/package/services/public-release-check-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-public-release-check-service-js-efff40c8"
+    },
+    {
       "file_path": "cli/agent_onboard/domains/package/services/public-runtime-release-service.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-public-runtime-release-service-js-00ec3924"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/package/services/release-clean-closed-gates-runtime-slice-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-release-clean-closed-gates-runtime-slice-service-js-ca34a5c7"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/package/services/release-clean-closed-gates/clean-compaction-runtime.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-release-clean-closed-gates-clean-compaction-runtime-js-2f6d5763"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/package/services/release-clean-closed-gates/closed-gate-apply-runtime.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-release-clean-closed-gates-closed-gate-apply-runtime-js-fac52076"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/package/services/release-clean-closed-gates/closed-gate-compaction-runtime.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-release-clean-closed-gates-closed-gate-compaction-runtime-js-21d1355d"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/package/services/release-clean-closed-gates/closed-gate-prune-apply-runtime.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-release-clean-closed-gates-closed-gate-prune-apply-runtime-js-527a6846"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/package/services/release-clean-closed-gates/closed-gate-prune-dry-run-runtime.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-release-clean-closed-gates-closed-gate-prune-dry-run-runtime-js-0522e83e"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/package/services/release-clean-closed-gates/closed-gate-prune-plan-runtime.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-release-clean-closed-gates-closed-gate-prune-plan-runtime-js-08cd53be"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/package/services/release-clean-closed-gates/closed-gate-reader-runtime.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-release-clean-closed-gates-closed-gate-reader-runtime-js-c528a772"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/package/services/release-clean-closed-gates/keyword-readme-plan-runtime.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-release-clean-closed-gates-keyword-readme-plan-runtime-js-f47ad9b6"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/package/services/release-clean-closed-gates/readme-history-apply-runtime.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-release-clean-closed-gates-readme-history-apply-runtime-js-4b4dbf76"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/package/services/release-clean-closed-gates/readme-history-archive-runtime.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-release-clean-closed-gates-readme-history-archive-runtime-js-95dd2cc2"
     },
     {
       "file_path": "cli/agent_onboard/domains/package/services/source-manifest-service.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-source-manifest-service-js-2bbf8b11"
     },
     {
+      "file_path": "cli/agent_onboard/domains/package/services/target-onboarding-acceptance-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-target-onboarding-acceptance-service-js-611e77cb"
+    },
+    {
       "file_path": "cli/agent_onboard/domains/service-partitions.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-service-partitions-js-9e48b82d"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/target/services/target-command-runner-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-command-runner-service-js-0ac7ec49"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/target/services/target-command-text-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-command-text-service-js-a8c0a95f"
     },
     {
       "file_path": "cli/agent_onboard/domains/target/services/target-constants.js",
@@ -472,6 +320,22 @@
     {
       "file_path": "cli/agent_onboard/domains/target/services/target-doctor-service.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-doctor-service-js-4b8bacad"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/target/services/target-governance-budget-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-governance-budget-service-js-19bc561f"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/target/services/target-governance-core.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-governance-core-js-19c92f6e"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/target/services/target-governance-index-materialization-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-governance-index-materialization-service-js-cdd0aae6"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/target/services/target-governance-preview-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-governance-preview-service-js-19f0a872"
     },
     {
       "file_path": "cli/agent_onboard/domains/target/services/target-governance-service.js",
@@ -488,6 +352,10 @@
     {
       "file_path": "cli/agent_onboard/domains/target/services/target-manifest-service.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-manifest-service-js-ba35955e"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/target/services/target-memory-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-memory-service-js-b064841f"
     },
     {
       "file_path": "cli/agent_onboard/domains/target/services/target-metadata-service.js",
@@ -534,6 +402,14 @@
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-work-items-index-js-c2e89c97"
     },
     {
+      "file_path": "cli/agent_onboard/domains/work-items/services/work-items-claim-ledger-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-work-items-services-work-items-claim-ledger-service-js-8b270c71"
+    },
+    {
+      "file_path": "cli/agent_onboard/domains/work-items/services/work-items-mutation-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-work-items-services-work-items-mutation-service-js-b58607a4"
+    },
+    {
       "file_path": "cli/agent_onboard/domains/work-items/services/work-items-service.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-work-items-services-work-items-service-js-51727965"
     },
@@ -544,6 +420,10 @@
     {
       "file_path": "cli/agent_onboard/ports/compatibility-command-port.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-ports-compatibility-command-port-js-a85c0f79"
+    },
+    {
+      "file_path": "cli/agent_onboard/runtime-command-registry.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-runtime-command-registry-js-fdfa548b"
     },
     {
       "file_path": "cli/agent_onboard/runtime-composer.js",
@@ -570,40 +450,156 @@
       "file_urn": "urn:agent-onboard:file:package-json-7ae45ad1"
     },
     {
-      "file_path": "scripts/check-closed-gate-state-layout.js",
-      "file_urn": "urn:agent-onboard:file:scripts-check-closed-gate-state-layout-js-f8eb794b"
+      "file_path": "scripts/check.js",
+      "file_urn": "urn:agent-onboard:file:scripts-check-js-b837118a"
     },
     {
-      "file_path": "scripts/check-public-artifact-boundary.js",
-      "file_urn": "urn:agent-onboard:file:scripts-check-public-artifact-boundary-js-90be14c8"
+      "file_path": "scripts/checks/architecture-catalog-sharding.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-architecture-catalog-sharding-js-4ffc577e"
     },
     {
-      "file_path": "scripts/check-runtime-agents-bridge-service-decomposition.js",
-      "file_urn": "urn:agent-onboard:file:scripts-check-runtime-agents-bridge-service-decomposition-js-c2083f88"
+      "file_path": "scripts/checks/architecture-command-runner-extraction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-architecture-command-runner-extraction-js-88d2ea9c"
     },
     {
-      "file_path": "scripts/check-runtime-check-fast-service-decomposition.js",
-      "file_urn": "urn:agent-onboard:file:scripts-check-runtime-check-fast-service-decomposition-js-885a9041"
+      "file_path": "scripts/checks/check-registry-compaction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-check-registry-compaction-js-95738b3e"
     },
     {
-      "file_path": "scripts/check-runtime-composer-decomposition.js",
-      "file_urn": "urn:agent-onboard:file:scripts-check-runtime-composer-decomposition-js-b75a319c"
+      "file_path": "scripts/checks/cli-runtime-planning-service-extraction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-cli-runtime-planning-service-extraction-js-c5cd75f8"
     },
     {
-      "file_path": "scripts/check-runtime-mcp-bridge-service-decomposition.js",
-      "file_urn": "urn:agent-onboard:file:scripts-check-runtime-mcp-bridge-service-decomposition-js-380ef325"
+      "file_path": "scripts/checks/closed-gate-state-layout.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-closed-gate-state-layout-js-8c21d445"
     },
     {
-      "file_path": "scripts/check-runtime-release-service-decomposition.js",
-      "file_urn": "urn:agent-onboard:file:scripts-check-runtime-release-service-decomposition-js-fe024cc1"
+      "file_path": "scripts/checks/closure-payload-reference-compaction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-closure-payload-reference-compaction-js-7bafe645"
     },
     {
-      "file_path": "scripts/check-runtime-state-storage-layout.js",
-      "file_urn": "urn:agent-onboard:file:scripts-check-runtime-state-storage-layout-js-3bf1e57f"
+      "file_path": "scripts/checks/command-adapter-extraction-service-extraction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-command-adapter-extraction-service-extraction-js-355af19a"
     },
     {
-      "file_path": "scripts/check-work-item-ledger-compaction.js",
-      "file_urn": "urn:agent-onboard:file:scripts-check-work-item-ledger-compaction-js-6f5e34f3"
+      "file_path": "scripts/checks/contracts-command-service-extraction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-contracts-command-service-extraction-js-b952656d"
+    },
+    {
+      "file_path": "scripts/checks/core-surface-command-runner-extraction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-core-surface-command-runner-extraction-js-c52c4a15"
+    },
+    {
+      "file_path": "scripts/checks/exact-artifact-oracle-service-extraction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-exact-artifact-oracle-service-extraction-js-c9dac30b"
+    },
+    {
+      "file_path": "scripts/checks/full-test-runner-service-extraction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-full-test-runner-service-extraction-js-4799f803"
+    },
+    {
+      "file_path": "scripts/checks/god-file-budget-enforcement-closure.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-god-file-budget-enforcement-closure-js-601c56b9"
+    },
+    {
+      "file_path": "scripts/checks/package-surface-service-extraction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-package-surface-service-extraction-js-bd381352"
+    },
+    {
+      "file_path": "scripts/checks/public-artifact-boundary.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-public-artifact-boundary-js-675124d5"
+    },
+    {
+      "file_path": "scripts/checks/registry.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-registry-js-eba848ae"
+    },
+    {
+      "file_path": "scripts/checks/release-check-service-extraction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-release-check-service-extraction-js-51692c31"
+    },
+    {
+      "file_path": "scripts/checks/release-clean-closed-gates-runtime-slice-extraction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-release-clean-closed-gates-runtime-slice-extraction-js-bb7992b5"
+    },
+    {
+      "file_path": "scripts/checks/router-cutover-service-extraction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-router-cutover-service-extraction-js-8bee5046"
+    },
+    {
+      "file_path": "scripts/checks/router-seed-service-extraction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-router-seed-service-extraction-js-23e7d9a6"
+    },
+    {
+      "file_path": "scripts/checks/runtime-agents-bridge-service-decomposition.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-runtime-agents-bridge-service-decomposition-js-eecc7090"
+    },
+    {
+      "file_path": "scripts/checks/runtime-check-fast-service-decomposition.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-runtime-check-fast-service-decomposition-js-d256f3de"
+    },
+    {
+      "file_path": "scripts/checks/runtime-command-registry-extraction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-runtime-command-registry-extraction-js-62098165"
+    },
+    {
+      "file_path": "scripts/checks/runtime-composer-decomposition.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-runtime-composer-decomposition-js-855ad067"
+    },
+    {
+      "file_path": "scripts/checks/runtime-composer-residual-slice-reduction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-runtime-composer-residual-slice-reduction-js-7228a904"
+    },
+    {
+      "file_path": "scripts/checks/runtime-guard-service-decomposition.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-runtime-guard-service-decomposition-js-9c20c44a"
+    },
+    {
+      "file_path": "scripts/checks/runtime-mcp-bridge-service-decomposition.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-runtime-mcp-bridge-service-decomposition-js-da623bcf"
+    },
+    {
+      "file_path": "scripts/checks/runtime-release-service-decomposition.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-runtime-release-service-decomposition-js-7ea21b7a"
+    },
+    {
+      "file_path": "scripts/checks/runtime-state-storage-layout.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-runtime-state-storage-layout-js-3d9d61d5"
+    },
+    {
+      "file_path": "scripts/checks/source-module-residual-service-extraction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-source-module-residual-service-extraction-js-78f25368"
+    },
+    {
+      "file_path": "scripts/checks/source-size-budget-ratchet.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-source-size-budget-ratchet-js-785cab60"
+    },
+    {
+      "file_path": "scripts/checks/state-projection-authority-cutover.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-state-projection-authority-cutover-js-c5451f3d"
+    },
+    {
+      "file_path": "scripts/checks/target-command-runner-extraction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-target-command-runner-extraction-js-3ab3711e"
+    },
+    {
+      "file_path": "scripts/checks/target-governance-service-split.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-target-governance-service-split-js-5194d669"
+    },
+    {
+      "file_path": "scripts/checks/target-onboarding-acceptance-service-extraction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-target-onboarding-acceptance-service-extraction-js-6ab6660d"
+    },
+    {
+      "file_path": "scripts/checks/test-suite-sharding.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-test-suite-sharding-js-053cf5a0"
+    },
+    {
+      "file_path": "scripts/checks/work-item-ledger-compaction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-work-item-ledger-compaction-js-151d4048"
+    },
+    {
+      "file_path": "scripts/checks/work-items-service-split.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-work-items-service-split-js-62e58357"
     },
     {
       "file_path": "src/domains/authority.js",
@@ -626,8 +622,52 @@
       "file_urn": "urn:agent-onboard:file:test-agent-onboard-test-js-17cbc29b"
     },
     {
+      "file_path": "test/full-source/shard-01.js",
+      "file_urn": "urn:agent-onboard:file:test-full-source-shard-01-js-0195ba8b"
+    },
+    {
+      "file_path": "test/full-source/shard-02.js",
+      "file_urn": "urn:agent-onboard:file:test-full-source-shard-02-js-e6f238c1"
+    },
+    {
+      "file_path": "test/full-source/shard-03.js",
+      "file_urn": "urn:agent-onboard:file:test-full-source-shard-03-js-a7806ac7"
+    },
+    {
+      "file_path": "test/full-source/shard-04.js",
+      "file_urn": "urn:agent-onboard:file:test-full-source-shard-04-js-36d0638f"
+    },
+    {
+      "file_path": "test/full-source/shard-05.js",
+      "file_urn": "urn:agent-onboard:file:test-full-source-shard-05-js-7089d34c"
+    },
+    {
+      "file_path": "test/full-source/shard-06.js",
+      "file_urn": "urn:agent-onboard:file:test-full-source-shard-06-js-84303137"
+    },
+    {
+      "file_path": "test/full-source/shard-07.js",
+      "file_urn": "urn:agent-onboard:file:test-full-source-shard-07-js-0676a894"
+    },
+    {
+      "file_path": "test/full-source/shard-08.js",
+      "file_urn": "urn:agent-onboard:file:test-full-source-shard-08-js-eb9fc348"
+    },
+    {
+      "file_path": "test/full-source/shard-09.js",
+      "file_urn": "urn:agent-onboard:file:test-full-source-shard-09-js-5dc5dd13"
+    },
+    {
+      "file_path": "test/full-source/shard-10.js",
+      "file_urn": "urn:agent-onboard:file:test-full-source-shard-10-js-ad58d208"
+    },
+    {
       "file_path": "test/run-tests.js",
       "file_urn": "urn:agent-onboard:file:test-run-tests-js-07f9f1b6"
+    },
+    {
+      "file_path": "test/support/full-source-context.js",
+      "file_urn": "urn:agent-onboard:file:test-support-full-source-context-js-307ff4e0"
     }
   ],
   "metadata_policy": {

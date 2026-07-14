@@ -1,0 +1,97 @@
+{
+  "schema": "agent-onboard-public-source-module-residual-service-extraction-001",
+  "package_name": "agent-onboard",
+  "version": "0.0.198",
+  "release_line": "public_source_module_residual_service_extraction_gate",
+  "milestone_id": "P1S3M7",
+  "work_item_id": "P1S3M7W15",
+  "title": "Public Source Module Residual Service Extraction Gate",
+  "status": "closed",
+  "objective": "Move architecture map, installed fallback smoke, source-module second-slice plan/first-slice, and authority bundle parity plan/check implementation ownership out of runtime-composer.js into a bounded architecture-domain runtime service while preserving the public architecture command contract.",
+  "extracted_service": {
+    "path": "cli/agent_onboard/domains/architecture/services/runtime/public-source-module-residual-extraction-service.js",
+    "factory": "createPublicSourceModuleResidualExtractionService",
+    "owned_handlers": [
+      "publicArchitectureMap",
+      "publicSourceModuleExtractionInstalledFallbackSmoke",
+      "publicSourceModuleExtractionInstalledFallbackSmokeCheck"
+    ],
+    "service_domain": "architecture.runtime",
+    "package_projected": true
+  },
+  "reduction": {
+    "runtime_composer_before": {
+      "lines": 2250,
+      "bytes": 108997,
+      "source": "P1S3M7W14 baseline"
+    },
+    "runtime_composer_after": {
+      "lines": 1630,
+      "bytes": 65922
+    },
+    "line_reduction": 620,
+    "byte_reduction": 43075,
+    "monolith_growth_allowed": false
+  },
+  "public_commands_preserved": [
+    "agent-onboard architecture --map",
+    "agent-onboard architecture --installed-fallback-check",
+    "agent-onboard architecture --second-slice-check",
+    "agent-onboard architecture --second-slice-first-slice-check",
+    "agent-onboard architecture --authority-bundle-parity-check",
+    "agent-onboard architecture --check",
+    "agent-onboard check --fast --json",
+    "agent-onboard release --check",
+    "npm pack --dry-run --json"
+  ],
+  "checks": {
+    "gate_check": "node scripts/check.js source-module-residual-service-extraction",
+    "quick_test": "npm test",
+    "public_artifact_boundary": "node scripts/check.js public-artifact-boundary"
+  },
+  "boundary": {
+    "writes_files_at_runtime": false,
+    "mutates_target_repository_state": false,
+    "mutates_git": false,
+    "installs_dependencies": false,
+    "runs_package_manager_inside_checker": false,
+    "publishes_package": false,
+    "mutates_registry": false,
+    "network": false,
+    "storage_backend_changed": false,
+    "sqlite_introduced": false,
+    "lightning_memory_mapped_database_introduced": false,
+    "mdbx_introduced": false
+  },
+  "extracted_service_set": [
+    {
+      "id": "residual_orchestrator",
+      "path": "cli/agent_onboard/domains/architecture/services/runtime/public-source-module-residual-extraction-service.js",
+      "factory": "createPublicSourceModuleResidualExtractionService",
+      "lines": 292,
+      "bytes": 18553,
+      "package_projected": true
+    },
+    {
+      "id": "second_slice",
+      "path": "cli/agent_onboard/domains/architecture/services/runtime/public-source-module-second-slice-service.js",
+      "factory": "createPublicSourceModuleSecondSliceService",
+      "lines": 369,
+      "bytes": 24385,
+      "package_projected": true
+    },
+    {
+      "id": "authority_bundle_parity",
+      "path": "cli/agent_onboard/domains/architecture/services/runtime/public-source-module-authority-bundle-parity-service.js",
+      "factory": "createPublicSourceModuleAuthorityBundleParityService",
+      "lines": 193,
+      "bytes": 13378,
+      "package_projected": true
+    }
+  ],
+  "split_policy": {
+    "new_services_remain_below_near_god_threshold": true,
+    "near_god_threshold_lines": 500,
+    "near_god_threshold_bytes": 51200
+  }
+}

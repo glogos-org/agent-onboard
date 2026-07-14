@@ -12,14 +12,14 @@
     ".agent-onboard/state/closures/work-items-closures.jsonl",
     ".agent-onboard/state/closures/work-items/manifest.json"
   ],
-  "item_count": 185,
+  "item_count": 186,
   "open_count": 0,
   "claimed_count": 0,
-  "closed_count": 185,
-  "latest_closed_work_item_id": "P1S3M7W14",
-  "archived_closure_count": 184,
+  "closed_count": 186,
+  "latest_closed_work_item_id": "P1S3M7W15",
+  "archived_closure_count": 185,
   "inline_closure_count": 0,
-  "closure_ref_count": 184,
+  "closure_ref_count": 185,
   "closure_payload_shard_count": 11,
   "by_status": {
     "open": [],
@@ -209,7 +209,8 @@
       "P1S3M7W11",
       "P1S3M7W12",
       "P1S3M7W13",
-      "P1S3M7W14"
+      "P1S3M7W14",
+      "P1S3M7W15"
     ]
   },
   "by_milestone": {
@@ -415,25 +416,13 @@
       "P1S3M7W10",
       "P1S3M7W11",
       "P1S3M7W12",
-      "P1S3M7W13"
+      "P1S3M7W13",
+      "P1S3M7W14",
+      "P1S3M7W15"
     ]
   },
-  "updated_at": "2026-07-09T16:55:00.000Z",
+  "updated_at": "2026-07-10T08:20:00.000Z",
   "latest_closed_work_items": [
-    {
-      "id": "P1S3M7W9",
-      "title": "Public Package Surface Service Extraction Gate",
-      "status": "closed",
-      "milestone_id": "P1S3M7",
-      "domain": null
-    },
-    {
-      "id": "P1S3M7W10",
-      "title": "Public Full Test Runner Service Extraction Gate",
-      "status": "closed",
-      "milestone_id": "P1S3M7",
-      "domain": null
-    },
     {
       "id": "P1S3M7W11",
       "title": "Public CLI Runtime Planning Service Extraction Gate",
@@ -454,24 +443,24 @@
       "status": "closed",
       "milestone_id": "P1S3M7",
       "domain": null
+    },
+    {
+      "id": "P1S3M7W14",
+      "title": "Public Router Cutover Service Extraction Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M7",
+      "domain": null
+    },
+    {
+      "id": "P1S3M7W15",
+      "title": "Public Source Module Residual Service Extraction Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M7",
+      "domain": null
     }
   ],
-  "latest_work_item_id": "P1S3M7W13",
+  "latest_work_item_id": "P1S3M7W15",
   "latest_work_items": [
-    {
-      "id": "P1S3M7W9",
-      "milestone_id": "P1S3M7",
-      "title": "Public Package Surface Service Extraction Gate",
-      "status": "closed",
-      "closure_ref": "closures:P1S3M7W9"
-    },
-    {
-      "id": "P1S3M7W10",
-      "milestone_id": "P1S3M7",
-      "title": "Public Full Test Runner Service Extraction Gate",
-      "status": "closed",
-      "closure_ref": "closures:P1S3M7W10"
-    },
     {
       "id": "P1S3M7W11",
       "milestone_id": "P1S3M7",
@@ -506,6 +495,30 @@
         "note": "Extract command adapter extraction behavior from runtime composer without changing storage backend."
       },
       "closure_ref": "closures:P1S3M7W13"
+    },
+    {
+      "id": "P1S3M7W14",
+      "milestone_id": "P1S3M7",
+      "title": "Public Router Cutover Service Extraction Gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-09T16:50:00.000Z",
+        "note": "Extract router cutover behavior from runtime composer without changing storage backend."
+      },
+      "closure_ref": "closures:P1S3M7W14"
+    },
+    {
+      "id": "P1S3M7W15",
+      "milestone_id": "P1S3M7",
+      "title": "Public Source Module Residual Service Extraction Gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-10T08:05:00.000Z",
+        "note": "Extract source-module residual architecture behavior from runtime composer without changing storage backend."
+      },
+      "closure_ref": "closures:P1S3M7W15"
     }
   ]
 }

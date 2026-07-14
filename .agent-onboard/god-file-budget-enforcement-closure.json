@@ -37,7 +37,8 @@
     "P1S3M7W11",
     "P1S3M7W12",
     "P1S3M7W13",
-    "P1S3M7W14"
+    "P1S3M7W14",
+    "P1S3M7W15"
   ],
   "required_check_ids": [
     "source-size-budget",
@@ -64,24 +65,25 @@
     "cli-runtime-planning-service-extraction",
     "router-seed-service-extraction",
     "command-adapter-extraction-service-extraction",
-    "router-cutover-service-extraction"
+    "router-cutover-service-extraction",
+    "source-module-residual-service-extraction"
   ],
   "remaining_god_files": [
     {
       "path": "cli/agent_onboard/runtime-composer.js",
       "category": "runtime_source",
-      "current_lines": 2250,
-      "current_bytes": 108997,
-      "admitted_reason": "runtime composer remains admitted migration debt and shrank during W14 router cutover service extraction.",
-      "next_reduction_gate": "P1S3M7W15"
+      "current_lines": 1630,
+      "current_bytes": 65922,
+      "admitted_reason": "Admitted migration debt refreshed after W15 source-module residual service extraction; composer was reduced and W15 service split avoided new near-god debt.",
+      "next_reduction_gate": "P1S3M7W16"
     },
     {
       "path": ".agent-onboard/work-items.json",
       "category": "authority_registry",
-      "current_lines": 1746,
+      "current_lines": 1758,
       "admitted_reason": "public work item ledger remains admitted migration debt after W14 closure append; compact state shards remain the default read path.",
-      "next_reduction_gate": "P1S3M7W15",
-      "current_bytes": 50271
+      "next_reduction_gate": "P1S3M7W16",
+      "current_bytes": 50721
     },
     {
       "path": "cli/agent_onboard/domains/architecture/services/runtime/architecture-runtime-service.js",
@@ -89,15 +91,15 @@
       "current_lines": 1544,
       "current_bytes": 85962,
       "admitted_reason": "architecture runtime still aggregates authority-state, namespace, and extraction checks",
-      "next_reduction_gate": "P1S3M7W7"
+      "next_reduction_gate": "P1S3M7W16"
     },
     {
       "path": "README.md",
       "category": "documentation",
       "current_lines": 1313,
-      "current_bytes": 87192,
+      "current_bytes": 86830,
       "admitted_reason": "first-read surface remains admitted documentation debt; W14 updates the live current-release line for router cutover service extraction.",
-      "next_reduction_gate": "P1S3M7W15"
+      "next_reduction_gate": "P1S3M7W16"
     },
     {
       "path": "cli/agent_onboard/domains/core/services/public-runtime-surface-service.js",
@@ -105,7 +107,7 @@
       "current_lines": 1189,
       "current_bytes": 45970,
       "admitted_reason": "public runtime surface still aggregates multiple command-surface proofs",
-      "next_reduction_gate": "P1S3M7W5"
+      "next_reduction_gate": "P1S3M7W16"
     },
     {
       "path": "cli/agent_onboard/domains/architecture/services/source-extraction/architecture-source-extraction-service.js",
@@ -113,15 +115,15 @@
       "current_lines": 1087,
       "current_bytes": 68279,
       "admitted_reason": "source extraction orchestration still combines scan, validation, and installed fallback logic",
-      "next_reduction_gate": "P1S3M7W8"
+      "next_reduction_gate": "P1S3M7W16"
     },
     {
       "path": ".agent-onboard/source-size-budget-ratchet.json",
       "category": "authority_registry",
-      "current_lines": 2474,
-      "current_bytes": 99966,
+      "current_lines": 2893,
+      "current_bytes": 115256,
       "admitted_reason": "source-size ratchet remains admitted authority metadata debt after W14 authority and closure projection refresh.",
-      "next_reduction_gate": "P1S3M7W15"
+      "next_reduction_gate": "P1S3M7W16"
     }
   ],
   "closure_result": {

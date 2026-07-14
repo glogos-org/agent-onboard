@@ -11,383 +11,13 @@
     }
   ],
   "files": {
-    "urn:agent-onboard:file:agent-onboard-architecture-command-adapter-extraction-json-c138388e": {
-      "file_id": "ni:///sha-256;KAgllI6bkN31aumvkQy0GZX_ThjAF6XpTKrpcxzyz2E",
-      "file_path": ".agent-onboard/architecture-command-adapter-extraction.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-architecture-command-adapter-extraction-json-c138388e"
-    },
-    "urn:agent-onboard:file:agent-onboard-authority-command-adapter-extraction-json-d836eacf": {
-      "file_id": "ni:///sha-256;CpufDmE1iUqtgomIO5h1GgRSU73OS1uIOs2Pxw3EbEo",
-      "file_path": ".agent-onboard/authority-command-adapter-extraction.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-authority-command-adapter-extraction-json-d836eacf"
-    },
-    "urn:agent-onboard:file:agent-onboard-authority-index-json-0bcd2304": {
-      "file_id": "ni:///sha-256;RNqfzMv__Rm_xKZQfUfzpeO9fzjzlkmlH_DyX4ZVp_I",
-      "file_path": ".agent-onboard/authority-index.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-authority-index-json-0bcd2304"
-    },
-    "urn:agent-onboard:file:agent-onboard-authority-path-json-9c1fc126": {
-      "file_id": "ni:///sha-256;Gvd8pkOgiB2R0Uz5HQdgvnn-fYIPRYO4rMcQXYXMB7c",
-      "file_path": ".agent-onboard/authority-path.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-authority-path-json-9c1fc126"
-    },
-    "urn:agent-onboard:file:agent-onboard-claims-index-json-30119f4c": {
-      "file_id": "ni:///sha-256;otIDDGJGcys456Ufaq9WPeWXVrjiCX9kkTWzXjQyHGo",
-      "file_path": ".agent-onboard/claims.index.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-claims-index-json-30119f4c"
-    },
-    "urn:agent-onboard:file:agent-onboard-claims-jsonl-dd87ff59": {
-      "file_id": "ni:///sha-256;vqL6QlkPsHCDTc1lh_smjqoRmwBOMWLJu2wJkaOU36o",
-      "file_path": ".agent-onboard/claims.jsonl",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-claims-jsonl-dd87ff59"
-    },
-    "urn:agent-onboard:file:agent-onboard-cli-runtime-de-monolith-planning-json-4876c2d0": {
-      "file_id": "ni:///sha-256;radYckqihTB0i9_3xJoDv7HQO2YtbbEtd1R0FzMUIiQ",
-      "file_path": ".agent-onboard/cli-runtime-de-monolith-planning.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-cli-runtime-de-monolith-planning-json-4876c2d0"
-    },
-    "urn:agent-onboard:file:agent-onboard-closed-gate-state-layout-migration-json-d5aad149": {
-      "file_id": "ni:///sha-256;ajqhMFZl0YNROAkv_Olc5g8GQ724G_ZmOtmSXgDOsSY",
-      "file_path": ".agent-onboard/closed-gate-state-layout-migration.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-closed-gate-state-layout-migration-json-d5aad149"
-    },
-    "urn:agent-onboard:file:agent-onboard-closed-gates-archive-jsonl-76e50641": {
-      "file_id": "ni:///sha-256;-PvjcqBPRmXSFzi10P8Igs3xGqsu4__7HPWGsE5K4QQ",
-      "file_path": ".agent-onboard/closed-gates.archive.jsonl",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-closed-gates-archive-jsonl-76e50641"
-    },
-    "urn:agent-onboard:file:agent-onboard-closed-gates-index-json-7d4285a2": {
-      "file_id": "ni:///sha-256;j1089Y0GVJ6_ZPeFdN5kw8ZFZTnUVo3syvl_2Hu54Ls",
-      "file_path": ".agent-onboard/closed-gates.index.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-closed-gates-index-json-7d4285a2"
-    },
-    "urn:agent-onboard:file:agent-onboard-compatibility-command-port-seed-json-e63f5635": {
-      "file_id": "ni:///sha-256;HIfvyYIhZIuAj6nnFICXpFaYEDdQLOytZvCVQ7yLKcE",
-      "file_path": ".agent-onboard/compatibility-command-port-seed.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-compatibility-command-port-seed-json-e63f5635"
-    },
-    "urn:agent-onboard:file:agent-onboard-core-command-adapter-extraction-json-da3b0b54": {
-      "file_id": "ni:///sha-256;MRY2yklB_5AKbQBOOU0gzEaS-DMzEZ_1bIp50_wiDJs",
-      "file_path": ".agent-onboard/core-command-adapter-extraction.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-core-command-adapter-extraction-json-da3b0b54"
-    },
-    "urn:agent-onboard:file:agent-onboard-metadata-policy-json-fbba7f6e": {
-      "file_id": "ni:///sha-256;t9ZrxvOLMn_VLAaChcApJHGysm_mq9EwEJON-L3hpmU",
-      "file_path": ".agent-onboard/metadata-policy.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-metadata-policy-json-fbba7f6e"
-    },
-    "urn:agent-onboard:file:agent-onboard-modular-runtime-package-inclusion-plan-json-f5289e97": {
-      "file_id": "ni:///sha-256;RUUmjynFss3USUxs3Gppx--XqPVGe4NKvNVmw8wz0x0",
-      "file_path": ".agent-onboard/modular-runtime-package-inclusion-plan.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-modular-runtime-package-inclusion-plan-json-f5289e97"
-    },
-    "urn:agent-onboard:file:agent-onboard-package-command-adapter-extraction-json-d64d35fb": {
-      "file_id": "ni:///sha-256;ScEWm-ZYWzW8KLiPupe_NNsJI_pMAYIfNIiRkr9lyXk",
-      "file_path": ".agent-onboard/package-command-adapter-extraction.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-package-command-adapter-extraction-json-d64d35fb"
-    },
-    "urn:agent-onboard:file:agent-onboard-packaged-router-port-inclusion-json-572e8ee7": {
-      "file_id": "ni:///sha-256;xI_MP0Ef-khBHUQSdv4zfxFDW6PLnooX1LrwL20iWH0",
-      "file_path": ".agent-onboard/packaged-router-port-inclusion.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-packaged-router-port-inclusion-json-572e8ee7"
-    },
-    "urn:agent-onboard:file:agent-onboard-project-json-8a439734": {
-      "file_id": "ni:///sha-256;1SFdwN697nHJ4bgUBc84ZozzIZbckpn3ZbQubG05wqM",
-      "file_path": ".agent-onboard/project.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-project-json-8a439734"
-    },
-    "urn:agent-onboard:file:agent-onboard-public-architecture-m1-closure-m2-seed-json-2aa8e507": {
-      "file_id": "ni:///sha-256;UAVQGm4REupXdV6lC_BiFRMUCdOQy_yjKouSaRY_GPk",
-      "file_path": ".agent-onboard/public-architecture-m1-closure-m2-seed.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-public-architecture-m1-closure-m2-seed-json-2aa8e507"
-    },
-    "urn:agent-onboard:file:agent-onboard-public-closed-gate-raw-artifact-prune-apply-admission-json-9a699294": {
-      "file_id": "ni:///sha-256;HHByMHTWyZUhTaKRr9sEfUbhuwHqLr06N1jzRhdQZH8",
-      "file_path": ".agent-onboard/public-closed-gate-raw-artifact-prune-apply-admission.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-public-closed-gate-raw-artifact-prune-apply-admission-json-9a699294"
-    },
-    "urn:agent-onboard:file:agent-onboard-readme-history-index-json-11cf628c": {
-      "file_id": "ni:///sha-256;IU4S6NGNFsJabgrsZhPRmaFxL9FwOrcJJwZtaL8_ONo",
-      "file_path": ".agent-onboard/readme-history.index.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-readme-history-index-json-11cf628c"
-    },
-    "urn:agent-onboard:file:agent-onboard-router-command-adapter-delegation-expansion-json-ae638e03": {
-      "file_id": "ni:///sha-256;sR_PP8snxmrAI1aWUSQREpXz7PolUNqn2binFoLtbxY",
-      "file_path": ".agent-onboard/router-command-adapter-delegation-expansion.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-router-command-adapter-delegation-expansion-json-ae638e03"
-    },
-    "urn:agent-onboard:file:agent-onboard-runtime-agents-bridge-service-decomposition-json-140af04d": {
-      "file_id": "ni:///sha-256;T2MrZdVTByMHQ2fD-sXmDhuBBW7szO4p-nVYD4dl6Jk",
-      "file_path": ".agent-onboard/runtime-agents-bridge-service-decomposition.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-runtime-agents-bridge-service-decomposition-json-140af04d"
-    },
-    "urn:agent-onboard:file:agent-onboard-runtime-check-fast-service-decomposition-json-e0c1d194": {
-      "file_id": "ni:///sha-256;sipaU4_zN0BblVDq32fNn5jc3X2fhVimhEVRcPsmTCk",
-      "file_path": ".agent-onboard/runtime-check-fast-service-decomposition.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-runtime-check-fast-service-decomposition-json-e0c1d194"
-    },
-    "urn:agent-onboard:file:agent-onboard-runtime-composer-decomposition-json-1dce6a60": {
-      "file_id": "ni:///sha-256;X-phxDA4B-0UD08QdsREsu8EW6Rfax66A_lYmC08bEo",
-      "file_path": ".agent-onboard/runtime-composer-decomposition.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-runtime-composer-decomposition-json-1dce6a60"
-    },
-    "urn:agent-onboard:file:agent-onboard-runtime-mcp-bridge-service-decomposition-json-36a42669": {
-      "file_id": "ni:///sha-256;uJ_lRA03buPgg4cz5SAS4S9Yj-pqICMO5btSr2sqDEc",
-      "file_path": ".agent-onboard/runtime-mcp-bridge-service-decomposition.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-runtime-mcp-bridge-service-decomposition-json-36a42669"
-    },
-    "urn:agent-onboard:file:agent-onboard-runtime-namespace-json-f9932fdd": {
-      "file_id": "ni:///sha-256;lolvTgw4-E2Abare_5U9Ei3GC5Sjn9PICtbuM3lXz8I",
-      "file_path": ".agent-onboard/runtime-namespace.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-runtime-namespace-json-f9932fdd"
-    },
-    "urn:agent-onboard:file:agent-onboard-runtime-release-service-decomposition-json-3d0fa65e": {
-      "file_id": "ni:///sha-256;gV4ncKwcl0Yap4aqdHxQlxB3ce47Wn_5_AHyevXcKS8",
-      "file_path": ".agent-onboard/runtime-release-service-decomposition.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-runtime-release-service-decomposition-json-3d0fa65e"
-    },
-    "urn:agent-onboard:file:agent-onboard-runtime-state-architecture-growth-arrest-json-97311ebb": {
-      "file_id": "ni:///sha-256;B1ADddLd_Eh1O2WBh8bBz6gZWAn1E8C9QChjvSd73Yo",
-      "file_path": ".agent-onboard/runtime-state-architecture-growth-arrest.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-runtime-state-architecture-growth-arrest-json-97311ebb"
-    },
-    "urn:agent-onboard:file:agent-onboard-source-domain-extraction-stabilization-closure-review-json-2ee227bb": {
-      "file_id": "ni:///sha-256;8xmva4a1wQyygtRhBI4X7uDcQ0slwnmDTQcU1CvuYDI",
-      "file_path": ".agent-onboard/source-domain-extraction-stabilization-closure-review.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-domain-extraction-stabilization-closure-review-json-2ee227bb"
-    },
-    "urn:agent-onboard:file:agent-onboard-source-extraction-golden-outputs-json-6e66ff76": {
-      "file_id": "ni:///sha-256;K-RQvxAh1fupkvYQV1w0WzQooNUDu4RWLhExmlA5Dv4",
-      "file_path": ".agent-onboard/source-extraction-golden-outputs.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-extraction-golden-outputs-json-6e66ff76"
-    },
-    "urn:agent-onboard:file:agent-onboard-source-extraction-rehearsal-json-43e3391a": {
-      "file_id": "ni:///sha-256;mkp1xemprF-aCORAfLxqjJqracQY6qjsuP_XfNASFss",
-      "file_path": ".agent-onboard/source-extraction-rehearsal.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-extraction-rehearsal-json-43e3391a"
-    },
-    "urn:agent-onboard:file:agent-onboard-source-module-extraction-adapter-boundary-json-c127831a": {
-      "file_id": "ni:///sha-256;-4sm7QWtgeOXWPi9d8dYBoBPjiGocsuQWFdFTUpW9yI",
-      "file_path": ".agent-onboard/source-module-extraction-adapter-boundary.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-adapter-boundary-json-c127831a"
-    },
-    "urn:agent-onboard:file:agent-onboard-source-module-extraction-authority-bundle-parity-json-358f4e46": {
-      "file_id": "ni:///sha-256;rDKrZkwtM0qSoQAdVF0r716auHwQ8-vT6G5rntClGck",
-      "file_path": ".agent-onboard/source-module-extraction-authority-bundle-parity.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-authority-bundle-parity-json-358f4e46"
-    },
-    "urn:agent-onboard:file:agent-onboard-source-module-extraction-authority-runtime-bridge-json-76c7922e": {
-      "file_id": "ni:///sha-256;Pp8l0mPgF2HCFw6iuykBeMWovME3zZthHIS5sZyvEZQ",
-      "file_path": ".agent-onboard/source-module-extraction-authority-runtime-bridge.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-authority-runtime-bridge-json-76c7922e"
-    },
-    "urn:agent-onboard:file:agent-onboard-source-module-extraction-bundle-parity-json-d3b3643a": {
-      "file_id": "ni:///sha-256;fO7_tuu4xEbXsu4lsGpGRALaUUzS5W0qSvuuUdqWP0A",
-      "file_path": ".agent-onboard/source-module-extraction-bundle-parity.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-bundle-parity-json-d3b3643a"
-    },
-    "urn:agent-onboard:file:agent-onboard-source-module-extraction-claims-bundle-parity-json-7f74e420": {
-      "file_id": "ni:///sha-256;f0e44y--a4QFYat28QewqrDfFzqy2-A8kOZXANxBNlU",
-      "file_path": ".agent-onboard/source-module-extraction-claims-bundle-parity.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-claims-bundle-parity-json-7f74e420"
-    },
-    "urn:agent-onboard:file:agent-onboard-source-module-extraction-claims-first-slice-json-da14acce": {
-      "file_id": "ni:///sha-256;jKp4qgZBztFbem43UZjXafv2NQ_nf2X00YAZfAoz4J0",
-      "file_path": ".agent-onboard/source-module-extraction-claims-first-slice.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-claims-first-slice-json-da14acce"
-    },
-    "urn:agent-onboard:file:agent-onboard-source-module-extraction-claims-installed-fallback-smoke-json-9a04bedc": {
-      "file_id": "ni:///sha-256;zhNwVtndNNgB325bmvSU8n-roz9IIWgB8uMxthzzltk",
-      "file_path": ".agent-onboard/source-module-extraction-claims-installed-fallback-smoke.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-claims-installed-fallback-smoke-json-9a04bedc"
-    },
-    "urn:agent-onboard:file:agent-onboard-source-module-extraction-claims-plan-json-c5b37f5d": {
-      "file_id": "ni:///sha-256;xGpzw_hEAbbrn_FJeU7wpJqKTpBTqu3ZrvOUJcc5WaE",
-      "file_path": ".agent-onboard/source-module-extraction-claims-plan.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-claims-plan-json-c5b37f5d"
-    },
-    "urn:agent-onboard:file:agent-onboard-source-module-extraction-claims-runtime-bridge-json-f8d5eff9": {
-      "file_id": "ni:///sha-256;OMOjbpfK3DbNCESWCBhmoq3msfj7zJhBkkpZIFw97IY",
-      "file_path": ".agent-onboard/source-module-extraction-claims-runtime-bridge.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-claims-runtime-bridge-json-f8d5eff9"
-    },
-    "urn:agent-onboard:file:agent-onboard-source-module-extraction-first-slice-json-d668c456": {
-      "file_id": "ni:///sha-256;O3La-tbhG5stI4TWgtZ-qMead_tWbgz1GqpXs9DnNj8",
-      "file_path": ".agent-onboard/source-module-extraction-first-slice.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-first-slice-json-d668c456"
-    },
-    "urn:agent-onboard:file:agent-onboard-source-module-extraction-installed-fallback-smoke-json-9d1a45d4": {
-      "file_id": "ni:///sha-256;SWj-BM04okKu26oSdAJ1xH5SGAZVsD9iiNUz26nEn88",
-      "file_path": ".agent-onboard/source-module-extraction-installed-fallback-smoke.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-installed-fallback-smoke-json-9d1a45d4"
-    },
-    "urn:agent-onboard:file:agent-onboard-source-module-extraction-runtime-bridge-json-30ba33c3": {
-      "file_id": "ni:///sha-256;OOvEvM4hftm6VI6BxBRmTa6yvgUW34SxXXIOQ-XaJyc",
-      "file_path": ".agent-onboard/source-module-extraction-runtime-bridge.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-runtime-bridge-json-30ba33c3"
-    },
-    "urn:agent-onboard:file:agent-onboard-source-module-extraction-second-slice-first-slice-json-4d58a90c": {
-      "file_id": "ni:///sha-256;OfFDJawHZXNYZH30neXBVuqzQ4CJkBIcqvTt6nS8XRc",
-      "file_path": ".agent-onboard/source-module-extraction-second-slice-first-slice.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-second-slice-first-slice-json-4d58a90c"
-    },
-    "urn:agent-onboard:file:agent-onboard-source-module-extraction-second-slice-plan-json-af5b10e1": {
-      "file_id": "ni:///sha-256;_71pMGUaP9fHF9bPOvyDBUcdHsa_eF86fSL5BMIoZUE",
-      "file_path": ".agent-onboard/source-module-extraction-second-slice-plan.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-second-slice-plan-json-af5b10e1"
-    },
-    "urn:agent-onboard:file:agent-onboard-source-module-extraction-work-items-bundle-parity-json-ece1d58f": {
-      "file_id": "ni:///sha-256;pjUTcag25srQnbdRDvfIF1UFuRySDS4bGh-fTPXfV1A",
-      "file_path": ".agent-onboard/source-module-extraction-work-items-bundle-parity.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-work-items-bundle-parity-json-ece1d58f"
-    },
-    "urn:agent-onboard:file:agent-onboard-source-module-extraction-work-items-first-slice-json-00c0ed93": {
-      "file_id": "ni:///sha-256;mpFknKvsQa2BlkHU2ar2Y-XgYeSfG8Z1DvOZ6Z37ADA",
-      "file_path": ".agent-onboard/source-module-extraction-work-items-first-slice.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-work-items-first-slice-json-00c0ed93"
-    },
-    "urn:agent-onboard:file:agent-onboard-source-module-extraction-work-items-installed-fallback-smoke-json-1b67466e": {
-      "file_id": "ni:///sha-256;FQ0t9zrDxQKX9iHgphLVDLOvNmhxO_y4AkqI3tFiCAU",
-      "file_path": ".agent-onboard/source-module-extraction-work-items-installed-fallback-smoke.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-work-items-installed-fallback-smoke-json-1b67466e"
-    },
-    "urn:agent-onboard:file:agent-onboard-source-module-extraction-work-items-plan-json-15f1860c": {
-      "file_id": "ni:///sha-256;cjWLT6XgKdew09lLAUsgMrwEvFbh5INC8UxDdk8HeGo",
-      "file_path": ".agent-onboard/source-module-extraction-work-items-plan.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-work-items-plan-json-15f1860c"
-    },
-    "urn:agent-onboard:file:agent-onboard-source-module-extraction-work-items-runtime-bridge-json-a9471308": {
-      "file_id": "ni:///sha-256;jOWY4JB-Tr2TUhFKdQ2bp7dZszo_TyTEBrqD7Enq1rw",
-      "file_path": ".agent-onboard/source-module-extraction-work-items-runtime-bridge.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-module-extraction-work-items-runtime-bridge-json-a9471308"
-    },
-    "urn:agent-onboard:file:agent-onboard-source-partition-plan-json-d9bbb1e5": {
-      "file_id": "ni:///sha-256;m0xIQZkmsq2o-ZsOfESqNwramwbIcGLYovxnx5iUGRw",
-      "file_path": ".agent-onboard/source-partition-plan.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-source-partition-plan-json-d9bbb1e5"
-    },
-    "urn:agent-onboard:file:agent-onboard-state-closed-gates-jsonl-b6b6876e": {
-      "file_id": "ni:///sha-256;yRJL1oAr0FvXHgNgbHS7leCR3OOPo_f3DPyo2Tob4mg",
-      "file_path": ".agent-onboard/state/closed-gates.jsonl",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-state-closed-gates-jsonl-b6b6876e"
-    },
-    "urn:agent-onboard:file:agent-onboard-state-closures-closed-gate-closures-jsonl-f1dae317": {
-      "file_id": "ni:///sha-256;-PvjcqBPRmXSFzi10P8Igs3xGqsu4__7HPWGsE5K4QQ",
-      "file_path": ".agent-onboard/state/closures/closed-gate-closures.jsonl",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-state-closures-closed-gate-closures-jsonl-f1dae317"
-    },
-    "urn:agent-onboard:file:agent-onboard-state-closures-work-items-closures-jsonl-4be43fe5": {
-      "file_id": "ni:///sha-256;t6KClPD-QSyS1gD7cEdKzBjYB1durx7PIHHIg7Zj95Q",
-      "file_path": ".agent-onboard/state/closures/work-items-closures.jsonl",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-state-closures-work-items-closures-jsonl-4be43fe5"
-    },
-    "urn:agent-onboard:file:agent-onboard-state-events-closed-gates-jsonl-052b75cb": {
-      "file_id": "ni:///sha-256;cBHL9KWwPOkV2INPBR8XQDBXs9Mzec51OTl_Y7U-pwA",
-      "file_path": ".agent-onboard/state/events/closed-gates.jsonl",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-state-events-closed-gates-jsonl-052b75cb"
-    },
-    "urn:agent-onboard:file:agent-onboard-state-events-work-items-jsonl-e35344bc": {
-      "file_id": "ni:///sha-256;V1knVObH3FEk1RTeWVH8mTAxXqHztxrdTcklZJ3TjKk",
-      "file_path": ".agent-onboard/state/events/work-items.jsonl",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-state-events-work-items-jsonl-e35344bc"
-    },
-    "urn:agent-onboard:file:agent-onboard-state-indexes-json-1f8ab4d4": {
-      "file_id": "ni:///sha-256;1FnpshaCkug1FQqQf7fUW4FXAPcvTaGFuD0OHoXo1Q0",
-      "file_path": ".agent-onboard/state/indexes.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-state-indexes-json-1f8ab4d4"
-    },
-    "urn:agent-onboard:file:agent-onboard-state-indexes-closed-gates-index-json-5fda47de": {
-      "file_id": "ni:///sha-256;-5Yv64V_CEw5YhyTFaKj6NtudNtj7tyfebV1o01CLDI",
-      "file_path": ".agent-onboard/state/indexes/closed-gates.index.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-state-indexes-closed-gates-index-json-5fda47de"
-    },
-    "urn:agent-onboard:file:agent-onboard-state-indexes-work-items-index-json-33068bba": {
-      "file_id": "ni:///sha-256;l11IZR6MyRX2OPtsUX5DAanmz7p4XL_gv2FbWqgDE90",
-      "file_path": ".agent-onboard/state/indexes/work-items.index.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-state-indexes-work-items-index-json-33068bba"
-    },
-    "urn:agent-onboard:file:agent-onboard-state-live-authority-json-aadb77a0": {
-      "file_id": "ni:///sha-256;akYhG2_65UCToSXaYoVOdfYLYuvzne43Klc1WG24Vfk",
-      "file_path": ".agent-onboard/state/live-authority.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-state-live-authority-json-aadb77a0"
-    },
-    "urn:agent-onboard:file:agent-onboard-state-live-closed-gates-json-68d5ffab": {
-      "file_id": "ni:///sha-256;bn6lJD9YpZbVxKDWi1KEZbX2CLJnUW3OkvYL2tt4010",
-      "file_path": ".agent-onboard/state/live/closed-gates.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-state-live-closed-gates-json-68d5ffab"
-    },
-    "urn:agent-onboard:file:agent-onboard-state-live-work-items-json-d1c58464": {
-      "file_id": "ni:///sha-256;jl-1O-0Vbmk2O2iBY-qUjClqSwa2LB4c6F4JkRmY83U",
-      "file_path": ".agent-onboard/state/live/work-items.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-state-live-work-items-json-d1c58464"
-    },
-    "urn:agent-onboard:file:agent-onboard-state-policies-json-59cfb4e7": {
-      "file_id": "ni:///sha-256;GKbiJ9z23BW8REXhB8nkbfpA39XK9T0HfvAMjg_xrI4",
-      "file_path": ".agent-onboard/state/policies.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-state-policies-json-59cfb4e7"
-    },
-    "urn:agent-onboard:file:agent-onboard-storage-backend-policy-json-9afda83b": {
-      "file_id": "ni:///sha-256;IFoQOKvTEepEERGKnOLXhvu4CDmDSVqBYAjvXC8gDQ0",
-      "file_path": ".agent-onboard/storage-backend-policy.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-storage-backend-policy-json-9afda83b"
-    },
-    "urn:agent-onboard:file:agent-onboard-target-command-adapter-extraction-json-47b189e2": {
-      "file_id": "ni:///sha-256;PXEdxtrJAfVMbG7AD7B2zepV1_MeT2j87N9RzA2lRz4",
-      "file_path": ".agent-onboard/target-command-adapter-extraction.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-target-command-adapter-extraction-json-47b189e2"
-    },
-    "urn:agent-onboard:file:agent-onboard-target-repo-product-refactor-plan-json-0bcc1b6c": {
-      "file_id": "ni:///sha-256;bR9Maf_Nd8RacSuAUzOIu9FFtTostRgfvmeoHAvdhuU",
-      "file_path": ".agent-onboard/target-repo-product-refactor-plan.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-target-repo-product-refactor-plan-json-0bcc1b6c"
-    },
-    "urn:agent-onboard:file:agent-onboard-target-json-38c70815": {
-      "file_id": "ni:///sha-256;gyZF7oyqc9-If8GE5gJCL0w-AQrfG9bSkBdZmnKjx_c",
-      "file_path": ".agent-onboard/target.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-target-json-38c70815"
-    },
-    "urn:agent-onboard:file:agent-onboard-thin-cli-router-seed-json-40125140": {
-      "file_id": "ni:///sha-256;lvfyF-sBR8n6y_0aKbM0iVngfqT8Jq7vuCx0eMNGni8",
-      "file_path": ".agent-onboard/thin-cli-router-seed.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-thin-cli-router-seed-json-40125140"
-    },
-    "urn:agent-onboard:file:agent-onboard-thin-entrypoint-router-cutover-application-json-3a91d6f2": {
-      "file_id": "ni:///sha-256;Mya38o0pH7scYVhcAZthUnlFWo6z1F7rspoIpord-Qg",
-      "file_path": ".agent-onboard/thin-entrypoint-router-cutover-application.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-thin-entrypoint-router-cutover-application-json-3a91d6f2"
-    },
-    "urn:agent-onboard:file:agent-onboard-thin-entrypoint-router-cutover-rehearsal-json-3c1ef9ca": {
-      "file_id": "ni:///sha-256;7Ce6PTTtV3W07fTqS6foanLCzwb72RjFFi-Rl1oslvw",
-      "file_path": ".agent-onboard/thin-entrypoint-router-cutover-rehearsal.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-thin-entrypoint-router-cutover-rehearsal-json-3c1ef9ca"
-    },
-    "urn:agent-onboard:file:agent-onboard-work-item-ledger-compaction-migration-json-6d30e80a": {
-      "file_id": "ni:///sha-256;9BvyxhE7yAJ6pRCURAr3XODpVC3dd2uakZrrebGuv1w",
-      "file_path": ".agent-onboard/work-item-ledger-compaction-migration.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-work-item-ledger-compaction-migration-json-6d30e80a"
-    },
-    "urn:agent-onboard:file:agent-onboard-work-items-runtime-service-partition-seed-json-a5319c9c": {
-      "file_id": "ni:///sha-256;j2zVE8T_EJZNXI-RdnnremhFCMXrgXw6Stv1ZccQYYs",
-      "file_path": ".agent-onboard/work-items-runtime-service-partition-seed.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-work-items-runtime-service-partition-seed-json-a5319c9c"
-    },
-    "urn:agent-onboard:file:agent-onboard-work-items-index-json-e4fde6be": {
-      "file_id": "ni:///sha-256;dXwCJtOJeNBIFy7mGxUfn6uBO2Y0fvbX38yejOOU-h4",
-      "file_path": ".agent-onboard/work-items.index.json",
-      "file_urn": "urn:agent-onboard:file:agent-onboard-work-items-index-json-e4fde6be"
-    },
     "urn:agent-onboard:file:editorconfig-0947e272": {
       "file_id": "ni:///sha-256;5g1ByO-tsuTEyXr8TNxZH5VtriR-J_VK_o5v9uE1g0c",
       "file_path": ".editorconfig",
       "file_urn": "urn:agent-onboard:file:editorconfig-0947e272"
     },
-    "urn:agent-onboard:file:gitattributes-618cd5b8": {
-      "file_id": "ni:///sha-256;a7_0zpfsgkQ2h9T2MMmocJCmB1ahzW5vC-d4y8dipzY",
-      "file_path": ".gitattributes",
-      "file_urn": "urn:agent-onboard:file:gitattributes-618cd5b8"
-    },
     "urn:agent-onboard:file:gitignore-bc37d034": {
-      "file_id": "ni:///sha-256;NiMHHFTvyX5twDS6UvHp4nsNg8TQ5c9tU2OvZDwLWz0",
+      "file_id": "ni:///sha-256;3a1dIvuXcaypwMPRNgaUs57CpbS0VBEay30fr-bU-NI",
       "file_path": ".gitignore",
       "file_urn": "urn:agent-onboard:file:gitignore-bc37d034"
     },
@@ -397,7 +27,7 @@
       "file_urn": "urn:agent-onboard:file:prettierrc-json-979a4a52"
     },
     "urn:agent-onboard:file:agents-md-a54ff182": {
-      "file_id": "ni:///sha-256;zdB47VpLoFy2ZQ3t3fmUYYO_-b7stTDtQkmnVxWyXIo",
+      "file_id": "ni:///sha-256;YHxL2hsD9JwScjK4I2pIPmeKgy92kIh1NG3Hd1E2TG8",
       "file_path": "AGENTS.md",
       "file_urn": "urn:agent-onboard:file:agents-md-a54ff182"
     },
@@ -407,17 +37,17 @@
       "file_urn": "urn:agent-onboard:file:license-c6932796"
     },
     "urn:agent-onboard:file:readme-md-b3356305": {
-      "file_id": "ni:///sha-256;5QnVDiNhziO0_nVFwHzhLTeD06aPuoGD5jov1oM97Q4",
+      "file_id": "ni:///sha-256;SP0wozL_oEKLTiwmNdlvaCtKkUQghFVhmbKwYjB25q8",
       "file_path": "README.md",
       "file_urn": "urn:agent-onboard:file:readme-md-b3356305"
     },
     "urn:agent-onboard:file:source-of-truth-md-2e8b8fb6": {
-      "file_id": "ni:///sha-256;2x0ImRGaafGoG0T9VKhnO1_-uJiRhgFFBu8Z6OO8MSE",
+      "file_id": "ni:///sha-256;yLpsisakyWK2OFoTMkkIaMcZtnCIWrF9lRjnCJ4e0aU",
       "file_path": "SOURCE_OF_TRUTH.md",
       "file_urn": "urn:agent-onboard:file:source-of-truth-md-2e8b8fb6"
     },
     "urn:agent-onboard:file:authority-map-json-ecf765f6": {
-      "file_id": "ni:///sha-256;zaIP70O3G7-tyxqsCIIvSjZ22PdtLh0V3cbDLmGhWGI",
+      "file_id": "ni:///sha-256;riikl7yBmltaFQ-LRo6kt-VzN8R1yTeson83GeF0Tbs",
       "file_path": "authority-map.json",
       "file_urn": "urn:agent-onboard:file:authority-map-json-ecf765f6"
     },
@@ -471,6 +101,46 @@
       "file_path": "cli/agent_onboard/contracts/public-contracts.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-contracts-public-contracts-js-88744470"
     },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-catalog-shards-public-architecture-boundary-catalog-js-f242e155": {
+      "file_id": "ni:///sha-256;S-0mjNCW0rZmyYaCGDJgzF3BfxVYZQsHXB1x8h7yIhc",
+      "file_path": "cli/agent_onboard/domains/architecture/catalog-shards/public-architecture-boundary-catalog.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-catalog-shards-public-architecture-boundary-catalog-js-f242e155"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-catalog-shards-public-architecture-map-catalog-js-1757655a": {
+      "file_id": "ni:///sha-256;ZXCZvPQGAbJj4raOvYFpht6x4tPB949Ifnai7mHpjnQ",
+      "file_path": "cli/agent_onboard/domains/architecture/catalog-shards/public-architecture-map-catalog.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-catalog-shards-public-architecture-map-catalog-js-1757655a"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-catalog-shards-public-claims-source-catalog-js-6d111bcf": {
+      "file_id": "ni:///sha-256;0sQHpJNp6VwrAZitb3LI8yFYLdHm-5XPviov7HmI100",
+      "file_path": "cli/agent_onboard/domains/architecture/catalog-shards/public-claims-source-catalog.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-catalog-shards-public-claims-source-catalog-js-6d111bcf"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-catalog-shards-public-release-contract-catalog-js-4336115a": {
+      "file_id": "ni:///sha-256;F77QEZKsPiwK-CRN-X3VWpIK3cNR9o2K03jdu9rpoow",
+      "file_path": "cli/agent_onboard/domains/architecture/catalog-shards/public-release-contract-catalog.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-catalog-shards-public-release-contract-catalog-js-4336115a"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-catalog-shards-public-release-fixture-catalog-js-6723c1a9": {
+      "file_id": "ni:///sha-256;SVmo7JcQtiRWjx-EoJ6rlcDTcps76UCzEMvvioFFKZk",
+      "file_path": "cli/agent_onboard/domains/architecture/catalog-shards/public-release-fixture-catalog.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-catalog-shards-public-release-fixture-catalog-js-6723c1a9"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-catalog-shards-public-source-authority-catalog-js-463b8089": {
+      "file_id": "ni:///sha-256;n38lRj_JRPmrtQT3Xw-YCFc5aK-aNW609k-yai_VLUk",
+      "file_path": "cli/agent_onboard/domains/architecture/catalog-shards/public-source-authority-catalog.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-catalog-shards-public-source-authority-catalog-js-463b8089"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-catalog-shards-public-source-kernel-catalog-js-ee3cb606": {
+      "file_id": "ni:///sha-256;ImuvaEMcMgy__uUqtufEbLGOUvsk4lqcnbYIHL9to9I",
+      "file_path": "cli/agent_onboard/domains/architecture/catalog-shards/public-source-kernel-catalog.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-catalog-shards-public-source-kernel-catalog-js-ee3cb606"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-catalog-shards-public-work-items-source-catalog-js-dd6a7653": {
+      "file_id": "ni:///sha-256;sNK8tyCO1uQV67LbD2RRIxgo2dpstzUEK34n2XTgFAA",
+      "file_path": "cli/agent_onboard/domains/architecture/catalog-shards/public-work-items-source-catalog.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-catalog-shards-public-work-items-source-catalog-js-dd6a7653"
+    },
     "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-m3-runtime-catalog-js-f7a62dad": {
       "file_id": "ni:///sha-256;_ov4vEkPylgMeK1R35HAMQtX5QjHuzRUrBBKBs3Wf0c",
       "file_path": "cli/agent_onboard/domains/architecture/m3-runtime-catalog.js",
@@ -485,6 +155,46 @@
       "file_id": "ni:///sha-256;qojRgbNgu3XPehl596vCm3Ms6O8cuvo-f7JwdG074pk",
       "file_path": "cli/agent_onboard/domains/architecture/services/runtime/architecture-runtime-service.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-services-runtime-architecture-runtime-service-js-c6bf2de8"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-services-runtime-public-architecture-command-runner-service-js-19e374c2": {
+      "file_id": "ni:///sha-256;DcS-SK209di27pQTNc_yKcop76QpZHkpkaElj1dmpPM",
+      "file_path": "cli/agent_onboard/domains/architecture/services/runtime/public-architecture-command-runner-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-services-runtime-public-architecture-command-runner-service-js-19e374c2"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-services-runtime-public-cli-runtime-planning-service-js-1e46d774": {
+      "file_id": "ni:///sha-256;HR2jEP6bFDl2p7xU9FcI24Cq8Nd1TI_rP034QUN_rFs",
+      "file_path": "cli/agent_onboard/domains/architecture/services/runtime/public-cli-runtime-planning-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-services-runtime-public-cli-runtime-planning-service-js-1e46d774"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-services-runtime-public-command-adapter-extraction-service-js-957ad3e0": {
+      "file_id": "ni:///sha-256;P5G7LhJaGCQin6mZf6wGTbgqDd5sC9diWZ630uDvQcA",
+      "file_path": "cli/agent_onboard/domains/architecture/services/runtime/public-command-adapter-extraction-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-services-runtime-public-command-adapter-extraction-service-js-957ad3e0"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-services-runtime-public-router-cutover-service-js-5ce435f5": {
+      "file_id": "ni:///sha-256;QwzyBW8aO9gbuCcVPHgn6bIljxUJcUTqRUqACf7sVtg",
+      "file_path": "cli/agent_onboard/domains/architecture/services/runtime/public-router-cutover-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-services-runtime-public-router-cutover-service-js-5ce435f5"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-services-runtime-public-router-seed-service-js-5235c523": {
+      "file_id": "ni:///sha-256;ELYKSzz5jfszFKbXy7o2fRBiArytZs-zleSCmJgGNeQ",
+      "file_path": "cli/agent_onboard/domains/architecture/services/runtime/public-router-seed-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-services-runtime-public-router-seed-service-js-5235c523"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-services-runtime-public-source-module-authority-bundle-parity-service-js-3115a24a": {
+      "file_id": "ni:///sha-256;UVxgw94RXzOifXJNsSzQKLIl92ZXafk3aDeQlndx650",
+      "file_path": "cli/agent_onboard/domains/architecture/services/runtime/public-source-module-authority-bundle-parity-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-services-runtime-public-source-module-authority-bundle-parity-service-js-3115a24a"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-services-runtime-public-source-module-residual-extraction-service-js-4fe5d450": {
+      "file_id": "ni:///sha-256;dYUeMnIGTe9mLNDT9XAi2xWaQ9t1ywwVZAIwh7x9g54",
+      "file_path": "cli/agent_onboard/domains/architecture/services/runtime/public-source-module-residual-extraction-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-services-runtime-public-source-module-residual-extraction-service-js-4fe5d450"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-services-runtime-public-source-module-second-slice-service-js-bfdb36d1": {
+      "file_id": "ni:///sha-256;U5snGn55qk0bFRhjU8U0-Q-zXF8f5op8lxMNCTCKiRY",
+      "file_path": "cli/agent_onboard/domains/architecture/services/runtime/public-source-module-second-slice-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-services-runtime-public-source-module-second-slice-service-js-bfdb36d1"
     },
     "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-services-source-domains-architecture-source-domain-service-js-4047bc38": {
       "file_id": "ni:///sha-256;7cLuErsgwDrP0CmSfvZ1GYPLvylS9GE5cZxOCfPlHtc",
@@ -512,7 +222,7 @@
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-services-source-extraction-architecture-source-extraction-service-js-67f7bffd"
     },
     "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-static-catalog-js-040a2a1a": {
-      "file_id": "ni:///sha-256;vWY9JxW7VOT6jV9DfeJxwCTT4MXttQvirSEkcAcoBJk",
+      "file_id": "ni:///sha-256;2Xx2DiW7e4Q1rn7sjtsFxtwIfiFzz-z-v7ynfHA-fr8",
       "file_path": "cli/agent_onboard/domains/architecture/static-catalog.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-architecture-static-catalog-js-040a2a1a"
     },
@@ -520,6 +230,11 @@
       "file_id": "ni:///sha-256;_Qqcrymn79dmlWGxtnNXTGDkf7UPRjmUrHCLyZShe3M",
       "file_path": "cli/agent_onboard/domains/authority/services/public-runtime-agents-bridge-service.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-authority-services-public-runtime-agents-bridge-service-js-a9add9a0"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-authority-services-public-runtime-guard-service-js-8413e898": {
+      "file_id": "ni:///sha-256;8TuG-sKW5EXuO25Xh82yO0gFBEpdCUYGSIFF6P7YOBk",
+      "file_path": "cli/agent_onboard/domains/authority/services/public-runtime-guard-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-authority-services-public-runtime-guard-service-js-8413e898"
     },
     "urn:agent-onboard:file:cli-agent-onboard-domains-core-index-js-f5c1c229": {
       "file_id": "ni:///sha-256;HxcuCUWltQarj4M1x6H_A66NWiKKEX17q9YAMeQeAZo",
@@ -536,8 +251,13 @@
       "file_path": "cli/agent_onboard/domains/core/services/ni-uri-service.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-core-services-ni-uri-service-js-a57bcf9f"
     },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-core-services-public-core-surface-command-runner-service-js-d7253562": {
+      "file_id": "ni:///sha-256;Ma9WPubGqzXbWDb3GU4D1ECt8RdJI_s6KxvOC7Rh6jI",
+      "file_path": "cli/agent_onboard/domains/core/services/public-core-surface-command-runner-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-core-services-public-core-surface-command-runner-service-js-d7253562"
+    },
     "urn:agent-onboard:file:cli-agent-onboard-domains-core-services-public-runtime-check-fast-service-js-cae97d51": {
-      "file_id": "ni:///sha-256;P-0zd8_5MmUQsK1ZU-zi_mNefXFrRyl-cmQ4TDjwv88",
+      "file_id": "ni:///sha-256;onBLJq4vaQjLLLFXxADX59umN-kRtuhG5JI4aVunTLg",
       "file_path": "cli/agent_onboard/domains/core/services/public-runtime-check-fast-service.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-core-services-public-runtime-check-fast-service-js-cae97d51"
     },
@@ -556,6 +276,16 @@
       "file_path": "cli/agent_onboard/domains/package/index.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-index-js-d556ab24"
     },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-exact-artifact-oracle-service-js-f0b17eda": {
+      "file_id": "ni:///sha-256;z_qdyvMl_qq1H-7G1kvxxWmci47DZIKUyQ29kBdeuGw",
+      "file_path": "cli/agent_onboard/domains/package/services/exact-artifact-oracle-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-exact-artifact-oracle-service-js-f0b17eda"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-full-test-runner-service-js-635d9643": {
+      "file_id": "ni:///sha-256;2Gcu6oEFDG6Rt3_KdNPt6Wdr9CQo79Lu-2j-_2tESTA",
+      "file_path": "cli/agent_onboard/domains/package/services/full-test-runner-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-full-test-runner-service-js-635d9643"
+    },
     "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-installed-first-read-contract-js-202c53a8": {
       "file_id": "ni:///sha-256;Qc7qbVHSimkBrToRGmFZ9XkAeHo2khwZxyynaexGIRM",
       "file_path": "cli/agent_onboard/domains/package/services/installed-first-read-contract.js",
@@ -572,24 +302,104 @@
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-package-service-js-9d52a2bd"
     },
     "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-package-surface-service-js-6f8b2bad": {
-      "file_id": "ni:///sha-256;PSUFdRaVpTyjnLkBtZq6yZy1MGqBOhC68iEZjAbjEF4",
+      "file_id": "ni:///sha-256;EHkzJV3o5lYju7zgB6LjEFytf118Foy8B1f4hKg-Cfw",
       "file_path": "cli/agent_onboard/domains/package/services/package-surface-service.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-package-surface-service-js-6f8b2bad"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-public-contracts-command-service-js-cc44677a": {
+      "file_id": "ni:///sha-256;iTOM_oAxmCWkB10D2jJ0nBAcc_uMU74HU5h454Sj0ek",
+      "file_path": "cli/agent_onboard/domains/package/services/public-contracts-command-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-public-contracts-command-service-js-cc44677a"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-public-release-check-service-js-efff40c8": {
+      "file_id": "ni:///sha-256;EOSV1RBvJH0nOMsm3qJr5pCCoT-oEb2xiIUs4Qu1FOs",
+      "file_path": "cli/agent_onboard/domains/package/services/public-release-check-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-public-release-check-service-js-efff40c8"
     },
     "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-public-runtime-release-service-js-00ec3924": {
       "file_id": "ni:///sha-256;FxySx9vHzLuZ7bcNd5fK6A2Ea-5eFswmUuXTI21__GQ",
       "file_path": "cli/agent_onboard/domains/package/services/public-runtime-release-service.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-public-runtime-release-service-js-00ec3924"
     },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-release-clean-closed-gates-runtime-slice-service-js-ca34a5c7": {
+      "file_id": "ni:///sha-256;T4iZ5jujKqc5eoyHhfXmy8YIP0TwmAtptJuSMaNctbg",
+      "file_path": "cli/agent_onboard/domains/package/services/release-clean-closed-gates-runtime-slice-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-release-clean-closed-gates-runtime-slice-service-js-ca34a5c7"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-release-clean-closed-gates-clean-compaction-runtime-js-2f6d5763": {
+      "file_id": "ni:///sha-256;77054EAwaFLmBHgL9damUklkkXllKaF4UPS1EHsQ3Go",
+      "file_path": "cli/agent_onboard/domains/package/services/release-clean-closed-gates/clean-compaction-runtime.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-release-clean-closed-gates-clean-compaction-runtime-js-2f6d5763"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-release-clean-closed-gates-closed-gate-apply-runtime-js-fac52076": {
+      "file_id": "ni:///sha-256;G3YTfpWX2VNanVuQWQD0Aks2MZoV4Dao3iOyKolfNsc",
+      "file_path": "cli/agent_onboard/domains/package/services/release-clean-closed-gates/closed-gate-apply-runtime.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-release-clean-closed-gates-closed-gate-apply-runtime-js-fac52076"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-release-clean-closed-gates-closed-gate-compaction-runtime-js-21d1355d": {
+      "file_id": "ni:///sha-256;DHjM-L-DNRsO3pSx2IvVyWIViaWGlI8xZ7WjnTMauF0",
+      "file_path": "cli/agent_onboard/domains/package/services/release-clean-closed-gates/closed-gate-compaction-runtime.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-release-clean-closed-gates-closed-gate-compaction-runtime-js-21d1355d"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-release-clean-closed-gates-closed-gate-prune-apply-runtime-js-527a6846": {
+      "file_id": "ni:///sha-256;qmroxYD2VwH7LnE1ylj-Pjygk0w24Moav6o-n6KV3o8",
+      "file_path": "cli/agent_onboard/domains/package/services/release-clean-closed-gates/closed-gate-prune-apply-runtime.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-release-clean-closed-gates-closed-gate-prune-apply-runtime-js-527a6846"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-release-clean-closed-gates-closed-gate-prune-dry-run-runtime-js-0522e83e": {
+      "file_id": "ni:///sha-256;Eiio7CZ13CyPztQ7gkjqol_A6nB5jNJ9pdm5ukQ4FF8",
+      "file_path": "cli/agent_onboard/domains/package/services/release-clean-closed-gates/closed-gate-prune-dry-run-runtime.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-release-clean-closed-gates-closed-gate-prune-dry-run-runtime-js-0522e83e"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-release-clean-closed-gates-closed-gate-prune-plan-runtime-js-08cd53be": {
+      "file_id": "ni:///sha-256;HTxIuQULqBgRkDWIckCZFEUIKxOep7djh4w3Pg6Su2U",
+      "file_path": "cli/agent_onboard/domains/package/services/release-clean-closed-gates/closed-gate-prune-plan-runtime.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-release-clean-closed-gates-closed-gate-prune-plan-runtime-js-08cd53be"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-release-clean-closed-gates-closed-gate-reader-runtime-js-c528a772": {
+      "file_id": "ni:///sha-256;xrWFKKoA805A0-VyTRGVlzUQw-ez--yUvbz2uSjBlzU",
+      "file_path": "cli/agent_onboard/domains/package/services/release-clean-closed-gates/closed-gate-reader-runtime.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-release-clean-closed-gates-closed-gate-reader-runtime-js-c528a772"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-release-clean-closed-gates-keyword-readme-plan-runtime-js-f47ad9b6": {
+      "file_id": "ni:///sha-256;dvbVHIFw51q7ePLNy8LFOT5w2sP0sZVNUQYgx6qGOVo",
+      "file_path": "cli/agent_onboard/domains/package/services/release-clean-closed-gates/keyword-readme-plan-runtime.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-release-clean-closed-gates-keyword-readme-plan-runtime-js-f47ad9b6"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-release-clean-closed-gates-readme-history-apply-runtime-js-4b4dbf76": {
+      "file_id": "ni:///sha-256;hVSgu2XsQ3B7bUm8Q_htmEkBU8CuS_FwU8SFw9eyuWY",
+      "file_path": "cli/agent_onboard/domains/package/services/release-clean-closed-gates/readme-history-apply-runtime.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-release-clean-closed-gates-readme-history-apply-runtime-js-4b4dbf76"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-release-clean-closed-gates-readme-history-archive-runtime-js-95dd2cc2": {
+      "file_id": "ni:///sha-256;rKtUnzvaLnFy4x6a7UVxkMkvvH10f3SbDZZv8WXCnKg",
+      "file_path": "cli/agent_onboard/domains/package/services/release-clean-closed-gates/readme-history-archive-runtime.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-release-clean-closed-gates-readme-history-archive-runtime-js-95dd2cc2"
+    },
     "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-source-manifest-service-js-2bbf8b11": {
       "file_id": "ni:///sha-256;A1gPQiiILmL1T0JNAFDfpSZ6JOaXTn1Jmd9Yzv0BdLQ",
       "file_path": "cli/agent_onboard/domains/package/services/source-manifest-service.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-source-manifest-service-js-2bbf8b11"
     },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-target-onboarding-acceptance-service-js-611e77cb": {
+      "file_id": "ni:///sha-256;_mKOipukEHomzhf4pobXqbcXRM6El58lruRB5lm8oJc",
+      "file_path": "cli/agent_onboard/domains/package/services/target-onboarding-acceptance-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-package-services-target-onboarding-acceptance-service-js-611e77cb"
+    },
     "urn:agent-onboard:file:cli-agent-onboard-domains-service-partitions-js-9e48b82d": {
-      "file_id": "ni:///sha-256;-Lx_f_yXPtQX_KvTWOXi8aXy_Zp_asmyz3HcShh3TxA",
+      "file_id": "ni:///sha-256;a6BRPv8W2WpE5EG9I586FqrkKygmppFvuP_BxVtcrJA",
       "file_path": "cli/agent_onboard/domains/service-partitions.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-service-partitions-js-9e48b82d"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-command-runner-service-js-0ac7ec49": {
+      "file_id": "ni:///sha-256;KcpeI9qPSdrGLBjMr4pFvc7ED_t_Gxa7G_JlDdP66aE",
+      "file_path": "cli/agent_onboard/domains/target/services/target-command-runner-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-command-runner-service-js-0ac7ec49"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-command-text-service-js-a8c0a95f": {
+      "file_id": "ni:///sha-256;2yJTDSdk1u3H10nA9mgZcRq8cjz09aMT5XpVfIcLAoI",
+      "file_path": "cli/agent_onboard/domains/target/services/target-command-text-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-command-text-service-js-a8c0a95f"
     },
     "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-constants-js-24f46f7e": {
       "file_id": "ni:///sha-256;ALE8QeCRYiDCo1rw8VY-P_8taryhPu4bbFUs43UWVbE",
@@ -601,8 +411,28 @@
       "file_path": "cli/agent_onboard/domains/target/services/target-doctor-service.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-doctor-service-js-4b8bacad"
     },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-governance-budget-service-js-19bc561f": {
+      "file_id": "ni:///sha-256;BrXl7UiwNr8Mh1EszH-GcFHca_8O2JpvP-F8XlrsgPY",
+      "file_path": "cli/agent_onboard/domains/target/services/target-governance-budget-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-governance-budget-service-js-19bc561f"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-governance-core-js-19c92f6e": {
+      "file_id": "ni:///sha-256;v2ixobCL3pZO68godw0L7ukMTVfx5yhN50yPZYX2dHs",
+      "file_path": "cli/agent_onboard/domains/target/services/target-governance-core.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-governance-core-js-19c92f6e"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-governance-index-materialization-service-js-cdd0aae6": {
+      "file_id": "ni:///sha-256;5wD6a_BhMl9DM7RVOFQtyJGrurC4oSOrBEO2rsLdtJw",
+      "file_path": "cli/agent_onboard/domains/target/services/target-governance-index-materialization-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-governance-index-materialization-service-js-cdd0aae6"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-governance-preview-service-js-19f0a872": {
+      "file_id": "ni:///sha-256;4ZBu61PFqrfslfLskVYX2Jb6pcEvvrpVPCeh7uI72fs",
+      "file_path": "cli/agent_onboard/domains/target/services/target-governance-preview-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-governance-preview-service-js-19f0a872"
+    },
     "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-governance-service-js-1fea1eae": {
-      "file_id": "ni:///sha-256;SfsolfANq0S4eHW5ZOo_QDdlOUchT18DWWUuAdkbTwU",
+      "file_id": "ni:///sha-256;4QShi1RbjxwMV67IYiIqHKPcFp4UrI64IdihP6jGMAo",
       "file_path": "cli/agent_onboard/domains/target/services/target-governance-service.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-governance-service-js-1fea1eae"
     },
@@ -620,6 +450,11 @@
       "file_id": "ni:///sha-256;Om_ba3Zmg7fhPxDTvqsyAUECRKw1nQfGX4Pj2OjiJow",
       "file_path": "cli/agent_onboard/domains/target/services/target-manifest-service.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-manifest-service-js-ba35955e"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-memory-service-js-b064841f": {
+      "file_id": "ni:///sha-256;6cHLLwcNGZGKYZQ9rvfZJdl30iVxPJDMNhcsRcsfaqg",
+      "file_path": "cli/agent_onboard/domains/target/services/target-memory-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-memory-service-js-b064841f"
     },
     "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-metadata-service-js-2ac428d3": {
       "file_id": "ni:///sha-256;eU7md3Zy12XXDFbuOsPP8C1uLZPahmf9xi--WonY5ik",
@@ -647,7 +482,7 @@
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-runtime-utilities-js-cd91f94e"
     },
     "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-service-js-cf46d27a": {
-      "file_id": "ni:///sha-256;e0YG3zt37cx698M4aebKkxGxNCZrS3FDdpj-6krE0R4",
+      "file_id": "ni:///sha-256;gwiNgDTNepufNg-7x57b-Vs4OyWY-N67IxWYPXIq3HI",
       "file_path": "cli/agent_onboard/domains/target/services/target-service.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-target-services-target-service-js-cf46d27a"
     },
@@ -676,8 +511,18 @@
       "file_path": "cli/agent_onboard/domains/work-items/index.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-work-items-index-js-c2e89c97"
     },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-work-items-services-work-items-claim-ledger-service-js-8b270c71": {
+      "file_id": "ni:///sha-256;YbDjWupqnmHGh0UVFtq9jAcwpL7MzRTN2RXXtEzya-w",
+      "file_path": "cli/agent_onboard/domains/work-items/services/work-items-claim-ledger-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-work-items-services-work-items-claim-ledger-service-js-8b270c71"
+    },
+    "urn:agent-onboard:file:cli-agent-onboard-domains-work-items-services-work-items-mutation-service-js-b58607a4": {
+      "file_id": "ni:///sha-256;99j-4CDJmu3RFyV2Ps2lDHiRIfcW0tq__mH3ETOnMLY",
+      "file_path": "cli/agent_onboard/domains/work-items/services/work-items-mutation-service.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-work-items-services-work-items-mutation-service-js-b58607a4"
+    },
     "urn:agent-onboard:file:cli-agent-onboard-domains-work-items-services-work-items-service-js-51727965": {
-      "file_id": "ni:///sha-256;zdb3YYTCfZvCfoCjCyRIkUiAFSOi7lcW54KVeHS-cnc",
+      "file_id": "ni:///sha-256;AWmvgTgOjTKsd9jTbQmnCvGzWYG7NDoi5RSYW1HAOA8",
       "file_path": "cli/agent_onboard/domains/work-items/services/work-items-service.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-domains-work-items-services-work-items-service-js-51727965"
     },
@@ -691,75 +536,225 @@
       "file_path": "cli/agent_onboard/ports/compatibility-command-port.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-ports-compatibility-command-port-js-a85c0f79"
     },
+    "urn:agent-onboard:file:cli-agent-onboard-runtime-command-registry-js-fdfa548b": {
+      "file_id": "ni:///sha-256;Q9O511OkG0xdobLkMG31yNiCSrXWuhRAZ4YfcToOUmY",
+      "file_path": "cli/agent_onboard/runtime-command-registry.js",
+      "file_urn": "urn:agent-onboard:file:cli-agent-onboard-runtime-command-registry-js-fdfa548b"
+    },
     "urn:agent-onboard:file:cli-agent-onboard-runtime-composer-js-4b05f961": {
-      "file_id": "ni:///sha-256;cTzQAOdAAHdQBgZSlo9Czevel-ywMpZn84Zn1MWDo4o",
+      "file_id": "ni:///sha-256;2aNJ050vNCYYcgwCUqPF2kdDBMlp7Dg2V8WRRItrauM",
       "file_path": "cli/agent_onboard/runtime-composer.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-runtime-composer-js-4b05f961"
     },
     "urn:agent-onboard:file:cli-agent-onboard-runtime-contracts-js-3253ce5e": {
-      "file_id": "ni:///sha-256;rRa4BFGWBSeiRPk40hOVInT4-EAZ4QO6Bt-I9E4JG6Y",
+      "file_id": "ni:///sha-256;lZQ9r06mlibH2c89D21rme7Qu44ZC40DKVwAR1mCczI",
       "file_path": "cli/agent_onboard/runtime-contracts.js",
       "file_urn": "urn:agent-onboard:file:cli-agent-onboard-runtime-contracts-js-3253ce5e"
     },
     "urn:agent-onboard:file:docs-release-history-md-ba1003a5": {
-      "file_id": "ni:///sha-256;xOcs5QozUUNRBGvMDf1kvlzqvX_StIrkuCgr_ikyWx0",
+      "file_id": "ni:///sha-256;VG-2WNOSYbq8ARfQq9NmQXmK4NEehfMDwmsD_MC2EF4",
       "file_path": "docs/release-history.md",
       "file_urn": "urn:agent-onboard:file:docs-release-history-md-ba1003a5"
     },
     "urn:agent-onboard:file:llms-txt-f43a9e2f": {
-      "file_id": "ni:///sha-256;DvL69UUTa7a_IVeynY2WE-00F-zsF5y4eMvHrEWyzvE",
+      "file_id": "ni:///sha-256;r1KD9UbISP8tTGIr5lYf59uK7DeOBqibj8KIvZg_xuE",
       "file_path": "llms.txt",
       "file_urn": "urn:agent-onboard:file:llms-txt-f43a9e2f"
     },
     "urn:agent-onboard:file:package-json-7ae45ad1": {
-      "file_id": "ni:///sha-256;-y7o3jcfFwgjNSiB0_L55LsRUfft1yUu9prV4QmSijo",
+      "file_id": "ni:///sha-256;d_PFYuT-zpwAMzyAHl7d9NhHHWDjlY3ZZ9hdm4BlB1o",
       "file_path": "package.json",
       "file_urn": "urn:agent-onboard:file:package-json-7ae45ad1"
     },
-    "urn:agent-onboard:file:scripts-check-closed-gate-state-layout-js-f8eb794b": {
-      "file_id": "ni:///sha-256;M8tbVwOzMTg7NRoFAZT74qUj62pKDYYm4Ab87EK_srs",
-      "file_path": "scripts/check-closed-gate-state-layout.js",
-      "file_urn": "urn:agent-onboard:file:scripts-check-closed-gate-state-layout-js-f8eb794b"
+    "urn:agent-onboard:file:scripts-check-js-b837118a": {
+      "file_id": "ni:///sha-256;QZRAI6d8uRAS16MvKxjnFGfTCyBdm9UGf3jQerSRDSs",
+      "file_path": "scripts/check.js",
+      "file_urn": "urn:agent-onboard:file:scripts-check-js-b837118a"
     },
-    "urn:agent-onboard:file:scripts-check-public-artifact-boundary-js-90be14c8": {
-      "file_id": "ni:///sha-256;Q-YQ0X3RJ8oBNXDLWBGOZE_Cet_FygrtFQHwqxyr4No",
-      "file_path": "scripts/check-public-artifact-boundary.js",
-      "file_urn": "urn:agent-onboard:file:scripts-check-public-artifact-boundary-js-90be14c8"
+    "urn:agent-onboard:file:scripts-checks-architecture-catalog-sharding-js-4ffc577e": {
+      "file_id": "ni:///sha-256;4RDBbp_yb9lzfGCiac9KjJuxCYxH8EliCAwMHfiVgrs",
+      "file_path": "scripts/checks/architecture-catalog-sharding.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-architecture-catalog-sharding-js-4ffc577e"
     },
-    "urn:agent-onboard:file:scripts-check-runtime-agents-bridge-service-decomposition-js-c2083f88": {
-      "file_id": "ni:///sha-256;Xvb_-pKXzgZIFxx5c5CyluwHXIqBCwI_OOSIaG_XZWQ",
-      "file_path": "scripts/check-runtime-agents-bridge-service-decomposition.js",
-      "file_urn": "urn:agent-onboard:file:scripts-check-runtime-agents-bridge-service-decomposition-js-c2083f88"
+    "urn:agent-onboard:file:scripts-checks-architecture-command-runner-extraction-js-88d2ea9c": {
+      "file_id": "ni:///sha-256;PCqwNFTr1yPN6-mn0mdq6KunjFv4TIyNLM3SIh4eFq4",
+      "file_path": "scripts/checks/architecture-command-runner-extraction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-architecture-command-runner-extraction-js-88d2ea9c"
     },
-    "urn:agent-onboard:file:scripts-check-runtime-check-fast-service-decomposition-js-885a9041": {
-      "file_id": "ni:///sha-256;9MaVWZGAMdNsduivvCz0v_IXG969WwDT92JJCPvW9N0",
-      "file_path": "scripts/check-runtime-check-fast-service-decomposition.js",
-      "file_urn": "urn:agent-onboard:file:scripts-check-runtime-check-fast-service-decomposition-js-885a9041"
+    "urn:agent-onboard:file:scripts-checks-check-registry-compaction-js-95738b3e": {
+      "file_id": "ni:///sha-256;GnZTYHG2xDVHR5VwPEXWfyGgV9h3keVIVm6KVgdkOa8",
+      "file_path": "scripts/checks/check-registry-compaction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-check-registry-compaction-js-95738b3e"
     },
-    "urn:agent-onboard:file:scripts-check-runtime-composer-decomposition-js-b75a319c": {
-      "file_id": "ni:///sha-256;aoKSj1vMIYOK7HFWkRVkrArq4e1DkWBWd4Y-3ktafn8",
-      "file_path": "scripts/check-runtime-composer-decomposition.js",
-      "file_urn": "urn:agent-onboard:file:scripts-check-runtime-composer-decomposition-js-b75a319c"
+    "urn:agent-onboard:file:scripts-checks-cli-runtime-planning-service-extraction-js-c5cd75f8": {
+      "file_id": "ni:///sha-256;7NWc2RDBQozoBeuHHWUQMQTduNEUGtYgcfPkFV8Lnhc",
+      "file_path": "scripts/checks/cli-runtime-planning-service-extraction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-cli-runtime-planning-service-extraction-js-c5cd75f8"
     },
-    "urn:agent-onboard:file:scripts-check-runtime-mcp-bridge-service-decomposition-js-380ef325": {
-      "file_id": "ni:///sha-256;0zXSrhlWIrzE-vGT7LaVzlzDvwQPTdok_6qdJl-dIuc",
-      "file_path": "scripts/check-runtime-mcp-bridge-service-decomposition.js",
-      "file_urn": "urn:agent-onboard:file:scripts-check-runtime-mcp-bridge-service-decomposition-js-380ef325"
+    "urn:agent-onboard:file:scripts-checks-closed-gate-state-layout-js-8c21d445": {
+      "file_id": "ni:///sha-256;Tzit2EwDg3bBxU-91IRPPQFisGT0h_d2c_Jk4sDIsiA",
+      "file_path": "scripts/checks/closed-gate-state-layout.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-closed-gate-state-layout-js-8c21d445"
     },
-    "urn:agent-onboard:file:scripts-check-runtime-release-service-decomposition-js-fe024cc1": {
-      "file_id": "ni:///sha-256;nG5KebFDhCvxqFbQsInw2ewm-fXmQsNKcGwR9jVyyQA",
-      "file_path": "scripts/check-runtime-release-service-decomposition.js",
-      "file_urn": "urn:agent-onboard:file:scripts-check-runtime-release-service-decomposition-js-fe024cc1"
+    "urn:agent-onboard:file:scripts-checks-closure-payload-reference-compaction-js-7bafe645": {
+      "file_id": "ni:///sha-256;_0bBAWWtaM5Iof6q7XxlckdrRgQYJfje5UoJvEqZK3I",
+      "file_path": "scripts/checks/closure-payload-reference-compaction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-closure-payload-reference-compaction-js-7bafe645"
     },
-    "urn:agent-onboard:file:scripts-check-runtime-state-storage-layout-js-3bf1e57f": {
-      "file_id": "ni:///sha-256;yysQfvy8PKPbg_v3GYRaHo6V8wYgmYvB1Os2ak5bvdE",
-      "file_path": "scripts/check-runtime-state-storage-layout.js",
-      "file_urn": "urn:agent-onboard:file:scripts-check-runtime-state-storage-layout-js-3bf1e57f"
+    "urn:agent-onboard:file:scripts-checks-command-adapter-extraction-service-extraction-js-355af19a": {
+      "file_id": "ni:///sha-256;1JCUINdFEDaIFjdiwsBJQ3VEwrNogyeLK2nDeiPiuv0",
+      "file_path": "scripts/checks/command-adapter-extraction-service-extraction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-command-adapter-extraction-service-extraction-js-355af19a"
     },
-    "urn:agent-onboard:file:scripts-check-work-item-ledger-compaction-js-6f5e34f3": {
-      "file_id": "ni:///sha-256;wz9I3p7AWbnIzepbtTergy51i9J7qPv0ZNuGP5SE8S0",
-      "file_path": "scripts/check-work-item-ledger-compaction.js",
-      "file_urn": "urn:agent-onboard:file:scripts-check-work-item-ledger-compaction-js-6f5e34f3"
+    "urn:agent-onboard:file:scripts-checks-contracts-command-service-extraction-js-b952656d": {
+      "file_id": "ni:///sha-256;QLsLkf-ZH3xVfc9Z1R2wJCJe5iadR4Yuhq1GoHNa_a8",
+      "file_path": "scripts/checks/contracts-command-service-extraction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-contracts-command-service-extraction-js-b952656d"
+    },
+    "urn:agent-onboard:file:scripts-checks-core-surface-command-runner-extraction-js-c52c4a15": {
+      "file_id": "ni:///sha-256;VaeQljnT6rgZfA7tw05gidFyrPNtzgdh6J477EeC6Gw",
+      "file_path": "scripts/checks/core-surface-command-runner-extraction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-core-surface-command-runner-extraction-js-c52c4a15"
+    },
+    "urn:agent-onboard:file:scripts-checks-exact-artifact-oracle-service-extraction-js-c9dac30b": {
+      "file_id": "ni:///sha-256;NMo5Rg3XV9JEcdZCGEAS9RUWUt1v_zUWFc7UFoIbyjU",
+      "file_path": "scripts/checks/exact-artifact-oracle-service-extraction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-exact-artifact-oracle-service-extraction-js-c9dac30b"
+    },
+    "urn:agent-onboard:file:scripts-checks-full-test-runner-service-extraction-js-4799f803": {
+      "file_id": "ni:///sha-256;4KyY3FHP91oCxJSe9RA7tC2oIrxklZknbT1OuTBufEk",
+      "file_path": "scripts/checks/full-test-runner-service-extraction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-full-test-runner-service-extraction-js-4799f803"
+    },
+    "urn:agent-onboard:file:scripts-checks-god-file-budget-enforcement-closure-js-601c56b9": {
+      "file_id": "ni:///sha-256;BKrUH8-tuAmt4ohCztEqyJHvbYlEzQWmS-oQ-hthh0o",
+      "file_path": "scripts/checks/god-file-budget-enforcement-closure.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-god-file-budget-enforcement-closure-js-601c56b9"
+    },
+    "urn:agent-onboard:file:scripts-checks-package-surface-service-extraction-js-bd381352": {
+      "file_id": "ni:///sha-256;KGgBBAHEPeYZ2Xzq6TRmyQTQspGOEN4j5GaxkbTXAuA",
+      "file_path": "scripts/checks/package-surface-service-extraction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-package-surface-service-extraction-js-bd381352"
+    },
+    "urn:agent-onboard:file:scripts-checks-public-artifact-boundary-js-675124d5": {
+      "file_id": "ni:///sha-256;CfSj7CAlWk2PCviNBTCKb13uK4p3450znVXc96NhVN4",
+      "file_path": "scripts/checks/public-artifact-boundary.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-public-artifact-boundary-js-675124d5"
+    },
+    "urn:agent-onboard:file:scripts-checks-registry-js-eba848ae": {
+      "file_id": "ni:///sha-256;c1-faKWTM0kfShBJM-zIQwI2_4SP7079YJRkQXmtdrE",
+      "file_path": "scripts/checks/registry.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-registry-js-eba848ae"
+    },
+    "urn:agent-onboard:file:scripts-checks-release-check-service-extraction-js-51692c31": {
+      "file_id": "ni:///sha-256;IIYtDUMz6ttXcqgdpuq7rnjQGLUDWhf29NUOa7tj-tM",
+      "file_path": "scripts/checks/release-check-service-extraction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-release-check-service-extraction-js-51692c31"
+    },
+    "urn:agent-onboard:file:scripts-checks-release-clean-closed-gates-runtime-slice-extraction-js-bb7992b5": {
+      "file_id": "ni:///sha-256;GycAiROEn7av5BMhAsec3seyMVGZy2VvEH3AZ63ELFw",
+      "file_path": "scripts/checks/release-clean-closed-gates-runtime-slice-extraction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-release-clean-closed-gates-runtime-slice-extraction-js-bb7992b5"
+    },
+    "urn:agent-onboard:file:scripts-checks-router-cutover-service-extraction-js-8bee5046": {
+      "file_id": "ni:///sha-256;cEfluhHHtUZRCdu9S7SA-HsxGhmghLYOfCCRQPMWzQ8",
+      "file_path": "scripts/checks/router-cutover-service-extraction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-router-cutover-service-extraction-js-8bee5046"
+    },
+    "urn:agent-onboard:file:scripts-checks-router-seed-service-extraction-js-23e7d9a6": {
+      "file_id": "ni:///sha-256;WXtPTiXabC5rbNqc7GBfYUzeU3miDt8M84Q0rZFv-MA",
+      "file_path": "scripts/checks/router-seed-service-extraction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-router-seed-service-extraction-js-23e7d9a6"
+    },
+    "urn:agent-onboard:file:scripts-checks-runtime-agents-bridge-service-decomposition-js-eecc7090": {
+      "file_id": "ni:///sha-256;QyOintgUW1vGadojvCuw3078l2jCSJIusFlDp26kwTU",
+      "file_path": "scripts/checks/runtime-agents-bridge-service-decomposition.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-runtime-agents-bridge-service-decomposition-js-eecc7090"
+    },
+    "urn:agent-onboard:file:scripts-checks-runtime-check-fast-service-decomposition-js-d256f3de": {
+      "file_id": "ni:///sha-256;HQEDrfu6vllp4g9K4-fG-hdl94fn2CdX-ayG_bEDn6Y",
+      "file_path": "scripts/checks/runtime-check-fast-service-decomposition.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-runtime-check-fast-service-decomposition-js-d256f3de"
+    },
+    "urn:agent-onboard:file:scripts-checks-runtime-command-registry-extraction-js-62098165": {
+      "file_id": "ni:///sha-256;3mDv-BH4MLDztMH_U3iKAyEcpnomPjxMuDUds9iacgU",
+      "file_path": "scripts/checks/runtime-command-registry-extraction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-runtime-command-registry-extraction-js-62098165"
+    },
+    "urn:agent-onboard:file:scripts-checks-runtime-composer-decomposition-js-855ad067": {
+      "file_id": "ni:///sha-256;Pbdu4nBQqKuM-KLR5ieZvhBs08_EV-iNMhVkN5okHBA",
+      "file_path": "scripts/checks/runtime-composer-decomposition.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-runtime-composer-decomposition-js-855ad067"
+    },
+    "urn:agent-onboard:file:scripts-checks-runtime-composer-residual-slice-reduction-js-7228a904": {
+      "file_id": "ni:///sha-256;D9Ujr_6-H3WgRIJ2d0P9Z_HH-lBEdBH-n43nbvrssyE",
+      "file_path": "scripts/checks/runtime-composer-residual-slice-reduction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-runtime-composer-residual-slice-reduction-js-7228a904"
+    },
+    "urn:agent-onboard:file:scripts-checks-runtime-guard-service-decomposition-js-9c20c44a": {
+      "file_id": "ni:///sha-256;hJZbhK6brbLgid_-67G-HU0nKU4GLyrob8wubV54cQg",
+      "file_path": "scripts/checks/runtime-guard-service-decomposition.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-runtime-guard-service-decomposition-js-9c20c44a"
+    },
+    "urn:agent-onboard:file:scripts-checks-runtime-mcp-bridge-service-decomposition-js-da623bcf": {
+      "file_id": "ni:///sha-256;lfrs6qL1hN4OQTsOJV2Ag2o8ohF1H4k8ewzQbZnfxsE",
+      "file_path": "scripts/checks/runtime-mcp-bridge-service-decomposition.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-runtime-mcp-bridge-service-decomposition-js-da623bcf"
+    },
+    "urn:agent-onboard:file:scripts-checks-runtime-release-service-decomposition-js-7ea21b7a": {
+      "file_id": "ni:///sha-256;fqJnZBMBHEc34_NqH7iNbYjMplkCpuL5Ii1wZL41dF4",
+      "file_path": "scripts/checks/runtime-release-service-decomposition.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-runtime-release-service-decomposition-js-7ea21b7a"
+    },
+    "urn:agent-onboard:file:scripts-checks-runtime-state-storage-layout-js-3d9d61d5": {
+      "file_id": "ni:///sha-256;zv8ZF_OImAmGu6pVW5VEmHwTKr_DbjLOvQsvBWwmUuA",
+      "file_path": "scripts/checks/runtime-state-storage-layout.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-runtime-state-storage-layout-js-3d9d61d5"
+    },
+    "urn:agent-onboard:file:scripts-checks-source-module-residual-service-extraction-js-78f25368": {
+      "file_id": "ni:///sha-256;TSfbdaPsTQJM6RJPq0kSjZz0obc3mCIacb82xxNNIrk",
+      "file_path": "scripts/checks/source-module-residual-service-extraction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-source-module-residual-service-extraction-js-78f25368"
+    },
+    "urn:agent-onboard:file:scripts-checks-source-size-budget-ratchet-js-785cab60": {
+      "file_id": "ni:///sha-256;qtbB1Mh4kgRlIUC8YR--WnYNBnfvBf7L_Nnd4dqpJ68",
+      "file_path": "scripts/checks/source-size-budget-ratchet.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-source-size-budget-ratchet-js-785cab60"
+    },
+    "urn:agent-onboard:file:scripts-checks-state-projection-authority-cutover-js-c5451f3d": {
+      "file_id": "ni:///sha-256;RUOj2bwgca4LIZK5CboHe1oId6E6YEW4knOeHJ_XKtY",
+      "file_path": "scripts/checks/state-projection-authority-cutover.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-state-projection-authority-cutover-js-c5451f3d"
+    },
+    "urn:agent-onboard:file:scripts-checks-target-command-runner-extraction-js-3ab3711e": {
+      "file_id": "ni:///sha-256;lQ6KOjIl2nOSaZ65otNtA2IQkPtjC_cTIc0AazRtO6g",
+      "file_path": "scripts/checks/target-command-runner-extraction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-target-command-runner-extraction-js-3ab3711e"
+    },
+    "urn:agent-onboard:file:scripts-checks-target-governance-service-split-js-5194d669": {
+      "file_id": "ni:///sha-256;uOtZ1MYy8L3ZlmV5C4CbAQ2WvoPjve5_rB5S7fI4qz0",
+      "file_path": "scripts/checks/target-governance-service-split.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-target-governance-service-split-js-5194d669"
+    },
+    "urn:agent-onboard:file:scripts-checks-target-onboarding-acceptance-service-extraction-js-6ab6660d": {
+      "file_id": "ni:///sha-256;g1N3fKzuMQJPcT7dA0R1gEHhJzx-ZmLP7aFLd1ugW-E",
+      "file_path": "scripts/checks/target-onboarding-acceptance-service-extraction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-target-onboarding-acceptance-service-extraction-js-6ab6660d"
+    },
+    "urn:agent-onboard:file:scripts-checks-test-suite-sharding-js-053cf5a0": {
+      "file_id": "ni:///sha-256;BBKkpYCgLkUGk6OvFmM-5xbv75gYy_zNcsccyjmFgYE",
+      "file_path": "scripts/checks/test-suite-sharding.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-test-suite-sharding-js-053cf5a0"
+    },
+    "urn:agent-onboard:file:scripts-checks-work-item-ledger-compaction-js-151d4048": {
+      "file_id": "ni:///sha-256;zfUeaOqtq-VwaDA_n9u8uuaQX9B0AnwxhtGa2m3-Fu0",
+      "file_path": "scripts/checks/work-item-ledger-compaction.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-work-item-ledger-compaction-js-151d4048"
+    },
+    "urn:agent-onboard:file:scripts-checks-work-items-service-split-js-62e58357": {
+      "file_id": "ni:///sha-256;k2IXg0rKBhUwH2_P5fQnZjLQOmm6vfb5Y_kFmEVH0BI",
+      "file_path": "scripts/checks/work-items-service-split.js",
+      "file_urn": "urn:agent-onboard:file:scripts-checks-work-items-service-split-js-62e58357"
     },
     "urn:agent-onboard:file:src-domains-authority-js-678fb478": {
       "file_id": "ni:///sha-256;Mdl7b0NM3W_x9V7lzaNPoFEpru4GrNhkyfZjCDeA76E",
@@ -782,14 +777,69 @@
       "file_urn": "urn:agent-onboard:file:src-domains-work-items-js-88eba391"
     },
     "urn:agent-onboard:file:test-agent-onboard-test-js-17cbc29b": {
-      "file_id": "ni:///sha-256;GVw_zOdvmux_OxTJK509kckF-JfnhK4clXvOGL8SUq4",
+      "file_id": "ni:///sha-256;2H-fuCS0Ys4Ur2t_3cwi3UOaYC4VC8ggGtDzt4nyuog",
       "file_path": "test/agent-onboard.test.js",
       "file_urn": "urn:agent-onboard:file:test-agent-onboard-test-js-17cbc29b"
     },
+    "urn:agent-onboard:file:test-full-source-shard-01-js-0195ba8b": {
+      "file_id": "ni:///sha-256;GUnVj90OiaCAhLK-jGUFA5v6OlnBC3v3kdXBWthOurU",
+      "file_path": "test/full-source/shard-01.js",
+      "file_urn": "urn:agent-onboard:file:test-full-source-shard-01-js-0195ba8b"
+    },
+    "urn:agent-onboard:file:test-full-source-shard-02-js-e6f238c1": {
+      "file_id": "ni:///sha-256;1gVtxUFx3He-PLZUb3kPuzsE_1wIUYuGazSEdXr7kvQ",
+      "file_path": "test/full-source/shard-02.js",
+      "file_urn": "urn:agent-onboard:file:test-full-source-shard-02-js-e6f238c1"
+    },
+    "urn:agent-onboard:file:test-full-source-shard-03-js-a7806ac7": {
+      "file_id": "ni:///sha-256;z7qdmwRfqIQ469Zqio40fm2s5EYD3fr_JheztkONSuU",
+      "file_path": "test/full-source/shard-03.js",
+      "file_urn": "urn:agent-onboard:file:test-full-source-shard-03-js-a7806ac7"
+    },
+    "urn:agent-onboard:file:test-full-source-shard-04-js-36d0638f": {
+      "file_id": "ni:///sha-256;p9U1ql1W408eFI7z_5Ny7bVrWHI5Oh-ceMeiGjaX2HU",
+      "file_path": "test/full-source/shard-04.js",
+      "file_urn": "urn:agent-onboard:file:test-full-source-shard-04-js-36d0638f"
+    },
+    "urn:agent-onboard:file:test-full-source-shard-05-js-7089d34c": {
+      "file_id": "ni:///sha-256;cSAXohvaDA1yvn6-auXXX1a_pnjbrWE4sZveE_kT9IE",
+      "file_path": "test/full-source/shard-05.js",
+      "file_urn": "urn:agent-onboard:file:test-full-source-shard-05-js-7089d34c"
+    },
+    "urn:agent-onboard:file:test-full-source-shard-06-js-84303137": {
+      "file_id": "ni:///sha-256;zKe19VKRAwDw4ZdrRJjXMABLlCFy_1Tfs_jUzQ1Vlkg",
+      "file_path": "test/full-source/shard-06.js",
+      "file_urn": "urn:agent-onboard:file:test-full-source-shard-06-js-84303137"
+    },
+    "urn:agent-onboard:file:test-full-source-shard-07-js-0676a894": {
+      "file_id": "ni:///sha-256;_lzYLeK4Mo0b2o6_DbHClbBASHf6E-sNqO_PXt1zwbg",
+      "file_path": "test/full-source/shard-07.js",
+      "file_urn": "urn:agent-onboard:file:test-full-source-shard-07-js-0676a894"
+    },
+    "urn:agent-onboard:file:test-full-source-shard-08-js-eb9fc348": {
+      "file_id": "ni:///sha-256;xvkmLHSu3-abWOIg9s42jimW0dxT4An9Ig6gHX2Iw4w",
+      "file_path": "test/full-source/shard-08.js",
+      "file_urn": "urn:agent-onboard:file:test-full-source-shard-08-js-eb9fc348"
+    },
+    "urn:agent-onboard:file:test-full-source-shard-09-js-5dc5dd13": {
+      "file_id": "ni:///sha-256;oltlMaGY-WAGKw5893Ql9P4arG0eqGY0IuhpQZXOliQ",
+      "file_path": "test/full-source/shard-09.js",
+      "file_urn": "urn:agent-onboard:file:test-full-source-shard-09-js-5dc5dd13"
+    },
+    "urn:agent-onboard:file:test-full-source-shard-10-js-ad58d208": {
+      "file_id": "ni:///sha-256;9zynoFzlp1HKPidtdUAncSSncFPbvjUD7Zc3dFyiE6E",
+      "file_path": "test/full-source/shard-10.js",
+      "file_urn": "urn:agent-onboard:file:test-full-source-shard-10-js-ad58d208"
+    },
     "urn:agent-onboard:file:test-run-tests-js-07f9f1b6": {
-      "file_id": "ni:///sha-256;Ffq6jo0f0MYRnbFQWWwvy5O9ZUsEga4sR-5ZOoSZQMw",
+      "file_id": "ni:///sha-256;H--FEBUxvQMUelB4JqGWkWYfD0NYNLpD5bcGi2xIBBg",
       "file_path": "test/run-tests.js",
       "file_urn": "urn:agent-onboard:file:test-run-tests-js-07f9f1b6"
+    },
+    "urn:agent-onboard:file:test-support-full-source-context-js-307ff4e0": {
+      "file_id": "ni:///sha-256;3WgADmZ_sj3czYK_xwET3oqVA0YMRjVIHALrWaoaLes",
+      "file_path": "test/support/full-source-context.js",
+      "file_urn": "urn:agent-onboard:file:test-support-full-source-context-js-307ff4e0"
     }
   },
   "metadata_policy": {

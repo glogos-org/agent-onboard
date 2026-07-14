@@ -8,10 +8,13 @@ const ROOT = path.resolve(__dirname, '..', '..');
 const COMPOSER_REL = 'cli/agent_onboard/runtime-composer.js';
 const TARGET_MEMORY_REL = 'cli/agent_onboard/domains/target/services/target-memory-service.js';
 const TARGET_SERVICE_REL = 'cli/agent_onboard/domains/target/services/target-service.js';
+const SOURCE_MODULE_RESIDUAL_SERVICE_REL = 'cli/agent_onboard/domains/architecture/services/runtime/public-source-module-residual-extraction-service.js';
+const SOURCE_MODULE_SECOND_SLICE_SERVICE_REL = 'cli/agent_onboard/domains/architecture/services/runtime/public-source-module-second-slice-service.js';
+const SOURCE_MODULE_AUTHORITY_BUNDLE_PARITY_SERVICE_REL = 'cli/agent_onboard/domains/architecture/services/runtime/public-source-module-authority-bundle-parity-service.js';
 const ARTIFACT_REL = '.agent-onboard/runtime-composer-residual-slice-reduction.json';
 const MAX_COMPOSER_LINES = 7008;
 const MAX_COMPOSER_BYTES = 384741;
-const REMOVED_DEAD_DUPLICATE_NAMES = Object.freeze([
+const RESIDUAL_FUNCTION_NAMES = Object.freeze([
   'publicArchitectureMap',
   'publicSourceModuleExtractionInstalledFallbackSmoke',
   'publicSourceModuleExtractionInstalledFallbackSmokeCheck',
@@ -20,6 +23,11 @@ const REMOVED_DEAD_DUPLICATE_NAMES = Object.freeze([
   'publicSourceModuleExtractionSecondSliceFirstSlice',
   'publicSourceModuleExtractionSecondSliceFirstSliceCheck',
   'publicSourceModuleExtractionAuthorityBundleParity',
+  'publicSourceModuleExtractionAuthorityBundleParityCheck'
+]);
+
+const COMPOSER_RESIDUAL_WRAPPER_NAMES = new Set([
+  'publicArchitectureMap',
   'publicSourceModuleExtractionAuthorityBundleParityCheck'
 ]);
 
@@ -52,9 +60,19 @@ function main() {
   if (composerMetric.lines > artifact.reduction.runtime_composer_after.lines) failures.push('runtime composer grew beyond W1 artifact line budget');
   if (composerMetric.bytes > artifact.reduction.runtime_composer_after.bytes) failures.push('runtime composer grew beyond W1 artifact byte budget');
 
-  for (const name of REMOVED_DEAD_DUPLICATE_NAMES) {
-    const count = regexCount(composer, new RegExp(`function\\s+${name}\\s*\\(`, 'g'));
-    if (count !== 1) failures.push(`${COMPOSER_REL} must contain exactly one ${name} definition; found ${count}`);
+  const sourceModuleResidualSources = [
+    SOURCE_MODULE_RESIDUAL_SERVICE_REL,
+    SOURCE_MODULE_SECOND_SLICE_SERVICE_REL,
+    SOURCE_MODULE_AUTHORITY_BUNDLE_PARITY_SERVICE_REL
+  ].filter((rel) => fs.existsSync(abs(rel))).map((rel) => ({ rel, source: read(rel) }));
+
+  for (const name of RESIDUAL_FUNCTION_NAMES) {
+    const functionPattern = new RegExp(`function\\s+${name}\\s*\\(`, 'g');
+    const composerCount = regexCount(composer, functionPattern);
+    const serviceCount = sourceModuleResidualSources.reduce((count, entry) => count + regexCount(entry.source, functionPattern), 0);
+    const expectedComposerCount = COMPOSER_RESIDUAL_WRAPPER_NAMES.has(name) ? 1 : 0;
+    if (composerCount !== expectedComposerCount) failures.push(`${COMPOSER_REL} must contain ${expectedComposerCount} ${name} residual wrapper definition(s); found ${composerCount}`);
+    if (serviceCount !== 1) failures.push(`source-module residual service set must contain exactly one ${name} implementation; found ${serviceCount}`);
   }
   for (const oldOwner of [
     'const TARGET_MEMORY_SURFACE_CANDIDATES',
@@ -83,7 +101,8 @@ function main() {
     work_item_id: 'P1S3M7W1',
     composer: composerMetric,
     extracted_target_memory_service: targetMemoryMetric,
-    removed_dead_duplicate_function_count: REMOVED_DEAD_DUPLICATE_NAMES.length,
+    residual_function_count: RESIDUAL_FUNCTION_NAMES.length,
+    composer_residual_wrapper_count: COMPOSER_RESIDUAL_WRAPPER_NAMES.size,
     boundary: {
       writes_files: false,
       mutates_git: false,
