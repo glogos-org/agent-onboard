@@ -20,10 +20,10 @@ const PUBLIC_CLEAN_COMPACTION_BASELINE = Object.freeze({
   baseline_file: '.agent-onboard/public-clean-compaction-baseline-gate.json',
   purpose: 'Seed the public clean and compaction milestone with a read-only source surface inventory and bounded compaction baseline before deleting or moving any source files.',
   budgets: Object.freeze({
-    max_source_files: 257,
-    max_agent_onboard_files: 112,
+    max_source_files: 260,
+    max_agent_onboard_files: 113,
     max_agent_onboard_gate_artifacts: 95,
-    max_projected_pack_files: 90,
+    max_projected_pack_files: 91,
     max_package_keywords: 480,
     max_readme_bytes: 110000,
     max_work_items_bytes: 400000,

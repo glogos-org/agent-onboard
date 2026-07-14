@@ -3,7 +3,7 @@
   "package_name": "agent-onboard",
   "source": "sharded_work_items_authority",
   "milestone_id": "P1S3M7",
-  "item_count": 3,
+  "item_count": 4,
   "items": [
     {
       "id": "P1S3M7W1",
@@ -39,6 +39,17 @@
         "note": "Extract exact artifact oracle behavior from runtime composer without changing storage backend."
       },
       "closure_ref": "closures:P1S3M7W3"
+    },
+    {
+      "id": "P1S3M7W4",
+      "milestone_id": "P1S3M7",
+      "title": "Public Target Onboarding Acceptance Service Extraction Gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-09T05:18:30.979Z"
+      },
+      "closure_ref": "closures:P1S3M7W4"
     }
   ]
 }

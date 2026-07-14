@@ -18,7 +18,7 @@
   },
   "maximums": {
     "god_files": 6,
-    "near_god_files": 32,
+    "near_god_files": 34,
     "top_level_check_scripts": 0
   },
   "required_closed_work_items": [
@@ -48,26 +48,27 @@
     "god-file-budget-enforcement-closure",
     "runtime-composer-residual-slice-reduction",
     "target-command-runner-extraction",
-    "exact-artifact-oracle-service-extraction"
+    "exact-artifact-oracle-service-extraction",
+    "target-onboarding-acceptance-service-extraction"
   ],
   "remaining_god_files": [
     {
       "path": "cli/agent_onboard/runtime-composer.js",
       "category": "runtime_source",
-      "current_lines": 6186,
-      "current_bytes": 340538,
-      "admitted_reason": "runtime composer still carries command implementation debt after W3 exact artifact oracle service extraction",
-      "next_reduction_gate": "P1S3M7W4"
+      "current_lines": 5650,
+      "current_bytes": 309900,
+      "admitted_reason": "runtime composer still carries command implementation debt after W4 target onboarding acceptance service extraction",
+      "next_reduction_gate": "P1S3M7W5"
     },
     {
       "path": ".agent-onboard/work-items.json",
       "category": "authority_registry",
-      "current_lines": 1637,
-      "current_bytes_max": 46822,
-      "admitted_reason": "public work item ledger projection remains admitted migration debt after W3 closure append; authoritative shards remain the default compact read path",
+      "current_lines": 1648,
+      "current_bytes_max": 47148,
+      "admitted_reason": "public work item ledger projection remains admitted migration debt after W4 closure append; authoritative shards remain the default compact read path",
       "next_reduction_gate": "P1S3M7W8",
-      "current_bytes": 46822,
-      "current_lines_max": 1637
+      "current_bytes": 47148,
+      "current_lines_max": 1648
     },
     {
       "path": "cli/agent_onboard/domains/architecture/services/runtime/architecture-runtime-service.js",
@@ -75,7 +76,7 @@
       "current_lines": 1544,
       "current_bytes": 85962,
       "admitted_reason": "architecture runtime still aggregates authority-state, namespace, and extraction checks",
-      "next_reduction_gate": "P1S3M7W3"
+      "next_reduction_gate": "P1S3M7W6"
     },
     {
       "path": "README.md",

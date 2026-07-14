@@ -1,0 +1,100 @@
+{
+  "schema": "agent-onboard-public-target-onboarding-acceptance-service-extraction-001",
+  "package_name": "agent-onboard",
+  "version": "0.0.187",
+  "work_item_id": "P1S3M7W4",
+  "milestone_id": "P1S3M7",
+  "status": "closed",
+  "gate": "Public Target Onboarding Acceptance Service Extraction Gate",
+  "purpose": "Reduce runtime composer residual release and target-onboarding acceptance debt by moving installed parity, target onboarding smoke, post-publish handoff, published acceptance, and target repo product checks behind a bounded package domain service.",
+  "reduction": {
+    "runtime_composer_before": {
+      "path": "cli/agent_onboard/runtime-composer.js",
+      "lines": 6186,
+      "bytes": 340538
+    },
+    "runtime_composer_after": {
+      "path": "cli/agent_onboard/runtime-composer.js",
+      "lines": 5650,
+      "bytes": 309900
+    },
+    "runtime_composer_line_delta": -536,
+    "runtime_composer_byte_delta": -30638,
+    "extracted_runtime_slices": [
+      {
+        "path": "cli/agent_onboard/domains/package/services/target-onboarding-acceptance-service.js",
+        "lines": 639,
+        "bytes": 34923
+      }
+    ],
+    "moved_command_oracle_units": [
+      "publicReleaseTargetRepoProductCheck",
+      "publicInstalledPackageParitySmoke",
+      "publicInstalledParityArchitectureSmoke",
+      "publicTargetOnboardingInstalledPackageSmoke",
+      "publicTargetOnboardingPostPublishHandoff",
+      "publicTargetOnboardingPublishedAcceptance"
+    ]
+  },
+  "packaging": {
+    "target_onboarding_acceptance_service_in_package_files": true,
+    "target_onboarding_acceptance_service_in_runtime_contract_pack_files": true,
+    "clean_compaction_budget_admitted_projected_pack_files": 91,
+    "clean_compaction_budget_admitted_source_files": 260,
+    "clean_compaction_budget_admitted_agent_onboard_files": 113,
+    "new_check_id": "target-onboarding-acceptance-service-extraction"
+  },
+  "remaining_debt": {
+    "runtime_composer_still_admitted_god_file": true,
+    "next_runtime_composer_reduction_gate": "P1S3M7W5",
+    "target_long_term_lines": 500,
+    "target_long_term_bytes": 65536
+  },
+  "boundary": {
+    "public_cli_behavior_changed_intentionally": false,
+    "storage_backend_changed": false,
+    "sqlite_introduced": false,
+    "lmdb_introduced": false,
+    "mdbx_introduced": false,
+    "network": false,
+    "publishes_package": false,
+    "git_mutation": false,
+    "target_smoke_still_uses_temporary_target_only": true,
+    "post_publish_handoff_still_operator_registry_read_only": true
+  },
+  "required_check_ids": [
+    "target-onboarding-acceptance-service-extraction",
+    "exact-artifact-oracle-service-extraction",
+    "target-command-runner-extraction",
+    "runtime-composer-residual-slice-reduction",
+    "source-size-budget",
+    "god-file-budget-enforcement-closure",
+    "runtime-command-registry-extraction"
+  ],
+  "checks_run": [
+    "node scripts/check.js target-onboarding-acceptance-service-extraction",
+    "node cli/agent-onboard.js release --target-onboarding-smoke",
+    "node cli/agent-onboard.js release --published-acceptance",
+    "node scripts/check.js exact-artifact-oracle-service-extraction",
+    "node scripts/check.js target-command-runner-extraction",
+    "node scripts/check.js runtime-composer-residual-slice-reduction",
+    "node scripts/check.js source-size-budget",
+    "node scripts/check.js god-file-budget-enforcement-closure",
+    "node scripts/check.js runtime-command-registry-extraction",
+    "node scripts/check.js check-registry-compaction",
+    "node scripts/check.js state-projection-authority-cutover",
+    "node scripts/check.js closure-payload-reference-compaction",
+    "node scripts/check.js public-artifact-boundary",
+    "node cli/agent-onboard.js authority --index-check",
+    "node cli/agent-onboard.js authority --state-check",
+    "node cli/agent-onboard.js release --clean-check",
+    "node cli/agent-onboard.js release --clean-catalog-check",
+    "node cli/agent-onboard.js release --source-manifest-check",
+    "node cli/agent-onboard.js release --check",
+    "node cli/agent-onboard.js check --fast --json",
+    "node cli/agent-onboard.js check --fast --text",
+    "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+    "npm pack --dry-run --json"
+  ],
+  "known_non_pass": []
+}

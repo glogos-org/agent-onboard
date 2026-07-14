@@ -46,8 +46,8 @@ function main() {
   if (serviceMetric.lines > MAX_SERVICE_LINES) failures.push(`${SERVICE_REL} line count ${serviceMetric.lines} exceeds ${MAX_SERVICE_LINES}`);
   if (serviceMetric.bytes > MAX_SERVICE_BYTES) failures.push(`${SERVICE_REL} byte size ${serviceMetric.bytes} exceeds ${MAX_SERVICE_BYTES}`);
 
-  if (artifact.reduction.runtime_composer_after.lines !== composerMetric.lines) failures.push('artifact runtime_composer_after.lines is stale');
-  if (artifact.reduction.runtime_composer_after.bytes !== composerMetric.bytes) failures.push('artifact runtime_composer_after.bytes is stale');
+  if (artifact.reduction.runtime_composer_after.lines !== MAX_COMPOSER_LINES) failures.push('artifact runtime_composer_after.lines must record the W3 ratchet baseline');
+  if (artifact.reduction.runtime_composer_after.bytes !== MAX_COMPOSER_BYTES) failures.push('artifact runtime_composer_after.bytes must record the W3 ratchet baseline');
   if (!composer.includes('createPublicExactArtifactOracleService')) failures.push(`${COMPOSER_REL} must compose the exact artifact oracle service`);
   if (!composer.includes('publicExactArtifactOracleService.publicExactArtifactOracle')) failures.push(`${COMPOSER_REL} must delegate exact artifact oracle behavior through the extracted service`);
   for (const forbidden of [
@@ -63,7 +63,9 @@ function main() {
   if (!serviceText.includes('function createPublicExactArtifactOracleService(')) failures.push(`${SERVICE_REL} must export createPublicExactArtifactOracleService`);
   if (!serviceText.includes('spawnSync(npmExecutable()')) failures.push(`${SERVICE_REL} must own local npm pack/install oracle execution`);
   if (!serviceText.includes('package_manager_uses_local_tgz_only: true')) failures.push(`${SERVICE_REL} must preserve local tarball-only package manager boundary`);
-  if (!cleanRuntime.includes('max_projected_pack_files: 90') || !cleanRuntime.includes('max_source_files: 257')) failures.push(`${CLEAN_RUNTIME_REL} must admit the extracted packaged service in clean compaction budgets`);
+  const cleanPackBudget = Number((cleanRuntime.match(/max_projected_pack_files: (\d+)/u) || [])[1]);
+  const cleanSourceBudget = Number((cleanRuntime.match(/max_source_files: (\d+)/u) || [])[1]);
+  if (!(cleanPackBudget >= 90) || !(cleanSourceBudget >= 257)) failures.push(`${CLEAN_RUNTIME_REL} must admit the extracted packaged service in clean compaction budgets`);
 
   if (!packageFiles.has(SERVICE_REL)) failures.push(`package.json#files must include ${SERVICE_REL}`);
   if (!contracts.PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES.includes(SERVICE_REL)) failures.push(`runtime contracts pack files must include ${SERVICE_REL}`);
