@@ -1,0 +1,65 @@
+{
+  "schema": "agent-onboard-public-router-seed-service-extraction-001",
+  "package_name": "agent-onboard",
+  "version": "0.0.195",
+  "release_line": "public_router_seed_service_extraction_gate",
+  "milestone_id": "P1S3M7",
+  "work_item_id": "P1S3M7W12",
+  "title": "Public Router Seed Service Extraction Gate",
+  "status": "closed",
+  "objective": "Move architecture --thin-router, --thin-router-check, --compatibility-port, and --compatibility-port-check implementation ownership out of runtime-composer.js into a bounded architecture-domain runtime service while preserving the public command contract.",
+  "extracted_service": {
+    "path": "cli/agent_onboard/domains/architecture/services/runtime/public-router-seed-service.js",
+    "factory": "createPublicRouterSeedService",
+    "owned_handlers": [
+      "publicThinCliRouterSeed",
+      "publicThinCliRouterSeedCheck",
+      "publicCompatibilityCommandPortSeed",
+      "publicCompatibilityCommandPortSeedCheck"
+    ],
+    "service_domain": "architecture.runtime",
+    "package_projected": true
+  },
+  "reduction": {
+    "runtime_composer_before": {
+      "lines": 4338,
+      "bytes": 240173,
+      "source": "P1S3M7W11 baseline"
+    },
+    "runtime_composer_after": {
+      "lines": 3946,
+      "bytes": 216148
+    },
+    "line_reduction": 392,
+    "byte_reduction": 24025,
+    "monolith_growth_allowed": false
+  },
+  "public_commands_preserved": [
+    "agent-onboard architecture --thin-router",
+    "agent-onboard architecture --thin-router-check",
+    "agent-onboard architecture --compatibility-port",
+    "agent-onboard architecture --compatibility-port-check",
+    "agent-onboard check --fast --json",
+    "agent-onboard release --check",
+    "npm pack --dry-run --json"
+  ],
+  "checks": {
+    "gate_check": "node scripts/check.js router-seed-service-extraction",
+    "quick_test": "npm test",
+    "public_artifact_boundary": "node scripts/check.js public-artifact-boundary"
+  },
+  "boundary": {
+    "writes_files_at_runtime": false,
+    "mutates_target_repository_state": false,
+    "mutates_git": false,
+    "installs_dependencies": false,
+    "runs_package_manager_inside_checker": false,
+    "publishes_package": false,
+    "mutates_registry": false,
+    "network": false,
+    "storage_backend_changed": false,
+    "sqlite_introduced": false,
+    "lightning_memory_mapped_database_introduced": false,
+    "mdbx_introduced": false
+  }
+}

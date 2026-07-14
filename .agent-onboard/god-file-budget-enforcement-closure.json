@@ -17,7 +17,7 @@
     "mdbx_current_source_of_truth": false
   },
   "maximums": {
-    "god_files": 6,
+    "god_files": 7,
     "near_god_files": 34,
     "top_level_check_scripts": 0
   },
@@ -34,7 +34,8 @@
     "P1S3M6W33",
     "P1S3M6W34",
     "P1S3M7W10",
-    "P1S3M7W11"
+    "P1S3M7W11",
+    "P1S3M7W12"
   ],
   "required_check_ids": [
     "source-size-budget",
@@ -58,24 +59,25 @@
     "contracts-command-service-extraction",
     "package-surface-service-extraction",
     "full-test-runner-service-extraction",
-    "cli-runtime-planning-service-extraction"
+    "cli-runtime-planning-service-extraction",
+    "router-seed-service-extraction"
   ],
   "remaining_god_files": [
     {
       "path": "cli/agent_onboard/runtime-composer.js",
       "category": "runtime_source",
-      "current_lines": 4338,
-      "current_bytes": 240173,
-      "admitted_reason": "runtime composer remains admitted migration debt and shrank during W11 CLI runtime planning service extraction",
-      "next_reduction_gate": "P1S3M7W12"
+      "current_lines": 3946,
+      "current_bytes": 216148,
+      "admitted_reason": "runtime composer remains admitted migration debt and shrank during W12 router seed service extraction",
+      "next_reduction_gate": "P1S3M7W13"
     },
     {
       "path": ".agent-onboard/work-items.json",
       "category": "authority_registry",
-      "current_lines": 1711,
-      "admitted_reason": "public work item ledger projection remains admitted migration debt after W11 closure append; authoritative shards remain the default compact read path",
-      "next_reduction_gate": "P1S3M7W12",
-      "current_bytes": 49094
+      "current_lines": 1722,
+      "admitted_reason": "public work item ledger remains admitted migration debt after W12 closure append; compact state shards remain the default read path",
+      "next_reduction_gate": "P1S3M7W13",
+      "current_bytes": 49405
     },
     {
       "path": "cli/agent_onboard/domains/architecture/services/runtime/architecture-runtime-service.js",
@@ -89,9 +91,9 @@
       "path": "README.md",
       "category": "documentation",
       "current_lines": 1313,
-      "current_bytes": 86737,
-      "admitted_reason": "first-read surface still contains command catalog prose and current-release note updated for W11",
-      "next_reduction_gate": "P1S3M7W12"
+      "current_bytes": 86822,
+      "admitted_reason": "first-read surface remains admitted documentation debt; W12 updates the live current-release line for router seed service extraction.",
+      "next_reduction_gate": "P1S3M7W13"
     },
     {
       "path": "cli/agent_onboard/domains/core/services/public-runtime-surface-service.js",
@@ -108,6 +110,14 @@
       "current_bytes": 68279,
       "admitted_reason": "source extraction orchestration still combines scan, validation, and installed fallback logic",
       "next_reduction_gate": "P1S3M7W8"
+    },
+    {
+      "path": ".agent-onboard/source-size-budget-ratchet.json",
+      "category": "authority_registry",
+      "current_lines": 2153,
+      "current_bytes": 86002,
+      "admitted_reason": "W12 ratchet registry remains admitted migration debt after final closure payload bookkeeping; it remains bounded by the source-size budget ratchet.",
+      "next_reduction_gate": "P1S3M7W13"
     }
   ],
   "closure_result": {

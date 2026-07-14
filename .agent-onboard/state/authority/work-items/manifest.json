@@ -19,11 +19,11 @@
   "counts": {
     "open": 0,
     "claimed": 0,
-    "closed": 182,
+    "closed": 183,
     "programs": 1,
     "stages": 3,
     "milestones": 10,
-    "work_items": 182
+    "work_items": 183
   },
   "shard_count": 14,
   "rebuild_order": [
@@ -115,10 +115,10 @@
     },
     {
       "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M7.json",
-      "bytes": 3641,
-      "sha256": "2ed18133d0310d6dd595fdc455f6dd1753d8d4c9de9aa3ca78693e8480bfe69d",
-      "file_id": "ni:///sha-256;LtGBM9AxDW3Vlf3EVfbdF1PY1MnemqPKeGk-hIC_5p0"
+      "bytes": 3952,
+      "sha256": "e1163c74f8ac33325f267ac826fc3b104cba5fede2b361ff0a65ed4cdcb0b39c",
+      "file_id": "ni:///sha-256;4RY8dPisMzJfJnrIJvw7EEy6X-3is2H_CmXtTNyws5w"
     }
   ],
-  "updated_at": "2026-07-09T12:20:00.000Z"
+  "updated_at": "2026-07-09T15:41:13.220Z"
 }

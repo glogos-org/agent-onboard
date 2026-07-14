@@ -1706,6 +1706,17 @@
         "note": "Extract CLI runtime planning behavior from runtime composer without changing storage backend."
       },
       "closure_ref": "closures:P1S3M7W11"
+    },
+    {
+      "id": "P1S3M7W12",
+      "milestone_id": "P1S3M7",
+      "title": "Public Router Seed Service Extraction Gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-09T15:41:13.041Z"
+      },
+      "closure_ref": "closures:P1S3M7W12"
     }
   ]
 }
