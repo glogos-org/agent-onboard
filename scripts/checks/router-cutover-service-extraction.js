@@ -8,6 +8,14 @@ const { spawnSync } = require('child_process');
 const ROOT = path.resolve(__dirname, '..', '..');
 const COMPOSER_REL = 'cli/agent_onboard/runtime-composer.js';
 const SERVICE_REL = 'cli/agent_onboard/domains/architecture/services/runtime/public-router-cutover-service.js';
+const SERVICE_RELS = Object.freeze([
+  SERVICE_REL,
+  'cli/agent_onboard/domains/architecture/services/runtime/public-modular-runtime-package-inclusion-service.js',
+  'cli/agent_onboard/domains/architecture/services/runtime/public-packaged-router-port-inclusion-service.js',
+  'cli/agent_onboard/domains/architecture/services/runtime/public-thin-entrypoint-rehearsal-service.js',
+  'cli/agent_onboard/domains/architecture/services/runtime/public-thin-entrypoint-cutover-service.js',
+  'cli/agent_onboard/domains/architecture/services/runtime/public-router-adapter-delegation-service.js'
+]);
 const ARTIFACT_REL = '.agent-onboard/router-cutover-service-extraction.json';
 const MAX_COMPOSER_LINES = 2250;
 const MAX_COMPOSER_BYTES = 108997;
@@ -44,7 +52,7 @@ function main() {
   const pkg = readJson('package.json');
   const contracts = require(abs('cli/agent_onboard/runtime-contracts.js'));
   const composer = read(COMPOSER_REL);
-  const serviceText = read(SERVICE_REL);
+  const serviceText = SERVICE_RELS.map((rel) => read(rel)).join('\n');
   const artifact = readJson(ARTIFACT_REL);
   const packageFiles = new Set(Array.isArray(pkg.files) ? pkg.files : []);
   const composerMetric = metric(COMPOSER_REL);
@@ -79,8 +87,10 @@ function main() {
   ]) {
     if (!serviceText.includes(token)) failures.push(`${SERVICE_REL} must own ${token} validation behavior`);
   }
-  if (!packageFiles.has(SERVICE_REL)) failures.push(`package.json#files must include ${SERVICE_REL}`);
-  if (!contracts.PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES.includes(SERVICE_REL)) failures.push(`runtime contracts pack files must include ${SERVICE_REL}`);
+  for (const rel of SERVICE_RELS) {
+    if (!packageFiles.has(rel)) failures.push(`package.json#files must include ${rel}`);
+    if (!contracts.PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES.includes(rel)) failures.push(`runtime contracts pack files must include ${rel}`);
+  }
   const service = require(abs(SERVICE_REL));
   if (typeof service.createPublicRouterCutoverService !== 'function') failures.push(`${SERVICE_REL} must export createPublicRouterCutoverService`);
 

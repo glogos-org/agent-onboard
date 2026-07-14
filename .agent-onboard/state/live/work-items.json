@@ -5,12 +5,12 @@
   "authority_role": "compatibility_live_projection",
   "projection_of": "canonical_sharded_work_items_authority",
   "legacy_full_projection": false,
-  "item_count": 188,
+  "item_count": 189,
   "open_count": 0,
   "claimed_count": 0,
-  "closed_count": 188,
-  "latest_work_item_id": "P1S3M7W17",
-  "latest_closed_work_item_id": "P1S3M7W17",
+  "closed_count": 189,
+  "latest_work_item_id": "P1S3M7W18",
+  "latest_closed_work_item_id": "P1S3M7W18",
   "rebuildable_from": [
     ".agent-onboard/state/authority/work-items/manifest.json",
     ".agent-onboard/state/authority/work-items/items/index.json",
@@ -24,23 +24,16 @@
   "counts": {
     "open": 0,
     "claimed": 0,
-    "closed": 188,
+    "closed": 189,
     "programs": 1,
     "stages": 3,
     "milestones": 10,
-    "work_items": 188
+    "work_items": 189
   },
-  "current_work_item": "P1S3M7W17",
+  "current_work_item": "P1S3M7W18",
   "next_open_work_item": null,
-  "updated_at": "2026-07-10T09:35:00.000Z",
+  "updated_at": "2026-07-10T10:05:00.000Z",
   "latest_closed_work_items": [
-    {
-      "id": "P1S3M7W13",
-      "title": "Public Command Adapter Extraction Service Extraction Gate",
-      "status": "closed",
-      "milestone_id": "P1S3M7",
-      "domain": null
-    },
     {
       "id": "P1S3M7W14",
       "title": "Public Router Cutover Service Extraction Gate",
@@ -65,6 +58,13 @@
     {
       "id": "P1S3M7W17",
       "title": "Public Source Extraction Runtime Service Residual Reduction Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M7",
+      "domain": null
+    },
+    {
+      "id": "P1S3M7W18",
+      "title": "Public Router Cutover Runtime Service Near-God Reduction Gate",
       "status": "closed",
       "milestone_id": "P1S3M7",
       "domain": null

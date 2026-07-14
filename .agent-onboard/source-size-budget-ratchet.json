@@ -1,8 +1,8 @@
 {
   "schema": "agent-onboard-public-source-size-budget-ratchet-001",
   "status": "active",
-  "work_item_id": "P1S3M7W17",
-  "release_line": "public_source_extraction_runtime_service_residual_reduction_gate",
+  "work_item_id": "P1S3M7W18",
+  "release_line": "public_router_cutover_runtime_service_near_god_reduction_gate",
   "ratchet_mode": "no_tracked_growth_beyond_maximum_and_no_new_oversized_files",
   "god_file_thresholds": {
     "god_lines": 1000,
@@ -87,13 +87,13 @@
   "tracked_files": {
     ".agent-onboard/state/closures/work-items-closures.jsonl": {
       "category": "authority_state",
-      "max_lines": 187,
-      "max_bytes": 85582,
+      "max_lines": 188,
+      "max_bytes": 86103,
       "baseline_lines": 168,
       "baseline_bytes": 76889,
       "target_lines": 200,
       "target_bytes": 65536,
-      "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend.",
+      "reason": "W18 compacts the W18 closure payload into the P1S3M7 payload shard and refreshes compact closure references.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W33",
@@ -265,18 +265,36 @@
           "new_max_lines": 187,
           "previous_max_bytes": 85123,
           "new_max_bytes": 85582
+        },
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 splits router cutover runtime behavior into bounded runtime package, router port, thin entrypoint, and adapter delegation services while preserving package and command parity without changing storage backend.",
+          "previous_max_lines": 187,
+          "new_max_lines": 188,
+          "previous_max_bytes": 85582,
+          "new_max_bytes": 86103
+        },
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 compacts the W18 closure payload into the P1S3M7 payload shard and refreshes compact closure references.",
+          "previous_max_lines": 188,
+          "new_max_lines": 188,
+          "previous_max_bytes": 86103,
+          "new_max_bytes": 86103
         }
       ]
     },
     ".agent-onboard/state/live/work-items.json": {
       "category": "authority_state",
       "max_lines": 73,
-      "max_bytes": 2105,
+      "max_bytes": 2109,
       "baseline_lines": 24,
       "baseline_bytes": 849,
       "target_lines": 60,
       "target_bytes": 8192,
-      "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend.",
+      "reason": "W18 refreshes sharded work-item authority projections after closing router cutover runtime service near-god reduction gate.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W6",
@@ -347,18 +365,27 @@
           "new_max_lines": 73,
           "previous_max_bytes": 2083,
           "new_max_bytes": 2105
+        },
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 refreshes sharded work-item authority projections after closing router cutover runtime service near-god reduction gate.",
+          "previous_max_lines": 73,
+          "new_max_lines": 73,
+          "previous_max_bytes": 2105,
+          "new_max_bytes": 2109
         }
       ]
     },
     ".agent-onboard/work-items.json": {
       "category": "authority_registry",
-      "max_lines": 1777,
-      "max_bytes": 51382,
+      "max_lines": 1788,
+      "max_bytes": 51712,
       "baseline_lines": 1573,
       "baseline_bytes": 44798,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend.",
+      "reason": "W18 splits router cutover runtime behavior into bounded runtime package, router port, thin entrypoint, and adapter delegation services while preserving package and command parity without changing storage backend.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W33",
@@ -528,6 +555,15 @@
           "new_max_lines": 1777,
           "previous_max_bytes": 51161,
           "new_max_bytes": 51382
+        },
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 splits router cutover runtime behavior into bounded runtime package, router port, thin entrypoint, and adapter delegation services while preserving package and command parity without changing storage backend.",
+          "previous_max_lines": 1777,
+          "new_max_lines": 1788,
+          "previous_max_bytes": 51382,
+          "new_max_bytes": 51712
         }
       ]
     },
@@ -982,7 +1018,7 @@
       "baseline_bytes": 5085,
       "target_lines": 700,
       "target_bytes": 65536,
-      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+      "reason": "W18 compacts the W18 closure payload into the P1S3M7 payload shard and refreshes compact closure references.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W34",
@@ -1033,6 +1069,15 @@
           "new_max_lines": 137,
           "previous_max_bytes": 5502,
           "new_max_bytes": 5523
+        },
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 compacts the W18 closure payload into the P1S3M7 payload shard and refreshes compact closure references.",
+          "previous_max_lines": 137,
+          "new_max_lines": 137,
+          "previous_max_bytes": 5523,
+          "new_max_bytes": 5523
         }
       ]
     },
@@ -1044,7 +1089,7 @@
       "baseline_bytes": 4384,
       "target_lines": 700,
       "target_bytes": 65536,
-      "reason": "W15 refreshes closure payload index.",
+      "reason": "W18 compacts the W18 closure payload into the P1S3M7 payload shard and refreshes compact closure references.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W1",
@@ -1088,6 +1133,15 @@
           "reason": "W15 refreshes closure payload index.",
           "new_max_lines": 117,
           "new_max_bytes": 4697
+        },
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 compacts the W18 closure payload into the P1S3M7 payload shard and refreshes compact closure references.",
+          "previous_max_lines": 117,
+          "new_max_lines": 117,
+          "previous_max_bytes": 4697,
+          "new_max_bytes": 4697
         }
       ]
     },
@@ -1103,13 +1157,13 @@
     },
     "scripts/checks/registry.js": {
       "category": "check_script",
-      "max_lines": 69,
-      "max_bytes": 3943,
+      "max_lines": 70,
+      "max_bytes": 4054,
       "baseline_lines": 67,
       "baseline_bytes": 3719,
       "target_lines": 250,
       "target_bytes": 32768,
-      "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend.",
+      "reason": "W18 splits router cutover runtime residual behavior into bounded services and refreshes package, release, and check metadata without changing storage backend.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W34",
@@ -1252,6 +1306,15 @@
           "new_max_lines": 69,
           "previous_max_bytes": 3826,
           "new_max_bytes": 3943
+        },
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 splits router cutover runtime residual behavior into bounded services and refreshes package, release, and check metadata without changing storage backend.",
+          "previous_max_lines": 69,
+          "new_max_lines": 70,
+          "previous_max_bytes": 3943,
+          "new_max_bytes": 4054
         }
       ]
     },
@@ -1267,13 +1330,13 @@
     },
     ".agent-onboard/god-file-budget-enforcement-closure.json": {
       "category": "authority_registry",
-      "max_lines": 137,
-      "max_bytes": 5089,
+      "max_lines": 154,
+      "max_bytes": 5904,
       "baseline_lines": 105,
       "baseline_bytes": 3859,
       "target_lines": 220,
       "target_bytes": 32768,
-      "reason": "W17 refreshes admitted god-file budget after removing the source extraction service from the god-file set.",
+      "reason": "W18 god-file budget artifact refreshed to admit W18 closure and remaining-debt ownership after router cutover runtime service split.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W1",
@@ -1341,6 +1404,24 @@
           "new_max_lines": 137,
           "previous_max_bytes": 5051,
           "new_max_bytes": 5089
+        },
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 updates god-file budget evidence to admit source-size budget self-ratchet growth while preserving god/near-god maximums.",
+          "previous_max_lines": 137,
+          "new_max_lines": 143,
+          "previous_max_bytes": 5089,
+          "new_max_bytes": 5362
+        },
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 god-file budget artifact refreshed to admit W18 closure and remaining-debt ownership after router cutover runtime service split.",
+          "previous_max_lines": 143,
+          "new_max_lines": 154,
+          "previous_max_bytes": 5362,
+          "new_max_bytes": 5904
         }
       ]
     },
@@ -1379,13 +1460,13 @@
     },
     ".agent-onboard/source-size-budget-ratchet.json": {
       "category": "authority_registry",
-      "max_lines": 3450,
-      "max_bytes": 150000,
+      "max_lines": 3814,
+      "max_bytes": 167202,
       "baseline_lines": 2575,
       "baseline_bytes": 104100,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W17 source-size budget self-ratchet admits bounded metadata growth from W17 tracking rows.",
+      "reason": "W18 compacts the W18 closure payload into the P1S3M7 payload shard and refreshes compact closure references.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W2",
@@ -1595,6 +1676,51 @@
           "new_max_lines": 3244,
           "previous_max_bytes": 134696,
           "new_max_bytes": 135085
+        },
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 source-size budget self-ratchet admits bounded metadata growth from router-cutover residual split tracking rows.",
+          "previous_max_lines": 3450,
+          "new_max_lines": 3620,
+          "previous_max_bytes": 150000,
+          "new_max_bytes": 156000
+        },
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 splits router cutover runtime behavior into bounded runtime package, router port, thin entrypoint, and adapter delegation services while preserving package and command parity without changing storage backend.",
+          "previous_max_lines": 3700,
+          "new_max_lines": 3700,
+          "previous_max_bytes": 162000,
+          "new_max_bytes": 162000
+        },
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 god-file budget artifact refreshed to admit W18 closure and remaining-debt ownership after router cutover runtime service split.",
+          "previous_max_lines": 3700,
+          "new_max_lines": 3700,
+          "previous_max_bytes": 162000,
+          "new_max_bytes": 162000
+        },
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 refreshes sharded work-item authority projections after closing router cutover runtime service near-god reduction gate.",
+          "previous_max_lines": 3706,
+          "new_max_lines": 3706,
+          "previous_max_bytes": 162395,
+          "new_max_bytes": 162395
+        },
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 compacts the W18 closure payload into the P1S3M7 payload shard and refreshes compact closure references.",
+          "previous_max_lines": 3769,
+          "new_max_lines": 3769,
+          "previous_max_bytes": 165317,
+          "new_max_bytes": 165317
         }
       ]
     },
@@ -1703,8 +1829,8 @@
     },
     ".agent-onboard/state/closures/work-items/payloads/by-milestone/P1S3M7/part-001.jsonl": {
       "category": "authority_state",
-      "max_lines": 17,
-      "max_bytes": 49209,
+      "max_lines": 18,
+      "max_bytes": 49730,
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W5",
@@ -1868,18 +1994,27 @@
           "new_max_lines": 17,
           "previous_max_bytes": 46699,
           "new_max_bytes": 49209
+        },
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 compacts the W18 closure payload into the P1S3M7 payload shard and refreshes compact closure references.",
+          "previous_max_lines": 17,
+          "new_max_lines": 18,
+          "previous_max_bytes": 49209,
+          "new_max_bytes": 49730
         }
       ],
       "target_lines": 20,
       "target_bytes": 65536,
       "baseline_lines": 7,
       "baseline_bytes": 17395,
-      "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend."
+      "reason": "W18 compacts the W18 closure payload into the P1S3M7 payload shard and refreshes compact closure references."
     },
     ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M7.json": {
       "category": "authority_state",
-      "max_lines": 184,
-      "max_bytes": 5931,
+      "max_lines": 195,
+      "max_bytes": 6261,
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W5",
@@ -2004,18 +2139,27 @@
           "new_max_lines": 184,
           "previous_max_bytes": 5708,
           "new_max_bytes": 5931
+        },
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 refreshes sharded work-item authority projections after closing router cutover runtime service near-god reduction gate.",
+          "previous_max_lines": 184,
+          "new_max_lines": 195,
+          "previous_max_bytes": 5931,
+          "new_max_bytes": 6261
         }
       ],
       "target_lines": 500,
       "target_bytes": 65536,
       "baseline_lines": 85,
       "baseline_bytes": 2599,
-      "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend."
+      "reason": "W18 refreshes sharded work-item authority projections after closing router cutover runtime service near-god reduction gate."
     },
     ".agent-onboard/state/authority/work-items/items/index.json": {
       "category": "authority_state",
-      "max_lines": 507,
-      "max_bytes": 11386,
+      "max_lines": 509,
+      "max_bytes": 11424,
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W5",
@@ -2140,13 +2284,22 @@
           "new_max_lines": 507,
           "previous_max_bytes": 11348,
           "new_max_bytes": 11386
+        },
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 refreshes sharded work-item authority projections after closing router cutover runtime service near-god reduction gate.",
+          "previous_max_lines": 507,
+          "new_max_lines": 509,
+          "previous_max_bytes": 11386,
+          "new_max_bytes": 11424
         }
       ],
       "target_lines": 500,
       "target_bytes": 65536,
       "baseline_lines": 484,
       "baseline_bytes": 10953,
-      "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend."
+      "reason": "W18 refreshes sharded work-item authority projections after closing router cutover runtime service near-god reduction gate."
     },
     ".agent-onboard/state/authority/work-items/manifest.json": {
       "category": "authority_state",
@@ -2186,11 +2339,20 @@
           "reason": "W15 refreshes authority shard digests.",
           "new_max_lines": 124,
           "new_max_bytes": 5215
+        },
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 refreshes sharded work-item authority projections after closing router cutover runtime service near-god reduction gate.",
+          "previous_max_lines": 124,
+          "new_max_lines": 124,
+          "previous_max_bytes": 5215,
+          "new_max_bytes": 5215
         }
       ],
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W15 refreshes authority shard digests.",
+      "reason": "W18 refreshes sharded work-item authority projections after closing router cutover runtime service near-god reduction gate.",
       "baseline_lines": 124,
       "baseline_bytes": 5215
     },
@@ -2241,18 +2403,27 @@
           "new_max_lines": 526,
           "previous_max_bytes": 11312,
           "new_max_bytes": 11365
+        },
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 refreshes sharded work-item authority projections after closing router cutover runtime service near-god reduction gate.",
+          "previous_max_lines": 526,
+          "new_max_lines": 526,
+          "previous_max_bytes": 11365,
+          "new_max_bytes": 11365
         }
       ],
       "target_lines": 700,
       "target_bytes": 65536,
-      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+      "reason": "W18 refreshes sharded work-item authority projections after closing router cutover runtime service near-god reduction gate.",
       "baseline_lines": 524,
       "baseline_bytes": 11312
     },
     ".agent-onboard/work-items.index.json": {
       "category": "authority_registry",
       "max_lines": 53,
-      "max_bytes": 1466,
+      "max_bytes": 1470,
       "target_lines": 500,
       "target_bytes": 65536,
       "ratchet_history": [
@@ -2298,9 +2469,18 @@
           "new_max_lines": 53,
           "previous_max_bytes": 1444,
           "new_max_bytes": 1466
+        },
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 splits router cutover runtime behavior into bounded runtime package, router port, thin entrypoint, and adapter delegation services while preserving package and command parity without changing storage backend.",
+          "previous_max_lines": 53,
+          "new_max_lines": 53,
+          "previous_max_bytes": 1466,
+          "new_max_bytes": 1470
         }
       ],
-      "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend.",
+      "reason": "W18 splits router cutover runtime behavior into bounded runtime package, router port, thin entrypoint, and adapter delegation services while preserving package and command parity without changing storage backend.",
       "baseline_lines": 53,
       "baseline_bytes": 1436
     },
@@ -2422,9 +2602,18 @@
           "new_max_lines": 56,
           "previous_max_bytes": 1903,
           "new_max_bytes": 1940
+        },
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 splits router cutover runtime behavior into bounded runtime package, router port, thin entrypoint, and adapter delegation services while preserving package and command parity without changing storage backend.",
+          "previous_max_lines": 56,
+          "new_max_lines": 56,
+          "previous_max_bytes": 1940,
+          "new_max_bytes": 1940
         }
       ],
-      "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend.",
+      "reason": "W18 splits router cutover runtime behavior into bounded runtime package, router port, thin entrypoint, and adapter delegation services while preserving package and command parity without changing storage backend.",
       "baseline_lines": 56,
       "baseline_bytes": 1871
     },
@@ -2475,16 +2664,25 @@
           "new_max_lines": 71,
           "previous_max_bytes": 2501,
           "new_max_bytes": 2506
+        },
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 splits router cutover runtime behavior into bounded runtime package, router port, thin entrypoint, and adapter delegation services while preserving package and command parity without changing storage backend.",
+          "previous_max_lines": 71,
+          "new_max_lines": 71,
+          "previous_max_bytes": 2506,
+          "new_max_bytes": 2506
         }
       ],
-      "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend.",
+      "reason": "W18 splits router cutover runtime behavior into bounded runtime package, router port, thin entrypoint, and adapter delegation services while preserving package and command parity without changing storage backend.",
       "baseline_lines": 71,
       "baseline_bytes": 2489
     },
     ".agent-onboard/state/closed-gates.jsonl": {
       "category": "authority_state",
       "max_lines": 6,
-      "max_bytes": 1458,
+      "max_bytes": 1462,
       "target_lines": 500,
       "target_bytes": 65536,
       "ratchet_history": [
@@ -2530,11 +2728,20 @@
           "new_max_lines": 6,
           "previous_max_bytes": 1437,
           "new_max_bytes": 1458
+        },
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 splits router cutover runtime behavior into bounded runtime package, router port, thin entrypoint, and adapter delegation services while preserving package and command parity without changing storage backend.",
+          "previous_max_lines": 6,
+          "new_max_lines": 6,
+          "previous_max_bytes": 1458,
+          "new_max_bytes": 1462
         }
       ],
       "baseline_lines": 6,
       "baseline_bytes": 1422,
-      "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend."
+      "reason": "W18 splits router cutover runtime behavior into bounded runtime package, router port, thin entrypoint, and adapter delegation services while preserving package and command parity without changing storage backend."
     },
     ".agent-onboard/authority-index.json": {
       "category": "authority_registry",
@@ -2854,13 +3061,13 @@
     },
     "cli/agent_onboard/domains/architecture/services/runtime/public-router-cutover-service.js": {
       "category": "runtime_service_source",
-      "max_lines": 1013,
-      "max_bytes": 62174,
+      "max_lines": 32,
+      "max_bytes": 2527,
       "baseline_lines": 1013,
       "baseline_bytes": 62174,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W14 extracts router cutover planning/check behavior from runtime-composer.js into this bounded architecture runtime service.",
+      "reason": "W18 splits router cutover runtime residual behavior into bounded services and refreshes package, release, and check metadata without changing storage backend.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W14",
@@ -2870,18 +3077,25 @@
           "new_max_lines": 1013,
           "previous_max_bytes": null,
           "new_max_bytes": 62174
+        },
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 splits router cutover runtime residual behavior into bounded services and refreshes package, release, and check metadata without changing storage backend.",
+          "new_max_lines": 32,
+          "new_max_bytes": 2527
         }
       ]
     },
     "scripts/checks/router-cutover-service-extraction.js": {
       "category": "check_script",
-      "max_lines": 124,
-      "max_bytes": 7302,
+      "max_lines": 134,
+      "max_bytes": 7935,
       "baseline_lines": 124,
       "baseline_bytes": 7302,
       "target_lines": 250,
       "target_bytes": 32768,
-      "reason": "W14 adds a compact public gate checker for router cutover service extraction.",
+      "reason": "W18 splits router cutover runtime behavior into bounded runtime package, router port, thin entrypoint, and adapter delegation services while preserving package and command parity without changing storage backend.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W14",
@@ -2889,6 +3103,15 @@
           "reason": "Admit router-cutover-service-extraction checker.",
           "new_max_lines": 124,
           "new_max_bytes": 7302
+        },
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 splits router cutover runtime behavior into bounded runtime package, router port, thin entrypoint, and adapter delegation services while preserving package and command parity without changing storage backend.",
+          "previous_max_lines": 124,
+          "new_max_lines": 134,
+          "previous_max_bytes": 7302,
+          "new_max_bytes": 7935
         }
       ]
     },
@@ -3059,11 +3282,20 @@
           "reason": "W15 refreshes compatibility projection sidecar counts.",
           "new_max_lines": 26,
           "new_max_bytes": 1047
+        },
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 refreshes sharded work-item authority projections after closing router cutover runtime service near-god reduction gate.",
+          "previous_max_lines": 26,
+          "new_max_lines": 26,
+          "previous_max_bytes": 1047,
+          "new_max_bytes": 1047
         }
       ],
       "max_lines": 26,
       "max_bytes": 1047,
-      "reason": "W15 refreshes compatibility projection sidecar counts."
+      "reason": "W18 refreshes sharded work-item authority projections after closing router cutover runtime service near-god reduction gate."
     },
     ".agent-onboard/readme-history.index.json": {
       "category": "authority_registry",
@@ -3131,11 +3363,20 @@
           "new_max_lines": 498,
           "previous_max_bytes": 21753,
           "new_max_bytes": 22351
+        },
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 splits router cutover runtime residual behavior into bounded services and refreshes package, release, and check metadata without changing storage backend.",
+          "previous_max_lines": 498,
+          "new_max_lines": 503,
+          "previous_max_bytes": 22351,
+          "new_max_bytes": 22884
         }
       ],
-      "max_lines": 498,
-      "max_bytes": 22351,
-      "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend."
+      "max_lines": 503,
+      "max_bytes": 22884,
+      "reason": "W18 splits router cutover runtime residual behavior into bounded services and refreshes package, release, and check metadata without changing storage backend."
     },
     "package.json": {
       "category": "root_json",
@@ -3168,11 +3409,20 @@
           "new_max_lines": 249,
           "previous_max_bytes": 15107,
           "new_max_bytes": 15860
+        },
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 splits router cutover runtime residual behavior into bounded services and refreshes package, release, and check metadata without changing storage backend.",
+          "previous_max_lines": 249,
+          "new_max_lines": 255,
+          "previous_max_bytes": 15860,
+          "new_max_bytes": 16544
         }
       ],
-      "max_lines": 249,
-      "max_bytes": 15860,
-      "reason": "W17 splits source extraction runtime residual behavior into bounded services and refreshes authority, closure, package, release, and check metadata without changing storage backend."
+      "max_lines": 255,
+      "max_bytes": 16544,
+      "reason": "W18 splits router cutover runtime residual behavior into bounded services and refreshes package, release, and check metadata without changing storage backend."
     },
     ".agent-onboard/architecture-runtime-service-residual-reduction.json": {
       "category": "authority_registry",
@@ -3341,6 +3591,139 @@
           "new_max_bytes": 13202
         }
       ]
+    },
+    "cli/agent_onboard/domains/architecture/services/runtime/public-modular-runtime-package-inclusion-service.js": {
+      "category": "runtime_service_source",
+      "baseline_lines": 177,
+      "baseline_bytes": 11275,
+      "target_lines": 250,
+      "target_bytes": 65536,
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 splits router cutover runtime residual behavior into bounded services and refreshes package, release, and check metadata without changing storage backend.",
+          "new_max_lines": 177,
+          "new_max_bytes": 11275
+        }
+      ],
+      "max_lines": 177,
+      "max_bytes": 11275,
+      "reason": "W18 splits router cutover runtime residual behavior into bounded services and refreshes package, release, and check metadata without changing storage backend."
+    },
+    "cli/agent_onboard/domains/architecture/services/runtime/public-packaged-router-port-inclusion-service.js": {
+      "category": "runtime_service_source",
+      "baseline_lines": 210,
+      "baseline_bytes": 11594,
+      "target_lines": 250,
+      "target_bytes": 65536,
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 splits router cutover runtime residual behavior into bounded services and refreshes package, release, and check metadata without changing storage backend.",
+          "new_max_lines": 210,
+          "new_max_bytes": 11594
+        }
+      ],
+      "max_lines": 210,
+      "max_bytes": 11594,
+      "reason": "W18 splits router cutover runtime residual behavior into bounded services and refreshes package, release, and check metadata without changing storage backend."
+    },
+    "cli/agent_onboard/domains/architecture/services/runtime/public-thin-entrypoint-rehearsal-service.js": {
+      "category": "runtime_service_source",
+      "baseline_lines": 279,
+      "baseline_bytes": 15037,
+      "target_lines": 250,
+      "target_bytes": 65536,
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 splits router cutover runtime residual behavior into bounded services and refreshes package, release, and check metadata without changing storage backend.",
+          "new_max_lines": 279,
+          "new_max_bytes": 15037
+        }
+      ],
+      "max_lines": 279,
+      "max_bytes": 15037,
+      "reason": "W18 splits router cutover runtime residual behavior into bounded services and refreshes package, release, and check metadata without changing storage backend."
+    },
+    "cli/agent_onboard/domains/architecture/services/runtime/public-thin-entrypoint-cutover-service.js": {
+      "category": "runtime_service_source",
+      "baseline_lines": 227,
+      "baseline_bytes": 12295,
+      "target_lines": 250,
+      "target_bytes": 65536,
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 splits router cutover runtime residual behavior into bounded services and refreshes package, release, and check metadata without changing storage backend.",
+          "new_max_lines": 227,
+          "new_max_bytes": 12295
+        }
+      ],
+      "max_lines": 227,
+      "max_bytes": 12295,
+      "reason": "W18 splits router cutover runtime residual behavior into bounded services and refreshes package, release, and check metadata without changing storage backend."
+    },
+    "cli/agent_onboard/domains/architecture/services/runtime/public-router-adapter-delegation-service.js": {
+      "category": "runtime_service_source",
+      "baseline_lines": 305,
+      "baseline_bytes": 19490,
+      "target_lines": 250,
+      "target_bytes": 65536,
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 splits router cutover runtime residual behavior into bounded services and refreshes package, release, and check metadata without changing storage backend.",
+          "new_max_lines": 305,
+          "new_max_bytes": 19490
+        }
+      ],
+      "max_lines": 305,
+      "max_bytes": 19490,
+      "reason": "W18 splits router cutover runtime residual behavior into bounded services and refreshes package, release, and check metadata without changing storage backend."
+    },
+    "scripts/checks/router-cutover-runtime-service-near-god-reduction.js": {
+      "category": "check_script",
+      "baseline_lines": 173,
+      "baseline_bytes": 9664,
+      "target_lines": 250,
+      "target_bytes": 32768,
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 splits router cutover runtime residual behavior into bounded services and refreshes package, release, and check metadata without changing storage backend.",
+          "new_max_lines": 173,
+          "new_max_bytes": 9664
+        }
+      ],
+      "max_lines": 173,
+      "max_bytes": 9664,
+      "reason": "W18 splits router cutover runtime residual behavior into bounded services and refreshes package, release, and check metadata without changing storage backend."
+    },
+    ".agent-onboard/router-cutover-runtime-service-near-god-reduction.json": {
+      "category": "authority_registry",
+      "baseline_lines": 127,
+      "baseline_bytes": 5354,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W18",
+          "gate": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+          "reason": "W18 splits router cutover runtime residual behavior into bounded services and refreshes package, release, and check metadata without changing storage backend.",
+          "new_max_lines": 127,
+          "new_max_bytes": 5354
+        }
+      ],
+      "max_lines": 127,
+      "max_bytes": 5354,
+      "reason": "W18 splits router cutover runtime residual behavior into bounded services and refreshes package, release, and check metadata without changing storage backend."
     }
   },
   "report": {

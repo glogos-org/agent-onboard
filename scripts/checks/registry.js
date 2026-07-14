@@ -44,6 +44,7 @@ const CHECK_MODULES = Object.freeze({
 ,  'source-module-residual-service-extraction': 'source-module-residual-service-extraction.js'
 ,  'architecture-runtime-service-residual-reduction': 'architecture-runtime-service-residual-reduction.js'
 ,  'source-extraction-runtime-service-residual-reduction': 'source-extraction-runtime-service-residual-reduction.js'
+,  'router-cutover-runtime-service-near-god-reduction': 'router-cutover-runtime-service-near-god-reduction.js'
 });
 
 function normalizeCheckId(value) {

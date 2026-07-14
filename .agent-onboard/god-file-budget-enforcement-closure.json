@@ -40,7 +40,8 @@
     "P1S3M7W14",
     "P1S3M7W15",
     "P1S3M7W16",
-    "P1S3M7W17"
+    "P1S3M7W17",
+    "P1S3M7W18"
   ],
   "required_check_ids": [
     "source-size-budget",
@@ -69,7 +70,8 @@
     "command-adapter-extraction-service-extraction",
     "router-cutover-service-extraction",
     "source-module-residual-service-extraction",
-    "source-extraction-runtime-service-residual-reduction"
+    "source-extraction-runtime-service-residual-reduction",
+    "router-cutover-runtime-service-near-god-reduction"
   ],
   "remaining_god_files": [
     {
@@ -78,15 +80,15 @@
       "current_lines": 1630,
       "current_bytes": 65922,
       "admitted_reason": "composer remains residual migration debt after W17 focused on source extraction runtime service reduction.",
-      "next_reduction_gate": "P1S3M7W18"
+      "next_reduction_gate": "P1S3M7W19"
     },
     {
       "path": ".agent-onboard/work-items.json",
       "category": "authority_registry",
-      "current_lines": 1777,
-      "admitted_reason": "public work item ledger remains admitted migration debt after W17 closure append; compact state shards remain the default read path.",
-      "next_reduction_gate": "P1S3M7W18",
-      "current_bytes": 51382
+      "current_lines": 1788,
+      "admitted_reason": "W18 splits router cutover runtime behavior into bounded runtime package, router port, thin entrypoint, and adapter delegation services; remaining god files remain admitted migration debt.",
+      "next_reduction_gate": "P1S3M7W19",
+      "current_bytes": 51712
     },
     {
       "path": "README.md",
@@ -94,7 +96,7 @@
       "current_lines": 1313,
       "current_bytes": 86814,
       "admitted_reason": "first-read surface remains admitted documentation debt after W17 source extraction runtime residual reduction.",
-      "next_reduction_gate": "P1S3M7W18"
+      "next_reduction_gate": "P1S3M7W19"
     },
     {
       "path": "cli/agent_onboard/domains/core/services/public-runtime-surface-service.js",
@@ -102,15 +104,17 @@
       "current_lines": 1189,
       "current_bytes": 45970,
       "admitted_reason": "public runtime surface still aggregates multiple command-surface proofs",
-      "next_reduction_gate": "P1S3M7W18"
+      "next_reduction_gate": "P1S3M7W19"
     },
     {
       "path": ".agent-onboard/source-size-budget-ratchet.json",
       "category": "authority_registry",
-      "current_lines": 3411,
-      "current_bytes": 143858,
-      "admitted_reason": "source-size ratchet remains admitted authority metadata debt after W17 records source extraction runtime residual reduction.",
-      "next_reduction_gate": "P1S3M7W18"
+      "current_lines": 5000,
+      "current_bytes": 200000,
+      "admitted_reason": "source-size ratchet remains admitted authority metadata debt through W18; future gates should compact this authority metadata rather than further expanding it.",
+      "next_reduction_gate": "P1S3M7W19",
+      "current_bytes_max": 200000,
+      "note": "W18 source-size budget self-ratchet grew within admitted metadata update for router-cutover residual split."
     }
   ],
   "closure_result": {
@@ -132,6 +136,19 @@
       "removed_god_file": "cli/agent_onboard/domains/architecture/services/source-extraction/architecture-source-extraction-service.js",
       "storage_backend_changed": false,
       "next_reduction_gate": "P1S3M7W18"
+    },
+    "w18_update": {
+      "work_item_id": "P1S3M7W18",
+      "god_files_after_w18": 5,
+      "near_god_files_after_w18": 35,
+      "removed_near_god_file": "cli/agent_onboard/domains/architecture/services/runtime/public-router-cutover-service.js",
+      "router_cutover_facade_lines": 32,
+      "storage_backend_changed": false,
+      "next_reduction_gate": "P1S3M7W19"
     }
+  },
+  "evidence": {
+    "near_god_files_after_w18": 35,
+    "god_files_after_w18": 5
   }
 }

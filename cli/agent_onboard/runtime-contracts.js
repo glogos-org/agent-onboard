@@ -2,7 +2,7 @@
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
-const RELEASE_LINE = 'public_source_extraction_runtime_service_residual_reduction_gate';
+const RELEASE_LINE = 'public_router_cutover_runtime_service_near_god_reduction_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
   agents: 'agents',
@@ -367,6 +367,11 @@ const PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES = Object.freeze([
   'cli/agent_onboard/domains/architecture/services/runtime/public-router-seed-service.js',
   'cli/agent_onboard/domains/architecture/services/runtime/public-command-adapter-extraction-service.js',
   'cli/agent_onboard/domains/architecture/services/runtime/public-router-cutover-service.js',
+  'cli/agent_onboard/domains/architecture/services/runtime/public-modular-runtime-package-inclusion-service.js',
+  'cli/agent_onboard/domains/architecture/services/runtime/public-packaged-router-port-inclusion-service.js',
+  'cli/agent_onboard/domains/architecture/services/runtime/public-thin-entrypoint-rehearsal-service.js',
+  'cli/agent_onboard/domains/architecture/services/runtime/public-thin-entrypoint-cutover-service.js',
+  'cli/agent_onboard/domains/architecture/services/runtime/public-router-adapter-delegation-service.js',
   'cli/agent_onboard/domains/architecture/services/runtime/public-source-module-residual-extraction-service.js',
   'cli/agent_onboard/domains/architecture/services/runtime/public-source-module-second-slice-service.js',
   'cli/agent_onboard/domains/architecture/services/runtime/public-source-module-authority-bundle-parity-service.js',

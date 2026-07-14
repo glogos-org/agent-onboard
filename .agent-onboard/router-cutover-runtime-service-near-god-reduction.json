@@ -1,0 +1,127 @@
+{
+  "schema": "agent-onboard-public-router-cutover-runtime-service-near-god-reduction-001",
+  "package_name": "agent-onboard",
+  "version": "0.0.201",
+  "release_line": "public_router_cutover_runtime_service_near_god_reduction_gate",
+  "milestone_id": "P1S3M7",
+  "work_item_id": "P1S3M7W18",
+  "title": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+  "status": "closed",
+  "objective": "Reduce router-cutover runtime residual debt by converting public-router-cutover-service.js into a bounded composition facade and moving modular runtime package inclusion, packaged router port inclusion, thin entrypoint rehearsal, thin entrypoint cutover, and router adapter delegation behavior into small runtime services while preserving public architecture command outputs.",
+  "reduction": {
+    "router_cutover_service_before": {
+      "lines": 979,
+      "bytes": 62140,
+      "source": "P1S3M7W17 baseline"
+    },
+    "router_cutover_facade_after": {
+      "lines": 32,
+      "bytes": 2527
+    },
+    "line_reduction": 947,
+    "byte_reduction": 59613,
+    "god_file_removed": false,
+    "near_god_file_removed": true,
+    "monolith_growth_allowed": false
+  },
+  "extracted_service_set": [
+    {
+      "id": "modular_runtime_package_inclusion",
+      "path": "cli/agent_onboard/domains/architecture/services/runtime/public-modular-runtime-package-inclusion-service.js",
+      "factory": "createPublicModularRuntimePackageInclusionService",
+      "lines": 177,
+      "bytes": 11275,
+      "package_projected": true
+    },
+    {
+      "id": "packaged_router_port_inclusion",
+      "path": "cli/agent_onboard/domains/architecture/services/runtime/public-packaged-router-port-inclusion-service.js",
+      "factory": "createPublicPackagedRouterPortInclusionService",
+      "lines": 210,
+      "bytes": 11594,
+      "package_projected": true
+    },
+    {
+      "id": "thin_entrypoint_rehearsal",
+      "path": "cli/agent_onboard/domains/architecture/services/runtime/public-thin-entrypoint-rehearsal-service.js",
+      "factory": "createPublicThinEntrypointRehearsalService",
+      "lines": 279,
+      "bytes": 15037,
+      "package_projected": true
+    },
+    {
+      "id": "thin_entrypoint_cutover",
+      "path": "cli/agent_onboard/domains/architecture/services/runtime/public-thin-entrypoint-cutover-service.js",
+      "factory": "createPublicThinEntrypointCutoverService",
+      "lines": 227,
+      "bytes": 12295,
+      "package_projected": true
+    },
+    {
+      "id": "router_adapter_delegation",
+      "path": "cli/agent_onboard/domains/architecture/services/runtime/public-router-adapter-delegation-service.js",
+      "factory": "createPublicRouterAdapterDelegationService",
+      "lines": 305,
+      "bytes": 19490,
+      "package_projected": true
+    }
+  ],
+  "public_commands_preserved": [
+    "agent-onboard architecture --module-inclusion-check",
+    "agent-onboard architecture --packaged-router-port-check",
+    "agent-onboard architecture --thin-entrypoint-rehearsal-check",
+    "agent-onboard architecture --thin-entrypoint-cutover-check",
+    "agent-onboard architecture --router-adapter-delegation-check",
+    "agent-onboard architecture --check",
+    "agent-onboard check --fast --json",
+    "agent-onboard release --check",
+    "npm pack --dry-run --json"
+  ],
+  "clean_baseline_adjustment": {
+    "reason": "Five new packaged runtime service files plus one gate check and one closed-gate artifact are admitted by this reduction gate; no raw evidence registry, storage backend, dependency, or generated bundle layer is introduced.",
+    "max_source_files": 315,
+    "max_agent_onboard_files": 127,
+    "max_projected_pack_files": 119
+  },
+  "acceptance": {
+    "router_cutover_facade_bounded": true,
+    "extracted_services_below_near_god_threshold": true,
+    "public_router_cutover_outputs_preserved": true,
+    "package_projection_updated": true,
+    "release_check_preserved": true,
+    "storage_backend_changed": false,
+    "sqlite_introduced": false,
+    "lmdb_introduced": false,
+    "mdbx_introduced": false
+  },
+  "checks": {
+    "gate_check": "node scripts/check.js router-cutover-runtime-service-near-god-reduction",
+    "required": [
+      "node cli/agent-onboard.js architecture --module-inclusion-check",
+      "node cli/agent-onboard.js architecture --packaged-router-port-check",
+      "node cli/agent-onboard.js architecture --thin-entrypoint-rehearsal-check",
+      "node cli/agent-onboard.js architecture --thin-entrypoint-cutover-check",
+      "node cli/agent-onboard.js architecture --router-adapter-delegation-check",
+      "node cli/agent-onboard.js architecture --check",
+      "node scripts/check.js source-size-budget",
+      "node scripts/check.js god-file-budget-enforcement-closure",
+      "node cli/agent-onboard.js authority --state-check",
+      "node cli/agent-onboard.js release --check",
+      "node cli/agent-onboard.js check --fast --json",
+      "npm pack --dry-run --json"
+    ]
+  },
+  "boundary": {
+    "writes_files": true,
+    "git_mutation": false,
+    "network": false,
+    "installs_dependencies": false,
+    "runs_package_manager_for_install": false,
+    "publishes_package": false,
+    "mutates_registry": false,
+    "storage_backend_changed": false,
+    "sqlite_introduced": false,
+    "lightning_memory_mapped_database_introduced": false,
+    "mdbx_introduced": false
+  }
+}
