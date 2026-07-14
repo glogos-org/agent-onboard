@@ -46,7 +46,8 @@ const CHECK_MODULES = Object.freeze({
 ,  'source-extraction-runtime-service-residual-reduction': 'source-extraction-runtime-service-residual-reduction.js'
 ,  'router-cutover-runtime-service-near-god-reduction': 'router-cutover-runtime-service-near-god-reduction.js'
 ,  'runtime-surface-service-residual-reduction': 'runtime-surface-service-residual-reduction.js',  'source-domain-runtime-service-near-god-reduction': 'source-domain-runtime-service-near-god-reduction.js',
-  'runtime-composer-god-file-exit': 'runtime-composer-god-file-exit.js'
+  'runtime-composer-god-file-exit': 'runtime-composer-god-file-exit.js',
+  'target-metadata-service-split': 'target-metadata-service-split.js'
 });
 
 function normalizeCheckId(value) {

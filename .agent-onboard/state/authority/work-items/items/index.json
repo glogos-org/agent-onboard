@@ -9,14 +9,14 @@
   "counts": {
     "open": 0,
     "claimed": 0,
-    "closed": 192,
+    "closed": 193,
     "programs": 1,
     "stages": 3,
     "milestones": 10,
-    "work_items": 192
+    "work_items": 193
   },
-  "latest_work_item_id": "P1S3M7W21",
-  "latest_closed_work_item_id": "P1S3M7W21",
+  "latest_work_item_id": "P1S3M7W22",
+  "latest_closed_work_item_id": "P1S3M7W22",
   "by_status": {
     "open": [],
     "claimed": [],
@@ -212,7 +212,8 @@
       "P1S3M7W18",
       "P1S3M7W19",
       "P1S3M7W20",
-      "P1S3M7W21"
+      "P1S3M7W21",
+      "P1S3M7W22"
     ]
   },
   "by_milestone": {
@@ -426,7 +427,8 @@
       "P1S3M7W18",
       "P1S3M7W19",
       "P1S3M7W20",
-      "P1S3M7W21"
+      "P1S3M7W21",
+      "P1S3M7W22"
     ]
   },
   "item_shards": [
@@ -505,21 +507,14 @@
     {
       "milestone_id": "P1S3M7",
       "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M7.json",
-      "item_count": 21,
-      "bytes": 7331,
-      "sha256": "d15c7a234f2c44de679465b07ef5a3da2853de097032d149576a480f65581423",
-      "file_id": "ni:///sha-256;0Vx6I08sRN5nlGWwfvWj2ihT3glwMtFJV2pID2VYFCM"
+      "item_count": 22,
+      "bytes": 7641,
+      "sha256": "c415a5e48c221cff3f605a60dcc993e8a6d35f15a1b031cf85fa169d10c2565f",
+      "file_id": "ni:///sha-256;xBWl5IwiHP8_YFpg3MmT6KbTXxWhsDHPhfoWnRDCVl8"
     }
   ],
-  "updated_at": "2026-07-10T12:20:00.000Z",
+  "updated_at": "2026-07-10T13:10:00.000Z",
   "latest_closed_work_items": [
-    {
-      "id": "P1S3M7W17",
-      "title": "Public Source Extraction Runtime Service Residual Reduction Gate",
-      "status": "closed",
-      "milestone_id": "P1S3M7",
-      "domain": null
-    },
     {
       "id": "P1S3M7W18",
       "title": "Public Router Cutover Runtime Service Near-God Reduction Gate",
@@ -544,6 +539,13 @@
     {
       "id": "P1S3M7W21",
       "title": "Public Runtime Composer God-File Exit Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M7",
+      "domain": null
+    },
+    {
+      "id": "P1S3M7W22",
+      "title": "Public Target Metadata Service Split Gate",
       "status": "closed",
       "milestone_id": "P1S3M7",
       "domain": null

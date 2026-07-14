@@ -44,7 +44,8 @@
     "P1S3M7W18",
     "P1S3M7W19",
     "P1S3M7W20",
-    "P1S3M7W21"
+    "P1S3M7W21",
+    "P1S3M7W22"
   ],
   "required_check_ids": [
     "source-size-budget",
@@ -76,16 +77,17 @@
     "source-extraction-runtime-service-residual-reduction",
     "router-cutover-runtime-service-near-god-reduction",
     "runtime-surface-service-residual-reduction",
-    "runtime-composer-god-file-exit"
+    "runtime-composer-god-file-exit",
+    "target-metadata-service-split"
   ],
   "remaining_god_files": [
     {
       "path": ".agent-onboard/work-items.json",
       "category": "authority_registry",
-      "current_lines": 1822,
-      "admitted_reason": "W20 reduced source-domain runtime services without increasing god-file count; authority registry growth remains admitted migration debt pending registry compaction.",
-      "next_reduction_gate": "P1S3M7W22",
-      "current_bytes": 52782
+      "current_lines": 1833,
+      "admitted_reason": "W22 adds one compact work item and closure reference while continuing registry compaction pressure under the source-size ratchet.",
+      "next_reduction_gate": "P1S3M7W23",
+      "current_bytes": 53092
     },
     {
       "path": "README.md",
@@ -93,15 +95,15 @@
       "current_lines": 1315,
       "current_bytes": 86801,
       "admitted_reason": "W20 avoided README growth; documentation god file remains admitted public surface debt pending documentation compaction.",
-      "next_reduction_gate": "P1S3M7W22"
+      "next_reduction_gate": "P1S3M7W23"
     },
     {
       "path": ".agent-onboard/source-size-budget-ratchet.json",
       "category": "authority_registry",
       "current_lines": 5000,
       "current_bytes": 200000,
-      "admitted_reason": "W20 reduced source-domain runtime services without increasing god-file count; authority registry growth remains admitted migration debt pending registry compaction.",
-      "next_reduction_gate": "P1S3M7W22",
+      "admitted_reason": "W22 refreshes source-size ratchet metadata for target metadata service split; self-ratchet registry remains admitted migration debt.",
+      "next_reduction_gate": "P1S3M7W23",
       "current_bytes_max": 220000,
       "note": "W21 admits self-ratchet metadata growth under bounded source-size ratchet refresh; this remains migration debt for a later registry compaction gate."
     }
@@ -161,6 +163,18 @@
       "runtime_composer_bytes": 47756,
       "storage_backend_changed": false,
       "next_reduction_gate": "P1S3M7W22"
+    },
+    "w22_update": {
+      "work_item_id": "P1S3M7W22",
+      "god_files_after_w22": 3,
+      "near_god_files_after_w22": 35,
+      "split_service": "cli/agent_onboard/domains/target/services/target-metadata-service.js",
+      "extracted_services": [
+        "cli/agent_onboard/domains/target/services/target-metadata-constants.js",
+        "cli/agent_onboard/domains/target/services/target-metadata-identity-service.js"
+      ],
+      "storage_backend_changed": false,
+      "next_reduction_gate": "P1S3M7W23"
     }
   },
   "evidence": {

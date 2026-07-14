@@ -1817,6 +1817,17 @@
         "note": "Remove runtime-composer.js from the god-file tier without changing the storage backend."
       },
       "closure_ref": "closures:P1S3M7W21"
+    },
+    {
+      "id": "P1S3M7W22",
+      "milestone_id": "P1S3M7",
+      "title": "Public Target Metadata Service Split Gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-10T13:10:00.000Z"
+      },
+      "closure_ref": "closures:P1S3M7W22"
     }
   ]
 }

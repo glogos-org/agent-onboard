@@ -413,6 +413,7 @@ function quickTasks() {
     checkRegistryTask('full test runner service extraction check', 'full-test-runner-service-extraction'),
     checkRegistryTask('CLI runtime planning service extraction check', 'cli-runtime-planning-service-extraction'),
     checkRegistryTask('runtime composer god-file exit check', 'runtime-composer-god-file-exit'),
+    checkRegistryTask('target metadata service split check', 'target-metadata-service-split'),
     npmTask('npm pack dry run', ['pack', '--dry-run', '--json'], expectPackFiles)
   ];
 }

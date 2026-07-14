@@ -1,0 +1,75 @@
+{
+  "schema": "agent-onboard-public-target-metadata-service-split-closure-001",
+  "package_name": "agent-onboard",
+  "version": "0.0.205",
+  "release_line": "public_target_metadata_service_split_gate",
+  "work_item_id": "P1S3M7W22",
+  "status": "closed",
+  "gate": "Public Target Metadata Service Split Gate",
+  "objective": "Split target metadata constants and file identity helpers out of the near-god target metadata service while preserving target metadata plan/check/write behavior.",
+  "closure_result": {
+    "target_metadata_service_split": true,
+    "target_metadata_service_before": {
+      "path": "cli/agent_onboard/domains/target/services/target-metadata-service.js",
+      "lines": 851,
+      "bytes": 35748,
+      "level": "near_god"
+    },
+    "target_metadata_service_after": {
+      "path": "cli/agent_onboard/domains/target/services/target-metadata-service.js",
+      "lines": 725,
+      "bytes": 32035,
+      "level": "near_god"
+    },
+    "remaining_god_files_after_w22": 3,
+    "storage_backend_changed": false
+  },
+  "extracted_services": [
+    {
+      "path": "cli/agent_onboard/domains/target/services/target-metadata-constants.js",
+      "lines": 79,
+      "bytes": 1771
+    },
+    {
+      "path": "cli/agent_onboard/domains/target/services/target-metadata-identity-service.js",
+      "lines": 104,
+      "bytes": 2914
+    }
+  ],
+  "package_surface_updates": {
+    "package_json_files_updated": true,
+    "runtime_contracts_pack_files_updated": true,
+    "release_line": "public_target_metadata_service_split_gate"
+  },
+  "checks_run": [
+    "node scripts/check.js target-metadata-service-split",
+    "node scripts/check.js source-size-budget",
+    "node scripts/check.js god-file-budget-enforcement-closure",
+    "node scripts/check.js state-projection-authority-cutover",
+    "node scripts/check.js closure-payload-reference-compaction",
+    "node cli/agent-onboard.js authority --index-check",
+    "node cli/agent-onboard.js authority --state-check",
+    "node cli/agent-onboard.js release --source-manifest-check",
+    "node cli/agent-onboard.js release --clean-check",
+    "node cli/agent-onboard.js release --check",
+    "node cli/agent-onboard.js architecture --check",
+    "node cli/agent-onboard.js check --fast --json",
+    "node cli/agent-onboard.js work-items --validate .agent-onboard/work-items.json",
+    "npm test",
+    "npm pack --dry-run --json"
+  ],
+  "checks_not_run": [
+    "npm publish was not run."
+  ],
+  "known_non_pass": [],
+  "boundary": {
+    "writes_files": true,
+    "mutates_git": false,
+    "network": false,
+    "publishes_package": false,
+    "storage_backend_changed": false,
+    "sqlite_introduced": false,
+    "lmdb_introduced": false,
+    "mdbx_introduced": false
+  }
+}

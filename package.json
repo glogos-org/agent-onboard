@@ -1,6 +1,6 @@
 {
   "name": "agent-onboard",
-  "version": "0.0.204",
+  "version": "0.0.205",
   "description": "CLI for onboarding and managing target repositories.",
   "license": "Apache-2.0",
   "author": "Thanh Le <vnlemanhthanh@gmail.com>",
@@ -127,7 +127,8 @@
     "check:source-extraction-runtime-service-residual-reduction": "node scripts/check.js source-extraction-runtime-service-residual-reduction",
     "check:router-cutover-runtime-service-near-god-reduction": "node scripts/check.js router-cutover-runtime-service-near-god-reduction",
     "check:runtime-surface-service-residual-reduction": "node scripts/check.js runtime-surface-service-residual-reduction",
-    "check:runtime-composer-god-file-exit": "node scripts/check.js runtime-composer-god-file-exit"
+    "check:runtime-composer-god-file-exit": "node scripts/check.js runtime-composer-god-file-exit",
+    "check:target-metadata-service-split": "node scripts/check.js target-metadata-service-split"
   },
   "bin": {
     "agent-onboard": "cli/agent-onboard.js",
@@ -254,6 +255,8 @@
     "cli/agent_onboard/domains/target/services/target-inventory-service.js",
     "cli/agent_onboard/domains/target/services/target-manifest-service.js",
     "cli/agent_onboard/domains/target/services/target-memory-service.js",
+    "cli/agent_onboard/domains/target/services/target-metadata-constants.js",
+    "cli/agent_onboard/domains/target/services/target-metadata-identity-service.js",
     "cli/agent_onboard/domains/target/services/target-metadata-service.js",
     "cli/agent_onboard/domains/target/services/target-onboarding-service.js",
     "cli/agent_onboard/domains/target/services/target-profile-service.js",

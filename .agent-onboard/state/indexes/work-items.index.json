@@ -6,22 +6,15 @@
   "legacy_root_projection": ".agent-onboard/work-items.json",
   "live_projection": ".agent-onboard/state/live/work-items.json",
   "closure_payload_authority": ".agent-onboard/state/closures/work-items/manifest.json",
-  "item_count": 192,
+  "item_count": 193,
   "open_count": 0,
   "claimed_count": 0,
-  "closed_count": 192,
+  "closed_count": 193,
   "inline_closure_count": 0,
-  "closure_ref_count": 191,
-  "latest_work_item_id": "P1S3M7W21",
-  "latest_closed_work_item_id": "P1S3M7W21",
+  "closure_ref_count": 192,
+  "latest_work_item_id": "P1S3M7W22",
+  "latest_closed_work_item_id": "P1S3M7W22",
   "latest_work_items": [
-    {
-      "id": "P1S3M7W17",
-      "title": "Public Source Extraction Runtime Service Residual Reduction Gate",
-      "status": "closed",
-      "milestone_id": "P1S3M7",
-      "domain": null
-    },
     {
       "id": "P1S3M7W18",
       "title": "Public Router Cutover Runtime Service Near-God Reduction Gate",
@@ -46,6 +39,13 @@
     {
       "id": "P1S3M7W21",
       "title": "Public Runtime Composer God-File Exit Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M7",
+      "domain": null
+    },
+    {
+      "id": "P1S3M7W22",
+      "title": "Public Target Metadata Service Split Gate",
       "status": "closed",
       "milestone_id": "P1S3M7",
       "domain": null
@@ -53,13 +53,6 @@
   ],
   "latest_closed_work_items": [
     {
-      "id": "P1S3M7W17",
-      "title": "Public Source Extraction Runtime Service Residual Reduction Gate",
-      "status": "closed",
-      "milestone_id": "P1S3M7",
-      "domain": null
-    },
-    {
       "id": "P1S3M7W18",
       "title": "Public Router Cutover Runtime Service Near-God Reduction Gate",
       "status": "closed",
@@ -83,6 +76,13 @@
     {
       "id": "P1S3M7W21",
       "title": "Public Runtime Composer God-File Exit Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M7",
+      "domain": null
+    },
+    {
+      "id": "P1S3M7W22",
+      "title": "Public Target Metadata Service Split Gate",
       "status": "closed",
       "milestone_id": "P1S3M7",
       "domain": null
@@ -283,7 +283,8 @@
       "P1S3M7W18",
       "P1S3M7W19",
       "P1S3M7W20",
-      "P1S3M7W21"
+      "P1S3M7W21",
+      "P1S3M7W22"
     ]
   },
   "by_milestone": {
@@ -497,7 +498,8 @@
       "P1S3M7W18",
       "P1S3M7W19",
       "P1S3M7W20",
-      "P1S3M7W21"
+      "P1S3M7W21",
+      "P1S3M7W22"
     ]
   },
   "rebuildable_from": [
@@ -506,7 +508,7 @@
     ".agent-onboard/state/closures/work-items-closures.jsonl",
     ".agent-onboard/state/closures/work-items/manifest.json"
   ],
-  "updated_at": "2026-07-10T12:20:00.000Z",
-  "archived_closure_count": 191,
+  "updated_at": "2026-07-10T13:10:00.000Z",
+  "archived_closure_count": 192,
   "closure_payload_shard_count": 12
 }

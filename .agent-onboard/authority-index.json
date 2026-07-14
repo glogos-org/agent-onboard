@@ -2,7 +2,7 @@
   "schema": "agent-onboard-public-authority-compact-index-001",
   "package_name": "agent-onboard",
   "package_version_source": "package.json#version",
-  "release_line": "public_runtime_composer_god_file_exit_gate",
+  "release_line": "public_target_metadata_service_split_gate",
   "index_file": ".agent-onboard/authority-index.json",
   "first_read_command": "agent-onboard authority --first-read",
   "check_command": "agent-onboard authority --check",
@@ -145,8 +145,8 @@
       "file_path": "package.json",
       "present": true,
       "kind": "file",
-      "bytes": 18764,
-      "file_id": "ni:///sha-256;am1mctrzbApSreHJcN3dJFBr2mis1Bwo3fH9bNgGeNg",
+      "bytes": 19025,
+      "file_id": "ni:///sha-256;YQyUkhkfNnXuJP0QQtlelnZxn8adw4_77hkBQAGHnT8",
       "content_inlined": false
     },
     {
@@ -177,8 +177,8 @@
       "file_path": ".agent-onboard/work-items.json",
       "present": true,
       "kind": "file",
-      "bytes": 52782,
-      "file_id": "ni:///sha-256;pkpIT0jKEkpp6nh2G_OC38XO4_V1R7RvV1Ssdvb_4aI",
+      "bytes": 53092,
+      "file_id": "ni:///sha-256;WT5nmqpAUYSFDXeMRJEAB2roBEZBXozjIeivmmj-RHU",
       "content_inlined": false
     }
   ],
@@ -216,7 +216,7 @@
     "indexed_file_count": 9,
     "present_file_count": 9,
     "missing_file_count": 0,
-    "present_bytes": 150440,
+    "present_bytes": 151011,
     "missing_files": [],
     "excluded_file_count": 7,
     "state_shard_count": 4,

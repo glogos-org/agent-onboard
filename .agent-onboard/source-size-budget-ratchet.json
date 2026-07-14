@@ -1,8 +1,8 @@
 {
   "schema": "agent-onboard-public-source-size-budget-ratchet-001",
   "status": "active",
-  "work_item_id": "P1S3M7W21",
-  "release_line": "public_runtime_composer_god_file_exit_gate",
+  "work_item_id": "P1S3M7W22",
+  "release_line": "public_target_metadata_service_split_gate",
   "ratchet_mode": "no_tracked_growth_beyond_maximum_and_no_new_oversized_files",
   "god_file_thresholds": {
     "god_lines": 1000,
@@ -87,13 +87,13 @@
   "tracked_files": {
     ".agent-onboard/state/closures/work-items-closures.jsonl": {
       "category": "authority_state",
-      "max_lines": 191,
-      "max_bytes": 87415,
+      "max_lines": 192,
+      "max_bytes": 87873,
       "baseline_lines": 168,
       "baseline_bytes": 76889,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+      "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W33",
@@ -301,18 +301,27 @@
           "new_max_lines": 191,
           "previous_max_bytes": 86957,
           "new_max_bytes": 87415
+        },
+        {
+          "work_item_id": "P1S3M7W22",
+          "gate": "Public Target Metadata Service Split Gate",
+          "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
+          "new_max_lines": 192,
+          "new_max_bytes": 87873,
+          "previous_max_lines": 191,
+          "previous_max_bytes": 87415
         }
       ]
     },
     ".agent-onboard/state/live/work-items.json": {
       "category": "authority_state",
       "max_lines": 73,
-      "max_bytes": 2108,
+      "max_bytes": 2085,
       "baseline_lines": 24,
       "baseline_bytes": 849,
       "target_lines": 60,
       "target_bytes": 8192,
-      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+      "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W6",
@@ -410,18 +419,27 @@
           "new_max_lines": 73,
           "previous_max_bytes": 2125,
           "new_max_bytes": 2108
+        },
+        {
+          "work_item_id": "P1S3M7W22",
+          "gate": "Public Target Metadata Service Split Gate",
+          "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
+          "new_max_lines": 73,
+          "new_max_bytes": 2085,
+          "previous_max_lines": 73,
+          "previous_max_bytes": 2108
         }
       ]
     },
     ".agent-onboard/work-items.json": {
       "category": "authority_registry",
-      "max_lines": 1822,
-      "max_bytes": 52782,
+      "max_lines": 1833,
+      "max_bytes": 53092,
       "baseline_lines": 1573,
       "baseline_bytes": 44798,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+      "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W33",
@@ -618,6 +636,15 @@
           "new_max_lines": 1822,
           "previous_max_bytes": 52364,
           "new_max_bytes": 52782
+        },
+        {
+          "work_item_id": "P1S3M7W22",
+          "gate": "Public Target Metadata Service Split Gate",
+          "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
+          "new_max_lines": 1833,
+          "new_max_bytes": 53092,
+          "previous_max_lines": 1822,
+          "previous_max_bytes": 52782
         }
       ]
     },
@@ -777,13 +804,24 @@
     },
     "cli/agent_onboard/domains/target/services/target-metadata-service.js": {
       "category": "runtime_service_source",
-      "max_lines": 871,
-      "max_bytes": 43940,
+      "max_lines": 724,
+      "max_bytes": 32001,
       "baseline_lines": 851,
       "baseline_bytes": 35748,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "existing oversized file admitted as clean-and-compaction migration debt"
+      "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W22",
+          "gate": "Public Target Metadata Service Split Gate",
+          "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
+          "new_max_lines": 724,
+          "new_max_bytes": 32001,
+          "previous_max_lines": 871,
+          "previous_max_bytes": 43940
+        }
+      ]
     },
     "cli/agent_onboard/domains/work-items/services/work-items-service.js": {
       "category": "runtime_service_source",
@@ -1103,7 +1141,7 @@
       "baseline_bytes": 5085,
       "target_lines": 700,
       "target_bytes": 65536,
-      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+      "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W34",
@@ -1181,6 +1219,15 @@
           "new_max_lines": 146,
           "previous_max_bytes": 5894,
           "new_max_bytes": 5895
+        },
+        {
+          "work_item_id": "P1S3M7W22",
+          "gate": "Public Target Metadata Service Split Gate",
+          "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
+          "new_max_lines": 146,
+          "new_max_bytes": 5895,
+          "previous_max_lines": 146,
+          "previous_max_bytes": 5895
         }
       ]
     },
@@ -1192,7 +1239,7 @@
       "baseline_bytes": 4384,
       "target_lines": 700,
       "target_bytes": 65536,
-      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+      "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W1",
@@ -1263,6 +1310,15 @@
           "new_max_lines": 126,
           "previous_max_bytes": 5068,
           "new_max_bytes": 5069
+        },
+        {
+          "work_item_id": "P1S3M7W22",
+          "gate": "Public Target Metadata Service Split Gate",
+          "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
+          "new_max_lines": 126,
+          "new_max_bytes": 5069,
+          "previous_max_lines": 126,
+          "previous_max_bytes": 5069
         }
       ]
     },
@@ -1278,13 +1334,13 @@
     },
     "scripts/checks/registry.js": {
       "category": "check_script",
-      "max_lines": 73,
-      "max_bytes": 4429,
+      "max_lines": 74,
+      "max_bytes": 4500,
       "baseline_lines": 67,
       "baseline_bytes": 3719,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W21 moves runtime shared context and public architecture composition wiring out of runtime-composer.js, removing runtime composer from the god-file tier without changing storage backend.",
+      "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W34",
@@ -1454,6 +1510,15 @@
           "new_max_lines": 73,
           "previous_max_bytes": 4356,
           "new_max_bytes": 4429
+        },
+        {
+          "work_item_id": "P1S3M7W22",
+          "gate": "Public Target Metadata Service Split Gate",
+          "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
+          "new_max_lines": 74,
+          "new_max_bytes": 4500,
+          "previous_max_lines": 73,
+          "previous_max_bytes": 4429
         }
       ]
     },
@@ -1469,13 +1534,13 @@
     },
     ".agent-onboard/god-file-budget-enforcement-closure.json": {
       "category": "authority_registry",
-      "max_lines": 225,
-      "max_bytes": 7646,
+      "max_lines": 239,
+      "max_bytes": 8150,
       "baseline_lines": 105,
       "baseline_bytes": 3859,
       "target_lines": 220,
       "target_bytes": 32768,
-      "reason": "W21 refreshes god-file budget artifact after admitted residual god file metrics update.",
+      "reason": "W22 refreshes god-file admitted migration debt after target metadata service split.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W1",
@@ -1588,6 +1653,13 @@
           "new_max_lines": 225,
           "previous_max_bytes": 7605,
           "new_max_bytes": 7605
+        },
+        {
+          "work_item_id": "P1S3M7W22",
+          "gate": "Public Target Metadata Service Split Gate",
+          "reason": "W22 refreshes god-file admitted migration debt after target metadata service split.",
+          "new_max_lines": 239,
+          "new_max_bytes": 8150
         }
       ]
     },
@@ -1626,13 +1698,13 @@
     },
     ".agent-onboard/source-size-budget-ratchet.json": {
       "category": "authority_registry",
-      "max_lines": 4609,
-      "max_bytes": 201959,
+      "max_lines": 4585,
+      "max_bytes": 199900,
       "baseline_lines": 2575,
       "baseline_bytes": 104100,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W21 admits source-size ratchet growth caused by service extraction, historical check refresh, and fast-runner stabilization.",
+      "reason": "W22 splits target metadata service and refreshes source-size/god-file ratchets.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W2",
@@ -1905,6 +1977,15 @@
           "new_max_lines": 4088,
           "previous_max_bytes": 177850,
           "new_max_bytes": 177959
+        },
+        {
+          "work_item_id": "P1S3M7W22",
+          "gate": "Public Target Metadata Service Split Gate",
+          "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
+          "previous_max_lines": 4609,
+          "new_max_lines": 4359,
+          "previous_max_bytes": 201959,
+          "new_max_bytes": 189959
         }
       ],
       "current_bytes_max": 177850,
@@ -2200,8 +2281,8 @@
     },
     ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M7.json": {
       "category": "authority_state",
-      "max_lines": 229,
-      "max_bytes": 7331,
+      "max_lines": 240,
+      "max_bytes": 7641,
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W5",
@@ -2353,18 +2434,27 @@
           "new_max_lines": 229,
           "previous_max_bytes": 6913,
           "new_max_bytes": 7331
+        },
+        {
+          "work_item_id": "P1S3M7W22",
+          "gate": "Public Target Metadata Service Split Gate",
+          "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
+          "new_max_lines": 240,
+          "new_max_bytes": 7641,
+          "previous_max_lines": 229,
+          "previous_max_bytes": 7331
         }
       ],
       "target_lines": 500,
       "target_bytes": 65536,
       "baseline_lines": 85,
       "baseline_bytes": 2599,
-      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage."
+      "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage."
     },
     ".agent-onboard/state/authority/work-items/items/index.json": {
       "category": "authority_state",
-      "max_lines": 553,
-      "max_bytes": 12561,
+      "max_lines": 554,
+      "max_bytes": 12550,
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W5",
@@ -2516,13 +2606,22 @@
           "new_max_lines": 553,
           "previous_max_bytes": 12514,
           "new_max_bytes": 12561
+        },
+        {
+          "work_item_id": "P1S3M7W22",
+          "gate": "Public Target Metadata Service Split Gate",
+          "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
+          "new_max_lines": 554,
+          "new_max_bytes": 12550,
+          "previous_max_lines": 553,
+          "previous_max_bytes": 12561
         }
       ],
       "target_lines": 500,
       "target_bytes": 65536,
       "baseline_lines": 484,
       "baseline_bytes": 10953,
-      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage."
+      "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage."
     },
     ".agent-onboard/state/authority/work-items/manifest.json": {
       "category": "authority_state",
@@ -2580,18 +2679,27 @@
           "new_max_lines": 124,
           "previous_max_bytes": 5215,
           "new_max_bytes": 5215
+        },
+        {
+          "work_item_id": "P1S3M7W22",
+          "gate": "Public Target Metadata Service Split Gate",
+          "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
+          "new_max_lines": 124,
+          "new_max_bytes": 5215,
+          "previous_max_lines": 124,
+          "previous_max_bytes": 5215
         }
       ],
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+      "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
       "baseline_lines": 124,
       "baseline_bytes": 5215
     },
     ".agent-onboard/state/indexes/work-items.index.json": {
       "category": "authority_state",
-      "max_lines": 512,
-      "max_bytes": 10474,
+      "max_lines": 514,
+      "max_bytes": 10466,
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W5",
@@ -2653,18 +2761,27 @@
           "new_max_lines": 512,
           "previous_max_bytes": 11365,
           "new_max_bytes": 10474
+        },
+        {
+          "work_item_id": "P1S3M7W22",
+          "gate": "Public Target Metadata Service Split Gate",
+          "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
+          "new_max_lines": 514,
+          "new_max_bytes": 10466,
+          "previous_max_lines": 512,
+          "previous_max_bytes": 10474
         }
       ],
       "target_lines": 700,
       "target_bytes": 65536,
-      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+      "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
       "baseline_lines": 524,
       "baseline_bytes": 11312
     },
     ".agent-onboard/work-items.index.json": {
       "category": "authority_registry",
       "max_lines": 53,
-      "max_bytes": 1469,
+      "max_bytes": 1446,
       "target_lines": 500,
       "target_bytes": 65536,
       "ratchet_history": [
@@ -2737,9 +2854,18 @@
           "new_max_lines": 53,
           "previous_max_bytes": 1486,
           "new_max_bytes": 1469
+        },
+        {
+          "work_item_id": "P1S3M7W22",
+          "gate": "Public Target Metadata Service Split Gate",
+          "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
+          "new_max_lines": 53,
+          "new_max_bytes": 1446,
+          "previous_max_lines": 53,
+          "previous_max_bytes": 1469
         }
       ],
-      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+      "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
       "baseline_lines": 53,
       "baseline_bytes": 1436
     },
@@ -2880,9 +3006,18 @@
           "new_max_lines": 56,
           "previous_max_bytes": 1948,
           "new_max_bytes": 1877
+        },
+        {
+          "work_item_id": "P1S3M7W22",
+          "gate": "Public Target Metadata Service Split Gate",
+          "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
+          "new_max_lines": 56,
+          "new_max_bytes": 1877,
+          "previous_max_lines": 56,
+          "previous_max_bytes": 1877
         }
       ],
-      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+      "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
       "baseline_lines": 56,
       "baseline_bytes": 1871
     },
@@ -2951,9 +3086,18 @@
           "new_max_lines": 71,
           "previous_max_bytes": 2506,
           "new_max_bytes": 2484
+        },
+        {
+          "work_item_id": "P1S3M7W22",
+          "gate": "Public Target Metadata Service Split Gate",
+          "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
+          "new_max_lines": 71,
+          "new_max_bytes": 2484,
+          "previous_max_lines": 71,
+          "previous_max_bytes": 2484
         }
       ],
-      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+      "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
       "baseline_lines": 71,
       "baseline_bytes": 2489
     },
@@ -3095,9 +3239,18 @@
           "new_max_lines": 247,
           "previous_max_bytes": 7527,
           "new_max_bytes": 7505
+        },
+        {
+          "work_item_id": "P1S3M7W22",
+          "gate": "Public Target Metadata Service Split Gate",
+          "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
+          "new_max_lines": 247,
+          "new_max_bytes": 7505,
+          "previous_max_lines": 247,
+          "previous_max_bytes": 7505
         }
       ],
-      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+      "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
       "baseline_lines": 247,
       "baseline_bytes": 7510
     },
@@ -3606,11 +3759,20 @@
           "new_max_lines": 26,
           "previous_max_bytes": 1047,
           "new_max_bytes": 1047
+        },
+        {
+          "work_item_id": "P1S3M7W22",
+          "gate": "Public Target Metadata Service Split Gate",
+          "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
+          "new_max_lines": 26,
+          "new_max_bytes": 1047,
+          "previous_max_lines": 26,
+          "previous_max_bytes": 1047
         }
       ],
       "max_lines": 26,
       "max_bytes": 1047,
-      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage."
+      "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage."
     },
     ".agent-onboard/readme-history.index.json": {
       "category": "authority_registry",
@@ -3714,11 +3876,20 @@
           "new_max_lines": 524,
           "previous_max_bytes": 24676,
           "new_max_bytes": 24819
+        },
+        {
+          "work_item_id": "P1S3M7W22",
+          "gate": "Public Target Metadata Service Split Gate",
+          "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
+          "new_max_lines": 526,
+          "new_max_bytes": 24977,
+          "previous_max_lines": 524,
+          "previous_max_bytes": 24819
         }
       ],
-      "max_lines": 524,
-      "max_bytes": 24819,
-      "reason": "W21 moves runtime shared context and public architecture composition wiring out of runtime-composer.js, removing runtime composer from the god-file tier without changing storage backend."
+      "max_lines": 526,
+      "max_bytes": 24977,
+      "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage."
     },
     "package.json": {
       "category": "root_json",
@@ -3778,11 +3949,20 @@
           "new_max_lines": 278,
           "previous_max_bytes": 18499,
           "new_max_bytes": 18764
+        },
+        {
+          "work_item_id": "P1S3M7W22",
+          "gate": "Public Target Metadata Service Split Gate",
+          "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
+          "new_max_lines": 281,
+          "new_max_bytes": 19025,
+          "previous_max_lines": 278,
+          "previous_max_bytes": 18764
         }
       ],
-      "max_lines": 278,
-      "max_bytes": 18764,
-      "reason": "W21 moves runtime shared context and public architecture composition wiring out of runtime-composer.js, removing runtime composer from the god-file tier without changing storage backend."
+      "max_lines": 281,
+      "max_bytes": 19025,
+      "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage."
     },
     ".agent-onboard/architecture-runtime-service-residual-reduction.json": {
       "category": "authority_registry",
@@ -4087,13 +4267,13 @@
     },
     ".agent-onboard/state/closures/work-items/payloads/by-milestone/P1S3M7/part-002.jsonl": {
       "category": "authority_state",
-      "max_lines": 3,
-      "max_bytes": 10959,
+      "max_lines": 4,
+      "max_bytes": 13660,
       "baseline_lines": 1,
       "baseline_bytes": 4074,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage.",
+      "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W21",
@@ -4103,6 +4283,15 @@
           "new_max_lines": 3,
           "previous_max_bytes": 7907,
           "new_max_bytes": 10959
+        },
+        {
+          "work_item_id": "P1S3M7W22",
+          "gate": "Public Target Metadata Service Split Gate",
+          "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
+          "new_max_lines": 4,
+          "new_max_bytes": 13660,
+          "previous_max_lines": 3,
+          "previous_max_bytes": 10959
         }
       ]
     },
@@ -4217,11 +4406,20 @@
           "new_max_lines": 35,
           "previous_max_bytes": null,
           "new_max_bytes": 1137
+        },
+        {
+          "work_item_id": "P1S3M7W22",
+          "gate": "Public Target Metadata Service Split Gate",
+          "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
+          "new_max_lines": 35,
+          "new_max_bytes": 1137,
+          "previous_max_lines": 35,
+          "previous_max_bytes": 1137
         }
       ],
       "max_lines": 35,
       "max_bytes": 1137,
-      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage."
+      "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage."
     },
     ".agent-onboard/state/events/work-items.jsonl": {
       "category": "authority_state",
@@ -4259,11 +4457,20 @@
           "new_max_lines": 591,
           "previous_max_bytes": null,
           "new_max_bytes": 37871
+        },
+        {
+          "work_item_id": "P1S3M7W22",
+          "gate": "Public Target Metadata Service Split Gate",
+          "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
+          "new_max_lines": 592,
+          "new_max_bytes": 37966,
+          "previous_max_lines": 591,
+          "previous_max_bytes": 37871
         }
       ],
-      "max_lines": 591,
-      "max_bytes": 37871,
-      "reason": "W21 refreshes authority, closure, work-item, and gate metadata for the runtime-composer god-file exit while preserving JSON/JSONL storage."
+      "max_lines": 592,
+      "max_bytes": 37966,
+      "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage."
     },
     "scripts/checks/runtime-composer-residual-slice-reduction.js": {
       "max_lines": 129,
@@ -4274,6 +4481,25 @@
       "max_lines": 544,
       "max_bytes": 27930,
       "reason": "W21 raises fast-runner timeout budgets so quick suite remains stable after release integrity work expands under parallel load."
+    },
+    ".agent-onboard/target-metadata-service-split.json": {
+      "category": "authority_registry",
+      "baseline_lines": 75,
+      "baseline_bytes": 2734,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "max_lines": 75,
+      "max_bytes": 2734,
+      "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W22",
+          "gate": "Public Target Metadata Service Split Gate",
+          "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
+          "new_max_lines": 75,
+          "new_max_bytes": 2734
+        }
+      ]
     }
   },
   "report": {
