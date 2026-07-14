@@ -3,7 +3,7 @@
   "package_name": "agent-onboard",
   "source": "sharded_work_items_authority",
   "milestone_id": "P1S3M7",
-  "item_count": 6,
+  "item_count": 7,
   "items": [
     {
       "id": "P1S3M7W1",
@@ -73,6 +73,13 @@
         "claimed_at": "2026-07-09T07:25:31.208Z"
       },
       "closure_ref": "closures:P1S3M7W6"
+    },
+    {
+      "id": "P1S3M7W7",
+      "milestone_id": "P1S3M7",
+      "title": "Public Release Check Service Extraction Gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M7W7"
     }
   ]
 }

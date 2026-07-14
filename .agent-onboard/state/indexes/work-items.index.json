@@ -12,14 +12,14 @@
     ".agent-onboard/state/closures/work-items-closures.jsonl",
     ".agent-onboard/state/closures/work-items/manifest.json"
   ],
-  "item_count": 177,
+  "item_count": 178,
   "open_count": 0,
   "claimed_count": 0,
-  "closed_count": 177,
-  "latest_closed_work_item_id": "P1S3M7W6",
-  "archived_closure_count": 176,
+  "closed_count": 178,
+  "latest_closed_work_item_id": "P1S3M7W7",
+  "archived_closure_count": 177,
   "inline_closure_count": 0,
-  "closure_ref_count": 176,
+  "closure_ref_count": 177,
   "closure_payload_shard_count": 11,
   "by_status": {
     "open": [],
@@ -201,7 +201,8 @@
       "P1S3M7W3",
       "P1S3M7W4",
       "P1S3M7W5",
-      "P1S3M7W6"
+      "P1S3M7W6",
+      "P1S3M7W7"
     ]
   },
   "by_milestone": {
@@ -522,17 +523,6 @@
   "latest_work_item_id": "P1S3M7W6",
   "latest_work_items": [
     {
-      "id": "P1S3M7W2",
-      "milestone_id": "P1S3M7",
-      "title": "Public Target Command Runner Extraction Gate",
-      "status": "closed",
-      "claim": {
-        "actor": "gpt-5.5-thinking",
-        "claimed_at": "2026-07-08T18:57:10.972Z"
-      },
-      "closure_ref": "closures:P1S3M7W2"
-    },
-    {
       "id": "P1S3M7W3",
       "milestone_id": "P1S3M7",
       "title": "Public Exact Artifact Oracle Service Extraction Gate",
@@ -577,6 +567,13 @@
         "claimed_at": "2026-07-09T07:25:31.208Z"
       },
       "closure_ref": "closures:P1S3M7W6"
+    },
+    {
+      "id": "P1S3M7W7",
+      "milestone_id": "P1S3M7",
+      "title": "Public Release Check Service Extraction Gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M7W7"
     }
   ]
 }

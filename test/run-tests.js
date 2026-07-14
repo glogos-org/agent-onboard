@@ -403,6 +403,7 @@ function quickTasks() {
     checkRegistryTask('target onboarding acceptance service extraction check', 'target-onboarding-acceptance-service-extraction'),
     checkRegistryTask('core surface command runner extraction check', 'core-surface-command-runner-extraction'),
     checkRegistryTask('architecture command runner extraction check', 'architecture-command-runner-extraction'),
+    checkRegistryTask('release check service extraction check', 'release-check-service-extraction'),
     npmTask('npm pack dry run', ['pack', '--dry-run', '--json'], expectPackFiles)
   ];
 }

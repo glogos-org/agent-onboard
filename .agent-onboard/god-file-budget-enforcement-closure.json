@@ -50,24 +50,26 @@
     "target-command-runner-extraction",
     "exact-artifact-oracle-service-extraction",
     "target-onboarding-acceptance-service-extraction",
-    "architecture-command-runner-extraction"
+    "architecture-command-runner-extraction",
+    "core-surface-command-runner-extraction",
+    "release-check-service-extraction"
   ],
   "remaining_god_files": [
     {
       "path": "cli/agent_onboard/runtime-composer.js",
       "category": "runtime_source",
-      "current_lines": 5036,
-      "current_bytes": 288088,
-      "admitted_reason": "runtime composer remains admitted residual command composition debt after W6 architecture command runner extraction",
-      "next_reduction_gate": "P1S3M7W7"
+      "current_lines": 4876,
+      "current_bytes": 274048,
+      "admitted_reason": "runtime composer remains admitted residual command composition debt after W7 release check service extraction reduced it to a lower ratchet ceiling",
+      "next_reduction_gate": "P1S3M7W8"
     },
     {
       "path": ".agent-onboard/work-items.json",
       "category": "authority_registry",
-      "current_lines": 1671,
-      "admitted_reason": "public work item ledger projection remains admitted migration debt after W6 closure append; authoritative shards remain the default compact read path",
-      "next_reduction_gate": "P1S3M7W7",
-      "current_bytes": 47854
+      "current_lines": 1678,
+      "admitted_reason": "public work item ledger projection remains admitted migration debt after W7 closure append; authoritative shards remain the default compact read path",
+      "next_reduction_gate": "P1S3M7W8",
+      "current_bytes": 48053
     },
     {
       "path": "cli/agent_onboard/domains/architecture/services/runtime/architecture-runtime-service.js",
@@ -99,7 +101,7 @@
       "current_lines": 1087,
       "current_bytes": 68279,
       "admitted_reason": "source extraction orchestration still combines scan, validation, and installed fallback logic",
-      "next_reduction_gate": "P1S3M7W7"
+      "next_reduction_gate": "P1S3M7W8"
     }
   ],
   "closure_result": {

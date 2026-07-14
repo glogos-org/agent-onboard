@@ -386,6 +386,7 @@ const PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES = Object.freeze([
   'cli/agent_onboard/domains/package/services/package-service.js',
   'cli/agent_onboard/domains/package/services/package-surface-service.js',
   'cli/agent_onboard/domains/package/services/public-runtime-release-service.js',
+  'cli/agent_onboard/domains/package/services/public-release-check-service.js',
   'cli/agent_onboard/domains/package/services/exact-artifact-oracle-service.js',
   'cli/agent_onboard/domains/package/services/target-onboarding-acceptance-service.js',
   'cli/agent_onboard/domains/package/services/release-clean-closed-gates-runtime-slice-service.js',

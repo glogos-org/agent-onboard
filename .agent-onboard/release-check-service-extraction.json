@@ -1,0 +1,60 @@
+{
+  "schema": "agent-onboard-public-release-check-service-extraction-001",
+  "status": "closed",
+  "package_name": "agent-onboard",
+  "version": "0.0.190",
+  "release_line": "public_runtime_guard_service_decomposition_gate",
+  "milestone_id": "P1S3M7",
+  "work_item_id": "P1S3M7W7",
+  "title": "Public Release Check Service Extraction Gate",
+  "purpose": "Reduce residual runtime composer release aggregation debt by moving public release check aggregation into a bounded package domain service.",
+  "extracted_service": {
+    "path": "cli/agent_onboard/domains/package/services/public-release-check-service.js",
+    "export": "createPublicReleaseCheckService",
+    "owned_runtime_function": "publicReleaseCheck"
+  },
+  "reduction": {
+    "runtime_composer_before": {
+      "path": "cli/agent_onboard/runtime-composer.js",
+      "lines": 5036,
+      "bytes": 288088
+    },
+    "runtime_composer_after": {
+      "path": "cli/agent_onboard/runtime-composer.js",
+      "lines": 4876,
+      "bytes": 274048
+    },
+    "extracted_service": {
+      "path": "cli/agent_onboard/domains/package/services/public-release-check-service.js",
+      "lines": 263,
+      "bytes": 17876
+    },
+    "runtime_composer_line_delta": -160,
+    "runtime_composer_byte_delta": -14040
+  },
+  "admission": {
+    "package_files_includes_service": true,
+    "runtime_contracts_pack_files_includes_service": true,
+    "clean_compaction_budget_admits_one_packaged_service": true,
+    "release_check_behavior_preserved": true
+  },
+  "checks": [
+    "node scripts/check.js release-check-service-extraction",
+    "node scripts/check.js architecture-command-runner-extraction",
+    "node scripts/check.js source-size-budget",
+    "node scripts/check.js god-file-budget-enforcement-closure",
+    "node cli/agent-onboard.js release --check",
+    "node cli/agent-onboard.js check --fast --json",
+    "npm pack --dry-run --json"
+  ],
+  "boundary": {
+    "storage_backend": "json_jsonl_text_first_unchanged",
+    "sqlite_introduced": false,
+    "lmdb_introduced": false,
+    "mdbx_introduced": false,
+    "network": false,
+    "git_mutation": false,
+    "package_publish": false
+  },
+  "next_runtime_composer_reduction_gate": "P1S3M7W8"
+}

@@ -1666,6 +1666,13 @@
         "claimed_at": "2026-07-09T07:25:31.208Z"
       },
       "closure_ref": "closures:P1S3M7W6"
+    },
+    {
+      "id": "P1S3M7W7",
+      "milestone_id": "P1S3M7",
+      "title": "Public Release Check Service Extraction Gate",
+      "status": "closed",
+      "closure_ref": "closures:P1S3M7W7"
     }
   ]
 }
