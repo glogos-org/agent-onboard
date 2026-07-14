@@ -1,8 +1,8 @@
 {
   "schema": "agent-onboard-public-source-size-budget-ratchet-001",
   "status": "active",
-  "work_item_id": "P1S3M7W15",
-  "release_line": "public_source_module_residual_service_extraction_gate",
+  "work_item_id": "P1S3M7W16",
+  "release_line": "public_architecture_runtime_service_residual_reduction_gate",
   "ratchet_mode": "no_tracked_growth_beyond_maximum_and_no_new_oversized_files",
   "god_file_thresholds": {
     "god_lines": 1000,
@@ -87,13 +87,13 @@
   "tracked_files": {
     ".agent-onboard/state/closures/work-items-closures.jsonl": {
       "category": "authority_state",
-      "max_lines": 185,
-      "max_bytes": 84664,
+      "max_lines": 186,
+      "max_bytes": 85123,
       "baseline_lines": 168,
       "baseline_bytes": 76889,
       "target_lines": 200,
       "target_bytes": 65536,
-      "reason": "W15 appends one compact closure reference row.",
+      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W33",
@@ -247,18 +247,27 @@
           "reason": "W15 appends one compact closure reference row.",
           "new_max_lines": 185,
           "new_max_bytes": 84664
+        },
+        {
+          "work_item_id": "P1S3M7W16",
+          "gate": "Public Architecture Runtime Service Residual Reduction Gate",
+          "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+          "previous_max_lines": 185,
+          "new_max_lines": 186,
+          "previous_max_bytes": 84664,
+          "new_max_bytes": 85123
         }
       ]
     },
     ".agent-onboard/state/live/work-items.json": {
       "category": "authority_state",
       "max_lines": 73,
-      "max_bytes": 2075,
+      "max_bytes": 2083,
       "baseline_lines": 24,
       "baseline_bytes": 849,
       "target_lines": 60,
       "target_bytes": 8192,
-      "reason": "W15 refreshes compact live work-item projection.",
+      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W6",
@@ -311,18 +320,27 @@
           "reason": "W15 refreshes compact live work-item projection.",
           "new_max_lines": 73,
           "new_max_bytes": 2075
+        },
+        {
+          "work_item_id": "P1S3M7W16",
+          "gate": "Public Architecture Runtime Service Residual Reduction Gate",
+          "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+          "previous_max_lines": 73,
+          "new_max_lines": 73,
+          "previous_max_bytes": 2075,
+          "new_max_bytes": 2083
         }
       ]
     },
     ".agent-onboard/work-items.json": {
       "category": "authority_registry",
-      "max_lines": 1758,
-      "max_bytes": 50721,
+      "max_lines": 1770,
+      "max_bytes": 51161,
       "baseline_lines": 1573,
       "baseline_bytes": 44798,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W15 closes one work item in the compatibility root projection.",
+      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W33",
@@ -474,6 +492,15 @@
           "reason": "W15 closes one work item in the compatibility root projection.",
           "new_max_lines": 1758,
           "new_max_bytes": 50721
+        },
+        {
+          "work_item_id": "P1S3M7W16",
+          "gate": "Public Architecture Runtime Service Residual Reduction Gate",
+          "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+          "previous_max_lines": 1758,
+          "new_max_lines": 1770,
+          "previous_max_bytes": 50721,
+          "new_max_bytes": 51161
         }
       ]
     },
@@ -509,13 +536,24 @@
     },
     "cli/agent_onboard/domains/architecture/services/runtime/architecture-runtime-service.js": {
       "category": "runtime_service_source",
-      "max_lines": 1564,
-      "max_bytes": 94154,
+      "max_lines": 297,
+      "max_bytes": 11870,
       "baseline_lines": 1544,
       "baseline_bytes": 85962,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "existing oversized file admitted as clean-and-compaction migration debt"
+      "reason": "W16 ratchets architecture runtime coordinator down after extracting router facade, authority state, first-read, namespace, rehearsal, and transition behavior.",
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W16",
+          "gate": "Public Architecture Runtime Service Residual Reduction Gate",
+          "reason": "W16 ratchets architecture runtime coordinator down after extracting router facade, authority state, first-read, namespace, rehearsal, and transition behavior.",
+          "previous_max_lines": 1564,
+          "new_max_lines": 297,
+          "previous_max_bytes": 94154,
+          "new_max_bytes": 11870
+        }
+      ]
     },
     "cli/agent_onboard/domains/architecture/services/source-domains/claims-source-domain-service.js": {
       "category": "runtime_service_source",
@@ -911,13 +949,13 @@
     },
     ".agent-onboard/state/closures/work-items/manifest.json": {
       "category": "authority_state",
-      "max_lines": 136,
-      "max_bytes": 5502,
+      "max_lines": 137,
+      "max_bytes": 5523,
       "baseline_lines": 126,
       "baseline_bytes": 5085,
       "target_lines": 700,
       "target_bytes": 65536,
-      "reason": "W15 refreshes closure payload manifest digests.",
+      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W34",
@@ -959,6 +997,15 @@
           "reason": "W15 refreshes closure payload manifest digests.",
           "new_max_lines": 136,
           "new_max_bytes": 5502
+        },
+        {
+          "work_item_id": "P1S3M7W16",
+          "gate": "Public Architecture Runtime Service Residual Reduction Gate",
+          "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+          "previous_max_lines": 136,
+          "new_max_lines": 137,
+          "previous_max_bytes": 5502,
+          "new_max_bytes": 5523
         }
       ]
     },
@@ -1029,13 +1076,13 @@
     },
     "scripts/checks/registry.js": {
       "category": "check_script",
-      "max_lines": 67,
-      "max_bytes": 3719,
+      "max_lines": 68,
+      "max_bytes": 3826,
       "baseline_lines": 67,
       "baseline_bytes": 3719,
       "target_lines": 250,
       "target_bytes": 32768,
-      "reason": "W15 admits one additional public check id for source-module residual service extraction.",
+      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W34",
@@ -1160,6 +1207,15 @@
           "new_max_lines": 67,
           "previous_max_bytes": 3624,
           "new_max_bytes": 3719
+        },
+        {
+          "work_item_id": "P1S3M7W16",
+          "gate": "Public Architecture Runtime Service Residual Reduction Gate",
+          "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+          "previous_max_lines": 67,
+          "new_max_lines": 68,
+          "previous_max_bytes": 3719,
+          "new_max_bytes": 3826
         }
       ]
     },
@@ -1175,13 +1231,13 @@
     },
     ".agent-onboard/god-file-budget-enforcement-closure.json": {
       "category": "authority_registry",
-      "max_lines": 134,
-      "max_bytes": 5161,
+      "max_lines": 135,
+      "max_bytes": 5051,
       "baseline_lines": 105,
       "baseline_bytes": 3859,
       "target_lines": 220,
       "target_bytes": 32768,
-      "reason": "W15 refreshes god-file enforcement ledger after service split.",
+      "reason": "W16 refreshes admitted god-file budget after removing architecture runtime service from god-file set.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W1",
@@ -1231,6 +1287,15 @@
           "reason": "W15 refreshes god-file enforcement ledger after service split.",
           "new_max_lines": 134,
           "new_max_bytes": 5161
+        },
+        {
+          "work_item_id": "P1S3M7W16",
+          "gate": "Public Architecture Runtime Service Residual Reduction Gate",
+          "reason": "W16 refreshes admitted god-file budget after removing architecture runtime service from god-file set.",
+          "previous_max_lines": 134,
+          "new_max_lines": 135,
+          "previous_max_bytes": 5161,
+          "new_max_bytes": 5051
         }
       ]
     },
@@ -1269,13 +1334,13 @@
     },
     ".agent-onboard/source-size-budget-ratchet.json": {
       "category": "authority_registry",
-      "max_lines": 3093,
-      "max_bytes": 135256,
+      "max_lines": 3450,
+      "max_bytes": 150000,
       "baseline_lines": 2575,
       "baseline_bytes": 104100,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W15 admits source-size ratchet metadata growth for split service tracking and state refresh.",
+      "reason": "W16 records architecture runtime residual split and admits bounded ratchet metadata growth with headroom to avoid self-referential churn.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W2",
@@ -1458,6 +1523,33 @@
           "reason": "Admit tracked budget entries for W15 service, checker, artifact, and .gitignore local-state policy.",
           "new_max_lines": 2575,
           "new_max_bytes": 104100
+        },
+        {
+          "work_item_id": "P1S3M7W16",
+          "gate": "Public Architecture Runtime Service Residual Reduction Gate",
+          "reason": "W16 records architecture runtime residual split and updated exact file budgets.",
+          "previous_max_lines": 3093,
+          "new_max_lines": 3226,
+          "previous_max_bytes": 135256,
+          "new_max_bytes": 134320
+        },
+        {
+          "work_item_id": "P1S3M7W16",
+          "gate": "Public Architecture Runtime Service Residual Reduction Gate",
+          "reason": "W16 records architecture runtime residual split and updated exact file budgets.",
+          "previous_max_lines": 3226,
+          "new_max_lines": 3235,
+          "previous_max_bytes": 134320,
+          "new_max_bytes": 134696
+        },
+        {
+          "work_item_id": "P1S3M7W16",
+          "gate": "Public Architecture Runtime Service Residual Reduction Gate",
+          "reason": "W16 records architecture runtime residual split and updated exact file budgets.",
+          "previous_max_lines": 3235,
+          "new_max_lines": 3244,
+          "previous_max_bytes": 134696,
+          "new_max_bytes": 135085
         }
       ]
     },
@@ -1566,8 +1658,8 @@
     },
     ".agent-onboard/state/closures/work-items/payloads/by-milestone/P1S3M7/part-001.jsonl": {
       "category": "authority_state",
-      "max_lines": 15,
-      "max_bytes": 42600,
+      "max_lines": 16,
+      "max_bytes": 46699,
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W5",
@@ -1713,18 +1805,27 @@
           "reason": "W15 appends one payload closure record.",
           "new_max_lines": 15,
           "new_max_bytes": 42600
+        },
+        {
+          "work_item_id": "P1S3M7W16",
+          "gate": "Public Architecture Runtime Service Residual Reduction Gate",
+          "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+          "previous_max_lines": 15,
+          "new_max_lines": 16,
+          "previous_max_bytes": 42600,
+          "new_max_bytes": 46699
         }
       ],
       "target_lines": 20,
       "target_bytes": 65536,
       "baseline_lines": 7,
       "baseline_bytes": 17395,
-      "reason": "W15 appends one payload closure record."
+      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend."
     },
     ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M7.json": {
       "category": "authority_state",
-      "max_lines": 165,
-      "max_bytes": 5268,
+      "max_lines": 177,
+      "max_bytes": 5708,
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W5",
@@ -1831,18 +1932,27 @@
           "reason": "W15 adds one item to the P1S3M7 authority shard.",
           "new_max_lines": 165,
           "new_max_bytes": 5268
+        },
+        {
+          "work_item_id": "P1S3M7W16",
+          "gate": "Public Architecture Runtime Service Residual Reduction Gate",
+          "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+          "previous_max_lines": 165,
+          "new_max_lines": 177,
+          "previous_max_bytes": 5268,
+          "new_max_bytes": 5708
         }
       ],
       "target_lines": 500,
       "target_bytes": 65536,
       "baseline_lines": 85,
       "baseline_bytes": 2599,
-      "reason": "W15 adds one item to the P1S3M7 authority shard."
+      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend."
     },
     ".agent-onboard/state/authority/work-items/items/index.json": {
       "category": "authority_state",
-      "max_lines": 503,
-      "max_bytes": 11310,
+      "max_lines": 505,
+      "max_bytes": 11348,
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W5",
@@ -1949,13 +2059,22 @@
           "reason": "W15 refreshes the sharded work-item authority index.",
           "new_max_lines": 503,
           "new_max_bytes": 11310
+        },
+        {
+          "work_item_id": "P1S3M7W16",
+          "gate": "Public Architecture Runtime Service Residual Reduction Gate",
+          "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+          "previous_max_lines": 503,
+          "new_max_lines": 505,
+          "previous_max_bytes": 11310,
+          "new_max_bytes": 11348
         }
       ],
       "target_lines": 500,
       "target_bytes": 65536,
       "baseline_lines": 484,
       "baseline_bytes": 10953,
-      "reason": "W15 refreshes the sharded work-item authority index."
+      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend."
     },
     ".agent-onboard/state/authority/work-items/manifest.json": {
       "category": "authority_state",
@@ -2005,8 +2124,8 @@
     },
     ".agent-onboard/state/indexes/work-items.index.json": {
       "category": "authority_state",
-      "max_lines": 524,
-      "max_bytes": 11312,
+      "max_lines": 526,
+      "max_bytes": 11365,
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W5",
@@ -2041,18 +2160,27 @@
           "reason": "W15 refreshes derived work-item state index.",
           "new_max_lines": 524,
           "new_max_bytes": 11312
+        },
+        {
+          "work_item_id": "P1S3M7W16",
+          "gate": "Public Architecture Runtime Service Residual Reduction Gate",
+          "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+          "previous_max_lines": 524,
+          "new_max_lines": 526,
+          "previous_max_bytes": 11312,
+          "new_max_bytes": 11365
         }
       ],
       "target_lines": 700,
       "target_bytes": 65536,
-      "reason": "W15 refreshes derived work-item state index.",
+      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
       "baseline_lines": 524,
       "baseline_bytes": 11312
     },
     ".agent-onboard/work-items.index.json": {
       "category": "authority_registry",
       "max_lines": 53,
-      "max_bytes": 1436,
+      "max_bytes": 1444,
       "target_lines": 500,
       "target_bytes": 65536,
       "ratchet_history": [
@@ -2080,9 +2208,18 @@
           "reason": "W15 refreshes compact work-item index.",
           "new_max_lines": 53,
           "new_max_bytes": 1436
+        },
+        {
+          "work_item_id": "P1S3M7W16",
+          "gate": "Public Architecture Runtime Service Residual Reduction Gate",
+          "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+          "previous_max_lines": 53,
+          "new_max_lines": 53,
+          "previous_max_bytes": 1436,
+          "new_max_bytes": 1444
         }
       ],
-      "reason": "W15 refreshes compact work-item index.",
+      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
       "baseline_lines": 53,
       "baseline_bytes": 1436
     },
@@ -2151,7 +2288,7 @@
     ".agent-onboard/state/live-authority.json": {
       "category": "authority_state",
       "max_lines": 56,
-      "max_bytes": 1877,
+      "max_bytes": 1903,
       "target_lines": 500,
       "target_bytes": 65536,
       "ratchet_history": [
@@ -2186,16 +2323,25 @@
           "reason": "W15 refreshes live authority state shard.",
           "new_max_lines": 56,
           "new_max_bytes": 1877
+        },
+        {
+          "work_item_id": "P1S3M7W16",
+          "gate": "Public Architecture Runtime Service Residual Reduction Gate",
+          "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+          "previous_max_lines": 56,
+          "new_max_lines": 56,
+          "previous_max_bytes": 1877,
+          "new_max_bytes": 1903
         }
       ],
-      "reason": "W15 refreshes live authority state shard.",
+      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
       "baseline_lines": 56,
       "baseline_bytes": 1871
     },
     ".agent-onboard/state/indexes.json": {
       "category": "authority_state",
       "max_lines": 71,
-      "max_bytes": 2495,
+      "max_bytes": 2501,
       "target_lines": 500,
       "target_bytes": 65536,
       "ratchet_history": [
@@ -2221,16 +2367,25 @@
           "reason": "W15 refreshes authority index state shard.",
           "new_max_lines": 71,
           "new_max_bytes": 2495
+        },
+        {
+          "work_item_id": "P1S3M7W16",
+          "gate": "Public Architecture Runtime Service Residual Reduction Gate",
+          "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+          "previous_max_lines": 71,
+          "new_max_lines": 71,
+          "previous_max_bytes": 2495,
+          "new_max_bytes": 2501
         }
       ],
-      "reason": "W15 refreshes authority index state shard.",
+      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
       "baseline_lines": 71,
       "baseline_bytes": 2489
     },
     ".agent-onboard/state/closed-gates.jsonl": {
       "category": "authority_state",
-      "max_lines": 5,
-      "max_bytes": 1428,
+      "max_lines": 6,
+      "max_bytes": 1437,
       "target_lines": 500,
       "target_bytes": 65536,
       "ratchet_history": [
@@ -2258,16 +2413,25 @@
           "reason": "W15 refreshes latest closed gate event shard.",
           "new_max_lines": 5,
           "new_max_bytes": 1428
+        },
+        {
+          "work_item_id": "P1S3M7W16",
+          "gate": "Public Architecture Runtime Service Residual Reduction Gate",
+          "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+          "previous_max_lines": 5,
+          "new_max_lines": 6,
+          "previous_max_bytes": 1428,
+          "new_max_bytes": 1437
         }
       ],
       "baseline_lines": 6,
       "baseline_bytes": 1422,
-      "reason": "W15 refreshes latest closed gate event shard."
+      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend."
     },
     ".agent-onboard/authority-index.json": {
       "category": "authority_registry",
       "max_lines": 247,
-      "max_bytes": 7516,
+      "max_bytes": 7522,
       "target_lines": 500,
       "target_bytes": 65536,
       "ratchet_history": [
@@ -2293,9 +2457,18 @@
           "reason": "W15 refreshes compact authority index.",
           "new_max_lines": 247,
           "new_max_bytes": 7516
+        },
+        {
+          "work_item_id": "P1S3M7W16",
+          "gate": "Public Architecture Runtime Service Residual Reduction Gate",
+          "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+          "previous_max_lines": 247,
+          "new_max_lines": 247,
+          "previous_max_bytes": 7516,
+          "new_max_bytes": 7522
         }
       ],
-      "reason": "W15 refreshes compact authority index.",
+      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
       "baseline_lines": 247,
       "baseline_bytes": 7510
     },
@@ -2788,11 +2961,20 @@
           "reason": "W15 refreshes README history index digests.",
           "new_max_lines": 257,
           "new_max_bytes": 9014
+        },
+        {
+          "work_item_id": "P1S3M7W16",
+          "gate": "Public Architecture Runtime Service Residual Reduction Gate",
+          "reason": "W16 refreshes README history live digest after current-release text update.",
+          "previous_max_lines": 257,
+          "new_max_lines": 257,
+          "previous_max_bytes": 9014,
+          "new_max_bytes": 9015
         }
       ],
       "max_lines": 257,
-      "max_bytes": 9014,
-      "reason": "W15 refreshes README history index digests."
+      "max_bytes": 9015,
+      "reason": "W16 refreshes README history live digest after current-release text update."
     },
     "cli/agent_onboard/runtime-contracts.js": {
       "category": "runtime_source",
@@ -2814,11 +2996,20 @@
           "reason": "W15 adds split service files to packaged router port contract surface.",
           "new_max_lines": 490,
           "new_max_bytes": 21130
+        },
+        {
+          "work_item_id": "P1S3M7W16",
+          "gate": "Public Architecture Runtime Service Residual Reduction Gate",
+          "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+          "previous_max_lines": 490,
+          "new_max_lines": 496,
+          "previous_max_bytes": 21130,
+          "new_max_bytes": 21753
         }
       ],
-      "max_lines": 490,
-      "max_bytes": 21130,
-      "reason": "W15 adds split service files to packaged router port contract surface."
+      "max_lines": 496,
+      "max_bytes": 21753,
+      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend."
     },
     "package.json": {
       "category": "root_json",
@@ -2833,11 +3024,188 @@
           "reason": "W15 adds split service files and gate checker script to package metadata.",
           "new_max_lines": 236,
           "new_max_bytes": 14344
+        },
+        {
+          "work_item_id": "P1S3M7W16",
+          "gate": "Public Architecture Runtime Service Residual Reduction Gate",
+          "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+          "previous_max_lines": 236,
+          "new_max_lines": 243,
+          "previous_max_bytes": 14344,
+          "new_max_bytes": 15107
         }
       ],
-      "max_lines": 236,
-      "max_bytes": 14344,
-      "reason": "W15 adds split service files and gate checker script to package metadata."
+      "max_lines": 243,
+      "max_bytes": 15107,
+      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend."
+    },
+    ".agent-onboard/architecture-runtime-service-residual-reduction.json": {
+      "category": "authority_registry",
+      "max_lines": 112,
+      "max_bytes": 4251,
+      "baseline_lines": 112,
+      "baseline_bytes": 4251,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W16",
+          "gate": "Public Architecture Runtime Service Residual Reduction Gate",
+          "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+          "previous_max_lines": null,
+          "new_max_lines": 112,
+          "previous_max_bytes": null,
+          "new_max_bytes": 4251
+        }
+      ]
+    },
+    "scripts/checks/architecture-runtime-service-residual-reduction.js": {
+      "category": "check_script",
+      "max_lines": 157,
+      "max_bytes": 8494,
+      "baseline_lines": 157,
+      "baseline_bytes": 8494,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W16",
+          "gate": "Public Architecture Runtime Service Residual Reduction Gate",
+          "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+          "previous_max_lines": null,
+          "new_max_lines": 157,
+          "previous_max_bytes": null,
+          "new_max_bytes": 8494
+        }
+      ]
+    },
+    "cli/agent_onboard/domains/architecture/services/runtime/public-architecture-router-facade-service.js": {
+      "category": "runtime_service_source",
+      "max_lines": 331,
+      "max_bytes": 17744,
+      "baseline_lines": 331,
+      "baseline_bytes": 17744,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W16",
+          "gate": "Public Architecture Runtime Service Residual Reduction Gate",
+          "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+          "previous_max_lines": null,
+          "new_max_lines": 331,
+          "previous_max_bytes": null,
+          "new_max_bytes": 17744
+        }
+      ]
+    },
+    "cli/agent_onboard/domains/architecture/services/runtime/public-authority-state-shard-service.js": {
+      "category": "runtime_service_source",
+      "max_lines": 436,
+      "max_bytes": 19326,
+      "baseline_lines": 436,
+      "baseline_bytes": 19326,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W16",
+          "gate": "Public Architecture Runtime Service Residual Reduction Gate",
+          "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+          "previous_max_lines": null,
+          "new_max_lines": 436,
+          "previous_max_bytes": null,
+          "new_max_bytes": 19326
+        }
+      ]
+    },
+    "cli/agent_onboard/domains/architecture/services/runtime/public-authority-first-read-service.js": {
+      "category": "runtime_service_source",
+      "max_lines": 314,
+      "max_bytes": 16011,
+      "baseline_lines": 314,
+      "baseline_bytes": 16011,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W16",
+          "gate": "Public Architecture Runtime Service Residual Reduction Gate",
+          "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+          "previous_max_lines": null,
+          "new_max_lines": 314,
+          "previous_max_bytes": null,
+          "new_max_bytes": 16011
+        }
+      ]
+    },
+    "cli/agent_onboard/domains/architecture/services/runtime/public-target-runtime-namespace-service.js": {
+      "category": "runtime_service_source",
+      "max_lines": 164,
+      "max_bytes": 8629,
+      "baseline_lines": 164,
+      "baseline_bytes": 8629,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W16",
+          "gate": "Public Architecture Runtime Service Residual Reduction Gate",
+          "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+          "previous_max_lines": null,
+          "new_max_lines": 164,
+          "previous_max_bytes": null,
+          "new_max_bytes": 8629
+        }
+      ]
+    },
+    "cli/agent_onboard/domains/architecture/services/runtime/public-source-domain-rehearsal-service.js": {
+      "category": "runtime_service_source",
+      "max_lines": 183,
+      "max_bytes": 11394,
+      "baseline_lines": 183,
+      "baseline_bytes": 11394,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W16",
+          "gate": "Public Architecture Runtime Service Residual Reduction Gate",
+          "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+          "previous_max_lines": null,
+          "new_max_lines": 183,
+          "previous_max_bytes": null,
+          "new_max_bytes": 11394
+        }
+      ]
+    },
+    "cli/agent_onboard/domains/architecture/services/runtime/public-architecture-transition-service.js": {
+      "category": "runtime_service_source",
+      "max_lines": 225,
+      "max_bytes": 13202,
+      "baseline_lines": 225,
+      "baseline_bytes": 13202,
+      "target_lines": 500,
+      "target_bytes": 65536,
+      "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W16",
+          "gate": "Public Architecture Runtime Service Residual Reduction Gate",
+          "reason": "W16 splits architecture runtime residual behavior into six bounded runtime services and refreshes authority, closure, package, and release metadata without changing storage backend.",
+          "previous_max_lines": null,
+          "new_max_lines": 225,
+          "previous_max_bytes": null,
+          "new_max_bytes": 13202
+        }
+      ]
     }
   },
   "report": {
@@ -2863,8 +3231,8 @@
       "lines": 4876,
       "bytes": 274048
     },
-    "last_ratchet_work_item_id": "P1S3M7W14",
-    "last_ratchet_gate": "Public Router Cutover Service Extraction Gate",
+    "last_ratchet_work_item_id": "P1S3M7W16",
+    "last_ratchet_gate": "Public Architecture Runtime Service Residual Reduction Gate",
     "runtime_composer_after_w10": {
       "path": "cli/agent_onboard/runtime-composer.js",
       "lines": 4487,
@@ -2879,6 +3247,16 @@
       "path": "cli/agent_onboard/runtime-composer.js",
       "lines": 2250,
       "bytes": 108997
+    },
+    "architecture_runtime_service_after_w16": {
+      "path": "cli/agent_onboard/domains/architecture/services/runtime/architecture-runtime-service.js",
+      "lines": 297,
+      "bytes": 11870
+    },
+    "runtime_composer_after_w16": {
+      "path": "cli/agent_onboard/runtime-composer.js",
+      "lines": 1630,
+      "bytes": 65922
     }
   },
   "boundary": {

@@ -2,7 +2,7 @@
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
-const RELEASE_LINE = 'public_source_module_residual_service_extraction_gate';
+const RELEASE_LINE = 'public_architecture_runtime_service_residual_reduction_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
   agents: 'agents',
@@ -356,6 +356,12 @@ const PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES = Object.freeze([
   'cli/agent_onboard/domains/architecture/m3-runtime-catalog.js',
   'cli/agent_onboard/domains/architecture/services/checks/architecture-check-service.js',
   'cli/agent_onboard/domains/architecture/services/runtime/architecture-runtime-service.js',
+  'cli/agent_onboard/domains/architecture/services/runtime/public-architecture-router-facade-service.js',
+  'cli/agent_onboard/domains/architecture/services/runtime/public-authority-state-shard-service.js',
+  'cli/agent_onboard/domains/architecture/services/runtime/public-authority-first-read-service.js',
+  'cli/agent_onboard/domains/architecture/services/runtime/public-target-runtime-namespace-service.js',
+  'cli/agent_onboard/domains/architecture/services/runtime/public-source-domain-rehearsal-service.js',
+  'cli/agent_onboard/domains/architecture/services/runtime/public-architecture-transition-service.js',
   'cli/agent_onboard/domains/architecture/services/runtime/public-architecture-command-runner-service.js',
   'cli/agent_onboard/domains/architecture/services/runtime/public-cli-runtime-planning-service.js',
   'cli/agent_onboard/domains/architecture/services/runtime/public-router-seed-service.js',

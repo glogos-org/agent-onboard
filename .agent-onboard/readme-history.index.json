@@ -2,11 +2,11 @@
   "schema": "agent-onboard-public-readme-history-index-001",
   "status": "applied",
   "package_name": "agent-onboard",
-  "work_item_id": "P1S3M6W6",
+  "work_item_id": "P1S3M7W16",
   "source_file": "README.md",
   "source_file_id_before_apply": "ni:///sha-256;7ycysOhj2Tuparbv2MfbyAhOGt6fN9wEFdgNnJMnqlU",
   "live_readme": "README.md",
-  "live_readme_file_id": "ni:///sha-256;SP0wozL_oEKLTiwmNdlvaCtKkUQghFVhmbKwYjB25q8",
+  "live_readme_file_id": "ni:///sha-256;Zl3vDKWi8cxSzypHiETZhxp-bNs5FoEBLj6gW-_xHLg",
   "history_archive": "docs/release-history.md",
   "history_archive_file_id": "ni:///sha-256;VG-2WNOSYbq8ARfQq9NmQXmK4NEehfMDwmsD_MC2EF4",
   "section_count": 26,
@@ -253,5 +253,5 @@
     "content_inlined": false,
     "section_count": 21
   },
-  "updated_at": "2026-07-10T08:20:00.000Z"
+  "updated_at": "2026-07-10T09:30:00.000Z"
 }

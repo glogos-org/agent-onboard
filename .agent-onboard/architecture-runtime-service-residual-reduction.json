@@ -1,0 +1,112 @@
+{
+  "schema": "agent-onboard-public-architecture-runtime-service-residual-reduction-001",
+  "package_name": "agent-onboard",
+  "version": "0.0.199",
+  "release_line": "public_architecture_runtime_service_residual_reduction_gate",
+  "milestone_id": "P1S3M7",
+  "work_item_id": "P1S3M7W16",
+  "title": "Public Architecture Runtime Service Residual Reduction Gate",
+  "status": "closed",
+  "objective": "Reduce architecture-runtime-service.js residual god-file debt by moving router/facade, authority state, authority first-read, target runtime namespace, source-domain rehearsal, and architecture transition behavior into bounded architecture-domain runtime services while preserving public command outputs.",
+  "reduction": {
+    "architecture_runtime_service_before": {
+      "lines": 1544,
+      "bytes": 94154,
+      "source": "P1S3M7W15 baseline"
+    },
+    "architecture_runtime_service_after": {
+      "lines": 297,
+      "bytes": 11870
+    },
+    "line_reduction": 1247,
+    "byte_reduction": 82284,
+    "god_file_removed": true,
+    "monolith_growth_allowed": false
+  },
+  "extracted_service_set": [
+    {
+      "id": "router_facade",
+      "path": "cli/agent_onboard/domains/architecture/services/runtime/public-architecture-router-facade-service.js",
+      "factory": "createPublicArchitectureRouterFacadeService",
+      "lines": 331,
+      "bytes": 17744,
+      "package_projected": true
+    },
+    {
+      "id": "authority_state_shard",
+      "path": "cli/agent_onboard/domains/architecture/services/runtime/public-authority-state-shard-service.js",
+      "factory": "createPublicAuthorityStateShardService",
+      "lines": 436,
+      "bytes": 19326,
+      "package_projected": true
+    },
+    {
+      "id": "authority_first_read",
+      "path": "cli/agent_onboard/domains/architecture/services/runtime/public-authority-first-read-service.js",
+      "factory": "createPublicAuthorityFirstReadService",
+      "lines": 314,
+      "bytes": 16011,
+      "package_projected": true
+    },
+    {
+      "id": "target_runtime_namespace",
+      "path": "cli/agent_onboard/domains/architecture/services/runtime/public-target-runtime-namespace-service.js",
+      "factory": "createPublicTargetRuntimeNamespaceService",
+      "lines": 164,
+      "bytes": 8629,
+      "package_projected": true
+    },
+    {
+      "id": "source_domain_rehearsal",
+      "path": "cli/agent_onboard/domains/architecture/services/runtime/public-source-domain-rehearsal-service.js",
+      "factory": "createPublicSourceDomainRehearsalService",
+      "lines": 183,
+      "bytes": 11394,
+      "package_projected": true
+    },
+    {
+      "id": "architecture_transition",
+      "path": "cli/agent_onboard/domains/architecture/services/runtime/public-architecture-transition-service.js",
+      "factory": "createPublicArchitectureTransitionService",
+      "lines": 225,
+      "bytes": 13202,
+      "package_projected": true
+    }
+  ],
+  "public_commands_preserved": [
+    "agent-onboard architecture --check",
+    "agent-onboard authority --check",
+    "agent-onboard authority --index-check",
+    "agent-onboard authority --state-check",
+    "agent-onboard target runtime --check",
+    "agent-onboard check --fast --json",
+    "agent-onboard release --check",
+    "npm pack --dry-run --json"
+  ],
+  "split_policy": {
+    "new_services_remain_below_near_god_threshold": true,
+    "near_god_threshold_lines": 500,
+    "near_god_threshold_bytes": 51200,
+    "storage_backend_remains_json_and_jsonl_text_first": true
+  },
+  "checks": {
+    "gate_check": "node scripts/check.js architecture-runtime-service-residual-reduction",
+    "architecture_check": "node cli/agent-onboard.js architecture --check",
+    "release_check": "node cli/agent-onboard.js release --check",
+    "pack_dry_run": "npm pack --dry-run --json"
+  },
+  "boundary": {
+    "writes_files_at_runtime": false,
+    "mutates_target_repository_state": false,
+    "mutates_git": false,
+    "installs_dependencies": false,
+    "runs_package_manager_inside_checker": false,
+    "publishes_package": false,
+    "mutates_registry": false,
+    "network": false,
+    "storage_backend_changed": false,
+    "sqlite_introduced": false,
+    "lightning_memory_mapped_database_introduced": false,
+    "mdbx_introduced": false
+  }
+}

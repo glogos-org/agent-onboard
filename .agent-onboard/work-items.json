@@ -1753,6 +1753,18 @@
         "note": "Extract source-module residual architecture behavior from runtime composer without changing storage backend."
       },
       "closure_ref": "closures:P1S3M7W15"
+    },
+    {
+      "id": "P1S3M7W16",
+      "milestone_id": "P1S3M7",
+      "title": "Public Architecture Runtime Service Residual Reduction Gate",
+      "status": "closed",
+      "claim": {
+        "actor": "gpt-5.5-thinking",
+        "claimed_at": "2026-07-10T09:05:00.000Z",
+        "note": "Reduce architecture-runtime-service residual god-file debt without changing storage backend."
+      },
+      "closure_ref": "closures:P1S3M7W16"
     }
   ]
 }

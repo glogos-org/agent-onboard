@@ -7,7 +7,7 @@ CLI for onboarding and managing target repositories.
 The generated files are intended to be read by agents, wrappers, CI hooks, or future runtimes that choose to honor the declared boundaries.
 
 
-Current release: this line continues runtime composer decomposition by extracting architecture-map residuals, installed-fallback smoke checks, source-module second-slice planning/first-slice validation, and authority bundle parity checks into bounded architecture runtime services. `runtime-composer.js` remains the compatibility composer and public export surface, but it no longer owns those source-module residual implementations. The W15 split keeps each new service below near-god thresholds, preserves the read-only architecture command surface, and admits no SQLite, Lightning Memory-Mapped Database, MDBX, dependency addition, network access, registry mutation, Git mutation, or package publish.
+Current release: this line continues the Milestone 7 residual-decomposition pass by splitting `architecture-runtime-service.js` into a thin coordinator plus bounded router facade, authority state-shard, authority first-read, target runtime namespace, source-domain rehearsal, and architecture transition services. The W16 split removes that architecture runtime service from the god-file set, keeps all newly extracted services below near-god thresholds, preserves the read-only architecture/authority/target runtime command contracts, and admits no SQLite, Lightning Memory-Mapped Database, MDBX, dependency addition, network access, registry mutation, Git mutation, or package publish.
 
 ## Install
 

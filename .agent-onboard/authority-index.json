@@ -2,7 +2,7 @@
   "schema": "agent-onboard-public-authority-compact-index-001",
   "package_name": "agent-onboard",
   "package_version_source": "package.json#version",
-  "release_line": "public_source_module_residual_service_extraction_gate",
+  "release_line": "public_architecture_runtime_service_residual_reduction_gate",
   "index_file": ".agent-onboard/authority-index.json",
   "first_read_command": "agent-onboard authority --first-read",
   "check_command": "agent-onboard authority --check",
@@ -145,8 +145,8 @@
       "file_path": "package.json",
       "present": true,
       "kind": "file",
-      "bytes": 14344,
-      "file_id": "ni:///sha-256;d_PFYuT-zpwAMzyAHl7d9NhHHWDjlY3ZZ9hdm4BlB1o",
+      "bytes": 15107,
+      "file_id": "ni:///sha-256;HaZqXM_MDTbDBTxj6rvG-eeibda4ylnhGDsvK8uqcNE",
       "content_inlined": false
     },
     {
@@ -177,8 +177,8 @@
       "file_path": ".agent-onboard/work-items.json",
       "present": true,
       "kind": "file",
-      "bytes": 50721,
-      "file_id": "ni:///sha-256;Uh-yREcVI06FAKmvbaAVV6DYxO8DJRSICdMoLszf8jI",
+      "bytes": 51161,
+      "file_id": "ni:///sha-256;9g03OSHMRan_WTfbjQamoUe2Rf2Bugb49Ht53Cl9eGI",
       "content_inlined": false
     }
   ],
@@ -216,7 +216,7 @@
     "indexed_file_count": 9,
     "present_file_count": 9,
     "missing_file_count": 0,
-    "present_bytes": 143698,
+    "present_bytes": 144901,
     "missing_files": [],
     "excluded_file_count": 7,
     "state_shard_count": 4,
