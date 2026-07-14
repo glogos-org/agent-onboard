@@ -1,8 +1,8 @@
 {
   "schema": "agent-onboard-public-source-size-budget-ratchet-001",
   "status": "active",
-  "work_item_id": "P1S3M7W18",
-  "release_line": "public_router_cutover_runtime_service_near_god_reduction_gate",
+  "work_item_id": "P1S3M7W19",
+  "release_line": "public_runtime_surface_service_residual_reduction_gate",
   "ratchet_mode": "no_tracked_growth_beyond_maximum_and_no_new_oversized_files",
   "god_file_thresholds": {
     "god_lines": 1000,
@@ -87,13 +87,13 @@
   "tracked_files": {
     ".agent-onboard/state/closures/work-items-closures.jsonl": {
       "category": "authority_state",
-      "max_lines": 188,
-      "max_bytes": 86103,
+      "max_lines": 189,
+      "max_bytes": 86499,
       "baseline_lines": 168,
       "baseline_bytes": 76889,
       "target_lines": 200,
       "target_bytes": 65536,
-      "reason": "W18 compacts the W18 closure payload into the P1S3M7 payload shard and refreshes compact closure references.",
+      "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W33",
@@ -283,18 +283,27 @@
           "new_max_lines": 188,
           "previous_max_bytes": 86103,
           "new_max_bytes": 86103
+        },
+        {
+          "work_item_id": "P1S3M7W19",
+          "gate": "Public Runtime Surface Service Residual Reduction Gate",
+          "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend.",
+          "new_max_lines": 189,
+          "new_max_bytes": 86499,
+          "previous_max_lines": 188,
+          "previous_max_bytes": 86103
         }
       ]
     },
     ".agent-onboard/state/live/work-items.json": {
       "category": "authority_state",
       "max_lines": 73,
-      "max_bytes": 2109,
+      "max_bytes": 2118,
       "baseline_lines": 24,
       "baseline_bytes": 849,
       "target_lines": 60,
       "target_bytes": 8192,
-      "reason": "W18 refreshes sharded work-item authority projections after closing router cutover runtime service near-god reduction gate.",
+      "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W6",
@@ -374,18 +383,27 @@
           "new_max_lines": 73,
           "previous_max_bytes": 2105,
           "new_max_bytes": 2109
+        },
+        {
+          "work_item_id": "P1S3M7W19",
+          "gate": "Public Runtime Surface Service Residual Reduction Gate",
+          "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend.",
+          "new_max_lines": 73,
+          "new_max_bytes": 2118,
+          "previous_max_lines": 73,
+          "previous_max_bytes": 2109
         }
       ]
     },
     ".agent-onboard/work-items.json": {
       "category": "authority_registry",
-      "max_lines": 1788,
-      "max_bytes": 51712,
+      "max_lines": 1799,
+      "max_bytes": 52035,
       "baseline_lines": 1573,
       "baseline_bytes": 44798,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W18 splits router cutover runtime behavior into bounded runtime package, router port, thin entrypoint, and adapter delegation services while preserving package and command parity without changing storage backend.",
+      "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W33",
@@ -564,6 +582,15 @@
           "new_max_lines": 1788,
           "previous_max_bytes": 51382,
           "new_max_bytes": 51712
+        },
+        {
+          "work_item_id": "P1S3M7W19",
+          "gate": "Public Runtime Surface Service Residual Reduction Gate",
+          "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend.",
+          "new_max_lines": 1799,
+          "new_max_bytes": 52035,
+          "previous_max_lines": 1788,
+          "previous_max_bytes": 51712
         }
       ]
     },
@@ -579,13 +606,24 @@
     },
     "README.md": {
       "category": "documentation",
-      "max_lines": 1388,
-      "max_bytes": 106046,
+      "max_lines": 1315,
+      "max_bytes": 86801,
       "baseline_lines": 1308,
       "baseline_bytes": 86046,
       "target_lines": 400,
       "target_bytes": 65536,
-      "reason": "existing oversized file admitted as clean-and-compaction migration debt"
+      "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend.",
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W19",
+          "gate": "Public Runtime Surface Service Residual Reduction Gate",
+          "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend.",
+          "new_max_lines": 1315,
+          "new_max_bytes": 86801,
+          "previous_max_lines": 1388,
+          "previous_max_bytes": 106046
+        }
+      ]
     },
     "cli/agent_onboard/domains/architecture/m3-runtime-catalog.js": {
       "category": "runtime_catalog_source",
@@ -660,13 +698,24 @@
     },
     "cli/agent_onboard/domains/core/services/public-runtime-surface-service.js": {
       "category": "runtime_service_source",
-      "max_lines": 1209,
-      "max_bytes": 54162,
+      "max_lines": 21,
+      "max_bytes": 913,
       "baseline_lines": 1189,
       "baseline_bytes": 45970,
-      "target_lines": 500,
-      "target_bytes": 65536,
-      "reason": "existing oversized file admitted as clean-and-compaction migration debt"
+      "target_lines": 80,
+      "target_bytes": 4096,
+      "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend.",
+      "ratchet_history": [
+        {
+          "work_item_id": "P1S3M7W19",
+          "gate": "Public Runtime Surface Service Residual Reduction Gate",
+          "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend.",
+          "new_max_lines": 21,
+          "new_max_bytes": 913,
+          "previous_max_lines": 1209,
+          "previous_max_bytes": 54162
+        }
+      ]
     },
     "cli/agent_onboard/domains/target/services/target-governance-service.js": {
       "category": "runtime_service_source",
@@ -1012,13 +1061,13 @@
     },
     ".agent-onboard/state/closures/work-items/manifest.json": {
       "category": "authority_state",
-      "max_lines": 137,
-      "max_bytes": 5523,
+      "max_lines": 146,
+      "max_bytes": 5894,
       "baseline_lines": 126,
       "baseline_bytes": 5085,
       "target_lines": 700,
       "target_bytes": 65536,
-      "reason": "W18 compacts the W18 closure payload into the P1S3M7 payload shard and refreshes compact closure references.",
+      "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W34",
@@ -1078,18 +1127,27 @@
           "new_max_lines": 137,
           "previous_max_bytes": 5523,
           "new_max_bytes": 5523
+        },
+        {
+          "work_item_id": "P1S3M7W19",
+          "gate": "Public Runtime Surface Service Residual Reduction Gate",
+          "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend.",
+          "new_max_lines": 146,
+          "new_max_bytes": 5894,
+          "previous_max_lines": 137,
+          "previous_max_bytes": 5523
         }
       ]
     },
     ".agent-onboard/state/closures/work-items/index.json": {
       "category": "authority_state",
-      "max_lines": 117,
-      "max_bytes": 4697,
+      "max_lines": 126,
+      "max_bytes": 5068,
       "baseline_lines": 110,
       "baseline_bytes": 4384,
       "target_lines": 700,
       "target_bytes": 65536,
-      "reason": "W18 compacts the W18 closure payload into the P1S3M7 payload shard and refreshes compact closure references.",
+      "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W1",
@@ -1142,6 +1200,15 @@
           "new_max_lines": 117,
           "previous_max_bytes": 4697,
           "new_max_bytes": 4697
+        },
+        {
+          "work_item_id": "P1S3M7W19",
+          "gate": "Public Runtime Surface Service Residual Reduction Gate",
+          "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend.",
+          "new_max_lines": 126,
+          "new_max_bytes": 5068,
+          "previous_max_lines": 117,
+          "previous_max_bytes": 4697
         }
       ]
     },
@@ -1157,13 +1224,13 @@
     },
     "scripts/checks/registry.js": {
       "category": "check_script",
-      "max_lines": 70,
-      "max_bytes": 4054,
+      "max_lines": 72,
+      "max_bytes": 4248,
       "baseline_lines": 67,
       "baseline_bytes": 3719,
       "target_lines": 250,
       "target_bytes": 32768,
-      "reason": "W18 splits router cutover runtime residual behavior into bounded services and refreshes package, release, and check metadata without changing storage backend.",
+      "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M6W34",
@@ -1315,6 +1382,15 @@
           "new_max_lines": 70,
           "previous_max_bytes": 3943,
           "new_max_bytes": 4054
+        },
+        {
+          "work_item_id": "P1S3M7W19",
+          "gate": "Public Runtime Surface Service Residual Reduction Gate",
+          "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend.",
+          "new_max_lines": 72,
+          "new_max_bytes": 4248,
+          "previous_max_lines": 70,
+          "previous_max_bytes": 4054
         }
       ]
     },
@@ -1330,13 +1406,13 @@
     },
     ".agent-onboard/god-file-budget-enforcement-closure.json": {
       "category": "authority_registry",
-      "max_lines": 154,
-      "max_bytes": 5904,
+      "max_lines": 196,
+      "max_bytes": 6920,
       "baseline_lines": 105,
       "baseline_bytes": 3859,
       "target_lines": 220,
       "target_bytes": 32768,
-      "reason": "W18 god-file budget artifact refreshed to admit W18 closure and remaining-debt ownership after router cutover runtime service split.",
+      "reason": "W19 refreshes god-file budget evidence after runtime-surface residual reduction.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W1",
@@ -1422,6 +1498,15 @@
           "new_max_lines": 154,
           "previous_max_bytes": 5362,
           "new_max_bytes": 5904
+        },
+        {
+          "work_item_id": "P1S3M7W19",
+          "gate": "Public Runtime Surface Service Residual Reduction Gate",
+          "reason": "W19 updates god-file budget closure after removing public runtime-surface service from the god-file set.",
+          "previous_max_lines": 154,
+          "new_max_lines": 159,
+          "previous_max_bytes": 5904,
+          "new_max_bytes": 5977
         }
       ]
     },
@@ -1460,13 +1545,13 @@
     },
     ".agent-onboard/source-size-budget-ratchet.json": {
       "category": "authority_registry",
-      "max_lines": 3814,
-      "max_bytes": 167202,
+      "max_lines": 4033,
+      "max_bytes": 177850,
       "baseline_lines": 2575,
       "baseline_bytes": 104100,
       "target_lines": 500,
       "target_bytes": 65536,
-      "reason": "W18 compacts the W18 closure payload into the P1S3M7 payload shard and refreshes compact closure references.",
+      "reason": "W19 source-size budget self-ratchet after god-file budget evidence refresh.",
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W2",
@@ -1721,8 +1806,18 @@
           "new_max_lines": 3769,
           "previous_max_bytes": 165317,
           "new_max_bytes": 165317
+        },
+        {
+          "work_item_id": "P1S3M7W19",
+          "gate": "Public Runtime Surface Service Residual Reduction Gate",
+          "reason": "W19 refreshes source-size ratchet metadata after runtime-surface split and closure shard split without changing storage backend.",
+          "previous_max_lines": 3814,
+          "new_max_lines": 3935,
+          "previous_max_bytes": 167202,
+          "new_max_bytes": 171191
         }
-      ]
+      ],
+      "current_bytes_max": 177850
     },
     "cli/agent_onboard/domains/package/services/exact-artifact-oracle-service.js": {
       "category": "runtime_service_source",
@@ -2013,8 +2108,8 @@
     },
     ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M7.json": {
       "category": "authority_state",
-      "max_lines": 195,
-      "max_bytes": 6261,
+      "max_lines": 206,
+      "max_bytes": 6584,
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W5",
@@ -2148,18 +2243,27 @@
           "new_max_lines": 195,
           "previous_max_bytes": 5931,
           "new_max_bytes": 6261
+        },
+        {
+          "work_item_id": "P1S3M7W19",
+          "gate": "Public Runtime Surface Service Residual Reduction Gate",
+          "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend.",
+          "new_max_lines": 206,
+          "new_max_bytes": 6584,
+          "previous_max_lines": 195,
+          "previous_max_bytes": 6261
         }
       ],
       "target_lines": 500,
       "target_bytes": 65536,
       "baseline_lines": 85,
       "baseline_bytes": 2599,
-      "reason": "W18 refreshes sharded work-item authority projections after closing router cutover runtime service near-god reduction gate."
+      "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend."
     },
     ".agent-onboard/state/authority/work-items/items/index.json": {
       "category": "authority_state",
-      "max_lines": 509,
-      "max_bytes": 11424,
+      "max_lines": 547,
+      "max_bytes": 12450,
       "ratchet_history": [
         {
           "work_item_id": "P1S3M7W5",
@@ -2293,13 +2397,22 @@
           "new_max_lines": 509,
           "previous_max_bytes": 11386,
           "new_max_bytes": 11424
+        },
+        {
+          "work_item_id": "P1S3M7W19",
+          "gate": "Public Runtime Surface Service Residual Reduction Gate",
+          "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend.",
+          "new_max_lines": 547,
+          "new_max_bytes": 12450,
+          "previous_max_lines": 509,
+          "previous_max_bytes": 11424
         }
       ],
       "target_lines": 500,
       "target_bytes": 65536,
       "baseline_lines": 484,
       "baseline_bytes": 10953,
-      "reason": "W18 refreshes sharded work-item authority projections after closing router cutover runtime service near-god reduction gate."
+      "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend."
     },
     ".agent-onboard/state/authority/work-items/manifest.json": {
       "category": "authority_state",
@@ -2423,7 +2536,7 @@
     ".agent-onboard/work-items.index.json": {
       "category": "authority_registry",
       "max_lines": 53,
-      "max_bytes": 1470,
+      "max_bytes": 1479,
       "target_lines": 500,
       "target_bytes": 65536,
       "ratchet_history": [
@@ -2478,9 +2591,18 @@
           "new_max_lines": 53,
           "previous_max_bytes": 1466,
           "new_max_bytes": 1470
+        },
+        {
+          "work_item_id": "P1S3M7W19",
+          "gate": "Public Runtime Surface Service Residual Reduction Gate",
+          "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend.",
+          "new_max_lines": 53,
+          "new_max_bytes": 1479,
+          "previous_max_lines": 53,
+          "previous_max_bytes": 1470
         }
       ],
-      "reason": "W18 splits router cutover runtime behavior into bounded runtime package, router port, thin entrypoint, and adapter delegation services while preserving package and command parity without changing storage backend.",
+      "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend.",
       "baseline_lines": 53,
       "baseline_bytes": 1436
     },
@@ -2682,7 +2804,7 @@
     ".agent-onboard/state/closed-gates.jsonl": {
       "category": "authority_state",
       "max_lines": 6,
-      "max_bytes": 1462,
+      "max_bytes": 1471,
       "target_lines": 500,
       "target_bytes": 65536,
       "ratchet_history": [
@@ -2737,11 +2859,20 @@
           "new_max_lines": 6,
           "previous_max_bytes": 1458,
           "new_max_bytes": 1462
+        },
+        {
+          "work_item_id": "P1S3M7W19",
+          "gate": "Public Runtime Surface Service Residual Reduction Gate",
+          "reason": "W19 refreshes latest closed-gate authority event projection after runtime-surface residual reduction closure.",
+          "previous_max_lines": 6,
+          "new_max_lines": 6,
+          "previous_max_bytes": 1462,
+          "new_max_bytes": 1471
         }
       ],
       "baseline_lines": 6,
       "baseline_bytes": 1422,
-      "reason": "W18 splits router cutover runtime behavior into bounded runtime package, router port, thin entrypoint, and adapter delegation services while preserving package and command parity without changing storage backend."
+      "reason": "W19 refreshes latest closed-gate authority event projection after runtime-surface residual reduction closure."
     },
     ".agent-onboard/authority-index.json": {
       "category": "authority_registry",
@@ -3319,11 +3450,20 @@
           "new_max_lines": 257,
           "previous_max_bytes": 9014,
           "new_max_bytes": 9015
+        },
+        {
+          "work_item_id": "P1S3M7W19",
+          "gate": "Public Runtime Surface Service Residual Reduction Gate",
+          "reason": "W19 updates README history index for the runtime-surface release history section.",
+          "previous_max_lines": 257,
+          "new_max_lines": 262,
+          "previous_max_bytes": 9015,
+          "new_max_bytes": 9167
         }
       ],
-      "max_lines": 257,
-      "max_bytes": 9015,
-      "reason": "W16 refreshes README history live digest after current-release text update."
+      "max_lines": 262,
+      "max_bytes": 9167,
+      "reason": "W19 updates README history index for the runtime-surface release history section."
     },
     "cli/agent_onboard/runtime-contracts.js": {
       "category": "runtime_source",
@@ -3372,11 +3512,20 @@
           "new_max_lines": 503,
           "previous_max_bytes": 22351,
           "new_max_bytes": 22884
+        },
+        {
+          "work_item_id": "P1S3M7W19",
+          "gate": "Public Runtime Surface Service Residual Reduction Gate",
+          "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend.",
+          "new_max_lines": 512,
+          "new_max_bytes": 23667,
+          "previous_max_lines": 503,
+          "previous_max_bytes": 22884
         }
       ],
-      "max_lines": 503,
-      "max_bytes": 22884,
-      "reason": "W18 splits router cutover runtime residual behavior into bounded services and refreshes package, release, and check metadata without changing storage backend."
+      "max_lines": 512,
+      "max_bytes": 23667,
+      "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend."
     },
     "package.json": {
       "category": "root_json",
@@ -3418,11 +3567,20 @@
           "new_max_lines": 255,
           "previous_max_bytes": 15860,
           "new_max_bytes": 16544
+        },
+        {
+          "work_item_id": "P1S3M7W19",
+          "gate": "Public Runtime Surface Service Residual Reduction Gate",
+          "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend.",
+          "new_max_lines": 265,
+          "new_max_bytes": 17469,
+          "previous_max_lines": 255,
+          "previous_max_bytes": 16544
         }
       ],
-      "max_lines": 255,
-      "max_bytes": 16544,
-      "reason": "W18 splits router cutover runtime residual behavior into bounded services and refreshes package, release, and check metadata without changing storage backend."
+      "max_lines": 265,
+      "max_bytes": 17469,
+      "reason": "W19 splits public runtime-surface implementation into bounded runtime-surface services and refreshes package, release, authority, closure, and check metadata without changing storage backend."
     },
     ".agent-onboard/architecture-runtime-service-residual-reduction.json": {
       "category": "authority_registry",
@@ -3724,6 +3882,16 @@
       "max_lines": 127,
       "max_bytes": 5354,
       "reason": "W18 splits router cutover runtime residual behavior into bounded services and refreshes package, release, and check metadata without changing storage backend."
+    },
+    ".agent-onboard/state/closures/work-items/payloads/by-milestone/P1S3M7/part-002.jsonl": {
+      "category": "authority_state",
+      "max_lines": 1,
+      "max_bytes": 4074,
+      "baseline_lines": 1,
+      "baseline_bytes": 4074,
+      "target_lines": 20,
+      "target_bytes": 8192,
+      "reason": "W19 stores the new closure payload in a second P1S3M7 shard to avoid increasing near-god count."
     }
   },
   "report": {

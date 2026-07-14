@@ -3,6 +3,10 @@
 Historical release prose archived from README.md by P1S3M6W6.
 README.md remains the live first-read surface for install, quickstart, current commands, and no-mutation boundary material.
 
+## Current release: runtime surface service residual reduction gate
+
+The current release reduces public runtime-surface residual debt by converting `cli/agent_onboard/domains/core/services/public-runtime-surface-service.js` into a thin compatibility facade and moving command discovery, operator guide, quickstart, AI discovery, create dry-run, issue intake, contributor admission, and CI recipe output into bounded `runtime-surface/` services. The public exports and command behavior are preserved, `runtime-composer.js` remains the compatibility composer, and no SQLite, Lightning Memory-Mapped Database, MDBX, dependency addition, registry mutation, network access, Git mutation, or package publish is admitted.
+
 ## Current release: source module residual service extraction gate
 
 The current release extracts architecture map residuals, installed fallback smoke checks, source-module second-slice planning/first-slice validation, and authority bundle parity checks from `cli/agent_onboard/runtime-composer.js` into bounded architecture runtime services. `runtime-composer.js` is reduced to 1,630 lines and remains the compatibility composer/public export surface. The service split keeps each new W15 service below near-god thresholds and preserves read-only/no-install/no-network/no-Git behavior; no SQLite, Lightning Memory-Mapped Database, MDBX, dependency addition, registry mutation, or package publish is admitted.

@@ -7,7 +7,9 @@ CLI for onboarding and managing target repositories.
 The generated files are intended to be read by agents, wrappers, CI hooks, or future runtimes that choose to honor the declared boundaries.
 
 
-Current release: this line continues the Milestone 7 residual-decomposition pass by splitting `architecture-runtime-service.js` into a thin coordinator plus bounded router facade, authority state-shard, authority first-read, target runtime namespace, source-domain rehearsal, and architecture transition services. The W16 split removes that architecture runtime service from the god-file set, keeps all newly extracted services below near-god thresholds, preserves the read-only architecture/authority/target runtime command contracts, and admits no SQLite, Lightning Memory-Mapped Database, MDBX, dependency addition, network access, registry mutation, Git mutation, or package publish.
+
+
+Current release: this line continues the Milestone 7 residual-decomposition pass by splitting `public-runtime-surface-service.js` into a thin compatibility facade plus bounded runtime-surface services for command discovery, operator guide, quickstart, AI discovery, create dry-run, issue intake, contributor admission, and CI recipe output. The W19 split removes that runtime-surface service from the god-file set, keeps each extracted service below near-god thresholds, preserves the read-only public command contracts, and admits no SQLite, Lightning Memory-Mapped Database, MDBX, dependency addition, network access, registry mutation, Git mutation, or package publish.
 
 ## Install
 

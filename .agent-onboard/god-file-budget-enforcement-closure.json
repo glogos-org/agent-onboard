@@ -17,7 +17,7 @@
     "mdbx_current_source_of_truth": false
   },
   "maximums": {
-    "god_files": 5,
+    "god_files": 4,
     "near_god_files": 35,
     "top_level_check_scripts": 0
   },
@@ -41,7 +41,8 @@
     "P1S3M7W15",
     "P1S3M7W16",
     "P1S3M7W17",
-    "P1S3M7W18"
+    "P1S3M7W18",
+    "P1S3M7W19"
   ],
   "required_check_ids": [
     "source-size-budget",
@@ -71,7 +72,8 @@
     "router-cutover-service-extraction",
     "source-module-residual-service-extraction",
     "source-extraction-runtime-service-residual-reduction",
-    "router-cutover-runtime-service-near-god-reduction"
+    "router-cutover-runtime-service-near-god-reduction",
+    "runtime-surface-service-residual-reduction"
   ],
   "remaining_god_files": [
     {
@@ -80,39 +82,31 @@
       "current_lines": 1630,
       "current_bytes": 65922,
       "admitted_reason": "composer remains residual migration debt after W17 focused on source extraction runtime service reduction.",
-      "next_reduction_gate": "P1S3M7W19"
+      "next_reduction_gate": "P1S3M7W20"
     },
     {
       "path": ".agent-onboard/work-items.json",
       "category": "authority_registry",
-      "current_lines": 1788,
-      "admitted_reason": "W18 splits router cutover runtime behavior into bounded runtime package, router port, thin entrypoint, and adapter delegation services; remaining god files remain admitted migration debt.",
-      "next_reduction_gate": "P1S3M7W19",
-      "current_bytes": 51712
+      "current_lines": 1799,
+      "admitted_reason": "W19 split public runtime-surface implementation into bounded runtime-surface services; remaining god files remain admitted migration debt.",
+      "next_reduction_gate": "P1S3M7W20",
+      "current_bytes": 52035
     },
     {
       "path": "README.md",
       "category": "documentation",
-      "current_lines": 1313,
-      "current_bytes": 86814,
-      "admitted_reason": "first-read surface remains admitted documentation debt after W17 source extraction runtime residual reduction.",
-      "next_reduction_gate": "P1S3M7W19"
-    },
-    {
-      "path": "cli/agent_onboard/domains/core/services/public-runtime-surface-service.js",
-      "category": "runtime_service_source",
-      "current_lines": 1189,
-      "current_bytes": 45970,
-      "admitted_reason": "public runtime surface still aggregates multiple command-surface proofs",
-      "next_reduction_gate": "P1S3M7W19"
+      "current_lines": 1315,
+      "current_bytes": 86801,
+      "admitted_reason": "W19 split public runtime-surface implementation into bounded runtime-surface services; remaining god files remain admitted migration debt.",
+      "next_reduction_gate": "P1S3M7W20"
     },
     {
       "path": ".agent-onboard/source-size-budget-ratchet.json",
       "category": "authority_registry",
-      "current_lines": 5000,
-      "current_bytes": 200000,
-      "admitted_reason": "source-size ratchet remains admitted authority metadata debt through W18; future gates should compact this authority metadata rather than further expanding it.",
-      "next_reduction_gate": "P1S3M7W19",
+      "current_lines": 3962,
+      "current_bytes": 172236,
+      "admitted_reason": "W19 split public runtime-surface implementation into bounded runtime-surface services; remaining god files remain admitted migration debt.",
+      "next_reduction_gate": "P1S3M7W20",
       "current_bytes_max": 200000,
       "note": "W18 source-size budget self-ratchet grew within admitted metadata update for router-cutover residual split."
     }
@@ -145,10 +139,58 @@
       "router_cutover_facade_lines": 32,
       "storage_backend_changed": false,
       "next_reduction_gate": "P1S3M7W19"
+    },
+    "w19_update": {
+      "work_item_id": "P1S3M7W19",
+      "god_files_after_w19": 4,
+      "near_god_files_after_w19": 35,
+      "removed_god_file": "cli/agent_onboard/domains/core/services/public-runtime-surface-service.js",
+      "runtime_surface_facade_lines": 21,
+      "storage_backend_changed": false,
+      "next_reduction_gate": "P1S3M7W20"
+    },
+    "w19_budget_refresh": {
+      "work_item_id": "P1S3M7W19",
+      "source_size_budget_lines": 3962,
+      "source_size_budget_bytes": 172236,
+      "god_files_after_w19": 4,
+      "near_god_files_after_w19": 35,
+      "storage_backend_changed": false
     }
   },
   "evidence": {
     "near_god_files_after_w18": 35,
-    "god_files_after_w18": 5
+    "god_files_after_w18": 5,
+    "near_god_files_after_w19": 35,
+    "god_files_after_w19": 4,
+    "source_size_budget_counts_after_w19": {
+      "checked_text_files": 327,
+      "god_files": 4,
+      "near_god_files": 35,
+      "normal_files": 288,
+      "failures": 0
+    },
+    "remaining_god_files_after_w19": [
+      {
+        "path": "cli/agent_onboard/runtime-composer.js",
+        "lines": 1630,
+        "bytes": 65922
+      },
+      {
+        "path": ".agent-onboard/work-items.json",
+        "lines": 1799,
+        "bytes": 52035
+      },
+      {
+        "path": "README.md",
+        "lines": 1315,
+        "bytes": 86801
+      },
+      {
+        "path": ".agent-onboard/source-size-budget-ratchet.json",
+        "lines": 3962,
+        "bytes": 172236
+      }
+    ]
   }
 }

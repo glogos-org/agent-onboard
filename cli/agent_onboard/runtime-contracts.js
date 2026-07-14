@@ -2,7 +2,7 @@
 
 const PACKAGE_NAME = 'agent-onboard';
 const TARGET_CONFIG_FILE = '.agent-onboard/target.json';
-const RELEASE_LINE = 'public_router_cutover_runtime_service_near_god_reduction_gate';
+const RELEASE_LINE = 'public_runtime_surface_service_residual_reduction_gate';
 
 const TOP_LEVEL_COMMAND = Object.freeze({
   agents: 'agents',
@@ -397,6 +397,15 @@ const PUBLIC_PACKAGED_ROUTER_PORT_PACK_FILES = Object.freeze([
   'cli/agent_onboard/domains/core/services/config-guard-service.js',
   'cli/agent_onboard/domains/core/services/ni-uri-service.js',
   'cli/agent_onboard/domains/core/services/public-runtime-surface-service.js',
+  'cli/agent_onboard/domains/core/services/runtime-surface/public-runtime-surface-common.js',
+  'cli/agent_onboard/domains/core/services/runtime-surface/command-surface-service.js',
+  'cli/agent_onboard/domains/core/services/runtime-surface/operator-guide-service.js',
+  'cli/agent_onboard/domains/core/services/runtime-surface/quickstart-service.js',
+  'cli/agent_onboard/domains/core/services/runtime-surface/discovery-service.js',
+  'cli/agent_onboard/domains/core/services/runtime-surface/create-dry-run-service.js',
+  'cli/agent_onboard/domains/core/services/runtime-surface/issue-intake-service.js',
+  'cli/agent_onboard/domains/core/services/runtime-surface/contributor-admission-service.js',
+  'cli/agent_onboard/domains/core/services/runtime-surface/ci-surface-service.js',
   'cli/agent_onboard/domains/core/services/public-core-surface-command-runner-service.js',
   'cli/agent_onboard/domains/core/services/public-runtime-check-fast-service.js',
   'cli/agent_onboard/domains/core/services/public-runtime-mcp-bridge-service.js',

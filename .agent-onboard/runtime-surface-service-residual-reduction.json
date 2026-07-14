@@ -1,0 +1,115 @@
+{
+  "schema": "agent-onboard-public-runtime-surface-service-residual-reduction-closure-001",
+  "status": "closed",
+  "package_name": "agent-onboard",
+  "version": "0.0.202",
+  "release_line": "public_runtime_surface_service_residual_reduction_gate",
+  "milestone_id": "P1S3M7",
+  "work_item_id": "P1S3M7W19",
+  "title": "Public Runtime Surface Service Residual Reduction Gate",
+  "objective": "Reduce runtime surface residual mass without changing public command semantics or introducing a storage backend.",
+  "reduction": {
+    "source_file": "cli/agent_onboard/domains/core/services/public-runtime-surface-service.js",
+    "before": {
+      "lines": 1189,
+      "bytes": 45970
+    },
+    "after_facade": {
+      "lines": 21,
+      "bytes": 913
+    },
+    "line_reduction": 1168,
+    "byte_reduction": 45057,
+    "god_file_removed": true,
+    "near_god_budget_increased": false,
+    "monolith_growth_allowed": false
+  },
+  "extracted_services": [
+    {
+      "path": "cli/agent_onboard/domains/core/services/runtime-surface/public-runtime-surface-common.js",
+      "lines": 101,
+      "bytes": 3798
+    },
+    {
+      "path": "cli/agent_onboard/domains/core/services/runtime-surface/command-surface-service.js",
+      "lines": 137,
+      "bytes": 5586
+    },
+    {
+      "path": "cli/agent_onboard/domains/core/services/runtime-surface/operator-guide-service.js",
+      "lines": 143,
+      "bytes": 5515
+    },
+    {
+      "path": "cli/agent_onboard/domains/core/services/runtime-surface/quickstart-service.js",
+      "lines": 135,
+      "bytes": 4713
+    },
+    {
+      "path": "cli/agent_onboard/domains/core/services/runtime-surface/discovery-service.js",
+      "lines": 118,
+      "bytes": 4128
+    },
+    {
+      "path": "cli/agent_onboard/domains/core/services/runtime-surface/create-dry-run-service.js",
+      "lines": 112,
+      "bytes": 3895
+    },
+    {
+      "path": "cli/agent_onboard/domains/core/services/runtime-surface/issue-intake-service.js",
+      "lines": 167,
+      "bytes": 7490
+    },
+    {
+      "path": "cli/agent_onboard/domains/core/services/runtime-surface/contributor-admission-service.js",
+      "lines": 184,
+      "bytes": 8229
+    },
+    {
+      "path": "cli/agent_onboard/domains/core/services/runtime-surface/ci-surface-service.js",
+      "lines": 124,
+      "bytes": 4326
+    }
+  ],
+  "preserved_public_surfaces": [
+    "agent-onboard commands --json",
+    "agent-onboard guide --json",
+    "agent-onboard quickstart --json",
+    "agent-onboard discovery --json",
+    "agent-onboard create --dry-run",
+    "agent-onboard issue --classify-dry-run --text",
+    "agent-onboard contributor --admission-dry-run --text",
+    "agent-onboard ci --json"
+  ],
+  "clean_baseline_adjustment": {
+    "reason": "Nine small runtime-surface service files replace one god service; projected package file count increases by the same service split.",
+    "max_source_files": 327,
+    "max_agent_onboard_files": 129,
+    "max_projected_pack_files": 128
+  },
+  "checks_required": [
+    "runtime-surface-service-residual-reduction",
+    "source-size-budget",
+    "god-file-budget-enforcement-closure",
+    "state-projection-authority-cutover",
+    "closure-payload-reference-compaction",
+    "authority --index-check",
+    "authority --state-check",
+    "target metadata --check",
+    "release --source-manifest-check",
+    "release --clean-check",
+    "release --check",
+    "check --fast --json",
+    "work-items --validate",
+    "npm pack --dry-run --json"
+  ],
+  "boundary": {
+    "storage_backend_changed": false,
+    "sqlite_introduced": false,
+    "lmdb_introduced": false,
+    "mdbx_introduced": false,
+    "git_mutation": false,
+    "network": false,
+    "package_publish": false
+  }
+}

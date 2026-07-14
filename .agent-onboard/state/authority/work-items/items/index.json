@@ -9,14 +9,14 @@
   "counts": {
     "open": 0,
     "claimed": 0,
-    "closed": 189,
+    "closed": 190,
     "programs": 1,
     "stages": 3,
     "milestones": 10,
-    "work_items": 189
+    "work_items": 190
   },
-  "latest_work_item_id": "P1S3M7W18",
-  "latest_closed_work_item_id": "P1S3M7W18",
+  "latest_work_item_id": "P1S3M7W19",
+  "latest_closed_work_item_id": "P1S3M7W19",
   "by_status": {
     "open": [],
     "claimed": [],
@@ -202,6 +202,7 @@
       "P1S3M7W16",
       "P1S3M7W17",
       "P1S3M7W18",
+      "P1S3M7W19",
       "P1S3M7W2",
       "P1S3M7W3",
       "P1S3M7W4",
@@ -499,11 +500,48 @@
     {
       "milestone_id": "P1S3M7",
       "path": ".agent-onboard/state/authority/work-items/items/by-milestone/P1S3M7.json",
-      "item_count": 18,
-      "bytes": 6261,
-      "sha256": "3d7a59a7c6702a00b78734933d7027209630547afa18628bb525d6557c624003",
-      "file_id": "ni:///sha-256;PXpZp8ZwKgC3hzSTPXAnIJYwVHr6GGKLtSXWVXxiQAM"
+      "item_count": 19,
+      "bytes": 6584,
+      "sha256": "095627cb1fe131768a93c95be06b55d8184e5184dc6d9ce57231df596c982b66",
+      "file_id": "ni:///sha-256;CVYnyx_hMXaKk8lb4GtV2BhOUYTcbZzlcjHfWWyYK2Y"
     }
   ],
-  "updated_at": "2026-07-10T10:05:00.000Z"
+  "updated_at": "2026-07-10T10:05:00.000Z",
+  "latest_closed_work_items": [
+    {
+      "id": "P1S3M7W15",
+      "title": "Public Source Module Residual Service Extraction Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M7",
+      "domain": null
+    },
+    {
+      "id": "P1S3M7W16",
+      "title": "Public Architecture Runtime Service Residual Reduction Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M7",
+      "domain": null
+    },
+    {
+      "id": "P1S3M7W17",
+      "title": "Public Source Extraction Runtime Service Residual Reduction Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M7",
+      "domain": null
+    },
+    {
+      "id": "P1S3M7W18",
+      "title": "Public Router Cutover Runtime Service Near-God Reduction Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M7",
+      "domain": null
+    },
+    {
+      "id": "P1S3M7W19",
+      "title": "Public Runtime Surface Service Residual Reduction Gate",
+      "status": "closed",
+      "milestone_id": "P1S3M7",
+      "domain": null
+    }
+  ]
 }
