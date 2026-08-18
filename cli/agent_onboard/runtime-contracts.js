@@ -321,7 +321,7 @@ const PRODUCT_HELP_LINES = Object.freeze([
   TARGET_REPAIR_COMMAND.help,
   TARGET_METADATA_COMMAND.help,
   TARGET_MANIFEST_COMMAND.help,
-  'agent-onboard target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]',
+  'agent-onboard target onboarding --plan [--target <path>]|--fixture|--trial [--target <path>]|--write [--force] [--target <path>]',
   'agent-onboard target bootstrap --dry-run|--write [--force]',
   'agent-onboard target-instance takeover --dry-run|--write [--force]',
   'agent-onboard work-items --list [.agent-onboard/work-items.json]',

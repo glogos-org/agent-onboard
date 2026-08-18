@@ -2,7 +2,7 @@
 
 CLI for onboarding and managing target repositories.
 
-`agent-onboard` creates a small machine-readable and human-readable control surface inside a target repo. In the current `0.0.x` line, that surface is a convention/spec plus a reference CLI generator. It is not a sandbox, filesystem wrapper, CI policy engine, or runtime enforcement layer.
+`agent-onboard` creates a small machine-readable and human-readable control surface inside a target repo. In the current `0.1.x` line, that surface is a convention/spec plus a reference CLI generator. It is not a sandbox, filesystem wrapper, CI policy engine, or runtime enforcement layer.
 
 The generated files are intended to be read by agents, wrappers, CI hooks, or future runtimes that choose to honor the declared boundaries.
 
@@ -13,7 +13,7 @@ Current release: this line continues the Milestone 7 residual-decomposition pass
 
 ## Install
 
-For the `0.0.x` line, install with `latest` for the current public line, or pin a specific published version only in release verification evidence:
+For the `0.1.x` line, install with `latest` for the current public line, or pin a specific published version only in release verification evidence:
 
 ```sh
 npm install --save-dev agent-onboard@latest
@@ -943,7 +943,7 @@ This guard does not sandbox other tools and does not wrap shell commands. It onl
 
 `AGENTS.md` gives agents a human-readable read order, default forbidden actions, dry-run-first operating mode, and reporting discipline.
 
-In the current `0.0.x` line, these fields and instructions are declarative. They do not block other tools by themselves. A separate agent runtime, wrapper, CI hook, or future `agent-onboard` component must read the files and enforce the declared policy.
+In the current `0.1.x` line, these fields and instructions are declarative. They do not block other tools by themselves. A separate agent runtime, wrapper, CI hook, or future `agent-onboard` component must read the files and enforce the declared policy.
 
 The generated config intentionally starts at:
 

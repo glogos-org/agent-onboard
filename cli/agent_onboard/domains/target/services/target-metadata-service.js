@@ -14,6 +14,7 @@ const {
 } = require('./target-metadata-constants');
 const {
   toPosix,
+  hashText,
   hashFile,
   fileId,
   fileUrn,

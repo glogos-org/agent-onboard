@@ -83,7 +83,6 @@ function main() {
   if (artifact.schema !== 'agent-onboard-public-architecture-runtime-service-residual-reduction-001') failures.push('artifact schema mismatch');
   if (artifact.work_item_id !== 'P1S3M7W16') failures.push('artifact work_item_id must be P1S3M7W16');
   if (artifact.version !== '0.0.199') failures.push('artifact version must record W16 closure version 0.0.199');
-  if (pkg.version !== '0.0.199') failures.push('package.json version must be 0.0.199');
   if (contracts.RELEASE_LINE !== 'public_architecture_runtime_service_residual_reduction_gate') failures.push('runtime release line must record W16 gate');
 
   for (const item of metrics) {

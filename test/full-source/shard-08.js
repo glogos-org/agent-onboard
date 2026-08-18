@@ -361,7 +361,7 @@ module.exports = function registerFullSourceShard(fullSourceTest, context) {
     assert.ok(help.stdout.includes('--closed-gates-apply|--closed-gates-apply-check|--closed-gates-read|--closed-gates-read-check|--closed-gates-prune-plan|--closed-gates-prune-plan-check|--closed-gates-prune-dry-run|--closed-gates-prune-dry-run-check|--closed-gates-prune-apply|--closed-gates-prune-apply-check'));
     assert.ok(help.stdout.includes('--target-onboarding-smoke|--real-target-trial|--check'));
     assert.ok(help.stdout.includes('target repair --plan|--write [--force] [--target <path>]'));
-    assert.ok(help.stdout.includes('target onboarding --plan|--fixture|--trial [--target <path>]|--write [--force]'));
+    assert.ok(help.stdout.includes('target onboarding --plan [--target <path>]|--fixture|--trial [--target <path>]|--write [--force] [--target <path>]'));
   });
 
 

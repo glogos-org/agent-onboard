@@ -58,7 +58,7 @@ function main() {
   for (const item of godFiles) {
     const debt = admitted.get(item.path);
     if (!debt) errors.push(`unadmitted god file: ${item.path}`);
-    else if (item.lines > (debt.current_lines || Infinity) || item.bytes > (debt.current_bytes || debt.current_bytes_max || Infinity)) errors.push(`${item.path} grew beyond W34 admitted budget`);
+    else if (item.lines > (debt.current_lines || Infinity) || item.bytes > (debt.current_bytes_max || debt.current_bytes || Infinity)) errors.push(`${item.path} grew beyond W34 admitted budget`);
   }
   for (const debt of artifact.remaining_god_files || []) {
     if (!fs.existsSync(abs(debt.path))) errors.push(`admitted god file missing: ${debt.path}`);

@@ -804,10 +804,10 @@
     },
     "cli/agent_onboard/domains/target/services/target-metadata-service.js": {
       "category": "runtime_service_source",
-      "max_lines": 724,
-      "max_bytes": 32001,
-      "baseline_lines": 851,
-      "baseline_bytes": 35748,
+      "max_lines": 725,
+      "max_bytes": 32013,
+      "baseline_lines": 725,
+      "baseline_bytes": 32013,
       "target_lines": 500,
       "target_bytes": 65536,
       "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage.",
@@ -820,6 +820,14 @@
           "new_max_bytes": 32001,
           "previous_max_lines": 871,
           "previous_max_bytes": 43940
+        },
+        {
+          "release": "0.1.1",
+          "reason": "Restore the extracted hashText dependency required by target metadata write manifest generation.",
+          "previous_max_lines": 724,
+          "new_max_lines": 725,
+          "previous_max_bytes": 32001,
+          "new_max_bytes": 32013
         }
       ]
     },
@@ -1676,14 +1684,23 @@
     },
     "cli/agent_onboard/domains/target/services/target-command-runner-service.js": {
       "category": "runtime_service_source",
-      "max_lines": 590,
-      "max_bytes": 32606,
-      "baseline_lines": 590,
-      "baseline_bytes": 32606,
+      "max_lines": 593,
+      "max_bytes": 32755,
+      "baseline_lines": 593,
+      "baseline_bytes": 32755,
       "target_lines": 500,
       "target_bytes": 65536,
       "reason": "New bounded target domain service owns target command runners extracted from runtime composer.",
-      "ratchet_history": []
+      "ratchet_history": [
+        {
+          "release": "0.1.1",
+          "reason": "Patch release fixes target onboarding --target routing/help behavior without changing storage or authority semantics.",
+          "previous_max_lines": 590,
+          "new_max_lines": 593,
+          "previous_max_bytes": 32606,
+          "new_max_bytes": 32755
+        }
+      ]
     },
     "cli/agent_onboard/domains/target/services/target-command-text-service.js": {
       "category": "runtime_service_source",
@@ -1698,10 +1715,10 @@
     },
     ".agent-onboard/source-size-budget-ratchet.json": {
       "category": "authority_registry",
-      "max_lines": 4585,
-      "max_bytes": 199900,
-      "baseline_lines": 2575,
-      "baseline_bytes": 104100,
+      "max_lines": 4900,
+      "max_bytes": 215000,
+      "baseline_lines": 4602,
+      "baseline_bytes": 200572,
       "target_lines": 500,
       "target_bytes": 65536,
       "reason": "W22 splits target metadata service and refreshes source-size/god-file ratchets.",
@@ -1986,6 +2003,14 @@
           "new_max_lines": 4359,
           "previous_max_bytes": 201959,
           "new_max_bytes": 189959
+        },
+        {
+          "release": "0.1.1",
+          "reason": "Patch release refreshes source-size ratchets for bounded onboarding CLI/help fixes.",
+          "previous_max_lines": 4585,
+          "new_max_lines": 4700,
+          "previous_max_bytes": 199900,
+          "new_max_bytes": 205000
         }
       ],
       "current_bytes_max": 177850,
@@ -3813,8 +3838,8 @@
     },
     "cli/agent_onboard/runtime-contracts.js": {
       "category": "runtime_source",
-      "baseline_lines": 490,
-      "baseline_bytes": 21124,
+      "baseline_lines": 526,
+      "baseline_bytes": 25013,
       "target_lines": 500,
       "target_bytes": 65536,
       "ratchet_history": [
@@ -3885,10 +3910,18 @@
           "new_max_bytes": 24977,
           "previous_max_lines": 524,
           "previous_max_bytes": 24819
+        },
+        {
+          "release": "0.1.1",
+          "reason": "Patch release fixes target onboarding --target routing/help behavior without changing storage or authority semantics.",
+          "previous_max_lines": 526,
+          "new_max_lines": 526,
+          "previous_max_bytes": 24977,
+          "new_max_bytes": 25013
         }
       ],
       "max_lines": 526,
-      "max_bytes": 24977,
+      "max_bytes": 25013,
       "reason": "W22 splits target metadata constants and identity helpers out of the target metadata service while preserving JSON/JSONL storage."
     },
     "package.json": {
@@ -4444,8 +4477,8 @@
     },
     "test/run-tests.js": {
       "category": "other_text",
-      "baseline_lines": 591,
-      "baseline_bytes": 37871,
+      "baseline_lines": 592,
+      "baseline_bytes": 37966,
       "target_lines": 500,
       "target_bytes": 65536,
       "ratchet_history": [

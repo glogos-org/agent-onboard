@@ -83,7 +83,6 @@ function main() {
   if (artifact.schema !== 'agent-onboard-public-router-cutover-runtime-service-near-god-reduction-001') failures.push('artifact schema mismatch');
   if (artifact.work_item_id !== 'P1S3M7W18') failures.push('artifact work_item_id must be P1S3M7W18');
   if (artifact.version !== '0.0.201') failures.push('artifact version must record W18 closure version 0.0.201');
-  if (pkg.version !== '0.0.201') failures.push('package.json version must be 0.0.201');
   if (contracts.RELEASE_LINE !== 'public_router_cutover_runtime_service_near_god_reduction_gate') failures.push('runtime release line must record W18 gate');
 
   for (const item of metrics) {

@@ -61,7 +61,6 @@ function main() {
   const facadeModule = require(abs(FACADE_REL));
   const serviceMetrics = SERVICE_RELS.map((rel) => ({ path: rel, lines: lineCount(read(rel)), bytes: byteSize(rel) }));
 
-  if (pkg.version !== '0.0.202') failures.push(`package version must be 0.0.202, got ${pkg.version}`);
   if (lineCount(facadeText) > 80) failures.push(`${FACADE_REL} must remain a bounded facade`);
   for (const legacyFunction of [
     'function commandSurfaceCatalog(',

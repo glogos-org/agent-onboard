@@ -10,7 +10,7 @@
       "kind": "compact_authority_index",
       "present": true,
       "bytes": 7504,
-      "file_id": "ni:///sha-256;8jcswcGmCXfq5LXGnPTP4orbfxDiyM0F3ac-CvHj_nc",
+      "file_id": "ni:///sha-256;eU_wZTXLVxwzx0FMN0OBpc_ffyzv03swWlDZfuROvSA",
       "schema": "agent-onboard-public-authority-compact-index-001",
       "status": null,
       "raw_registry_loaded_by_default": null,
@@ -65,7 +65,7 @@
       "loaded_by_default": false
     }
   ],
-  "authority_index_digest": "ni:///sha-256;8jcswcGmCXfq5LXGnPTP4orbfxDiyM0F3ac-CvHj_nc",
+  "authority_index_digest": "ni:///sha-256;eU_wZTXLVxwzx0FMN0OBpc_ffyzv03swWlDZfuROvSA",
   "work_items_index_digest": "ni:///sha-256;nm7tTQl26MMppTlZPl-ZBLsqAGbqFPA8i44qMeQG_Jg",
   "claims_index_digest": "ni:///sha-256;otIDDGJGcys456Ufaq9WPeWXVrjiCX9kkTWzXjQyHGo"
 }

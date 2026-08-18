@@ -145,8 +145,8 @@
       "file_path": "package.json",
       "present": true,
       "kind": "file",
-      "bytes": 19025,
-      "file_id": "ni:///sha-256;YQyUkhkfNnXuJP0QQtlelnZxn8adw4_77hkBQAGHnT8",
+      "bytes": 19023,
+      "file_id": "ni:///sha-256;CTyxn5NJea1Wj6LB6g8XqxCnK8tCYBj2QzFk_QrNhUo",
       "content_inlined": false
     },
     {
@@ -216,7 +216,7 @@
     "indexed_file_count": 9,
     "present_file_count": 9,
     "missing_file_count": 0,
-    "present_bytes": 151011,
+    "present_bytes": 151009,
     "missing_files": [],
     "excluded_file_count": 7,
     "state_shard_count": 4,

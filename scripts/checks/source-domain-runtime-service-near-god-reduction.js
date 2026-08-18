@@ -79,7 +79,6 @@ function main() {
     if (artifact.work_item_id !== 'P1S3M7W20') failures.push('artifact work_item_id must be P1S3M7W20');
     if (artifact.version !== '0.0.203') failures.push('artifact version must record W20 closure version 0.0.203');
   }
-  if (pkg.version !== '0.0.203') failures.push(`package.json version must be 0.0.203, got ${pkg.version}`);
   if (contracts.RELEASE_LINE !== 'public_source_domain_runtime_service_near_god_reduction_gate') failures.push('runtime release line must record W20 gate');
 
   for (const rel of SERVICE_RELS) {

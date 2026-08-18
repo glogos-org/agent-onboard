@@ -679,4 +679,49 @@ module.exports = function registerFullSourceShard(fullSourceTest, context) {
     assert.ok(!fs.existsSync(path.join(dir, '.agent-onboard', 'runtime-namespace.json')));
     assert.ok(!fs.existsSync(path.join(dir, '.agent-onboard', 'project.json')));
   });
+
+  fullSourceTest('v0.1.1 target onboarding accepts explicit target for plan and write', () => {
+    const dir = tempRepo();
+    const plan = run(['target', 'onboarding', '--plan', '--target', dir], { cwd: ROOT });
+    const planOutput = readJsonOutput(plan);
+    assert.strictEqual(planOutput.status, 'ok');
+    assert.strictEqual(planOutput.target.name, 'target-fixture');
+    assert.strictEqual(fs.existsSync(path.join(dir, 'AGENTS.md')), false);
+
+    const write = run(['target', 'onboarding', '--write', '--target', dir], { cwd: ROOT });
+    const writeOutput = readJsonOutput(write);
+    assert.strictEqual(writeOutput.status, 'ok');
+    assert.strictEqual(writeOutput.version, EXPECTED_VERSION);
+    assert.strictEqual(writeOutput.written_files.length, 7);
+    const agents = fs.readFileSync(path.join(dir, 'AGENTS.md'), 'utf8');
+    assert.ok(agents.includes('current `0.1.x` line'));
+    assert.ok(!agents.includes('current `0.0.x` line'));
+  });
+
+  fullSourceTest('v0.1.1 version policy allows historical boundary literals but rejects current assertions', () => {
+    const { createPublicSourceExtractionGoldenService } = require(path.join(ROOT, 'cli', 'agent_onboard', 'domains', 'architecture', 'services', 'source-extraction', 'public-source-extraction-golden-service.js'));
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'aob-v011-version-policy-'));
+    const service = createPublicSourceExtractionGoldenService({
+      version: EXPECTED_VERSION,
+      publicSourceDomainExtractionRehearsal: {},
+      publicSourceExtractionGoldenOutputFreeze: { package_name: 'agent-onboard', release_line: 'test', freeze_file: 'unused.json' },
+      publicVersionReferencePolicy: { package_name: 'agent-onboard', release_line: 'test', command: 'test', disallowed_current_version_scan_files: ['README.md'], allowed_dynamic_version_surfaces: [], boundary: {} },
+      publicReleaseContract: { release_line: 'test' },
+      packageRoot: () => dir,
+      sourceContext: () => ({ package_context: 'test' }),
+      arrayEquals: () => true,
+      readJson: (file) => JSON.parse(fs.readFileSync(file, 'utf8')),
+      packageJsonProjectedPackFiles: () => [],
+      publicSourceDomainExtractionRehearsalCheck: () => ({ status: 'ok' })
+    });
+    try {
+      fs.writeFileSync(path.join(dir, 'README.md'), `Historical compatibility boundary: \`${EXPECTED_VERSION}\`.\n`);
+      assert.strictEqual(service.publicVersionReferencePolicyCheck(dir).status, 'ok');
+      fs.writeFileSync(path.join(dir, 'README.md'), `Current release: \`${EXPECTED_VERSION}\`.\n`);
+      assert.strictEqual(service.publicVersionReferencePolicyCheck(dir).status, 'error');
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
 };

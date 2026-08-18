@@ -71,6 +71,7 @@ function createTargetCommandRunnerService(deps = {}) {
     workItemsTemplate,
     initWriteSet,
     planTargetOnboardingWrites,
+    planTargetOnboardingWritesForRoot,
     performTargetOnboardingWrites,
     planWrites,
     performPlannedWrites,
@@ -174,9 +175,9 @@ function runTargetOnboarding(args) {
   if (unknown.length > 0) throw new Error(`target onboarding does not support: ${unknown.join(', ')}`);
   if ([plan, fixture, write, trial].filter(Boolean).length !== 1) throw new Error('target onboarding requires exactly one of --plan, --fixture, --trial, or --write');
   if (force && !write) throw new Error('target onboarding --force requires --write');
-  if (targetIndex >= 0 && !trial) throw new Error('target onboarding --target is only supported with --trial');
+  if (targetIndex >= 0 && fixture) throw new Error('target onboarding --target is not supported with --fixture');
   if (plan) {
-    json(targetOnboardingSurfacePlan());
+    json(targetOnboardingSurfacePlan(targetRoot));
     return 0;
   }
   if (fixture) {
@@ -189,10 +190,12 @@ function runTargetOnboarding(args) {
     return result.status === 'ok' ? 0 : 1;
   }
 
-  const plannedWrites = planTargetOnboardingWrites({ force });
+  const plannedWrites = targetIndex >= 0
+    ? planTargetOnboardingWritesForRoot(targetRoot, { force })
+    : planTargetOnboardingWrites({ force });
   const conflicts = plannedWrites.filter((item) => item.action === 'conflict');
   const ok = conflicts.length === 0;
-  if (ok) performTargetOnboardingWrites(plannedWrites);
+  if (ok) performTargetOnboardingWrites(plannedWrites, targetRoot);
   const writtenFiles = ok ? plannedWrites.filter((item) => item.action === 'create' || item.action === 'overwrite').map((item) => item.path) : [];
 
   json({

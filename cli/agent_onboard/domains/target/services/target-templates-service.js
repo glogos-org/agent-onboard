@@ -228,7 +228,7 @@ function createTargetTemplatesService(deps) {
   
   ## Scope note
   
-  In the current \`0.0.x\` line, \`${PACKAGE_NAME}\` emits conventions and reference files. It does not sandbox other tools by itself and does not enforce filesystem, network, shell, Git, package-manager, CI, deployment, or publication policy for external tools.
+  In the current \`0.1.x\` line, \`${PACKAGE_NAME}\` emits conventions and reference files. It does not sandbox other tools by itself and does not enforce filesystem, network, shell, Git, package-manager, CI, deployment, or publication policy for external tools.
   `;
   }
 

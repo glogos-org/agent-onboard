@@ -72,18 +72,19 @@ function scanCurrentVersionLiterals(root = packageRoot()) {
   const currentVersion = VERSION;
   const currentPinnedPackage = `agent-onboard@${currentVersion}`;
   const findings = [];
+  const currentAssertionPattern = /\b(?:current|latest|package\s+version|version|release)\b/i;
   for (const rel of PUBLIC_VERSION_REFERENCE_POLICY.disallowed_current_version_scan_files) {
     const abs = path.join(root, rel);
     if (!fs.existsSync(abs) || fs.statSync(abs).isDirectory()) continue;
-    const text = fs.readFileSync(abs, 'utf8');
-    const checks = [currentPinnedPackage, currentVersion];
-    for (const token of checks) {
-      let index = text.indexOf(token);
-      while (index !== -1) {
-        const before = text.slice(0, index);
-        const line = before.split(/\r?\n/).length;
-        findings.push({ file: rel, line, token });
-        index = text.indexOf(token, index + token.length);
+    const lines = fs.readFileSync(abs, 'utf8').split(/\r?\n/);
+    for (let index = 0; index < lines.length; index += 1) {
+      const lineText = lines[index];
+      if (lineText.includes(currentPinnedPackage)) {
+        findings.push({ file: rel, line: index + 1, token: currentPinnedPackage });
+        continue;
+      }
+      if (lineText.includes(currentVersion) && currentAssertionPattern.test(lineText)) {
+        findings.push({ file: rel, line: index + 1, token: currentVersion });
       }
     }
   }

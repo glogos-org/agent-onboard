@@ -57,7 +57,6 @@ function main() {
     if (artifact.version !== '0.0.205') errors.push('artifact version must be 0.0.205');
     if (!artifact.closure_result || artifact.closure_result.target_metadata_service_split !== true) errors.push('artifact must record target metadata service split');
   }
-  if (pkg.version !== '0.0.205') errors.push(`package.json version must be 0.0.205, got ${pkg.version}`);
   if (contracts.RELEASE_LINE !== 'public_target_metadata_service_split_gate') errors.push('runtime release line must record W22 gate');
   if (service.lines > 730) errors.push(`${SERVICE_REL} has ${service.lines} lines; W22 maximum is 730`);
   if (service.bytes > 33000) errors.push(`${SERVICE_REL} has ${service.bytes} bytes; W22 maximum is 33000`);

@@ -83,7 +83,6 @@ function main() {
   if (artifact.schema !== 'agent-onboard-public-source-extraction-runtime-service-residual-reduction-001') failures.push('artifact schema mismatch');
   if (artifact.work_item_id !== 'P1S3M7W17') failures.push('artifact work_item_id must be P1S3M7W17');
   if (artifact.version !== '0.0.200') failures.push('artifact version must record W17 closure version 0.0.200');
-  if (pkg.version !== '0.0.200') failures.push('package.json version must be 0.0.200');
   if (contracts.RELEASE_LINE !== 'public_source_extraction_runtime_service_residual_reduction_gate') failures.push('runtime release line must record W17 gate');
 
   for (const item of metrics) {
